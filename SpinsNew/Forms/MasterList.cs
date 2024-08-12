@@ -3590,5 +3590,10 @@ namespace SpinsNew
                 payrollForm.Show();
             }
         }
+
+        private void groupControl2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

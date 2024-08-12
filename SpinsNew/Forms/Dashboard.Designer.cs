@@ -41,7 +41,8 @@ namespace SpinsNew.Forms
             this.optionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(948, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(813, 24);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -49,24 +50,24 @@ namespace SpinsNew.Forms
             // 
             this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MasterlistToolStripMenuItem});
-            //this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
+            this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
             this.optionToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.optionToolStripMenuItem.Text = "Menu";
             // 
             // MasterlistToolStripMenuItem
             // 
-           // this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_list_48;
+            this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
             this.MasterlistToolStripMenuItem.Name = "MasterlistToolStripMenuItem";
-            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.MasterlistToolStripMenuItem.Text = "Masterlist";
             this.MasterlistToolStripMenuItem.Click += new System.EventHandler(this.MasterlistToolStripMenuItem_Click);
             // 
             // Dashboard
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(948, 671);
+            this.ClientSize = new System.Drawing.Size(813, 582);
             this.Controls.Add(this.menuStrip1);
             this.Name = "Dashboard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

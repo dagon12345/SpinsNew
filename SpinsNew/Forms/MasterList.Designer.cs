@@ -101,10 +101,10 @@ namespace SpinsNew
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridControl1.Location = new System.Drawing.Point(5, 26);
+            this.gridControl1.Location = new System.Drawing.Point(4, 23);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(902, 521);
+            this.gridControl1.Size = new System.Drawing.Size(773, 426);
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -113,6 +113,7 @@ namespace SpinsNew
             // 
             // gridView1
             // 
+            this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsCustomization.AllowGroup = false;
@@ -123,10 +124,10 @@ namespace SpinsNew
             // cmb_municipality
             // 
             this.cmb_municipality.EditValue = "Select City/Municipality";
-            this.cmb_municipality.Location = new System.Drawing.Point(5, 26);
+            this.cmb_municipality.Location = new System.Drawing.Point(4, 27);
             this.cmb_municipality.Name = "cmb_municipality";
             this.cmb_municipality.Properties.AllowDropDownWhenReadOnly = DevExpress.Utils.DefaultBoolean.False;
-            this.cmb_municipality.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cmb_municipality.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.cmb_municipality.Properties.Appearance.Options.UseFont = true;
             this.cmb_municipality.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
@@ -135,7 +136,7 @@ namespace SpinsNew
             this.cmb_municipality.Properties.Items.AddRange(new object[] {
             "All Municipalities"});
             this.cmb_municipality.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_municipality.Size = new System.Drawing.Size(512, 20);
+            this.cmb_municipality.Size = new System.Drawing.Size(439, 20);
             this.cmb_municipality.TabIndex = 2;
             this.cmb_municipality.SelectedIndexChanged += new System.EventHandler(this.cmb_municipality_SelectedIndexChanged);
             // 
@@ -143,9 +144,9 @@ namespace SpinsNew
             // 
             this.btn_search.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_search.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_search.ImageOptions.Image")));
-            this.btn_search.Location = new System.Drawing.Point(799, 26);
+            this.btn_search.Location = new System.Drawing.Point(685, 27);
             this.btn_search.Name = "btn_search";
-            this.btn_search.Size = new System.Drawing.Size(108, 20);
+            this.btn_search.Size = new System.Drawing.Size(93, 20);
             this.btn_search.TabIndex = 3;
             this.btn_search.Text = "Search";
             this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
@@ -153,7 +154,7 @@ namespace SpinsNew
             // cmb_status
             // 
             this.cmb_status.EditValue = "Select Status";
-            this.cmb_status.Location = new System.Drawing.Point(523, 26);
+            this.cmb_status.Location = new System.Drawing.Point(448, 27);
             this.cmb_status.Name = "cmb_status";
             this.cmb_status.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -164,7 +165,7 @@ namespace SpinsNew
             "Waitlisted",
             "Delisted"});
             this.cmb_status.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_status.Size = new System.Drawing.Size(244, 20);
+            this.cmb_status.Size = new System.Drawing.Size(209, 20);
             this.cmb_status.TabIndex = 5;
             // 
             // groupControl2
@@ -178,41 +179,43 @@ namespace SpinsNew
             this.groupControl2.Controls.Add(this.panel_spinner);
             this.groupControl2.Controls.Add(this.cmb_status);
             this.groupControl2.Controls.Add(this.btn_search);
-            this.groupControl2.Location = new System.Drawing.Point(12, 27);
+            this.groupControl2.Location = new System.Drawing.Point(10, 23);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(912, 93);
+            this.groupControl2.Size = new System.Drawing.Size(782, 99);
             this.groupControl2.TabIndex = 7;
+            this.groupControl2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupControl2_Paint);
             // 
             // btn_refresh
             // 
             this.btn_refresh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_refresh.Enabled = false;
             this.btn_refresh.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_refresh.ImageOptions.Image")));
-            this.btn_refresh.Location = new System.Drawing.Point(771, 26);
+            this.btn_refresh.Location = new System.Drawing.Point(661, 27);
             this.btn_refresh.Name = "btn_refresh";
-            this.btn_refresh.Size = new System.Drawing.Size(23, 20);
+            this.btn_refresh.Size = new System.Drawing.Size(20, 20);
             this.btn_refresh.TabIndex = 8;
             this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
             // ck_all
             // 
-            this.ck_all.Location = new System.Drawing.Point(5, 48);
+            this.ck_all.Location = new System.Drawing.Point(4, 50);
             this.ck_all.Name = "ck_all";
             this.ck_all.Properties.Appearance.Options.UseFont = true;
             this.ck_all.Properties.Caption = "Select all";
-            this.ck_all.Size = new System.Drawing.Size(75, 20);
+            this.ck_all.Size = new System.Drawing.Size(64, 20);
             this.ck_all.TabIndex = 7;
             this.ck_all.CheckedChanged += new System.EventHandler(this.ck_all_CheckedChanged);
             // 
             // searchControl1
             // 
-            this.searchControl1.Location = new System.Drawing.Point(5, 68);
+            this.searchControl1.Location = new System.Drawing.Point(4, 72);
             this.searchControl1.Name = "searchControl1";
             this.searchControl1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Repository.ClearButton(),
             new DevExpress.XtraEditors.Repository.SearchButton()});
+            this.searchControl1.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.searchControl1.Properties.FindDelay = 500;
-            this.searchControl1.Size = new System.Drawing.Size(512, 20);
+            this.searchControl1.Size = new System.Drawing.Size(439, 20);
             this.searchControl1.TabIndex = 6;
             this.searchControl1.QueryIsSearchColumn += new DevExpress.XtraEditors.QueryIsSearchColumnEventHandler(this.searchControl1_QueryIsSearchColumn_1);
             this.searchControl1.SelectedIndexChanged += new System.EventHandler(this.searchControl1_SelectedIndexChanged);
@@ -221,25 +224,25 @@ namespace SpinsNew
             // 
             this.panel_spinner.Controls.Add(this.pictureBox1);
             this.panel_spinner.Controls.Add(this.labelControl2);
-            this.panel_spinner.Location = new System.Drawing.Point(523, 66);
+            this.panel_spinner.Location = new System.Drawing.Point(448, 70);
             this.panel_spinner.Name = "panel_spinner";
-            this.panel_spinner.Size = new System.Drawing.Size(182, 22);
+            this.panel_spinner.Size = new System.Drawing.Size(179, 19);
             this.panel_spinner.TabIndex = 15;
             this.panel_spinner.Visible = false;
             // 
             // pictureBox1
             // 
-            //this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
-            this.pictureBox1.Location = new System.Drawing.Point(4, 2);
+            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(19, 19);
+            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 17;
             this.pictureBox1.TabStop = false;
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(34, 4);
+            this.labelControl2.Location = new System.Drawing.Point(29, 3);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(138, 13);
             this.labelControl2.TabIndex = 16;
@@ -258,7 +261,8 @@ namespace SpinsNew
             this.actionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(936, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(802, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -268,14 +272,12 @@ namespace SpinsNew
             this.newApplicantToolStripMenuItem,
             this.attachmentsToolStripMenuItem,
             this.delistedAndReplacementsToolStripMenuItem});
-            //this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_option_64;
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionToolStripMenuItem.Text = "Option";
             // 
             // newApplicantToolStripMenuItem
             // 
-            //this.newApplicantToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_add_48;
             this.newApplicantToolStripMenuItem.Name = "newApplicantToolStripMenuItem";
             this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.newApplicantToolStripMenuItem.Text = "New Applicant";
@@ -283,7 +285,6 @@ namespace SpinsNew
             // 
             // attachmentsToolStripMenuItem
             // 
-            //this.attachmentsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_attachment_16;
             this.attachmentsToolStripMenuItem.Name = "attachmentsToolStripMenuItem";
             this.attachmentsToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.attachmentsToolStripMenuItem.Text = "Attachments (CTRL + A)";
@@ -291,7 +292,6 @@ namespace SpinsNew
             // 
             // delistedAndReplacementsToolStripMenuItem
             // 
-            //this.delistedAndReplacementsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_left_right_arrow_64;
             this.delistedAndReplacementsToolStripMenuItem.Name = "delistedAndReplacementsToolStripMenuItem";
             this.delistedAndReplacementsToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.delistedAndReplacementsToolStripMenuItem.Text = "Delisted and Replacements";
@@ -303,14 +303,12 @@ namespace SpinsNew
             this.viewToolStripMenuItem,
             this.createToolStripMenuItem,
             this.payrollToolStripMenuItem1});
-            //this.payrollToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_payroll_48;
             this.payrollToolStripMenuItem.Name = "payrollToolStripMenuItem";
-            this.payrollToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
+            this.payrollToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.payrollToolStripMenuItem.Text = "Payroll";
             // 
             // viewToolStripMenuItem
             // 
-           // this.viewToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_eye_48;
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.viewToolStripMenuItem.Text = "View (Ctrl + P)";
@@ -318,7 +316,6 @@ namespace SpinsNew
             // 
             // createToolStripMenuItem
             // 
-           // this.createToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_add_48;
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
             this.createToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.createToolStripMenuItem.Text = "Create";
@@ -326,7 +323,6 @@ namespace SpinsNew
             // 
             // payrollToolStripMenuItem1
             // 
-            //this.payrollToolStripMenuItem1.Image = global::SpinsNew.Properties.Resources.icons8_payroll_64;
             this.payrollToolStripMenuItem1.Name = "payrollToolStripMenuItem1";
             this.payrollToolStripMenuItem1.Size = new System.Drawing.Size(150, 22);
             this.payrollToolStripMenuItem1.Text = "Payroll";
@@ -339,14 +335,12 @@ namespace SpinsNew
             this.setAsApplicantToolStripMenuItem,
             this.activateToolStripMenuItem,
             this.deleteToolStripMenuItem});
-            //this.actionsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_vertical_48;
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // delistToolStripMenuItem
             // 
-            //this.delistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_remove_document_48;
             this.delistToolStripMenuItem.Name = "delistToolStripMenuItem";
             this.delistToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.delistToolStripMenuItem.Text = "Delist (Del)";
@@ -354,7 +348,6 @@ namespace SpinsNew
             // 
             // setAsApplicantToolStripMenuItem
             // 
-           // this.setAsApplicantToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_applicant_16;
             this.setAsApplicantToolStripMenuItem.Name = "setAsApplicantToolStripMenuItem";
             this.setAsApplicantToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.setAsApplicantToolStripMenuItem.Text = "Set as Applicant";
@@ -362,7 +355,6 @@ namespace SpinsNew
             // 
             // activateToolStripMenuItem
             // 
-           // this.activateToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_activate_48;
             this.activateToolStripMenuItem.Name = "activateToolStripMenuItem";
             this.activateToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.activateToolStripMenuItem.Text = "Activate";
@@ -370,7 +362,6 @@ namespace SpinsNew
             // 
             // deleteToolStripMenuItem
             // 
-           // this.deleteToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_delete_48;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
@@ -385,14 +376,14 @@ namespace SpinsNew
             // 
             this.progressBarControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarControl1.Location = new System.Drawing.Point(12, 126);
+            this.progressBarControl1.Location = new System.Drawing.Point(10, 128);
             this.progressBarControl1.Name = "progressBarControl1";
-            this.progressBarControl1.Size = new System.Drawing.Size(912, 12);
+            this.progressBarControl1.Size = new System.Drawing.Size(782, 10);
             this.progressBarControl1.TabIndex = 7;
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(40, 148);
+            this.labelControl1.Location = new System.Drawing.Point(34, 151);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(243, 13);
             this.labelControl1.TabIndex = 14;
@@ -403,11 +394,11 @@ namespace SpinsNew
             // pictureEdit1
             // 
             this.pictureEdit1.EditValue = ((object)(resources.GetObject("pictureEdit1.EditValue")));
-            this.pictureEdit1.Location = new System.Drawing.Point(14, 145);
+            this.pictureEdit1.Location = new System.Drawing.Point(12, 149);
             this.pictureEdit1.Name = "pictureEdit1";
             this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
             this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
-            this.pictureEdit1.Size = new System.Drawing.Size(20, 20);
+            this.pictureEdit1.Size = new System.Drawing.Size(17, 17);
             this.pictureEdit1.TabIndex = 17;
             // 
             // groupControl1
@@ -416,17 +407,17 @@ namespace SpinsNew
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupControl1.Controls.Add(this.gridControl1);
-            this.groupControl1.Location = new System.Drawing.Point(12, 170);
+            this.groupControl1.Location = new System.Drawing.Point(10, 173);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(912, 552);
+            this.groupControl1.Size = new System.Drawing.Size(782, 452);
             this.groupControl1.TabIndex = 18;
             this.groupControl1.Text = "groupControl1";
             // 
             // MasterList
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(936, 734);
+            this.ClientSize = new System.Drawing.Size(802, 636);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.pictureEdit1);
             this.Controls.Add(this.labelControl1);

@@ -1,14 +1,12 @@
-﻿using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Views.Grid;
+﻿using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraPrinting;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.PrintPreviews;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,6 +20,7 @@ namespace SpinsNew.Forms
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
+            newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
         }
 
         private void Payroll_Load(object sender, EventArgs e)
@@ -238,11 +237,13 @@ namespace SpinsNew.Forms
             // Assign formatted row count to txt_total (or any other control)
             groupControlPayroll.Text = $"Payroll List: {formattedRowCount}";
         }
+
         public async Task Payrolls() //The query is all about delisted with payroll unclaimed filtered by year and the latest ID inputed into tbl_payroll_socpen
         {
 
             try
             {
+                bool includePayrollStatusID = rbClaimed.Checked || rbUnclaimed.Checked; // Example of how you might check radio button state
                 // Assuming gridView is your GridView instance associated with gridPayroll
                 GridView gridView = gridPayroll.MainView as GridView;
                 con.Open();
@@ -339,7 +340,8 @@ namespace SpinsNew.Forms
                 //    tps.PSGCCityMun = @PSGCCityMun
                 //    AND tps.Year = @Year
                 //    AND tps.PeriodID = @PeriodID";
-                cmd.CommandText = @"
+
+                string query = @"
                 SELECT
                     IFNULL(tps2.UnclaimedAmounts, '') AS UnclaimedAmounts,
                     m.LastName,
@@ -348,7 +350,9 @@ namespace SpinsNew.Forms
                     m.ExtName,
 
                     lb.BrgyName AS Barangay,
-                    tps.Address,
+                    IF(tps.Address = '' OR tps.Address IS NULL, '', REPLACE(tps.Address, '[^a-zA-Z0-9 ]', '')) AS Address,
+                    CONCAT(lb.BrgyName, 
+                           IF(tps.Address = '' OR tps.Address IS NULL, '', CONCAT(', ', '[', REPLACE(tps.Address, '[^a-zA-Z0-9 ]', ''), ']'))) AS FullAddress,
                     m.BirthDate,
                     ls.Sex AS Sex,
                     lhs.HealthStatus,
@@ -376,7 +380,11 @@ namespace SpinsNew.Forms
                     tps.DateTimeReplaced,
                     tps.ReplacedBy,
                     tps.DateTimeEntry,
-                    tps.EntryBy
+                    tps.EntryBy,
+
+                    CONCAT(lcm.CityMunName, ', ', lprov.ProvinceName) AS ProvinceMunicipality,
+                    CONCAT(lp.Months, ', ', '(', lp.Period, ' ', tps.Year , ')') AS PeriodMonth
+                    
 
                 FROM
                     tbl_payroll_socpen tps
@@ -404,6 +412,10 @@ namespace SpinsNew.Forms
                     lib_status lstat ON m.StatusID = lstat.ID
                 LEFT JOIN
                     lib_payment_mode lpm ON tps.PaymentModeID = lpm.PaymentModeID
+                LEFT JOIN
+                    lib_province lprov ON tps.PSGCProvince = lprov.PSGCProvince
+                LEFT JOIN
+                    lib_city_municipality lcm ON tps.PSGCCityMun = lcm.PSGCCityMun
 
                 LEFT JOIN
                     (SELECT
@@ -424,6 +436,14 @@ namespace SpinsNew.Forms
                     tps.PSGCCityMun = @PSGCCityMun
                     AND tps.Year = @Year
                     AND tps.PeriodID = @PeriodID";
+
+                // Add PayrollStatusID condition if not all statuses are included
+                if (includePayrollStatusID)
+                {
+                    query += " AND tps.PayrollStatusID = @PayrollStatusID";
+                }
+                cmd.CommandText = query;
+
                 var selectedItem = (dynamic)cmb_municipality.SelectedItem;
                 int psgccitymun = selectedItem.PSGCCityMun;
 
@@ -433,6 +453,12 @@ namespace SpinsNew.Forms
                 cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
                 cmd.Parameters.AddWithValue("@Year", cmb_year.EditValue);
                 cmd.Parameters.AddWithValue("@PeriodID", periodID);
+
+                // Add PayrollStatusID parameter if not including all statuses
+                if (includePayrollStatusID)
+                {
+                    cmd.Parameters.AddWithValue("@PayrollStatusID", lblValue.Text);
+                }
 
                 DataTable dt = new DataTable();
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
@@ -445,7 +471,13 @@ namespace SpinsNew.Forms
                 await Task.Run(() =>
                 {
                     da.Fill(dt);
+                   
                 });
+
+                // Ensure that the DataTable is accessible in the PayrollPrintPreview form
+                //PayrollPrintPreview payrollPrintPreview = new PayrollPrintPreview(this);
+                //payrollPrintPreview.SetPayrollData(dt); // Pass the DataTable to the form
+               // payrollPrintPreview.Show();
 
                 for (int i = 0; i <= 100; i += 10)
                 {
@@ -537,6 +569,7 @@ namespace SpinsNew.Forms
                 dt.Columns["CurrentStatus"].SetOrdinal(21);
                 dt.Columns["Replacement Of"].SetOrdinal(27);
 
+
                 gridPayroll.DataSource = dt;
 
                 if (gridView != null)
@@ -560,6 +593,9 @@ namespace SpinsNew.Forms
                     gridView.Columns["FirstName2"].Visible = false;
                     gridView.Columns["MiddleName2"].Visible = false;
                     gridView.Columns["ExtName2"].Visible = false;
+                    gridView.Columns["FullAddress"].Visible = false;
+                    gridView.Columns["ProvinceMunicipality"].Visible = false;
+                    gridView.Columns["PeriodMonth"].Visible = false;
 
 
                     // Freeze the columns
@@ -575,10 +611,14 @@ namespace SpinsNew.Forms
                     // Ensure horizontal scrollbar is enabled
                     gridView.OptionsView.ColumnAutoWidth = false;
                 }
+
+                gridView.OptionsCustomization.AllowFilter = false;
                 // Update row count display
                 UpdateRowCount(gridView);
                 this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
                 DisableSpinner();
+                //QueryPayroll();
+               
             }
             catch (Exception ex)
             {
@@ -602,8 +642,118 @@ namespace SpinsNew.Forms
         }
         private async void btn_search_ClickAsync(object sender, EventArgs e)
         {
+            if(cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period")
+            {
+                MessageBox.Show("Fill all the fields before searching", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             EnableSpinner();
             await Payrolls();
+        }
+
+        private void PrintReport()
+        {
+            DataTable payrollData = (DataTable)gridPayroll.DataSource; // Assuming this is the correct DataTable
+            PayrollPrintPreview payrollprintPreview = new PayrollPrintPreview(this);
+            payrollprintPreview.SetPayrollData(payrollData);
+            payrollprintPreview.Show();
+        }
+
+        private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GridView gridView = gridPayroll.MainView as GridView;
+     
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("There Is Nothing To Be Printed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataTable payrollData = (DataTable)gridPayroll.DataSource; // Ensure this is the correct DataTable
+            if (payrollData == null || payrollData.Rows.Count == 0)
+            {
+                MessageBox.Show("No data available to print.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            PrintReport();
+
+        }
+        private void radioButton()
+        {
+            // Check if the 'All Status' radio button is checked
+            if (rbAllStatus.Checked)
+            {
+                lblValue.Text = "All";
+
+                // Clear the GridView data source
+                GridView gridView = gridPayroll.MainView as GridView;
+                if (gridView != null)
+                {
+                    gridPayroll.DataSource = null;
+                    // Update row count display
+                    UpdateRowCount(gridView);
+                }
+
+                // Return early to avoid further processing
+                return;
+            }
+
+            // Check if the 'Claimed' radio button is checked
+            if (rbClaimed.Checked)
+            {
+
+                lblValue.Text = "1";
+                // Clear the GridView data source
+                GridView gridView = gridPayroll.MainView as GridView;
+                if (gridView != null)
+                {
+                    gridPayroll.DataSource = null;
+                    // Update row count display
+                    UpdateRowCount(gridView);
+                }
+
+                return;
+            }
+
+            // Check if the 'Unclaimed' radio button is checked
+            if (rbUnclaimed.Checked)
+            {
+                lblValue.Text = "2";
+                // Clear the GridView data source
+                GridView gridView = gridPayroll.MainView as GridView;
+                if (gridView != null)
+                {
+                    gridPayroll.DataSource = null;
+                    // Update row count display
+                    UpdateRowCount(gridView);
+                }
+
+                return;
+            }
+
+            // Optionally, you might want to handle the case where no radio button is checked
+            // e.g., lblValue.Text = "Default Value";
+
+        }
+
+        private void rbAllStatus_CheckedChangedAsync(object sender, EventArgs e)
+        {
+            radioButton();// Change value once triggered
+        }
+
+        private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rbClaimed_CheckedChanged(object sender, EventArgs e)
+        {
+            radioButton();// Change value once triggered.
+        }
+
+        private void rbUnclaimed_CheckedChanged(object sender, EventArgs e)
+        {
+            radioButton();// Change value once triggered
         }
     }
 }

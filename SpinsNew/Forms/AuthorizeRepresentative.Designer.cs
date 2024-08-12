@@ -66,10 +66,10 @@ namespace SpinsNew.Forms
             // txt_reference
             // 
             this.txt_reference.Enabled = false;
-            this.txt_reference.Location = new System.Drawing.Point(535, 1);
+            this.txt_reference.Location = new System.Drawing.Point(459, 1);
             this.txt_reference.Name = "txt_reference";
             this.txt_reference.Properties.ReadOnly = true;
-            this.txt_reference.Size = new System.Drawing.Size(132, 20);
+            this.txt_reference.Size = new System.Drawing.Size(113, 20);
             this.txt_reference.TabIndex = 0;
             this.txt_reference.Visible = false;
             // 
@@ -77,20 +77,21 @@ namespace SpinsNew.Forms
             // 
             this.groupControl1.Controls.Add(this.simpleButton1);
             this.groupControl1.Controls.Add(this.gridControl1);
-            this.groupControl1.Location = new System.Drawing.Point(13, 157);
+            this.groupControl1.Location = new System.Drawing.Point(11, 136);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(669, 258);
+            this.groupControl1.Size = new System.Drawing.Size(573, 224);
             this.groupControl1.TabIndex = 2;
             this.groupControl1.Text = "Authorize Representatives";
             // 
             // simpleButton1
             // 
-            this.simpleButton1.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.simpleButton1.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F);
             this.simpleButton1.Appearance.Options.UseFont = true;
             this.simpleButton1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.simpleButton1.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
-            this.simpleButton1.Location = new System.Drawing.Point(6, 28);
+            this.simpleButton1.Location = new System.Drawing.Point(5, 24);
             this.simpleButton1.Name = "simpleButton1";
+            this.simpleButton1.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
             this.simpleButton1.Size = new System.Drawing.Size(22, 21);
             this.simpleButton1.TabIndex = 6;
             this.simpleButton1.ToolTip = "Remove highlighted";
@@ -101,16 +102,17 @@ namespace SpinsNew.Forms
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridControl1.Location = new System.Drawing.Point(5, 26);
+            this.gridControl1.Location = new System.Drawing.Point(4, 23);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(659, 227);
+            this.gridControl1.Size = new System.Drawing.Size(565, 197);
             this.gridControl1.TabIndex = 1;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             // 
             // gridView1
             // 
+            this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsCustomization.AllowGroup = false;
@@ -120,44 +122,44 @@ namespace SpinsNew.Forms
             // 
             // txt_lastname
             // 
-            this.txt_lastname.Location = new System.Drawing.Point(90, 31);
+            this.txt_lastname.Location = new System.Drawing.Point(77, 27);
             this.txt_lastname.Name = "txt_lastname";
             this.txt_lastname.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_lastname.Size = new System.Drawing.Size(173, 20);
+            this.txt_lastname.Size = new System.Drawing.Size(148, 20);
             this.txt_lastname.TabIndex = 0;
             // 
             // txt_firstname
             // 
-            this.txt_firstname.Location = new System.Drawing.Point(90, 64);
+            this.txt_firstname.Location = new System.Drawing.Point(77, 55);
             this.txt_firstname.Name = "txt_firstname";
             this.txt_firstname.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_firstname.Size = new System.Drawing.Size(173, 20);
+            this.txt_firstname.Size = new System.Drawing.Size(148, 20);
             this.txt_firstname.TabIndex = 1;
             // 
             // txt_middlename
             // 
-            this.txt_middlename.Location = new System.Drawing.Point(90, 97);
+            this.txt_middlename.Location = new System.Drawing.Point(77, 84);
             this.txt_middlename.Name = "txt_middlename";
             this.txt_middlename.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_middlename.Size = new System.Drawing.Size(173, 20);
+            this.txt_middlename.Size = new System.Drawing.Size(148, 20);
             this.txt_middlename.TabIndex = 2;
             // 
             // txt_extname
             // 
-            this.txt_extname.Location = new System.Drawing.Point(374, 31);
+            this.txt_extname.Location = new System.Drawing.Point(321, 27);
             this.txt_extname.Name = "txt_extname";
             this.txt_extname.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_extname.Size = new System.Drawing.Size(173, 20);
+            this.txt_extname.Size = new System.Drawing.Size(148, 20);
             this.txt_extname.TabIndex = 3;
             // 
             // cmb_relationship
             // 
-            this.cmb_relationship.Location = new System.Drawing.Point(374, 64);
+            this.cmb_relationship.Location = new System.Drawing.Point(321, 55);
             this.cmb_relationship.Name = "cmb_relationship";
             this.cmb_relationship.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_relationship.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_relationship.Size = new System.Drawing.Size(173, 20);
+            this.cmb_relationship.Size = new System.Drawing.Size(148, 20);
             this.cmb_relationship.TabIndex = 4;
             // 
             // groupControl2
@@ -175,25 +177,25 @@ namespace SpinsNew.Forms
             this.groupControl2.Controls.Add(this.txt_firstname);
             this.groupControl2.Controls.Add(this.txt_extname);
             this.groupControl2.Controls.Add(this.txt_middlename);
-            this.groupControl2.Location = new System.Drawing.Point(13, 2);
+            this.groupControl2.Location = new System.Drawing.Point(11, 2);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(669, 149);
+            this.groupControl2.Size = new System.Drawing.Size(573, 129);
             this.groupControl2.TabIndex = 1;
             this.groupControl2.Text = "Details";
             // 
             // txt_id
             // 
             this.txt_id.Enabled = false;
-            this.txt_id.Location = new System.Drawing.Point(397, 1);
+            this.txt_id.Location = new System.Drawing.Point(340, 1);
             this.txt_id.Name = "txt_id";
             this.txt_id.Properties.ReadOnly = true;
-            this.txt_id.Size = new System.Drawing.Size(132, 20);
+            this.txt_id.Size = new System.Drawing.Size(113, 20);
             this.txt_id.TabIndex = 36;
             this.txt_id.Visible = false;
             // 
             // labelControl5
             // 
-            this.labelControl5.Location = new System.Drawing.Point(296, 64);
+            this.labelControl5.Location = new System.Drawing.Point(254, 55);
             this.labelControl5.Name = "labelControl5";
             this.labelControl5.Size = new System.Drawing.Size(58, 13);
             this.labelControl5.TabIndex = 35;
@@ -201,7 +203,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl4
             // 
-            this.labelControl4.Location = new System.Drawing.Point(277, 34);
+            this.labelControl4.Location = new System.Drawing.Point(237, 29);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(77, 13);
             this.labelControl4.TabIndex = 35;
@@ -209,7 +211,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl3
             // 
-            this.labelControl3.Location = new System.Drawing.Point(15, 100);
+            this.labelControl3.Location = new System.Drawing.Point(13, 87);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(60, 13);
             this.labelControl3.TabIndex = 35;
@@ -217,7 +219,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(24, 67);
+            this.labelControl2.Location = new System.Drawing.Point(21, 58);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(51, 13);
             this.labelControl2.TabIndex = 35;
@@ -225,7 +227,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(25, 34);
+            this.labelControl1.Location = new System.Drawing.Point(21, 29);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(50, 13);
             this.labelControl1.TabIndex = 35;
@@ -233,13 +235,13 @@ namespace SpinsNew.Forms
             // 
             // btn_edit
             // 
-            this.btn_edit.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btn_edit.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F);
             this.btn_edit.Appearance.Options.UseFont = true;
             this.btn_edit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_edit.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_edit.ImageOptions.Image")));
-            this.btn_edit.Location = new System.Drawing.Point(374, 100);
+            this.btn_edit.Location = new System.Drawing.Point(321, 87);
             this.btn_edit.Name = "btn_edit";
-            this.btn_edit.Size = new System.Drawing.Size(132, 21);
+            this.btn_edit.Size = new System.Drawing.Size(113, 18);
             this.btn_edit.TabIndex = 5;
             this.btn_edit.Text = "Save";
             this.btn_edit.Click += new System.EventHandler(this.btn_edit_Click);
@@ -247,14 +249,14 @@ namespace SpinsNew.Forms
             // AuthorizeRepresentative
             // 
             this.AcceptButton = this.btn_edit;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(690, 425);
+            this.ClientSize = new System.Drawing.Size(591, 368);
             this.Controls.Add(this.groupControl2);
             this.Controls.Add(this.groupControl1);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(706, 464);
-            this.MinimumSize = new System.Drawing.Size(706, 464);
+            this.MaximumSize = new System.Drawing.Size(607, 407);
+            this.MinimumSize = new System.Drawing.Size(607, 407);
             this.Name = "AuthorizeRepresentative";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Authorize Representative";

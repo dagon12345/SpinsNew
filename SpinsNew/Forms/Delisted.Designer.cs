@@ -82,15 +82,15 @@ namespace SpinsNew.Forms
             this.groupControl2.Controls.Add(this.lbl_region);
             this.groupControl2.Controls.Add(this.labelControl1);
             this.groupControl2.Controls.Add(this.txt_id);
-            this.groupControl2.Location = new System.Drawing.Point(2, 4);
+            this.groupControl2.Location = new System.Drawing.Point(2, 3);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(599, 93);
+            this.groupControl2.Size = new System.Drawing.Size(513, 81);
             this.groupControl2.TabIndex = 5;
             this.groupControl2.Text = "Details [For Delisting]";
             // 
             // lbl_currentstatus
             // 
-            this.lbl_currentstatus.Location = new System.Drawing.Point(563, 75);
+            this.lbl_currentstatus.Location = new System.Drawing.Point(483, 65);
             this.lbl_currentstatus.Name = "lbl_currentstatus";
             this.lbl_currentstatus.Size = new System.Drawing.Size(31, 13);
             this.lbl_currentstatus.TabIndex = 39;
@@ -99,9 +99,9 @@ namespace SpinsNew.Forms
             // 
             // lbl_address
             // 
-            this.lbl_address.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbl_address.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_address.Appearance.Options.UseFont = true;
-            this.lbl_address.Location = new System.Drawing.Point(75, 64);
+            this.lbl_address.Location = new System.Drawing.Point(78, 55);
             this.lbl_address.Name = "lbl_address";
             this.lbl_address.Size = new System.Drawing.Size(85, 13);
             this.lbl_address.TabIndex = 38;
@@ -109,7 +109,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(26, 64);
+            this.labelControl2.Location = new System.Drawing.Point(22, 55);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(43, 13);
             this.labelControl2.TabIndex = 38;
@@ -117,9 +117,9 @@ namespace SpinsNew.Forms
             // 
             // lbl_fullname
             // 
-            this.lbl_fullname.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbl_fullname.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_fullname.Appearance.Options.UseFont = true;
-            this.lbl_fullname.Location = new System.Drawing.Point(75, 36);
+            this.lbl_fullname.Location = new System.Drawing.Point(78, 31);
             this.lbl_fullname.Name = "lbl_fullname";
             this.lbl_fullname.Size = new System.Drawing.Size(93, 13);
             this.lbl_fullname.TabIndex = 38;
@@ -127,7 +127,7 @@ namespace SpinsNew.Forms
             // 
             // lbl_barangay
             // 
-            this.lbl_barangay.Location = new System.Drawing.Point(161, 80);
+            this.lbl_barangay.Location = new System.Drawing.Point(138, 69);
             this.lbl_barangay.Name = "lbl_barangay";
             this.lbl_barangay.Size = new System.Drawing.Size(46, 13);
             this.lbl_barangay.TabIndex = 38;
@@ -136,7 +136,7 @@ namespace SpinsNew.Forms
             // 
             // lbl_municipality
             // 
-            this.lbl_municipality.Location = new System.Drawing.Point(100, 80);
+            this.lbl_municipality.Location = new System.Drawing.Point(86, 69);
             this.lbl_municipality.Name = "lbl_municipality";
             this.lbl_municipality.Size = new System.Drawing.Size(55, 13);
             this.lbl_municipality.TabIndex = 38;
@@ -145,7 +145,7 @@ namespace SpinsNew.Forms
             // 
             // lbl_province
             // 
-            this.lbl_province.Location = new System.Drawing.Point(53, 80);
+            this.lbl_province.Location = new System.Drawing.Point(45, 69);
             this.lbl_province.Name = "lbl_province";
             this.lbl_province.Size = new System.Drawing.Size(41, 13);
             this.lbl_province.TabIndex = 38;
@@ -155,16 +155,16 @@ namespace SpinsNew.Forms
             // lbl_region
             // 
             this.lbl_region.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.lbl_region.Location = new System.Drawing.Point(10, 80);
+            this.lbl_region.Location = new System.Drawing.Point(9, 69);
             this.lbl_region.Name = "lbl_region";
-            this.lbl_region.Size = new System.Drawing.Size(50, 13);
+            this.lbl_region.Size = new System.Drawing.Size(43, 11);
             this.lbl_region.TabIndex = 38;
             this.lbl_region.Text = "Region";
             this.lbl_region.Visible = false;
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(19, 36);
+            this.labelControl1.Location = new System.Drawing.Point(16, 31);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(50, 13);
             this.labelControl1.TabIndex = 38;
@@ -173,10 +173,10 @@ namespace SpinsNew.Forms
             // txt_id
             // 
             this.txt_id.Enabled = false;
-            this.txt_id.Location = new System.Drawing.Point(462, 1);
+            this.txt_id.Location = new System.Drawing.Point(396, 1);
             this.txt_id.Name = "txt_id";
             this.txt_id.Properties.ReadOnly = true;
-            this.txt_id.Size = new System.Drawing.Size(132, 20);
+            this.txt_id.Size = new System.Drawing.Size(113, 20);
             this.txt_id.TabIndex = 37;
             this.txt_id.Visible = false;
             // 
@@ -196,18 +196,18 @@ namespace SpinsNew.Forms
             this.groupControl1.Controls.Add(this.labelControl6);
             this.groupControl1.Controls.Add(this.labelControl3);
             this.groupControl1.Controls.Add(this.cmb_status);
-            this.groupControl1.Location = new System.Drawing.Point(2, 103);
+            this.groupControl1.Location = new System.Drawing.Point(2, 89);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(599, 177);
+            this.groupControl1.Size = new System.Drawing.Size(513, 153);
             this.groupControl1.TabIndex = 4;
             this.groupControl1.Text = "Actions";
             this.groupControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupControl1_Paint);
             // 
             // lbl_status
             // 
-            this.lbl_status.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbl_status.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_status.Appearance.Options.UseFont = true;
-            this.lbl_status.Location = new System.Drawing.Point(297, 30);
+            this.lbl_status.Location = new System.Drawing.Point(263, 26);
             this.lbl_status.Name = "lbl_status";
             this.lbl_status.Size = new System.Drawing.Size(7, 13);
             this.lbl_status.TabIndex = 40;
@@ -216,72 +216,72 @@ namespace SpinsNew.Forms
             // 
             // btn_confirm
             // 
-            this.btn_confirm.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btn_confirm.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.btn_confirm.Appearance.Options.UseFont = true;
             this.btn_confirm.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_confirm.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_confirm.ImageOptions.Image")));
-            this.btn_confirm.Location = new System.Drawing.Point(229, 128);
+            this.btn_confirm.Location = new System.Drawing.Point(196, 111);
             this.btn_confirm.Name = "btn_confirm";
-            this.btn_confirm.Size = new System.Drawing.Size(146, 23);
+            this.btn_confirm.Size = new System.Drawing.Size(125, 20);
             this.btn_confirm.TabIndex = 6;
             this.btn_confirm.Text = "Delist";
             this.btn_confirm.Click += new System.EventHandler(this.btn_confirm_Click);
             // 
             // cmb_period
             // 
-            this.cmb_period.Location = new System.Drawing.Point(382, 83);
+            this.cmb_period.Location = new System.Drawing.Point(327, 76);
             this.cmb_period.Name = "cmb_period";
             this.cmb_period.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_period.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_period.Size = new System.Drawing.Size(186, 20);
+            this.cmb_period.Size = new System.Drawing.Size(159, 20);
             this.cmb_period.TabIndex = 5;
             this.cmb_period.SelectedIndexChanged += new System.EventHandler(this.cmb_period_SelectedIndexChanged);
             // 
             // cmb_year
             // 
-            this.cmb_year.Location = new System.Drawing.Point(382, 55);
+            this.cmb_year.Location = new System.Drawing.Point(327, 52);
             this.cmb_year.Name = "cmb_year";
             this.cmb_year.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_year.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_year.Size = new System.Drawing.Size(186, 20);
+            this.cmb_year.Size = new System.Drawing.Size(159, 20);
             this.cmb_year.TabIndex = 4;
             this.cmb_year.SelectedIndexChanged += new System.EventHandler(this.cmb_year_SelectedIndexChanged_1);
             // 
             // cmb_source
             // 
-            this.cmb_source.Location = new System.Drawing.Point(382, 27);
+            this.cmb_source.Location = new System.Drawing.Point(327, 27);
             this.cmb_source.Name = "cmb_source";
             this.cmb_source.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_source.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_source.Size = new System.Drawing.Size(186, 20);
+            this.cmb_source.Size = new System.Drawing.Size(159, 20);
             this.cmb_source.TabIndex = 3;
             // 
             // txt_remarks
             // 
-            this.txt_remarks.Location = new System.Drawing.Point(105, 83);
+            this.txt_remarks.Location = new System.Drawing.Point(98, 77);
             this.txt_remarks.Name = "txt_remarks";
-            this.txt_remarks.Size = new System.Drawing.Size(186, 20);
+            this.txt_remarks.Size = new System.Drawing.Size(159, 20);
             this.txt_remarks.TabIndex = 2;
             // 
             // dt_deceased
             // 
             this.dt_deceased.EditValue = null;
             this.dt_deceased.Enabled = false;
-            this.dt_deceased.Location = new System.Drawing.Point(105, 55);
+            this.dt_deceased.Location = new System.Drawing.Point(98, 53);
             this.dt_deceased.Name = "dt_deceased";
             this.dt_deceased.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dt_deceased.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.dt_deceased.Size = new System.Drawing.Size(186, 20);
+            this.dt_deceased.Size = new System.Drawing.Size(159, 20);
             this.dt_deceased.TabIndex = 1;
             // 
             // labelControl8
             // 
-            this.labelControl8.Location = new System.Drawing.Point(337, 86);
+            this.labelControl8.Location = new System.Drawing.Point(289, 79);
             this.labelControl8.Name = "labelControl8";
             this.labelControl8.Size = new System.Drawing.Size(30, 13);
             this.labelControl8.TabIndex = 39;
@@ -289,7 +289,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl5
             // 
-            this.labelControl5.Location = new System.Drawing.Point(53, 82);
+            this.labelControl5.Location = new System.Drawing.Point(45, 76);
             this.labelControl5.Name = "labelControl5";
             this.labelControl5.Size = new System.Drawing.Size(41, 13);
             this.labelControl5.TabIndex = 39;
@@ -297,7 +297,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl7
             // 
-            this.labelControl7.Location = new System.Drawing.Point(345, 56);
+            this.labelControl7.Location = new System.Drawing.Point(296, 53);
             this.labelControl7.Name = "labelControl7";
             this.labelControl7.Size = new System.Drawing.Size(22, 13);
             this.labelControl7.TabIndex = 39;
@@ -305,7 +305,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl4
             // 
-            this.labelControl4.Location = new System.Drawing.Point(21, 56);
+            this.labelControl4.Location = new System.Drawing.Point(13, 54);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(73, 13);
             this.labelControl4.TabIndex = 39;
@@ -313,7 +313,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl6
             // 
-            this.labelControl6.Location = new System.Drawing.Point(334, 30);
+            this.labelControl6.Location = new System.Drawing.Point(286, 30);
             this.labelControl6.Name = "labelControl6";
             this.labelControl6.Size = new System.Drawing.Size(33, 13);
             this.labelControl6.TabIndex = 39;
@@ -321,7 +321,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl3
             // 
-            this.labelControl3.Location = new System.Drawing.Point(63, 30);
+            this.labelControl3.Location = new System.Drawing.Point(54, 31);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(31, 13);
             this.labelControl3.TabIndex = 39;
@@ -329,25 +329,25 @@ namespace SpinsNew.Forms
             // 
             // cmb_status
             // 
-            this.cmb_status.Location = new System.Drawing.Point(105, 27);
+            this.cmb_status.Location = new System.Drawing.Point(98, 28);
             this.cmb_status.Name = "cmb_status";
             this.cmb_status.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_status.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_status.Size = new System.Drawing.Size(186, 20);
+            this.cmb_status.Size = new System.Drawing.Size(159, 20);
             this.cmb_status.TabIndex = 0;
             this.cmb_status.SelectedIndexChanged += new System.EventHandler(this.cmb_status_SelectedIndexChanged);
             // 
             // Delisted
             // 
             this.AcceptButton = this.btn_confirm;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(613, 289);
+            this.ClientSize = new System.Drawing.Size(525, 250);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.groupControl2);
-            this.MaximumSize = new System.Drawing.Size(629, 328);
-            this.MinimumSize = new System.Drawing.Size(629, 328);
+            this.MaximumSize = new System.Drawing.Size(541, 289);
+            this.MinimumSize = new System.Drawing.Size(541, 289);
             this.Name = "Delisted";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Delisting";

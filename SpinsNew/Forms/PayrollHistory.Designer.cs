@@ -50,9 +50,9 @@ namespace SpinsNew.Forms
             // groupControl1
             // 
             this.groupControl1.Controls.Add(this.gridControl1);
-            this.groupControl1.Location = new System.Drawing.Point(12, 135);
+            this.groupControl1.Location = new System.Drawing.Point(10, 117);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(830, 399);
+            this.groupControl1.Size = new System.Drawing.Size(711, 346);
             this.groupControl1.TabIndex = 3;
             this.groupControl1.Text = "Payroll History";
             this.groupControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupControl1_Paint);
@@ -62,16 +62,17 @@ namespace SpinsNew.Forms
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridControl1.Location = new System.Drawing.Point(5, 26);
+            this.gridControl1.Location = new System.Drawing.Point(4, 23);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(820, 368);
+            this.gridControl1.Size = new System.Drawing.Size(703, 319);
             this.gridControl1.TabIndex = 1;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             // 
             // gridView1
             // 
+            this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsCustomization.AllowGroup = false;
@@ -86,17 +87,17 @@ namespace SpinsNew.Forms
             this.groupControl2.Controls.Add(this.lbl_fullname);
             this.groupControl2.Controls.Add(this.labelControl1);
             this.groupControl2.Controls.Add(this.txt_id);
-            this.groupControl2.Location = new System.Drawing.Point(12, 8);
+            this.groupControl2.Location = new System.Drawing.Point(10, 7);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(830, 121);
+            this.groupControl2.Size = new System.Drawing.Size(711, 105);
             this.groupControl2.TabIndex = 4;
             this.groupControl2.Text = "Details";
             // 
             // lbl_address
             // 
-            this.lbl_address.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbl_address.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_address.Appearance.Options.UseFont = true;
-            this.lbl_address.Location = new System.Drawing.Point(76, 75);
+            this.lbl_address.Location = new System.Drawing.Point(76, 65);
             this.lbl_address.Name = "lbl_address";
             this.lbl_address.Size = new System.Drawing.Size(103, 13);
             this.lbl_address.TabIndex = 38;
@@ -104,7 +105,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(27, 75);
+            this.labelControl2.Location = new System.Drawing.Point(23, 65);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(43, 13);
             this.labelControl2.TabIndex = 38;
@@ -112,9 +113,9 @@ namespace SpinsNew.Forms
             // 
             // lbl_fullname
             // 
-            this.lbl_fullname.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbl_fullname.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_fullname.Appearance.Options.UseFont = true;
-            this.lbl_fullname.Location = new System.Drawing.Point(76, 47);
+            this.lbl_fullname.Location = new System.Drawing.Point(76, 41);
             this.lbl_fullname.Name = "lbl_fullname";
             this.lbl_fullname.Size = new System.Drawing.Size(103, 13);
             this.lbl_fullname.TabIndex = 38;
@@ -122,7 +123,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(20, 47);
+            this.labelControl1.Location = new System.Drawing.Point(17, 41);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(50, 13);
             this.labelControl1.TabIndex = 38;
@@ -131,23 +132,23 @@ namespace SpinsNew.Forms
             // txt_id
             // 
             this.txt_id.Enabled = false;
-            this.txt_id.Location = new System.Drawing.Point(689, 1);
+            this.txt_id.Location = new System.Drawing.Point(591, 1);
             this.txt_id.Name = "txt_id";
             this.txt_id.Properties.ReadOnly = true;
-            this.txt_id.Size = new System.Drawing.Size(132, 20);
+            this.txt_id.Size = new System.Drawing.Size(113, 20);
             this.txt_id.TabIndex = 37;
             this.txt_id.Visible = false;
             // 
             // PayrollHistory
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(845, 546);
+            this.ClientSize = new System.Drawing.Size(724, 473);
             this.Controls.Add(this.groupControl2);
             this.Controls.Add(this.groupControl1);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(861, 585);
-            this.MinimumSize = new System.Drawing.Size(861, 585);
+            this.MaximumSize = new System.Drawing.Size(740, 512);
+            this.MinimumSize = new System.Drawing.Size(740, 512);
             this.Name = "PayrollHistory";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PayrollHistory";
