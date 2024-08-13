@@ -128,6 +128,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PayrollDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DataSets\SignatoriesDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SignatoriesDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Attachments.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,6 +275,17 @@
     </None>
     <None Include="DataSets\PayrollDataSet.xss">
       <DependentUpon>PayrollDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DataSets\SignatoriesDataSet.xsc">
+      <DependentUpon>SignatoriesDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DataSets\SignatoriesDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>SignatoriesDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataSets\SignatoriesDataSet.xss">
+      <DependentUpon>SignatoriesDataSet.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

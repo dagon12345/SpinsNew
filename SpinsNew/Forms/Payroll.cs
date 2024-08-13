@@ -27,6 +27,7 @@ namespace SpinsNew.Forms
         {
             Municipality();
             Year();
+            Signatories();
             groupControlPayroll.Text = "Count of showed data: [0]";
             // Cast the MainView to GridView
             GridView gridView = gridPayroll.MainView as GridView;
@@ -238,12 +239,13 @@ namespace SpinsNew.Forms
             groupControlPayroll.Text = $"Payroll List: {formattedRowCount}";
         }
 
+
         public async Task Payrolls() //The query is all about delisted with payroll unclaimed filtered by year and the latest ID inputed into tbl_payroll_socpen
         {
 
             try
             {
-                bool includePayrollStatusID = rbClaimed.Checked || rbUnclaimed.Checked; // Example of how you might check radio button state
+                bool includePayrollStatusID = rbUnclaimed.Checked; // Example of how you might check radio button state
                 // Assuming gridView is your GridView instance associated with gridPayroll
                 GridView gridView = gridPayroll.MainView as GridView;
                 con.Open();
@@ -393,7 +395,7 @@ namespace SpinsNew.Forms
                 LEFT JOIN
                     tbl_masterlist tm2 ON tps.ReplacementForID = tm2.ID
                 LEFT JOIN
-                    lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
+                    lib_barangay lb ON tps.PSGCBrgy = lb.PSGCBrgy
                 LEFT JOIN
                     lib_sex ls ON m.SexID = ls.Id
                 LEFT JOIN
@@ -431,6 +433,7 @@ namespace SpinsNew.Forms
                         MasterListID) tps2
                 ON
                     tps.MasterListID = tps2.MasterListID
+                
 
                 WHERE
                     tps.PSGCCityMun = @PSGCCityMun
@@ -651,11 +654,53 @@ namespace SpinsNew.Forms
             await Payrolls();
         }
 
-        private void PrintReport()
+
+
+
+        public DataTable Signatories()
         {
-            DataTable payrollData = (DataTable)gridPayroll.DataSource; // Assuming this is the correct DataTable
+            DataTable signatoriesData = new DataTable();
+
+            try
+            {
+                con.Open();  // Open the connection
+
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT ID, Position, Name FROM lib_signatories WHERE ID IN (1, 2, 3, 4, 5)";
+
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(signatoriesData);
+
+                return signatoriesData; // Return the DataTable after filling it with data
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null; // Return null in case of an error
+            }
+            finally
+            {
+                // Ensure the connection is always closed, even if an exception occurs
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+
+        private DataTable GetSignatoriesData()
+        {
+            return Signatories();
+        }
+
+        private void PrintReport(DataTable payrollData, DataTable signatoriesData)
+        {
             PayrollPrintPreview payrollprintPreview = new PayrollPrintPreview(this);
             payrollprintPreview.SetPayrollData(payrollData);
+            payrollprintPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
             payrollprintPreview.Show();
         }
 
@@ -670,12 +715,13 @@ namespace SpinsNew.Forms
             }
 
             DataTable payrollData = (DataTable)gridPayroll.DataSource; // Ensure this is the correct DataTable
+            DataTable signatoriesData = GetSignatoriesData(); // Retrieve the signatories data
             if (payrollData == null || payrollData.Rows.Count == 0)
             {
                 MessageBox.Show("No data available to print.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            PrintReport();
+            PrintReport(payrollData, signatoriesData);
 
         }
         private void radioButton()
@@ -695,23 +741,6 @@ namespace SpinsNew.Forms
                 }
 
                 // Return early to avoid further processing
-                return;
-            }
-
-            // Check if the 'Claimed' radio button is checked
-            if (rbClaimed.Checked)
-            {
-
-                lblValue.Text = "1";
-                // Clear the GridView data source
-                GridView gridView = gridPayroll.MainView as GridView;
-                if (gridView != null)
-                {
-                    gridPayroll.DataSource = null;
-                    // Update row count display
-                    UpdateRowCount(gridView);
-                }
-
                 return;
             }
 
@@ -754,6 +783,11 @@ namespace SpinsNew.Forms
         private void rbUnclaimed_CheckedChanged(object sender, EventArgs e)
         {
             radioButton();// Change value once triggered
+        }
+
+        private void groupControl2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
