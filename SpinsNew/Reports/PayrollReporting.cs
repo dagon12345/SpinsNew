@@ -98,7 +98,7 @@ namespace SpinsNew.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section PageFooterSection2 {
             get {
                 return this.ReportDefinition.Sections[6];
             }
@@ -157,14 +157,6 @@ namespace SpinsNew.Reports {
         public CrystalDecisions.Shared.IParameterField Parameter_Number3Position {
             get {
                 return this.DataDefinition.ParameterFields[6];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_PageBreakFormula {
-            get {
-                return this.DataDefinition.ParameterFields[7];
             }
         }
     }

@@ -226,6 +226,36 @@ namespace SpinsNew.Forms
                 LoadPeriodsForYear(selectedYear.Year);
             }
         }
+        //Code below is to count the data if the column filter was changed
+        /*public Form1()
+{
+    InitializeComponent();
+
+    // Subscribe to the FilterChanged event
+    GridView gridView = (GridView)gridControl1.MainView;
+    gridView.FilterChanged += GridView_FilterChanged;
+}
+
+private void GridView_FilterChanged(object sender, EventArgs e)
+{
+    GridView gridView = (GridView)sender;
+
+    // Get the count of rows that match the current filter
+    int rowCount = gridView.DataRowCount;
+
+    // Update your control with the row count
+    UpdateRowCount(rowCount);
+}
+
+private void UpdateRowCount(int rowCount)
+{
+    // Format the row count with thousands separator
+    string formattedRowCount = rowCount.ToString("N0");
+
+    // Assign formatted row count to a label or any other control
+    groupControl1.Text = $"Total Count: {formattedRowCount}";
+}
+*/
         // Method to update the row count display
         public void UpdateRowCount(GridView gridView)
         {
