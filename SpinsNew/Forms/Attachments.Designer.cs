@@ -324,6 +324,7 @@ namespace SpinsNew.Forms
             this.Controls.Add(this.groupControl3);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.groupControl2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(823, 685);
             this.Name = "Attachments";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

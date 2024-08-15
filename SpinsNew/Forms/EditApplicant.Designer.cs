@@ -1113,6 +1113,7 @@ namespace SpinsWinforms.Forms
             this.Controls.Add(this.btn_import);
             this.Controls.Add(this.xtraScrollableControl1);
             this.Controls.Add(this.pdfViewer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(1054, 782);
             this.Name = "EditApplicant";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

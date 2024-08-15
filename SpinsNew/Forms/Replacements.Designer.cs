@@ -466,6 +466,7 @@ namespace SpinsNew.Forms
             this.Controls.Add(this.splitContainerControl1);
             this.Controls.Add(this.progressBarControl1);
             this.Controls.Add(this.groupControl1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Replacements";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Replacements";

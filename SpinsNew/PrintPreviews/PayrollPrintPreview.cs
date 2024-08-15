@@ -43,6 +43,7 @@ namespace SpinsNew.PrintPreviews
 
             return ""; // Default value
         }
+
         private void PayrollPrintPreview_Load(object sender, EventArgs e)
         {
             try

@@ -300,8 +300,12 @@ namespace SpinsNew
                 p.ProvinceName 
             FROM 
                 lib_city_municipality m
-                INNER JOIN lib_province p ON m.PSGCProvince = p.PSGCProvince
-                ORDER BY ProvinceName"; // Join with lib_province to get ProvinceName
+                INNER JOIN
+                    lib_province p ON m.PSGCProvince = p.PSGCProvince
+                ORDER BY 
+                    ProvinceName,
+                     m.CityMunName
+                "; // Join with lib_province to get ProvinceName
                 cmd.ExecuteNonQuery();
                 DataTable dt = new DataTable();
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
@@ -3568,7 +3572,7 @@ namespace SpinsNew
                 // Pass the ID value to the EditApplicant form
                 int id = Convert.ToInt32(row["ID"]);
                 //int id = Convert.ToInt32(txt_id.Text);
-                attachmentsForm = new Attachments(this);
+                attachmentsForm = new Attachments(masterlistForm, payrollForm);
 
                 attachmentsForm.DisplayID(id);
                 attachmentsForm.Show();
@@ -3576,7 +3580,9 @@ namespace SpinsNew
 
 
         }
-        Payroll payrollForm;
+        private Payroll payrollForm;
+        private MasterList masterlistForm;
+
         private void payrollToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (Application.OpenForms.OfType<Payroll>().Any())

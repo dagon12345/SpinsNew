@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>02 SocPen Logo %28no background%29.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AxShockwaveFlashObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
@@ -313,6 +316,21 @@
   <ItemGroup>
     <None Include="Resources\icons8-left-right-arrow-64.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="02 SocPen Logo %28no background%29.ico" />
+    <None Include="Resources\icons8-delete-48.png" />
+    <None Include="Resources\icons8-activate-48.png" />
+    <None Include="Resources\icons8-information-16.png" />
+    <None Include="Resources\icons8-remove-document-48.png" />
+    <None Include="Resources\icons8-menu-vertical-48.png" />
+    <None Include="Resources\icons8-payroll-481.png" />
+    <None Include="Resources\icons8-add-481.png" />
+    <None Include="Resources\icons8-eye-48.png" />
+    <None Include="Resources\icons8-payroll-64.png" />
+    <None Include="Resources\icons8-left-right-arrow-641.png" />
+    <None Include="Resources\icons8-attachment-16.png" />
+    <None Include="Resources\icons8-add-48.png" />
+    <None Include="Resources\icons8-option-64.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

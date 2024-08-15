@@ -29,6 +29,7 @@ namespace SpinsNew.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Dashboard));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MasterlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +60,7 @@ namespace SpinsNew.Forms
             // 
             this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
             this.MasterlistToolStripMenuItem.Name = "MasterlistToolStripMenuItem";
-            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.MasterlistToolStripMenuItem.Text = "Masterlist";
             this.MasterlistToolStripMenuItem.Click += new System.EventHandler(this.MasterlistToolStripMenuItem_Click);
             // 
@@ -69,6 +70,7 @@ namespace SpinsNew.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(813, 582);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Dashboard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dashboard";

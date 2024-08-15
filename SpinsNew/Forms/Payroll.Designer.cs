@@ -31,6 +31,7 @@ namespace SpinsNew.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Payroll));
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+            this.separatorControl1 = new DevExpress.XtraEditors.SeparatorControl();
             this.lblValue = new DevExpress.XtraEditors.LabelControl();
             this.rbUnclaimed = new System.Windows.Forms.RadioButton();
             this.rbAllStatus = new System.Windows.Forms.RadioButton();
@@ -48,10 +49,11 @@ namespace SpinsNew.Forms
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newApplicantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewAttachmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
-            this.separatorControl1 = new DevExpress.XtraEditors.SeparatorControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.separatorControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).BeginInit();
@@ -64,7 +66,6 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.separatorControl1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl1
@@ -84,6 +85,13 @@ namespace SpinsNew.Forms
             this.groupControl1.Size = new System.Drawing.Size(838, 182);
             this.groupControl1.TabIndex = 1;
             this.groupControl1.Text = "Select";
+            // 
+            // separatorControl1
+            // 
+            this.separatorControl1.Location = new System.Drawing.Point(16, 126);
+            this.separatorControl1.Name = "separatorControl1";
+            this.separatorControl1.Size = new System.Drawing.Size(304, 23);
+            this.separatorControl1.TabIndex = 23;
             // 
             // lblValue
             // 
@@ -152,6 +160,8 @@ namespace SpinsNew.Forms
             this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_municipality.Properties.DropDownRows = 20;
+            this.cmb_municipality.Properties.HideSelection = false;
+            this.cmb_municipality.Properties.HighlightedItemStyle = DevExpress.XtraEditors.HighlightStyle.Standard;
             this.cmb_municipality.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.cmb_municipality.Size = new System.Drawing.Size(303, 20);
             this.cmb_municipality.TabIndex = 18;
@@ -237,6 +247,7 @@ namespace SpinsNew.Forms
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridPayroll;
             this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.Editable = false;
             this.gridView1.OptionsCustomization.AllowGroup = false;
             this.gridView1.OptionsFind.FindFilterColumns = "LastName;FirstName;MiddleName";
             this.gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
@@ -256,7 +267,8 @@ namespace SpinsNew.Forms
             // optionToolStripMenuItem
             // 
             this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newApplicantToolStripMenuItem});
+            this.newApplicantToolStripMenuItem,
+            this.viewAttachmentsToolStripMenuItem});
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
             this.optionToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionToolStripMenuItem.Text = "Option";
@@ -264,9 +276,16 @@ namespace SpinsNew.Forms
             // newApplicantToolStripMenuItem
             // 
             this.newApplicantToolStripMenuItem.Name = "newApplicantToolStripMenuItem";
-            this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.newApplicantToolStripMenuItem.Text = "Print payroll";
             this.newApplicantToolStripMenuItem.Click += new System.EventHandler(this.newApplicantToolStripMenuItem_Click);
+            // 
+            // viewAttachmentsToolStripMenuItem
+            // 
+            this.viewAttachmentsToolStripMenuItem.Name = "viewAttachmentsToolStripMenuItem";
+            this.viewAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.viewAttachmentsToolStripMenuItem.Text = "View Attachments";
+            this.viewAttachmentsToolStripMenuItem.Click += new System.EventHandler(this.viewAttachmentsToolStripMenuItem_Click);
             // 
             // progressBarControl1
             // 
@@ -276,13 +295,6 @@ namespace SpinsNew.Forms
             this.progressBarControl1.Name = "progressBarControl1";
             this.progressBarControl1.Size = new System.Drawing.Size(838, 10);
             this.progressBarControl1.TabIndex = 12;
-            // 
-            // separatorControl1
-            // 
-            this.separatorControl1.Location = new System.Drawing.Point(16, 126);
-            this.separatorControl1.Name = "separatorControl1";
-            this.separatorControl1.Size = new System.Drawing.Size(304, 23);
-            this.separatorControl1.TabIndex = 23;
             // 
             // Payroll
             // 
@@ -295,6 +307,7 @@ namespace SpinsNew.Forms
             this.Controls.Add(this.groupControlPayroll);
             this.Controls.Add(this.panel_spinner);
             this.Controls.Add(this.groupControl1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Payroll";
             this.Text = "Payroll";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -302,6 +315,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.separatorControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).EndInit();
@@ -316,7 +330,6 @@ namespace SpinsNew.Forms
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.separatorControl1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -344,5 +357,6 @@ namespace SpinsNew.Forms
         public System.Windows.Forms.RadioButton rbAllStatus;
         public System.Windows.Forms.RadioButton rbUnclaimed;
         private DevExpress.XtraEditors.SeparatorControl separatorControl1;
+        private System.Windows.Forms.ToolStripMenuItem viewAttachmentsToolStripMenuItem;
     }
 }

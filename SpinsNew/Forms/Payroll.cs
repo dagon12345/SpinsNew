@@ -21,6 +21,7 @@ namespace SpinsNew.Forms
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
+            viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.A;
         }
 
         private void Payroll_Load(object sender, EventArgs e)
@@ -182,7 +183,9 @@ namespace SpinsNew.Forms
             FROM 
                 lib_city_municipality m
                 INNER JOIN lib_province p ON m.PSGCProvince = p.PSGCProvince
-                ORDER BY ProvinceName"; // Join with lib_province to get ProvinceName
+                ORDER BY 
+                ProvinceName,
+                m.CityMunName"; // Join with lib_province to get ProvinceName
                 cmd.ExecuteNonQuery();
                 DataTable dt = new DataTable();
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
@@ -375,6 +378,8 @@ private void UpdateRowCount(int rowCount)
 
                 string query = @"
                 SELECT
+                    tps.MasterlistID,
+                    IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
                     IFNULL(tps2.UnclaimedAmounts, '') AS UnclaimedAmounts,
                     m.LastName,
                     m.FirstName,
@@ -415,8 +420,12 @@ private void UpdateRowCount(int rowCount)
                     tps.EntryBy,
 
                     CONCAT(lcm.CityMunName, ', ', lprov.ProvinceName) AS ProvinceMunicipality,
-                    CONCAT(lp.Months, ', ', '(', lp.Period, ' ', tps.Year , ')') AS PeriodMonth
-                    
+                    CONCAT(lp.Months, ', ', '(', lp.Period, ' ', tps.Year , ')') AS PeriodMonth,
+                    CONCAT(lp.Months, ' ', tps.Year) AS HeaderPeriodYear,
+                    lit.Type,
+                    m.IDNumber
+
+               
 
                 FROM
                     tbl_payroll_socpen tps
@@ -448,6 +457,8 @@ private void UpdateRowCount(int rowCount)
                     lib_province lprov ON tps.PSGCProvince = lprov.PSGCProvince
                 LEFT JOIN
                     lib_city_municipality lcm ON tps.PSGCCityMun = lcm.PSGCCityMun
+                LEFT JOIN
+                    lib_id_type lit ON m.IDTypeID = lit.ID
 
                 LEFT JOIN
                     (SELECT
@@ -464,7 +475,10 @@ private void UpdateRowCount(int rowCount)
                 ON
                     tps.MasterListID = tps2.MasterListID
                 
-
+                LEFT JOIN 
+                    (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
+                    FROM tbl_attachments 
+                    GROUP BY MasterListID) tat ON tps.MasterListID   = tat.MasterListID               
                 WHERE
                     tps.PSGCCityMun = @PSGCCityMun
                     AND tps.Year = @Year
@@ -620,7 +634,8 @@ private void UpdateRowCount(int rowCount)
 
                     gridView.Columns["StatusPayroll"].Visible = false;
                     gridView.Columns["ClaimType"].Visible = false;
-                    //gridView.Columns["Amount"].Visible = false;
+                    gridView.Columns["UnclaimedAmounts"].Visible = false;
+                    gridView.Columns["MasterlistID"].Visible = false;
 
                     gridView.Columns["LastName2"].Visible = false;
                     gridView.Columns["FirstName2"].Visible = false;
@@ -632,7 +647,7 @@ private void UpdateRowCount(int rowCount)
 
 
                     // Freeze the columns
-                    gridView.Columns["UnclaimedAmounts"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+                    //gridView.Columns["UnclaimedAmounts"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
                     gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
 
@@ -819,5 +834,35 @@ private void UpdateRowCount(int rowCount)
         {
 
         }
+        Attachments attachmentsForm;
+        private MasterList masterlistForm;
+        private Payroll payrollForm;
+
+        private void viewAttachmentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<Attachments>().Any())
+            {
+                gridPayroll.Select();
+                gridPayroll.BringToFront();
+            }
+            else
+            {
+                GridView gridView = gridPayroll.MainView as GridView;
+
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row["MasterlistID"]);
+
+                attachmentsForm = new Attachments(masterlistForm, payrollForm); // Ensure this matches the constructor of Attachments
+                attachmentsForm.DisplayID(id);
+                attachmentsForm.Show();
+            }
+        }
+
     }
 }

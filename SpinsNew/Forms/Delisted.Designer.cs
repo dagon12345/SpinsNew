@@ -346,6 +346,7 @@ namespace SpinsNew.Forms
             this.ClientSize = new System.Drawing.Size(525, 250);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.groupControl2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(541, 289);
             this.MinimumSize = new System.Drawing.Size(541, 289);
             this.Name = "Delisted";

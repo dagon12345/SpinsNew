@@ -18,20 +18,20 @@ namespace SpinsNew.Forms
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
 
-        public Attachments(MasterList masterList)
+        public Attachments(MasterList masterList, Payroll payroll)
         {
             InitializeComponent();
-            masterlistForm = masterList;// Execute the MasterListform.
+            masterlistForm = masterList;
+            payrollForm = payroll;
             con = new MySqlConnection(cs.dbcon);
 
-            this.KeyPreview = true; // Allows the form to receive key events before the focused control does
+            this.KeyPreview = true;
             this.KeyDown += new KeyEventHandler(btn_save_KeyDown);
-            // Handle the KeyDown event
             this.KeyDown += Attachments_KeyDown;
-            //btn_save.KeyUp = Keys.Control | Keys.A;
         }
 
         private MasterList masterlistForm;// Call MasterList form
+        private Payroll payrollForm; // Assuming you may use this later or remove if unnecessary
         private void Attachments_Load(object sender, EventArgs e)
         {
             LoadDetails(); // Load details into the details tab above.
@@ -257,7 +257,7 @@ namespace SpinsNew.Forms
                     wHERE
                         m.ID = @ID";
 
-                cmd0.Parameters.AddWithValue("@ID", txt_id.Text);
+                cmd0.Parameters.AddWithValue("@ID", Convert.ToInt32(txt_id.Text));
 
                 DataTable dt0 = new DataTable();
                 MySqlDataAdapter da0 = new MySqlDataAdapter(cmd0);
@@ -426,6 +426,8 @@ namespace SpinsNew.Forms
             }
         }
         private string selectedFilePath; // Variable to store the selected file path
+        private Payroll payroll;
+
         public void InsertImage()
         {
             // For image saving below.
