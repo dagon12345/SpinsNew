@@ -273,6 +273,98 @@ private void UpdateRowCount(int rowCount)
         }
 
 
+        //cmd.CommandText = @"WITH LatestPayroll AS (
+        //   SELECT
+        //       tps.MasterListID,
+        //       tps.Amount AS LatestAmount,
+        //       lp.Abbreviation AS LatestAbbreviation,
+        //       ROW_NUMBER() OVER(PARTITION BY tps.MasterListID ORDER BY tps.ID DESC) AS rn,
+        //       tps.Year,
+        //       tps.PayrollStatusID
+        //   FROM
+        //       tbl_payroll_socpen tps
+        //   LEFT JOIN
+        //       lib_period lp ON tps.PeriodID = lp.PeriodID
+        //   WHERE
+        //       tps.Year = @Year
+        //)
+        //SELECT                
+        //     CASE 
+        //         WHEN LatestPayroll.PayrollStatusID = 2 THEN
+        //             CONCAT('(', LatestPayroll.LatestAbbreviation, ' - ', LatestPayroll.LatestAmount, ')')
+        //         ELSE
+        //            ''
+        //    END AS UnclaimedPayroll,
+        //    tps.MasterlistID,
+        //    m.LastName,
+        //    m.FirstName,
+        //    m.MiddleName,
+        //    m.ExtName,
+
+        //    lb.BrgyName AS Barangay,
+        //    tps.Address,
+        //    m.BirthDate,
+        //    ls.Sex AS Sex,
+        //    lhs.HealthStatus,
+        //    m.HealthStatusRemarks,
+        //    m.IDNumber,
+        //    tps.Amount AS Amounts,
+        //    tps.Year,
+        //    lp.Period,
+        //    lps.PayrollStatus AS StatusPayroll,
+        //    lct.ClaimType AS ClaimType,
+        //    tps.DateClaimedFrom AS DateClaimed,
+        //    lpt.PayrollType AS PayrollType,
+        //    lptg.PayrollTag AS PayrollTag,
+        //    lstat.Status AS Status,
+        //    m.Remarks,
+        //    m.DateDeceased,
+        //    lpm.PaymentMode,
+        //    tps.Remarks AS PayrollRemarks,
+        //    tm2.LastName AS LastName2,
+        //    tm2.FirstName AS FirstName2,
+        //    tm2.MiddleName AS MiddleName2,
+        //    tm2.ExtName AS ExtName2,
+        //    tps.DateTimeModified,
+        //    tps.ModifiedBy,
+        //    tps.DateTimeReplaced,
+        //    tps.ReplacedBy,
+        //    tps.DateTimeEntry,
+        //    tps.EntryBy
+
+        //FROM
+        //    tbl_payroll_socpen tps
+        //LEFT JOIN
+        //    tbl_masterlist m ON tps.MasterListID = m.ID
+        //LEFT JOIN
+        //    tbl_masterlist tm2 ON tps.ReplacementForID = tm2.ID
+        //LEFT JOIN
+        //    lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
+        //LEFT JOIN
+        //    lib_sex ls ON m.SexID = ls.Id
+        //LEFT JOIN
+        //    lib_health_status lhs ON m.HealthStatusID = lhs.ID
+        //LEFT JOIN
+        //    lib_period lp ON tps.PeriodID = lp.PeriodID
+        //LEFT JOIN
+        //    lib_payroll_status lps ON tps.PayrollStatusID = lps.PayrollStatusID
+        //LEFT JOIN
+        //    lib_claim_type lct ON tps.ClaimTypeID = lct.ClaimTypeID
+        //LEFT JOIN
+        //    lib_payroll_type lpt ON tps.PayrollTypeID = lpt.PayrollTypeID
+        //LEFT JOIN
+        //    lib_payroll_tag lptg ON tps.PayrollTagID = lptg.PayrollTagID
+        //LEFT JOIN
+        //    lib_status lstat ON m.StatusID = lstat.ID
+        //LEFT JOIN
+        //    lib_payment_mode lpm ON tps.PaymentModeID = lpm.PaymentModeID
+        //LEFT JOIN
+        //    LatestPayroll ON LatestPayroll.MasterListID = tps.MasterListID AND LatestPayroll.rn = 2
+        //WHERE
+        //    tps.PSGCCityMun = @PSGCCityMun
+        //    AND tps.Year = @Year
+        //    AND tps.PeriodID = @PeriodID";
+
         public async Task Payrolls() //The query is all about delisted with payroll unclaimed filtered by year and the latest ID inputed into tbl_payroll_socpen
         {
 
@@ -284,98 +376,6 @@ private void UpdateRowCount(int rowCount)
                 con.Open();
                 MySqlCommand cmd = con.CreateCommand();
                 cmd.CommandType = CommandType.Text;
-                //cmd.CommandText = @"WITH LatestPayroll AS (
-                //   SELECT
-                //       tps.MasterListID,
-                //       tps.Amount AS LatestAmount,
-                //       lp.Abbreviation AS LatestAbbreviation,
-                //       ROW_NUMBER() OVER(PARTITION BY tps.MasterListID ORDER BY tps.ID DESC) AS rn,
-                //       tps.Year,
-                //       tps.PayrollStatusID
-                //   FROM
-                //       tbl_payroll_socpen tps
-                //   LEFT JOIN
-                //       lib_period lp ON tps.PeriodID = lp.PeriodID
-                //   WHERE
-                //       tps.Year = @Year
-                //)
-                //SELECT                
-                //     CASE 
-                //         WHEN LatestPayroll.PayrollStatusID = 2 THEN
-                //             CONCAT('(', LatestPayroll.LatestAbbreviation, ' - ', LatestPayroll.LatestAmount, ')')
-                //         ELSE
-                //            ''
-                //    END AS UnclaimedPayroll,
-                //    tps.MasterlistID,
-                //    m.LastName,
-                //    m.FirstName,
-                //    m.MiddleName,
-                //    m.ExtName,
-
-                //    lb.BrgyName AS Barangay,
-                //    tps.Address,
-                //    m.BirthDate,
-                //    ls.Sex AS Sex,
-                //    lhs.HealthStatus,
-                //    m.HealthStatusRemarks,
-                //    m.IDNumber,
-                //    tps.Amount AS Amounts,
-                //    tps.Year,
-                //    lp.Period,
-                //    lps.PayrollStatus AS StatusPayroll,
-                //    lct.ClaimType AS ClaimType,
-                //    tps.DateClaimedFrom AS DateClaimed,
-                //    lpt.PayrollType AS PayrollType,
-                //    lptg.PayrollTag AS PayrollTag,
-                //    lstat.Status AS Status,
-                //    m.Remarks,
-                //    m.DateDeceased,
-                //    lpm.PaymentMode,
-                //    tps.Remarks AS PayrollRemarks,
-                //    tm2.LastName AS LastName2,
-                //    tm2.FirstName AS FirstName2,
-                //    tm2.MiddleName AS MiddleName2,
-                //    tm2.ExtName AS ExtName2,
-                //    tps.DateTimeModified,
-                //    tps.ModifiedBy,
-                //    tps.DateTimeReplaced,
-                //    tps.ReplacedBy,
-                //    tps.DateTimeEntry,
-                //    tps.EntryBy
-
-                //FROM
-                //    tbl_payroll_socpen tps
-                //LEFT JOIN
-                //    tbl_masterlist m ON tps.MasterListID = m.ID
-                //LEFT JOIN
-                //    tbl_masterlist tm2 ON tps.ReplacementForID = tm2.ID
-                //LEFT JOIN
-                //    lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                //LEFT JOIN
-                //    lib_sex ls ON m.SexID = ls.Id
-                //LEFT JOIN
-                //    lib_health_status lhs ON m.HealthStatusID = lhs.ID
-                //LEFT JOIN
-                //    lib_period lp ON tps.PeriodID = lp.PeriodID
-                //LEFT JOIN
-                //    lib_payroll_status lps ON tps.PayrollStatusID = lps.PayrollStatusID
-                //LEFT JOIN
-                //    lib_claim_type lct ON tps.ClaimTypeID = lct.ClaimTypeID
-                //LEFT JOIN
-                //    lib_payroll_type lpt ON tps.PayrollTypeID = lpt.PayrollTypeID
-                //LEFT JOIN
-                //    lib_payroll_tag lptg ON tps.PayrollTagID = lptg.PayrollTagID
-                //LEFT JOIN
-                //    lib_status lstat ON m.StatusID = lstat.ID
-                //LEFT JOIN
-                //    lib_payment_mode lpm ON tps.PaymentModeID = lpm.PaymentModeID
-                //LEFT JOIN
-                //    LatestPayroll ON LatestPayroll.MasterListID = tps.MasterListID AND LatestPayroll.rn = 2
-                //WHERE
-                //    tps.PSGCCityMun = @PSGCCityMun
-                //    AND tps.Year = @Year
-                //    AND tps.PeriodID = @PeriodID";
-
                 string query = @"
                 SELECT
                     tps.MasterlistID,

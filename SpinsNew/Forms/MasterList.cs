@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
@@ -6,6 +7,7 @@ using SpinsNew.Forms;
 using SpinsNew.Popups;
 using SpinsWinforms.Forms;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -30,10 +32,26 @@ namespace SpinsNew
             viewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
             // Set the shortcut key for viewToolStripMenuItem
             delistToolStripMenuItem.ShortcutKeys = Keys.Delete;
-            attachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.A;
+            attachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
             // Optionally, handle the click event if not already handled
             viewToolStripMenuItem.Click += viewToolStripMenuItem_Click;
 
+            // Subscribe to the FilterExpressionChanged event
+            GridView gridView = (GridView)gridControl1.MainView;
+            gridView.ColumnFilterChanged += gridView1_ColumnFilterChanged;
+
+
+        }
+
+        private void gridView1_ColumnFilterChanged(object sender, EventArgs e)
+        {
+            GridView gridView = (GridView)sender;
+
+            // Get the count of rows that match the current filter
+            int rowCount = gridView.DataRowCount;
+
+            // Update your control with the row count
+            UpdateRowCount(gridView);
         }
 
 
@@ -56,7 +74,83 @@ namespace SpinsNew
             //Integrate search control into our grid control.
             searchControl1.Client = gridControl1;
 
+
+
         }
+
+
+
+        public void Municipality()
+        {
+            try
+            {
+                // Fetch data from the database and bind to CheckedComboBoxEdit
+                con.Open();
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = @"
+            SELECT 
+                m.PSGCCityMun, 
+                m.CityMunName, 
+                m.PSGCProvince, 
+                p.ProvinceName 
+            FROM 
+                lib_city_municipality m
+                INNER JOIN
+                    lib_province p ON m.PSGCProvince = p.PSGCProvince
+            ORDER BY 
+                ProvinceName,
+                m.CityMunName
+        "; // Join with lib_province to get ProvinceName
+                cmd.ExecuteNonQuery();
+                DataTable dt = new DataTable();
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                // Clear existing items in the CheckedComboBoxEdit
+                cmb_municipality.Properties.Items.Clear();
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    // Add each municipality to the CheckedComboBoxEdit with a checkbox
+                    cmb_municipality.Properties.Items.Add(new CheckedListBoxItem(
+                        value: Convert.ToInt32(dr["PSGCCityMun"]), // The value to store (usually the ID)
+                        description: dr["CityMunName"].ToString() + " " + dr["ProvinceName"].ToString(), // The display text
+                        checkState: CheckState.Unchecked // Initially unchecked
+                    ));
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                con.Close();
+            }
+        }
+
+
+
+        //private void Cmb_municipality_QueryPopUp(object sender, System.ComponentModel.CancelEventArgs e)
+        //{
+        //    var editor = sender as DevExpress.XtraEditors.CheckedComboBoxEdit;
+        //    if (editor != null)
+        //    {
+        //        editor.Properties.Items.BeginUpdate();
+        //        try
+        //        {
+        //            for (int i = 0; i < editor.Properties.Items.Count; i++)
+        //            {
+        //                var item = editor.Properties.Items[i];
+        //                item.Description = item.Description.ToLower();
+        //            }
+        //        }
+        //        finally
+        //        {
+        //            editor.Properties.Items.EndUpdate();
+        //        }
+        //    }
+        //}
+
 
 
 
@@ -77,10 +171,6 @@ namespace SpinsNew
             }
         }
 
-        private void searchControl1_QueryIsSearchColumn(object sender, QueryIsSearchColumnEventArgs args)
-        {
-
-        }
         private void gridView_RowStyle(object sender, RowStyleEventArgs e)
         {
             //Color the row red if the age is 59 and under.
@@ -269,69 +359,86 @@ namespace SpinsNew
             }
         }
 
+        //// For municipality combobox properties
+        //public class MunicipalityItem
+        //{
+        //    public int PSGCCityMun { get; set; }
+        //    public string CityMunName { get; set; }
+        //    public int PSGCProvince { get; set; }
+        //    public string ProvinceName { get; set; } // Add this property
+
+        //    public override string ToString()
+        //    {
+        //        return $"{CityMunName} - {ProvinceName}"; // Display both the municipality and province in the ComboBox
+        //    }
+        //}
+
         // For municipality combobox properties
         public class MunicipalityItem
         {
             public int PSGCCityMun { get; set; }
             public string CityMunName { get; set; }
-            public int PSGCProvince { get; set; }
-            public string ProvinceName { get; set; } // Add this property
+            //public int PSGCProvince { get; set; }
+            //public string ProvinceName { get; set; } // Add this property
 
-            public override string ToString()
-            {
-                return $"{CityMunName} - {ProvinceName}"; // Display both the municipality and province in the ComboBox
-            }
+            //public override string ToString()
+            //{
+            //    return $"{CityMunName} - {ProvinceName}"; // Display both the municipality and province in the ComboBox
+            //}
         }
+
+
+
 
         //Fill the combobox
-        public void Municipality()
-        {
-            try
-            {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-            SELECT 
-                m.PSGCCityMun, 
-                m.CityMunName, 
-                m.PSGCProvince, 
-                p.ProvinceName 
-            FROM 
-                lib_city_municipality m
-                INNER JOIN
-                    lib_province p ON m.PSGCProvince = p.PSGCProvince
-                ORDER BY 
-                    ProvinceName,
-                     m.CityMunName
-                "; // Join with lib_province to get ProvinceName
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+        //public void Municipality()
+        //{
+        //    try
+        //    {
+        //        // Fetch data from the database and bind to ComboBox
+        //        con.Open();
+        //        MySqlCommand cmd = con.CreateCommand();
+        //        cmd.CommandType = CommandType.Text;
+        //        cmd.CommandText = @"
+        //    SELECT 
+        //        m.PSGCCityMun, 
+        //        m.CityMunName, 
+        //        m.PSGCProvince, 
+        //        p.ProvinceName 
+        //    FROM 
+        //        lib_city_municipality m
+        //        INNER JOIN
+        //            lib_province p ON m.PSGCProvince = p.PSGCProvince
+        //        ORDER BY 
+        //            ProvinceName,
+        //             m.CityMunName
+        //        "; // Join with lib_province to get ProvinceName
+        //        cmd.ExecuteNonQuery();
+        //        DataTable dt = new DataTable();
+        //        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+        //        da.Fill(dt);
 
-                // Clear existing items in the ComboBoxEdit
-                cmb_municipality.Properties.Items.Clear();
+        //        // Clear existing items in the ComboBoxEdit
+        //        cmb_municipality.Properties.Items.Clear();
 
-                foreach (DataRow dr in dt.Rows)
-                {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_municipality.Properties.Items.Add(new MunicipalityItem
-                    {
-                        PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"]),
-                        CityMunName = dr["CityMunName"].ToString(),
-                        PSGCProvince = Convert.ToInt32(dr["PSGCProvince"]),
-                        ProvinceName = dr["ProvinceName"].ToString() // Populate the new property
-                    });
-                }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        //        foreach (DataRow dr in dt.Rows)
+        //        {
+        //            // Add DataSourceItem to the ComboBox
+        //            cmb_municipality.Properties.Items.Add(new MunicipalityItem
+        //            {
+        //                PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"]),
+        //                CityMunName = dr["CityMunName"].ToString(),
+        //                PSGCProvince = Convert.ToInt32(dr["PSGCProvince"]),
+        //                ProvinceName = dr["ProvinceName"].ToString() // Populate the new property
+        //            });
+        //        }
+        //        con.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
 
         //Status if combobox is needed
         public void ComboboxStatus()
@@ -366,110 +473,295 @@ namespace SpinsNew
         {
             try
             {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
+                string statusFilter = cmb_status.Text;
+                //bool allMunicipalityChecked = ck_all.Checked; // if checked was true
+                string municipalitiesFilter = cmb_municipality.Text; // if checked was true
+
+                GridView gridView = gridControl1.MainView as GridView; // Assuming gridView is your GridView instance associated with gridControl1
                 con.Open();
                 MySqlCommand cmd = con.CreateCommand();
                 cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
+                string query = @"SELECT 
+                    m.ID,
+                    IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
+                    m.LastName,
+                    m.FirstName,
+                    m.MiddleName,
+                    m.ExtName,
+                
+                    /*tg_max.ID as GISID,*/
+                    m.StatusID as StatusID,
+                
+                    la.Assessment as Assessment,
+                
+                    tg_max.ReferenceCode as GIS,
+                    ts.ReferenceCode as SPBUF,
+                    tg_max.SPISBatch as SpisBatch,
+                    tg_max.AssessmentID as AssessmentID,
+                    ls.Status as Status,
+                    m.Citizenship as Citizenship,
+                    m.MothersMaiden as MothersMaiden,
+                    lr.Region as Region,
+                    lp.ProvinceName as Province,
+                    lc.CityMunName as Municipality,
+                    lb.BrgyName as Barangay,
+                    m.Address as Address,
+                    m.BirthDate as BirthDate,
+                    TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE()) AS Age,
+                    s.Sex as Sex,
+                    ms.MaritalStatus as MaritalStatus,
+                    m.Religion as Religion,
+                    m.BirthPlace as BirthPlace,
+                    m.EducAttain as EducAttain,
+                    it.Type as IDType,
+                    m.IDNumber as IDNumber,
+                    m.IDDateIssued as IDDateIssued,
+                    m.Pantawid as Pantawid,
+                    m.Indigenous as Indigenous,
+                    m.SocialPensionID as SocialPensionID,
+                    m.HouseholdID as HouseholdID,
+                    m.IndigenousID as IndigenousID,
+                    m.ContactNum as ContactNum,
+                    lh.HealthStatus as HealthStatus,
+                    m.HealthStatusRemarks as HealthStatusRemarks,
+                    m.DateTimeEntry as DateTimeEntry,
+                    m.EntryBy as EntryBy,
+                    ld.DataSource as DataSource,
+                    m.Remarks as Remarks,
+                    lrt.RegType as RegistrationType,
+                    m.InclusionBatch as InclusionBatch,
+                    m.InclusionDate as InclusionDate,
+                    m.ExclusionBatch as ExclusionBatch,
+                    m.ExclusionDate as ExclusionDate,
+                    m.DateDeceased as DateDeceased,
+                    m.DateTimeModified as DateTimeModified,
+                    m.ModifiedBy as ModifiedBy,
+                    m.DateTimeDeleted as DateTimeDeleted,
+                    tg_max.ValidationDate
+                FROM 
+                    tbl_masterlist m
+                LEFT JOIN 
+                    (SELECT tg1.*
+                     FROM tbl_gis tg1
+                     INNER JOIN (
+                         SELECT MasterlistID, MAX(ID) as MaxGISID
+                         FROM tbl_gis
+                         GROUP BY MasterlistID
+                     ) tg2 ON tg1.MasterlistID = tg2.MasterlistID AND tg1.ID = tg2.MaxGISID
+                    ) tg_max ON m.ID = tg_max.MasterlistID
+                LEFT JOIN 
+                    tbl_spbuf ts ON m.ID = ts.MasterlistID
+                LEFT JOIN 
+                    lib_region lr ON m.PSGCRegion = lr.PSGCRegion
+                LEFT JOIN 
+                    lib_province lp ON m.PSGCProvince = lp.PSGCProvince
+                LEFT JOIN 
+                    lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
+                LEFT JOIN 
+                    lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
+                LEFT JOIN 
+                    lib_sex s ON m.SexID = s.ID
+                LEFT JOIN 
+                    lib_marital_status ms ON m.MaritalStatusID = ms.ID
+                LEFT JOIN 
+                    lib_id_type it ON m.IDtypeID = it.ID
+                LEFT JOIN 
+                    lib_health_status lh ON m.HealthStatusID = lh.ID
+                LEFT JOIN 
+                    lib_datasource ld ON m.DataSourceID = ld.ID
+                LEFT JOIN 
+                    lib_status ls ON m.StatusID = ls.ID
+                LEFT JOIN 
+                    lib_registration_type lrt ON m.RegtypeID = lrt.ID
+                LEFT JOIN 
+                    lib_assessment la ON tg_max.AssessmentID = la.ID
+                LEFT JOIN 
+                    (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
+                     FROM tbl_attachments 
+                     GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
+                WHERE 
+                    m.DateTimeDeleted IS NULL";
 
-                        MAX(tg.AssessmentID) as AssessmentID,
-                        MAX(m.StatusID) as StatusID,
+                ///*Filter All Municipalities*/
 
-                        MAX(la.Assessment) as Assessment,
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID                      
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN 
-                         (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                           GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                        m.DateTimeDeleted IS NULL
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID DESC";
+                //if (allMunicipalityChecked)
+                //{
+                //    /*Filter All Municipalities and Active or Applicant*/
+                //    if (statusFilter == "Active" || statusFilter == "Applicant")
+                //    {
+                //        query += " AND ls.Status = @Status";
+                //    }
+                //    /*Filter All Municipalities and Waitlisted*/
+                //    else if (statusFilter == "Waitlisted")
+                //    {
+                //        query += @" AND tg_max.ReferenceCode IS NOT NULL
+                //            AND tg_max.SPISBatch IS NOT NULL
+                //            AND m.StatusID = 99
+                //            AND la.ID = 1";
+                //    }
+                //    /*Filter All Municipalities and Delisted*/
+                //    else if (statusFilter == "Delisted")
+                //    {
+                //        query += " AND m.StatusID BETWEEN 2 AND 15";
+                //    }
+                //}
+                //else if(!allMunicipalityChecked)// If ck_all.checked is not true, filter specific municipalities
+                //{
+                    if (statusFilter == "All Statuses")
+                    {
+                        // Construct a filter for selected municipalities
+                        // Using GetCheckedValues to get the selected items' values.
+                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
 
+                        // Convert the checked items to a string array
+                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+                        // Check if there are any selected municipalities
+                        if (municipalitiesArray.Length > 0)
+                        {
+                            // Join the selected municipality values into a single comma-separated string
+                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
+
+                            // Append the condition to the query
+                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
+                        }
+
+                    }
+                    if (statusFilter == "Active" || statusFilter == "Applicant")
+                    {
+                        // Construct a filter for selected municipalities
+                        // Using GetCheckedValues to get the selected items' values.
+                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+
+                        // Convert the checked items to a string array
+                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        // Check if there are any selected municipalities
+                        if (municipalitiesArray.Length > 0)
+                        {
+                            // Join the selected municipality values into a single comma-separated string
+                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
+
+                            // Append the condition to the query
+                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
+                        }
+                        cmd.Parameters.AddWithValue("@Status", statusFilter);
+                        if (statusFilter != "All Statuses")
+                        {
+                            query += "  AND ls.Status = @Status";
+                        }
+                 
+                    }
+                    if (statusFilter == "Waitlisted")
+                    {
+                        // Construct a filter for selected municipalities
+                        // Using GetCheckedValues to get the selected items' values.
+                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+
+                        // Convert the checked items to a string array
+                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        // Check if there are any selected municipalities
+                        if (municipalitiesArray.Length > 0)
+                        {
+                            // Join the selected municipality values into a single comma-separated string
+                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
+
+                            // Append the condition to the query
+                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
+                        }
+
+                        if (statusFilter != "All Statuses")
+                        {
+                            query += @" AND tg_max.ReferenceCode IS NOT NULL
+                                        AND tg_max.SPISBatch IS NOT NULL
+                                        AND m.StatusID = 99
+                                        AND la.ID = 1";
+                        }
+
+                    }
+                    if (statusFilter == "Delisted")
+                    {
+                        // Construct a filter for selected municipalities
+                        // Using GetCheckedValues to get the selected items' values.
+                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+
+                        // Convert the checked items to a string array
+                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        // Check if there are any selected municipalities
+                        if (municipalitiesArray.Length > 0)
+                        {
+                            // Join the selected municipality values into a single comma-separated string
+                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
+
+                            // Append the condition to the query
+                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
+                        }
+
+                        if (statusFilter != "All Statuses")
+                        {
+                            query += " AND m.StatusID BETWEEN 2 AND 15";
+                        }
+
+                    }
+                //}
+
+                query += @"
+                       GROUP BY
+                           m.ID, 
+                           m.LastName,
+                           m.FirstName,
+                           m.MiddleName,
+                           m.ExtName,
+                           tg_max.ID
+                       ORDER BY
+                            lc.CityMunName 
+                        ASC";
+
+                cmd.CommandText = query;
+
+                /*Active and Applicant and All municipalities Filter*/
+                //if ((statusFilter == "Active" || statusFilter == "Applicant"))
+                //{
+                //    cmd.Parameters.AddWithValue("@Status", statusFilter);
+                //}
+                //else if (!allMunicipalityChecked) // Filter if specific municipality is selected then sepcific data will be searched.
+                //{
+                //    /*Filter All status*/
+                //    if (statusFilter == "All Statuses")
+                //    {
+                //        // Retrieve the selected item and get the PSGCCityMun Code.
+
+                //        var selectedItem = (dynamic)cmb_municipality.SelectedItem;
+                //        int psgccitymun = selectedItem.PSGCCityMun;
+                //        cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
+                //    }
+                //    //else if (statusFilter == "Active" || statusFilter == "Applicant")// Active and Applicant filter
+                //    //{
+                //    //    cmd.Parameters.AddWithValue("@Status", statusFilter);
+
+                //    //    // Retrieve the selected item and get the PSGCCityMun Code.
+                //    //    var selectedItem = (dynamic)cmb_municipality.SelectedItem;
+                //    //    int psgccitymun = selectedItem.PSGCCityMun;
+                //    //    cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
+                //    //}
+                //    //else if (statusFilter == "Waitlisted")// Waitlisted filter
+                //    //{
+                //    //    // Retrieve the selected item and get the PSGCCityMun Code.
+                //    //    var selectedItem = (dynamic)cmb_municipality.SelectedItem;
+                //    //    int psgccitymun = selectedItem.PSGCCityMun;
+                //    //    cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
+                //    //}
+                //    //else if (statusFilter == "Delisted")//Delisted Filter
+                //    //{
+                //    //    // Retrieve the selected item and get the PSGCCityMun Code.
+                //    //    var selectedItem = (dynamic)cmb_municipality.SelectedItem;
+                //    //    int psgccitymun = selectedItem.PSGCCityMun;
+                //    //    cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
+                //    //}
+
+                //}
 
                 DataTable dt = new DataTable();
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
@@ -481,7 +773,7 @@ namespace SpinsNew
                 //Create a task to fill the DataTable and update the progress bar
                 await Task.Run(async () =>
                 {
-                    await Task.Run(() => da.Fill(dt));
+                    da.Fill(dt);
                     for (int i = 0; i <= 100; i += 10)
                     {
                         // Simulate progress (this is just for demonstration; adjust as necessary)
@@ -608,1846 +900,13 @@ namespace SpinsNew
 
 
         }
-        public async Task DelistedAllMunicipalities()
-        {
-            try
-            {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-                        MAX(la.Assessment) as Assessment,
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN 
-                        (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                         GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                         m.StatusID BETWEEN 2 AND 15
-                         AND m.DateTimeDeleted IS NULL
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID
-                    DESC";
 
-
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                //var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                //int psgccitymun = selectedItem.PSGCCityMun;
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                //cmd.Parameters.AddWithValue("@Status", cmb_status.Text);
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", cmb_municipality.Text); // Use selected municipality
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-
-                //Await to reduce lag while loading large amount of datas
-                await Task.Run(async () =>
-                {
-                    //da.Fill(dt);
-                    await Task.Run(() => da.Fill(dt));
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-                // Create a task to fill the DataTable
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the columns if they exist
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-                    // Freeze the columns
-                    gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-
-                    //// Enable searching
-                    //gridView.OptionsFind.AlwaysVisible = true; // Show find panel
-
-                    //// Enable search in specific columns
-                    //gridView.Columns["LastName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["FirstName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["MiddleName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                }
-                // Update row count display
-                UpdateRowCount(gridView);
-                progressBarControl1.EditValue = 100;
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-
-
-        }
-        public async Task WaitlistedAllMunicipalities()
-        {
-            try
-            {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-
-                        MAX(tg.AssessmentID) as AssessmentID,
-                        MAX(m.StatusID) as StatusID,
-
-                        MAX(la.Assessment) as Assessment,
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN 
-                        (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                         GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                        tg.ReferenceCode IS NOT NULL
-                        AND tg.SPISBatch IS NOT NULL
-                        AND m.StatusID = 99
-                        AND m.DateTimeDeleted IS NULL
-                        AND la.ID = 1
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID
-                    DESC";
-
-
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                //var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                //int psgccitymun = selectedItem.PSGCCityMun;
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                //cmd.Parameters.AddWithValue("@Status", cmb_status.Text);
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", cmb_municipality.Text); // Use selected municipality
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-
-                //Await to reduce lag while loading large amount of datas
-                await Task.Run(async () =>
-                {
-                    //da.Fill(dt);
-                    await Task.Run(() => da.Fill(dt));
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-                // Create a task to fill the DataTable
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    int assessment = row["AssessmentID"] != DBNull.Value ? Convert.ToInt32(row["AssessmentID"]) : 0;
-                    int spisbatch = row["SpisBatch"] != DBNull.Value ? Convert.ToInt32(row["SpisBatch"]) : 0;
-                    int statusID = Convert.ToInt32(row["StatusID"]); // Get the StatusID
-                    string gis = row["GIS"]?.ToString();
-                    string spbuf = row["SPBUF"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-
-                    // Check if Assessment is 1 (Eligible) and either GIS or SPBUF is not null
-                    if (assessment == 1 && statusID == 99 && spisbatch != 0 && (!string.IsNullOrEmpty(gis) || !string.IsNullOrEmpty(spbuf)))
-                    {
-                        status = "Waitlisted";
-                    }
-
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the columns if they exist
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-                    HideColumn(gridView, "StatusID");
-                    HideColumn(gridView, "AssessmentID");
-
-                    // Freeze the columns if they exist
-                    if (gridView.Columns.ColumnByFieldName("LastName") != null)
-                        gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("FirstName") != null)
-                        gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
-                        gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("ExtName") != null)
-                        gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-
-                    //// Enable searching
-                    //gridView.OptionsFind.AlwaysVisible = true; // Show find panel
-
-                    //// Enable search in specific columns
-                    //gridView.Columns["LastName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["FirstName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["MiddleName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                }
-                // Update row count display
-                UpdateRowCount(gridView);
-                progressBarControl1.EditValue = 100;
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-
-
-        }
-        public async Task ActiveandApplicantListAllMunicipalities()
-        {
-            try
-            {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-
-                        MAX(tg.AssessmentID) as AssessmentID,
-                        MAX(m.StatusID) as StatusID,
-
-
-                        MAX(la.Assessment) as Assessment,
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN 
-                        (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                         GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                        ls.Status = @Status
-                        AND m.DateTimeDeleted IS NULL
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID
-                    DESC";
-
-
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                //var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                //int psgccitymun = selectedItem.PSGCCityMun;
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                cmd.Parameters.AddWithValue("@Status", cmb_status.Text);
-
-
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", cmb_municipality.Text); // Use selected municipality
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-
-                //Await to reduce lag while loading large amount of datas
-                await Task.Run(async () =>
-                {
-                    //da.Fill(dt);
-                    await Task.Run(() => da.Fill(dt));
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-                // Create a task to fill the DataTable
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    int assessment = row["AssessmentID"] != DBNull.Value ? Convert.ToInt32(row["AssessmentID"]) : 0;
-                    int spisbatch = row["SpisBatch"] != DBNull.Value ? Convert.ToInt32(row["SpisBatch"]) : 0;
-                    int statusID = Convert.ToInt32(row["StatusID"]); // Get the StatusID
-                    string gis = row["GIS"]?.ToString();
-                    string spbuf = row["SPBUF"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-
-                    // Check if Assessment is 1 (Eligible) and either GIS or SPBUF is not null
-                    if (assessment == 1 && statusID == 99 && spisbatch != 0 && (!string.IsNullOrEmpty(gis) || !string.IsNullOrEmpty(spbuf)))
-                    {
-                        status = "Waitlisted";
-                    }
-
-
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the columns if they exist
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-                    HideColumn(gridView, "StatusID");
-                    HideColumn(gridView, "AssessmentID");
-
-                    // Freeze the columns if they exist
-                    if (gridView.Columns.ColumnByFieldName("LastName") != null)
-                        gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("FirstName") != null)
-                        gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
-                        gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("ExtName") != null)
-                        gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-
-                    //// Enable searching
-                    //gridView.OptionsFind.AlwaysVisible = true; // Show find panel
-
-                    //// Enable search in specific columns
-                    //gridView.Columns["LastName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["FirstName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["MiddleName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                }
-                // Update row count display
-                UpdateRowCount(gridView);
-                progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-   
-
-        }
-        //Async method for searching Active and Applicant list.
-        //Active is the Only valid for payroll creating no other.
         // Method to hide columns in the GridView
         private void HideColumn(GridView gridView, string columnName)
         {
             if (gridView.Columns[columnName] != null)
             {
                 gridView.Columns[columnName].Visible = false;
-            }
-        }
-
-        public async Task ActiveandApplicantList()
-        {
-            try
-            {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-
-                        MAX(tg.AssessmentID) as AssessmentID,
-                        MAX(m.StatusID) as StatusID,
-
-
-
-                        MAX(la.Assessment) as Assessment,
-
-                       
-
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        
-                        m.PSGCRegion,
-                        m.PSGCProvince,
-                        m.PSGCCityMun,
-                        m.PSGCBrgy,
-
-
-
-
-
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN
-                         (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                         GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                        m.PSGCCityMun = @PSGCCityMun
-                        AND ls.Status = @Status
-                        AND m.DateTimeDeleted IS NULL
-                    GROUP BY
-                        m.ID,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID DESC";
-
-
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                int psgccitymun = selectedItem.PSGCCityMun;
-                cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                cmd.Parameters.AddWithValue("@Status", cmb_status.Text);
-
-
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", cmb_municipality.Text); // Use selected municipality
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-
-                //Await to reduce lag while loading large amount of datas
-                //await Task.Run(() => da.Fill(dt));
-                // Create a task to fill the DataTable and update the progress bar
-                await Task.Run(async () =>
-                {
-                    await Task.Run(() => da.Fill(dt));
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    int assessment = row["AssessmentID"] != DBNull.Value ? Convert.ToInt32(row["AssessmentID"]) : 0;
-                    int spisbatch = row["SpisBatch"] != DBNull.Value ? Convert.ToInt32(row["SpisBatch"]) : 0;
-                    int statusID = Convert.ToInt32(row["StatusID"]); // Get the StatusID
-                    string gis = row["GIS"]?.ToString();
-                    string spbuf = row["SPBUF"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-
-                    // Check if Assessment is 1 (Eligible) and either GIS or SPBUF is not null
-                    if (assessment == 1 && statusID == 99 && spisbatch != 0 && (!string.IsNullOrEmpty(gis) || !string.IsNullOrEmpty(spbuf)))
-                    {
-                        status = "Waitlisted";
-                    }
-
-
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the columns if they exist
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-                    HideColumn(gridView, "StatusID");
-                    HideColumn(gridView, "AssessmentID");
-                    HideColumn(gridView, "PSGCRegion");
-                    HideColumn(gridView, "PSGCProvince");
-                    HideColumn(gridView, "PSGCCityMun");
-                    HideColumn(gridView, "PSGCBrgy");
-
-                    // Freeze the columns if they exist
-                    if (gridView.Columns.ColumnByFieldName("LastName") != null)
-                        gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("FirstName") != null)
-                        gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
-                        gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("ExtName") != null)
-                        gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-
-
-
-                    //// Enable searching
-                    //gridView.OptionsFind.AlwaysVisible = true; // Show find panel
-
-                    //// Enable search in specific columns
-                    //gridView.Columns["LastName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["FirstName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["MiddleName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                }
-                // Update row count display
-                UpdateRowCount(gridView);
-
-                progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-
-
-        }
-        public async Task Waitlisted()
-        {
-            try
-            {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-
-                        MAX(m.StatusID) as StatusID, 
-
-
-                        MAX(la.Assessment) as Assessment,
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN
-                         (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                         GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                        m.PSGCCityMun = @PSGCCityMun
-                        AND tg.ReferenceCode IS NOT NULL
-                        AND tg.SPISBatch IS NOT NULL
-                        AND m.StatusID = 99
-                        AND m.DateTimeDeleted IS NULL
-                        AND la.ID = 1
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID
-                    DESC";
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                int psgccitymun = selectedItem.PSGCCityMun;
-                cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                cmd.Parameters.AddWithValue("@Status", cmb_status.Text);
-
-
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", cmb_municipality.Text); // Use selected municipality
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                //Await to reduce lag while loading large amount of datas
-                //await Task.Run(() => da.Fill(dt));
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-
-                //Await to reduce lag while loading large amount of datas
-                //await Task.Run(() => da.Fill(dt));
-                // Create a task to fill the DataTable and update the progress bar
-                await Task.Run(async () =>
-                {
-                    await Task.Run(() => da.Fill(dt));
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    int statusID = Convert.ToInt32(row["StatusID"]); // Get the StatusID
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-                    // Change "Applicant" to "Waitlisted"
-
-                    if (statusID == 99)
-                    {
-                        status = "Waitlisted";
-                    }
-
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the columns if they exist
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-                    HideColumn(gridView, "StatusID");
-                    HideColumn(gridView, "AssessmentID");
-                    //HideColumn(gridView, "PSGCRegion");
-                    //HideColumn(gridView, "PSGCProvince");
-                    //HideColumn(gridView, "PSGCCityMun");
-                    //HideColumn(gridView, "PSGCBrgy");
-
-                    // Freeze the columns if they exist
-                    if (gridView.Columns.ColumnByFieldName("LastName") != null)
-                        gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("FirstName") != null)
-                        gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
-                        gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("ExtName") != null)
-                        gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-                    //// Enable searching
-                    //gridView.OptionsFind.AlwaysVisible = true; // Show find panel
-
-                    //// Enable search in specific columns
-                    //gridView.Columns["LastName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["FirstName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["MiddleName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                }
-                // Update row count display
-                UpdateRowCount(gridView);
-                progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-        }
-        public async Task Delisted()
-        {
-            try
-            {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-                        MAX(la.Assessment) as Assessment,
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN
-                         (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                         GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                         m.PSGCCityMun = @PSGCCityMun
-                         AND m.StatusID BETWEEN 2 AND 15
-                         AND m.DateTimeDeleted IS NULL
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID
-                    DESC";
-
-
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                int psgccitymun = selectedItem.PSGCCityMun;
-                cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                cmd.Parameters.AddWithValue("@Status", cmb_status.Text);
-
-
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", cmb_municipality.Text); // Use selected municipality
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                //Await to reduce lag while loading large amount of datas
-                //await Task.Run(() => da.Fill(dt));
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-
-                //Await to reduce lag while loading large amount of datas
-                //await Task.Run(() => da.Fill(dt));
-                // Create a task to fill the DataTable and update the progress bar
-                await Task.Run(async () =>
-                {
-                    await Task.Run(() => da.Fill(dt));
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-
-
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the "ID" column
-
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-
-
-                    // Freeze the columns
-                    gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-
-                    //// Enable searching
-                    //gridView.OptionsFind.AlwaysVisible = true; // Show find panel
-
-                    //// Enable search in specific columns
-                    //gridView.Columns["LastName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["FirstName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    //gridView.Columns["MiddleName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                }
-                // Update row count display
-                UpdateRowCount(gridView);
-                progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-            finally
-            {
-               
-            }
-        }
-        public async Task AllStatusList()
-        {
-            try
-            {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText =
-                    @"SELECT 
-                        m.ID,
-                        IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-
-                        MAX(tg.AssessmentID) as AssessmentID,
-                        MAX(m.StatusID) as StatusID,
-
-
-                        MAX(la.Assessment) as Assessment,
-
-
-
-                        MAX(tg.ReferenceCode) as GIS,
-                        MAX(ts.ReferenceCode) as SPBUF,
-                        MAX(tg.SPISBatch) as SpisBatch,
-                        MAX(ls.Status) as Status,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE())) AS Age,
-                        MAX(s.Sex) as Sex,
-                        MAX(ms.MaritalStatus) as MaritalStatus,
-                        MAX(m.Religion) as Religion,
-                        MAX(m.BirthPlace) as BirthPlace,
-                        MAX(m.EducAttain) as EducAttain,
-                        MAX(it.Type) as IDType,
-                        MAX(m.IDNumber) as IDNumber,
-                        MAX(m.IDDateIssued) as IDDateIssued,
-                        MAX(m.Pantawid) as Pantawid,
-                        MAX(m.Indigenous) as Indigenous,
-                        MAX(m.SocialPensionID) as SocialPensionID,
-                        MAX(m.HouseholdID) as HouseholdID,
-                        MAX(m.IndigenousID) as IndigenousID,
-                        MAX(m.ContactNum) as ContactNum,
-                        MAX(lh.HealthStatus) as HealthStatus,
-                        MAX(m.HealthStatusRemarks) as HealthStatusRemarks,
-                        MAX(m.DateTimeEntry) as DateTimeEntry,
-                        MAX(m.EntryBy) as EntryBy,
-                        MAX(ld.DataSource) as DataSource,
-                        MAX(m.Remarks) as Remarks,
-                        MAX(lrt.RegType) as RegistrationType,
-                        MAX(m.InclusionBatch) as InclusionBatch,
-                        MAX(m.InclusionDate) as InclusionDate,
-                        MAX(m.ExclusionBatch) as ExclusionBatch,
-                        MAX(m.ExclusionDate) as ExclusionDate,
-                        MAX(m.DateDeceased) as DateDeceased,
-                        MAX(m.DateTimeModified) as DateTimeModified,
-                        MAX(m.ModifiedBy) as ModifiedBy,
-                        MAX(m.DateTimeDeleted) as DateTimeDeleted
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_sex s ON m.SexID = s.ID
-                    LEFT JOIN 
-                        lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                    LEFT JOIN 
-                        lib_id_type it ON m.IDtypeID = it.ID
-                    LEFT JOIN 
-                        lib_health_status lh ON m.HealthStatusID = lh.ID
-                    LEFT JOIN 
-                        lib_datasource ld ON m.DataSourceID = ld.ID
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    LEFT JOIN 
-                        lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                    LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
-                    LEFT JOIN
-                         (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                         FROM tbl_attachments 
-                         GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                    WHERE 
-                         m.PSGCCityMun = @PSGCCityMun
-                        AND m.DateTimeDeleted IS NULL
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName
-                    ORDER BY
-                        m.ID
-                    DESC";
-
-
-
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                int psgccitymun = selectedItem.PSGCCityMun;
-                cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-
-
-                //cmd.Parameters.AddWithValue("@PSGCCityMun", cmb_municipality.Text); // Use selected municipality
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                //Await to reduce lag while loading large amount of datas
-                //await Task.Run(() => da.Fill(dt));
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-
-                //Await to reduce lag while loading large amount of datas
-                //await Task.Run(() => da.Fill(dt));
-                // Create a task to fill the DataTable and update the progress bar
-                await Task.Run(async () =>
-                {
-                    await Task.Run(() => da.Fill(dt));
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    int assessment = row["AssessmentID"] != DBNull.Value ? Convert.ToInt32(row["AssessmentID"]) : 0;
-                    int spisbatch = row["SpisBatch"] != DBNull.Value ? Convert.ToInt32(row["SpisBatch"]) : 0;
-                    int statusID = Convert.ToInt32(row["StatusID"]); // Get the StatusID
-                    string gis = row["GIS"]?.ToString();
-                    string spbuf = row["SPBUF"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-
-                    // Check if Assessment is 1 (Eligible) and either GIS or SPBUF is not null
-                    if (assessment == 1 && statusID == 99 && spisbatch != 0 && (!string.IsNullOrEmpty(gis) || !string.IsNullOrEmpty(spbuf)))
-                    {
-                        status = "Waitlisted";
-                    }
-
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the columns if they exist
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-                    HideColumn(gridView, "StatusID");
-                    HideColumn(gridView, "AssessmentID");
-                    //HideColumn(gridView, "PSGCRegion");
-                    //HideColumn(gridView, "PSGCProvince");
-                    //HideColumn(gridView, "PSGCCityMun");
-                    //HideColumn(gridView, "PSGCBrgy");
-
-                    // Freeze the columns if they exist
-                    if (gridView.Columns.ColumnByFieldName("LastName") != null)
-                        gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("FirstName") != null)
-                        gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
-                        gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("ExtName") != null)
-                        gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-
-
-
-                    // Uncomment if you want to enable searching and set filter conditions
-                    // gridView.OptionsFind.AlwaysVisible = true; // Show find panel
-                    // gridView.Columns["LastName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    // gridView.Columns["FirstName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                    // gridView.Columns["MiddleName"].OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-                }
-
-                // Update row count display
-                UpdateRowCount(gridView);
-                progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
             }
         }
         //Show the spinner
@@ -2488,75 +947,25 @@ namespace SpinsNew
             previousStatus = currentStatus;
 
             // Your existing logic to handle search
-            if (cmb_municipality.Text == "Select City/Municipality" && cmb_status.Text == "Select Status")
+            if (cmb_municipality.Text == "" && cmb_status.Text == "")
             {
                 MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else if (cmb_municipality.Text == "Select City/Municipality")
+            if (cmb_municipality.Text == "")
             {
                 MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else if (cmb_status.Text == "Select Status")
+            if (cmb_status.Text == "")
             {
                 MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else if (ck_all.Checked == true && cmb_municipality.Text == "All Municipalities")
-            {
-                if (cmb_status.Text == "Select Status")
-                {
-                    MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                if (cmb_status.Text == "All Statuses")
-                {
-                    EnableSpinner();//Enable the spinner
-                    await AllMunicipalities(); //With Waitlisted already. // Done for attachments
-                    return;
-                }
-                if (cmb_status.Text == "Active" || cmb_status.Text == "Applicant")
-                {
-                    EnableSpinner();
-                    await ActiveandApplicantListAllMunicipalities(); // With waitlisted already. // Done for attachments
-                    return;
-                }
 
-                if (cmb_status.Text == "Waitlisted")
-                {
-                    EnableSpinner();
-                    await WaitlistedAllMunicipalities(); // With waitlisted already.// Done for attachments
-                    return;
-                }
-
-                if (cmb_status.Text == "Delisted")
-                {
-                    EnableSpinner();
-                    await DelistedAllMunicipalities();
-                    return;
-                }
-            }
-            else
-            {
-                if (cmb_status.Text == "Active" || cmb_status.Text == "Applicant") //DOne filtering the Eligible and Spisbatch not null and with GIS or SPBUF Waitlisted Status.
-                {
-                    EnableSpinner();
-                    await ActiveandApplicantList(); // For payroll only way to filter // Done for attachments // Done for column resizing
-                }
-                else if (cmb_status.Text == "Waitlisted") //set the statuscurrent to waitlisted // Done for attachments // DOne for column resizing
-                {
-                    EnableSpinner();
-                    await Waitlisted();
-                }
-                else if (cmb_status.Text == "Delisted")// Done for attachments (Displaying status) // DOne for column resizing
-                {
-                    EnableSpinner();
-                    await Delisted();
-                }
-                else if (cmb_status.Text == "All Statuses") //DOne filtering the Eligible and Spisbatch not null and with GIS or SPBUF Waitlisted Status.// Done for attachments. // Done for column resizing
-                {
-                    EnableSpinner();
-                    await AllStatusList();
-                }
-            }
+            EnableSpinner();//Enable the spinner
+            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            return;
 
         }
 
@@ -2725,7 +1134,7 @@ namespace SpinsNew
             //}
         }
 
-      
+
 
         private void viewToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2805,50 +1214,26 @@ namespace SpinsNew
 
         private void ck_all_CheckedChanged(object sender, EventArgs e)
         {
-            if (ck_all.Checked == true)
-            {
-                cmb_municipality.Text = "All Municipalities";
-                cmb_municipality.Enabled = false;
-            }
-            else
-            {
-                cmb_municipality.Text = "Select City/Municipality";
-                cmb_municipality.Enabled = true;
-            }
+            //if (ck_all.Checked == true)
+            //{
+            //    cmb_municipality.Text = "All Municipalities";
+            //    cmb_municipality.Enabled = false;
+            //}
+            //else
+            //{
+            //    cmb_municipality.Text = "Select City/Municipality";
+            //    cmb_municipality.Enabled = true;
+            //}
         }
         public void ReloadMasterlist()
         {
-            //If all check box all was check then don't reload the method for searching because it takes a long time to load, instead we can refresh it manually.
-            if (ck_all.Checked == false)
-            {
-                if (cmb_status.Text == "All Statuses")
-                {
-                    btn_search.Enabled = false;
-                    Task task = AllStatusList();
-                    return;
-                }
 
-                if (cmb_status.Text == "Delisted")
-                {
-                    btn_search.Enabled = false;
-                    Task task = Delisted();
-                    return;
-                }
 
-                if (cmb_status.Text == "Waitlisted")
-                {
-                    btn_search.Enabled = false;
-                    Task task = Waitlisted();
-                    return;
-                }
+                btn_search.Enabled = false;
+                Task task = AllMunicipalities();
+                return;
 
-                if (cmb_status.Text == "Active" || cmb_status.Text == "Applicant")
-                {
-                    btn_search.Enabled = false;
-                    Task task = ActiveandApplicantList();
-                    return;
-                }
-            }
+
 
         }
 
@@ -2888,62 +1273,12 @@ namespace SpinsNew
             {
                 MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            else if (ck_all.Checked == true && cmb_municipality.Text == "All Municipalities")//WHen checkbox was checked
-            {
-                if (cmb_status.Text == "Select Status")
-                {
-                    MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                if (cmb_status.Text == "All Statuses")
-                {
-                    EnableSpinner();
-                    await AllMunicipalities();
-                    return;
-                }
-                if (cmb_status.Text == "Active" || cmb_status.Text == "Applicant")
-                {
-                    EnableSpinner();
-                    await ActiveandApplicantListAllMunicipalities();
-                    return;
-                }
 
-                if (cmb_status.Text == "Waitlisted")
-                {
-                    EnableSpinner();
-                    await WaitlistedAllMunicipalities();
-                    return;
-                }
-                if (cmb_status.Text == "Delisted")
-                {
-                    EnableSpinner();
-                    await DelistedAllMunicipalities();
-                    return;
-                }
-            }
-            else
-            {
-                if (cmb_status.Text == "Active" || cmb_status.Text == "Applicant")
-                {
-                    EnableSpinner();
-                    await ActiveandApplicantList();
-                }
-                else if (cmb_status.Text == "Waitlisted")
-                {
-                    EnableSpinner();
-                    await Waitlisted();
-                }
-                else if (cmb_status.Text == "Delisted")
-                {
-                    EnableSpinner();
-                    await Delisted();
-                }
-                else if (cmb_status.Text == "All Statuses")
-                {
-                    EnableSpinner();
-                    await AllStatusList();
-                }
-            }
+
+            EnableSpinner();//Enable the spinner
+            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            return;
+
         }
         PayrollHistory payrollHistoryForm;
 
@@ -2981,7 +1316,7 @@ namespace SpinsNew
 
         private void simpleButton1_Click_1(object sender, EventArgs e)
         {
-           
+
         }
 
         private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3188,7 +1523,7 @@ namespace SpinsNew
             string status = row["StatusCurrent"].ToString();
 
             // Check if StatusID is 1 (Active) or 99 (Applicant)
-            if (status == "Applicant" )
+            if (status == "Applicant")
             {
                 MessageBox.Show("Particular beneficiary is already an Applicant please select an Active or Delisted beneficiary to continue.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return; // Exit the method without showing the form
@@ -3378,7 +1713,7 @@ namespace SpinsNew
             }
 
             // IF the status is Applicant and Assessment is not Eligible or Null and SpinsBatch is Null and GIS or SPBUF is null then data is not eligible for Activation.
-            else if (assessment != "Eligible") 
+            else if (assessment != "Eligible")
             {
                 MessageBox.Show("Benficiary is not eligible to activate because he/she is Not Eligible.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return; // Exit the method without showing the form
@@ -3390,7 +1725,7 @@ namespace SpinsNew
                 MessageBox.Show("Benficiary is not eligible to activate because he/she have no Spins Batching.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return; // Exit the method without showing the form
             }
-            else if(cmb_status.Text == "Delisted")
+            else if (cmb_status.Text == "Delisted")
             {
                 MessageBox.Show("You can't Activate an delisted beneficiary. Set it as an Applicant instead.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return; // Exit the method without showing the form
@@ -3445,11 +1780,11 @@ namespace SpinsNew
                 return; // Exit the method without showing EditApplicantForm
             }
 
-            if (ck_all.Checked == true)
-            {
-                XtraMessageBox.Show("Select only One[1] Municipality when creating a payroll.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            //if (ck_all.Checked == true)
+            //{
+            //    XtraMessageBox.Show("Select only One[1] Municipality when creating a payroll.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
 
             if (cmb_status.Text != "Active")
             {
@@ -3598,6 +1933,11 @@ namespace SpinsNew
         }
 
         private void groupControl2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
         {
 
         }

@@ -189,23 +189,30 @@ namespace SpinsWinforms.Forms
                 m.PSGCBrgy,
                 lb.BrgyName as Barangay,
 
-                tg.ReferenceCode,
-                tg.MasterListID,
-                tg.HouseholdSize,
+                tg_max.ReferenceCode,
+                tg_max.MasterListID,
+                tg_max.HouseholdSize,
                 la.Assessment as Assessment,
-                tg.AssessmentID,
-                tg.ValidatedByID,
+                tg_max.AssessmentID,
+                tg_max.ValidatedByID,
                 lv.Validator as Validator,
-                tg.ValidationDate
+                tg_max.ValidationDate
                 
             FROM 
                 tbl_masterlist m
+            LEFT JOIN 
+               (SELECT tg1.*
+                FROM tbl_gis tg1
+                INNER JOIN (
+                    SELECT MasterlistID, MAX(ID) as MaxGISID
+                    FROM tbl_gis
+                    GROUP BY MasterlistID
+                ) tg2 ON tg1.MasterlistID = tg2.MasterlistID AND tg1.ID = tg2.MaxGISID
+               ) tg_max ON m.ID = tg_max.MasterlistID
             LEFT JOIN
-                tbl_gis tg ON m.ID = tg.MasterlistID
+                lib_validator lv ON tg_max.ValidatedByID = lv.ID
             LEFT JOIN
-                lib_validator lv ON tg.ValidatedByID = lv.ID
-            LEFT JOIN
-                lib_assessment la ON tg.AssessmentID = la.ID
+                lib_assessment la ON tg_max.AssessmentID = la.ID
             LEFT JOIN
                 lib_sex ls ON m.SexId = ls.Id
             LEFT JOIN
