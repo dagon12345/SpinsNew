@@ -675,8 +675,8 @@ namespace SpinsNew
                 }
                 // Move the new column to the 6th position
                 dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-
+                                
+                        //Sample integrations
                 //We are using DevExpress datagridview
                 gridControl1.DataSource = dt;
 
