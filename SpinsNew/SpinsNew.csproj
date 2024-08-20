@@ -166,6 +166,12 @@
     <Compile Include="Forms\EditApplicant.Designer.cs">
       <DependentUpon>EditApplicant.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MasterList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -189,6 +195,12 @@
     </Compile>
     <Compile Include="Forms\PayrollHistory.Designer.cs">
       <DependentUpon>PayrollHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\RegistrationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RegistrationForm.Designer.cs">
+      <DependentUpon>RegistrationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Replacements.cs">
       <SubType>Form</SubType>
@@ -231,6 +243,9 @@
     <EmbeddedResource Include="Forms\EditApplicant.resx">
       <DependentUpon>EditApplicant.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MasterList.resx">
       <DependentUpon>MasterList.cs</DependentUpon>
     </EmbeddedResource>
@@ -242,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PayrollHistory.resx">
       <DependentUpon>PayrollHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\RegistrationForm.resx">
+      <DependentUpon>RegistrationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Replacements.resx">
       <DependentUpon>Replacements.cs</DependentUpon>

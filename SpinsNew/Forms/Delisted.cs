@@ -9,9 +9,11 @@ namespace SpinsNew.Forms
 {
     public partial class Delisted : Form
     {
+ 
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
-        public Delisted(MasterList masterlist)
+        public string _username;
+        public Delisted(MasterList masterlist, string username)
         {
             InitializeComponent();
             masterlistForm = masterlist;// Execute the MasterListform.
@@ -19,6 +21,7 @@ namespace SpinsNew.Forms
             this.KeyPreview = true; // Allows the form to receive key events before the focused control does
             // Handle the KeyDown event
             this.KeyDown += Delisted_KeyDown;
+            _username = username;
         }
 
         private void Delisted_KeyDown(object sender, KeyEventArgs e)
@@ -498,7 +501,7 @@ namespace SpinsNew.Forms
                             //    logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}]");
                             //}
                             logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", Environment.UserName); // Replace with the actual user
+                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
                             logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
                             logCmd.ExecuteNonQuery();
                         }
@@ -551,7 +554,7 @@ namespace SpinsNew.Forms
                 cmd.Parameters.AddWithValue("@PeriodID", selectedPeriod.PeriodID);
                 cmd.Parameters.AddWithValue("@Year", selectedYear.Year);
                 cmd.Parameters.AddWithValue("@ReportSourceID", selectedSource.Id);
-                cmd.Parameters.AddWithValue("@DelistedBy", Environment.UserName);
+                cmd.Parameters.AddWithValue("@DelistedBy", _username);
                 cmd.Parameters.AddWithValue("@DateTimeDelisted", DateTime.Now);
 
                 cmd.ExecuteNonQuery();

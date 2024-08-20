@@ -17,8 +17,8 @@ namespace SpinsNew.Forms
     {
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
-
-        public Attachments(MasterList masterList, Payroll payroll)
+        public string _username;
+        public Attachments(MasterList masterList, Payroll payroll, string username)
         {
             InitializeComponent();
             masterlistForm = masterList;
@@ -28,6 +28,7 @@ namespace SpinsNew.Forms
             this.KeyPreview = true;
             this.KeyDown += new KeyEventHandler(btn_save_KeyDown);
             this.KeyDown += Attachments_KeyDown;
+            _username = username;
         }
 
         private MasterList masterlistForm;// Call MasterList form
@@ -384,7 +385,7 @@ namespace SpinsNew.Forms
 
                 logCmd.Parameters.AddWithValue("@Log", $"[Attachments] Inserted an attachment named '{txt_attachmentname.EditValue}'.");
                 logCmd.Parameters.AddWithValue("@Logtype", 9); // Assuming 1 is for update
-                logCmd.Parameters.AddWithValue("@User", Environment.UserName); // Replace with the actual user
+                logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
                 logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
 
                 logCmd.ExecuteNonQuery();
@@ -413,7 +414,7 @@ namespace SpinsNew.Forms
 
                 logCmd.Parameters.AddWithValue("@Log", $"[Attachments] Deleted an attachment named '{txt_attachmentname.EditValue}'.");
                 logCmd.Parameters.AddWithValue("@Logtype", 9); // Assuming 1 is for update
-                logCmd.Parameters.AddWithValue("@User", Environment.UserName); // Replace with the actual user
+                logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
                 logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
 
                 logCmd.ExecuteNonQuery();

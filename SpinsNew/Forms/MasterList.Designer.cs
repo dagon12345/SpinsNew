@@ -36,6 +36,7 @@ namespace SpinsNew
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.btn_search = new DevExpress.XtraEditors.SimpleButton();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+            this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.cmb_municipality = new DevExpress.XtraEditors.CheckedComboBoxEdit();
             this.btn_refresh = new DevExpress.XtraEditors.SimpleButton();
@@ -64,7 +65,6 @@ namespace SpinsNew
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
-            this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).BeginInit();
@@ -104,7 +104,7 @@ namespace SpinsNew
             this.gridControl1.Location = new System.Drawing.Point(4, 23);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(773, 426);
+            this.gridControl1.Size = new System.Drawing.Size(773, 425);
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -149,6 +149,18 @@ namespace SpinsNew
             this.groupControl2.Size = new System.Drawing.Size(782, 99);
             this.groupControl2.TabIndex = 0;
             this.groupControl2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupControl2_Paint);
+            // 
+            // labelControl4
+            // 
+            this.labelControl4.Appearance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl4.Appearance.Options.UseFont = true;
+            this.labelControl4.Location = new System.Drawing.Point(448, 23);
+            this.labelControl4.Name = "labelControl4";
+            this.labelControl4.Size = new System.Drawing.Size(65, 13);
+            this.labelControl4.TabIndex = 20;
+            this.labelControl4.Text = "Select Status";
+            this.labelControl4.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information;
+            this.labelControl4.ToolTipTitle = "Infor";
             // 
             // labelControl3
             // 
@@ -420,21 +432,9 @@ namespace SpinsNew
             this.groupControl1.Controls.Add(this.gridControl1);
             this.groupControl1.Location = new System.Drawing.Point(10, 173);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(782, 452);
+            this.groupControl1.Size = new System.Drawing.Size(782, 451);
             this.groupControl1.TabIndex = 18;
             this.groupControl1.Text = "groupControl1";
-            // 
-            // labelControl4
-            // 
-            this.labelControl4.Appearance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelControl4.Appearance.Options.UseFont = true;
-            this.labelControl4.Location = new System.Drawing.Point(448, 23);
-            this.labelControl4.Name = "labelControl4";
-            this.labelControl4.Size = new System.Drawing.Size(65, 13);
-            this.labelControl4.TabIndex = 20;
-            this.labelControl4.Text = "Select Status";
-            this.labelControl4.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information;
-            this.labelControl4.ToolTipTitle = "Infor";
             // 
             // MasterList
             // 

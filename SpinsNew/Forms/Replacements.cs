@@ -14,10 +14,12 @@ namespace SpinsNew.Forms
     {
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
-        public Replacements()
+        public string _username;
+        public Replacements(string username)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
+            _username = username;
             // gridView1.FocusedRowChanged += gridView_FocusedRowChanged;
         }
 
@@ -1020,7 +1022,7 @@ namespace SpinsNew.Forms
                 replaceCmd.Parameters.AddWithValue("@PSGCCityMun_Replacement", psgcCityMun);
                 replaceCmd.Parameters.AddWithValue("@PSGCBrgy_Replacement", psgcBrgy);
 
-                replaceCmd.Parameters.AddWithValue("@ReplacedBy", Environment.UserName);
+                replaceCmd.Parameters.AddWithValue("@ReplacedBy", _username);
                 replaceCmd.Parameters.AddWithValue("@DateTimeReplaced", DateTime.Now);
                 replaceCmd.ExecuteNonQuery();
 

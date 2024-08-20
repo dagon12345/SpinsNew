@@ -16,12 +16,14 @@ namespace SpinsNew.Forms
     {
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
-        public Payroll()
+        public string _username;
+        public Payroll(string username)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
             viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.A;
+            _username = username;
         }
 
         private void Payroll_Load(object sender, EventArgs e)
@@ -858,7 +860,7 @@ private void UpdateRowCount(int rowCount)
                 DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
                 int id = Convert.ToInt32(row["MasterlistID"]);
 
-                attachmentsForm = new Attachments(masterlistForm, payrollForm); // Ensure this matches the constructor of Attachments
+                attachmentsForm = new Attachments(masterlistForm, payrollForm, _username); // Ensure this matches the constructor of Attachments
                 attachmentsForm.DisplayID(id);
                 attachmentsForm.Show();
             }

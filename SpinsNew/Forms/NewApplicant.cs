@@ -13,7 +13,8 @@ namespace SpinsNew.Forms
     {
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
-        public NewApplicant()
+        public string _username;
+        public NewApplicant(string username)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
@@ -32,6 +33,8 @@ namespace SpinsNew.Forms
             txt_firstname.Leave += new EventHandler(Txt_firstname_Leave);
             txt_middlename.Leave += new EventHandler(Txt_middlename_Leave);
             txt_extname.Leave += new EventHandler(Txt_extname_Leave);
+
+            _username = username;
         }
 
     
@@ -670,7 +673,7 @@ namespace SpinsNew.Forms
                 cmd.Parameters.AddWithValue("@HealthStatusID", selectedHealthStatus.Id); // Assuming you have a value member set for cmb_healthstatus
                 cmd.Parameters.AddWithValue("@HealthStatusRemarks", txt_remarks.Text);
                 cmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-                cmd.Parameters.AddWithValue("@EntryBy", Environment.UserName); // Assuming you want to track the user who made the entry
+                cmd.Parameters.AddWithValue("@EntryBy", _username); // Assuming you want to track the user who made the entry
                 cmd.Parameters.AddWithValue("@DataSourceID", selectedDataSource.Id); // Assuming you have a value member set for cmb_datasource
                 cmd.Parameters.AddWithValue("@StatusID", 99); // Assuming you have a value member set for cmb_status
 

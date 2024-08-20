@@ -73,29 +73,29 @@ namespace SpinsNew.Popups
             this.groupControl1.Controls.Add(this.labelControl2);
             this.groupControl1.Controls.Add(this.labelControl1);
             this.groupControl1.Controls.Add(this.cmb_year);
-            this.groupControl1.Location = new System.Drawing.Point(15, 12);
+            this.groupControl1.Location = new System.Drawing.Point(13, 10);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(401, 228);
+            this.groupControl1.Size = new System.Drawing.Size(344, 198);
             this.groupControl1.TabIndex = 0;
             this.groupControl1.Text = "Fill for payroll";
             // 
             // txt_amount
             // 
             this.txt_amount.EditValue = "0";
-            this.txt_amount.Location = new System.Drawing.Point(360, 95);
+            this.txt_amount.Location = new System.Drawing.Point(309, 82);
             this.txt_amount.Name = "txt_amount";
             this.txt_amount.Properties.ReadOnly = true;
-            this.txt_amount.Size = new System.Drawing.Size(36, 20);
+            this.txt_amount.Size = new System.Drawing.Size(31, 20);
             this.txt_amount.TabIndex = 9;
             this.txt_amount.Visible = false;
             // 
             // txt_multiplier
             // 
             this.txt_multiplier.EditValue = "0";
-            this.txt_multiplier.Location = new System.Drawing.Point(360, 66);
+            this.txt_multiplier.Location = new System.Drawing.Point(309, 57);
             this.txt_multiplier.Name = "txt_multiplier";
             this.txt_multiplier.Properties.ReadOnly = true;
-            this.txt_multiplier.Size = new System.Drawing.Size(36, 20);
+            this.txt_multiplier.Size = new System.Drawing.Size(31, 20);
             this.txt_multiplier.TabIndex = 9;
             this.txt_multiplier.Visible = false;
             this.txt_multiplier.EditValueChanged += new System.EventHandler(this.txt_multiplier_EditValueChanged);
@@ -103,10 +103,10 @@ namespace SpinsNew.Popups
             // txt_monthlystipend
             // 
             this.txt_monthlystipend.EditValue = "0";
-            this.txt_monthlystipend.Location = new System.Drawing.Point(360, 40);
+            this.txt_monthlystipend.Location = new System.Drawing.Point(309, 35);
             this.txt_monthlystipend.Name = "txt_monthlystipend";
             this.txt_monthlystipend.Properties.ReadOnly = true;
-            this.txt_monthlystipend.Size = new System.Drawing.Size(36, 20);
+            this.txt_monthlystipend.Size = new System.Drawing.Size(31, 20);
             this.txt_monthlystipend.TabIndex = 8;
             this.txt_monthlystipend.Visible = false;
             this.txt_monthlystipend.EditValueChanged += new System.EventHandler(this.txt_monthlystipend_EditValueChanged);
@@ -115,59 +115,59 @@ namespace SpinsNew.Popups
             // 
             this.btn_create.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_create.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_create.ImageOptions.Image")));
-            this.btn_create.Location = new System.Drawing.Point(166, 182);
+            this.btn_create.Location = new System.Drawing.Point(142, 158);
             this.btn_create.Name = "btn_create";
-            this.btn_create.Size = new System.Drawing.Size(105, 23);
+            this.btn_create.Size = new System.Drawing.Size(90, 20);
             this.btn_create.TabIndex = 7;
             this.btn_create.Text = "Create";
             this.btn_create.Click += new System.EventHandler(this.btn_create_Click);
             // 
             // cmb_payment
             // 
-            this.cmb_payment.Location = new System.Drawing.Point(101, 149);
+            this.cmb_payment.Location = new System.Drawing.Point(87, 129);
             this.cmb_payment.Name = "cmb_payment";
             this.cmb_payment.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_payment.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_payment.Size = new System.Drawing.Size(235, 20);
+            this.cmb_payment.Size = new System.Drawing.Size(201, 20);
             this.cmb_payment.TabIndex = 4;
             // 
             // cmb_period
             // 
-            this.cmb_period.Location = new System.Drawing.Point(101, 68);
+            this.cmb_period.Location = new System.Drawing.Point(87, 59);
             this.cmb_period.Name = "cmb_period";
             this.cmb_period.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_period.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_period.Size = new System.Drawing.Size(235, 20);
+            this.cmb_period.Size = new System.Drawing.Size(201, 20);
             this.cmb_period.TabIndex = 1;
             this.cmb_period.SelectedIndexChanged += new System.EventHandler(this.cmb_period_SelectedIndexChanged);
             // 
             // cmb_tag
             // 
-            this.cmb_tag.Location = new System.Drawing.Point(101, 122);
+            this.cmb_tag.Location = new System.Drawing.Point(87, 106);
             this.cmb_tag.Name = "cmb_tag";
             this.cmb_tag.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_tag.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_tag.Size = new System.Drawing.Size(235, 20);
+            this.cmb_tag.Size = new System.Drawing.Size(201, 20);
             this.cmb_tag.TabIndex = 3;
             // 
             // cmb_type
             // 
-            this.cmb_type.Location = new System.Drawing.Point(101, 95);
+            this.cmb_type.Location = new System.Drawing.Point(87, 82);
             this.cmb_type.Name = "cmb_type";
             this.cmb_type.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_type.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_type.Size = new System.Drawing.Size(235, 20);
+            this.cmb_type.Size = new System.Drawing.Size(201, 20);
             this.cmb_type.TabIndex = 2;
             // 
             // labelControl6
             // 
-            this.labelControl6.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelControl6.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F);
             this.labelControl6.Appearance.Options.UseFont = true;
-            this.labelControl6.Location = new System.Drawing.Point(52, 148);
+            this.labelControl6.Location = new System.Drawing.Point(45, 128);
             this.labelControl6.Name = "labelControl6";
             this.labelControl6.Size = new System.Drawing.Size(37, 17);
             this.labelControl6.TabIndex = 1;
@@ -175,9 +175,9 @@ namespace SpinsNew.Popups
             // 
             // labelControl4
             // 
-            this.labelControl4.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelControl4.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F);
             this.labelControl4.Appearance.Options.UseFont = true;
-            this.labelControl4.Location = new System.Drawing.Point(48, 70);
+            this.labelControl4.Location = new System.Drawing.Point(41, 61);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(41, 17);
             this.labelControl4.TabIndex = 1;
@@ -185,9 +185,9 @@ namespace SpinsNew.Popups
             // 
             // labelControl3
             // 
-            this.labelControl3.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelControl3.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F);
             this.labelControl3.Appearance.Options.UseFont = true;
-            this.labelControl3.Location = new System.Drawing.Point(66, 122);
+            this.labelControl3.Location = new System.Drawing.Point(57, 106);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(23, 17);
             this.labelControl3.TabIndex = 1;
@@ -195,9 +195,9 @@ namespace SpinsNew.Popups
             // 
             // labelControl2
             // 
-            this.labelControl2.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F);
             this.labelControl2.Appearance.Options.UseFont = true;
-            this.labelControl2.Location = new System.Drawing.Point(61, 96);
+            this.labelControl2.Location = new System.Drawing.Point(52, 83);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(28, 17);
             this.labelControl2.TabIndex = 1;
@@ -205,9 +205,9 @@ namespace SpinsNew.Popups
             // 
             // labelControl1
             // 
-            this.labelControl1.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelControl1.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F);
             this.labelControl1.Appearance.Options.UseFont = true;
-            this.labelControl1.Location = new System.Drawing.Point(60, 44);
+            this.labelControl1.Location = new System.Drawing.Point(51, 38);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(29, 17);
             this.labelControl1.TabIndex = 1;
@@ -215,26 +215,27 @@ namespace SpinsNew.Popups
             // 
             // cmb_year
             // 
-            this.cmb_year.Location = new System.Drawing.Point(101, 41);
+            this.cmb_year.Location = new System.Drawing.Point(87, 36);
             this.cmb_year.Name = "cmb_year";
             this.cmb_year.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_year.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_year.Size = new System.Drawing.Size(235, 20);
+            this.cmb_year.Size = new System.Drawing.Size(201, 20);
             this.cmb_year.TabIndex = 0;
             this.cmb_year.SelectedIndexChanged += new System.EventHandler(this.cmb_year_SelectedIndexChanged);
             // 
             // PayrollPopup
             // 
             this.AcceptButton = this.btn_create;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(431, 253);
+            this.ClientSize = new System.Drawing.Size(369, 219);
             this.Controls.Add(this.groupControl1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(447, 292);
+            this.MaximumSize = new System.Drawing.Size(385, 258);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(447, 292);
+            this.MinimumSize = new System.Drawing.Size(385, 258);
             this.Name = "PayrollPopup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Payroll Pop-up";

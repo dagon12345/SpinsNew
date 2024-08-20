@@ -18,14 +18,16 @@ namespace SpinsNew.Popups
     {
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
+        public string _username;
         private MasterList masterlistForm;
 
-        public PayrollPopup(MasterList masterListForm) //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
+        public PayrollPopup(MasterList masterListForm, string username) //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
         {
             InitializeComponent();
             this.masterlistForm = masterListForm; //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
             // masterlistForm = masterlist;// Execute the MasterListform.
             con = new MySqlConnection(cs.dbcon);
+            _username = username;
         }
 
 
@@ -365,7 +367,6 @@ namespace SpinsNew.Popups
                     amount = Convert.ToDouble(txt_amount.Text);
                 }
            
-
                 for (int i = 0; i < gridView.RowCount; i++)
                 {
                     DataRowView row = (DataRowView)gridView.GetRow(i);
@@ -396,7 +397,7 @@ namespace SpinsNew.Popups
                         cmd.Parameters["@PayrollTagID"].Value = selectedTag.PayrollTagID;
                         cmd.Parameters["@PaymentModeID"].Value = selectedMode.PaymentModeID;
                         cmd.Parameters["@DateTimeEntry"].Value = DateTime.Now;
-                        cmd.Parameters["@EntryBy"].Value = Environment.UserName;
+                        cmd.Parameters["@EntryBy"].Value = _username;
 
                         cmd.ExecuteNonQuery();
                     }

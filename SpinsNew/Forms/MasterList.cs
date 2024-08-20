@@ -20,8 +20,9 @@ namespace SpinsNew
     {
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
+        public string _username;
         //private MasterList masterlistForm;// Call MasterList form
-        public MasterList()
+        public MasterList(string username)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
@@ -39,6 +40,8 @@ namespace SpinsNew
             // Subscribe to the FilterExpressionChanged event
             GridView gridView = (GridView)gridControl1.MainView;
             gridView.ColumnFilterChanged += gridView1_ColumnFilterChanged;
+
+            _username = username; // Retrieve the username
 
 
         }
@@ -127,32 +130,6 @@ namespace SpinsNew
                 con.Close();
             }
         }
-
-
-
-        //private void Cmb_municipality_QueryPopUp(object sender, System.ComponentModel.CancelEventArgs e)
-        //{
-        //    var editor = sender as DevExpress.XtraEditors.CheckedComboBoxEdit;
-        //    if (editor != null)
-        //    {
-        //        editor.Properties.Items.BeginUpdate();
-        //        try
-        //        {
-        //            for (int i = 0; i < editor.Properties.Items.Count; i++)
-        //            {
-        //                var item = editor.Properties.Items[i];
-        //                item.Description = item.Description.ToLower();
-        //            }
-        //        }
-        //        finally
-        //        {
-        //            editor.Properties.Items.EndUpdate();
-        //        }
-        //    }
-        //}
-
-
-
 
 
         // Event handler for CustomDrawFooterCell
@@ -359,87 +336,6 @@ namespace SpinsNew
             }
         }
 
-        //// For municipality combobox properties
-        //public class MunicipalityItem
-        //{
-        //    public int PSGCCityMun { get; set; }
-        //    public string CityMunName { get; set; }
-        //    public int PSGCProvince { get; set; }
-        //    public string ProvinceName { get; set; } // Add this property
-
-        //    public override string ToString()
-        //    {
-        //        return $"{CityMunName} - {ProvinceName}"; // Display both the municipality and province in the ComboBox
-        //    }
-        //}
-
-        // For municipality combobox properties
-        public class MunicipalityItem
-        {
-            public int PSGCCityMun { get; set; }
-            public string CityMunName { get; set; }
-            //public int PSGCProvince { get; set; }
-            //public string ProvinceName { get; set; } // Add this property
-
-            //public override string ToString()
-            //{
-            //    return $"{CityMunName} - {ProvinceName}"; // Display both the municipality and province in the ComboBox
-            //}
-        }
-
-
-
-
-        //Fill the combobox
-        //public void Municipality()
-        //{
-        //    try
-        //    {
-        //        // Fetch data from the database and bind to ComboBox
-        //        con.Open();
-        //        MySqlCommand cmd = con.CreateCommand();
-        //        cmd.CommandType = CommandType.Text;
-        //        cmd.CommandText = @"
-        //    SELECT 
-        //        m.PSGCCityMun, 
-        //        m.CityMunName, 
-        //        m.PSGCProvince, 
-        //        p.ProvinceName 
-        //    FROM 
-        //        lib_city_municipality m
-        //        INNER JOIN
-        //            lib_province p ON m.PSGCProvince = p.PSGCProvince
-        //        ORDER BY 
-        //            ProvinceName,
-        //             m.CityMunName
-        //        "; // Join with lib_province to get ProvinceName
-        //        cmd.ExecuteNonQuery();
-        //        DataTable dt = new DataTable();
-        //        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-        //        da.Fill(dt);
-
-        //        // Clear existing items in the ComboBoxEdit
-        //        cmb_municipality.Properties.Items.Clear();
-
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            // Add DataSourceItem to the ComboBox
-        //            cmb_municipality.Properties.Items.Add(new MunicipalityItem
-        //            {
-        //                PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"]),
-        //                CityMunName = dr["CityMunName"].ToString(),
-        //                PSGCProvince = Convert.ToInt32(dr["PSGCProvince"]),
-        //                ProvinceName = dr["ProvinceName"].ToString() // Populate the new property
-        //            });
-        //        }
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //}
-
         //Status if combobox is needed
         public void ComboboxStatus()
         {
@@ -501,6 +397,12 @@ namespace SpinsNew
                     ls.Status as Status,
                     m.Citizenship as Citizenship,
                     m.MothersMaiden as MothersMaiden,
+
+                    m.PSGCRegion,
+                    m.PSGCProvince,
+                    m.PSGCCityMun,
+                    m.PSGCBrgy,
+
                     lr.Region as Region,
                     lp.ProvinceName as Province,
                     lc.CityMunName as Municipality,
@@ -582,31 +484,9 @@ namespace SpinsNew
                 WHERE 
                     m.DateTimeDeleted IS NULL";
 
-                ///*Filter All Municipalities*/
+                /*Filter All Municipalities*/
 
-                //if (allMunicipalityChecked)
-                //{
-                //    /*Filter All Municipalities and Active or Applicant*/
-                //    if (statusFilter == "Active" || statusFilter == "Applicant")
-                //    {
-                //        query += " AND ls.Status = @Status";
-                //    }
-                //    /*Filter All Municipalities and Waitlisted*/
-                //    else if (statusFilter == "Waitlisted")
-                //    {
-                //        query += @" AND tg_max.ReferenceCode IS NOT NULL
-                //            AND tg_max.SPISBatch IS NOT NULL
-                //            AND m.StatusID = 99
-                //            AND la.ID = 1";
-                //    }
-                //    /*Filter All Municipalities and Delisted*/
-                //    else if (statusFilter == "Delisted")
-                //    {
-                //        query += " AND m.StatusID BETWEEN 2 AND 15";
-                //    }
-                //}
-                //else if(!allMunicipalityChecked)// If ck_all.checked is not true, filter specific municipalities
-                //{
+
                     if (statusFilter == "All Statuses")
                     {
                         // Construct a filter for selected municipalities
@@ -705,8 +585,6 @@ namespace SpinsNew
                         }
 
                     }
-                //}
-
                 query += @"
                        GROUP BY
                            m.ID, 
@@ -716,52 +594,10 @@ namespace SpinsNew
                            m.ExtName,
                            tg_max.ID
                        ORDER BY
-                            lc.CityMunName 
-                        ASC";
+                            lc.CityMunName";
 
                 cmd.CommandText = query;
 
-                /*Active and Applicant and All municipalities Filter*/
-                //if ((statusFilter == "Active" || statusFilter == "Applicant"))
-                //{
-                //    cmd.Parameters.AddWithValue("@Status", statusFilter);
-                //}
-                //else if (!allMunicipalityChecked) // Filter if specific municipality is selected then sepcific data will be searched.
-                //{
-                //    /*Filter All status*/
-                //    if (statusFilter == "All Statuses")
-                //    {
-                //        // Retrieve the selected item and get the PSGCCityMun Code.
-
-                //        var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                //        int psgccitymun = selectedItem.PSGCCityMun;
-                //        cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                //    }
-                //    //else if (statusFilter == "Active" || statusFilter == "Applicant")// Active and Applicant filter
-                //    //{
-                //    //    cmd.Parameters.AddWithValue("@Status", statusFilter);
-
-                //    //    // Retrieve the selected item and get the PSGCCityMun Code.
-                //    //    var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                //    //    int psgccitymun = selectedItem.PSGCCityMun;
-                //    //    cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                //    //}
-                //    //else if (statusFilter == "Waitlisted")// Waitlisted filter
-                //    //{
-                //    //    // Retrieve the selected item and get the PSGCCityMun Code.
-                //    //    var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                //    //    int psgccitymun = selectedItem.PSGCCityMun;
-                //    //    cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                //    //}
-                //    //else if (statusFilter == "Delisted")//Delisted Filter
-                //    //{
-                //    //    // Retrieve the selected item and get the PSGCCityMun Code.
-                //    //    var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-                //    //    int psgccitymun = selectedItem.PSGCCityMun;
-                //    //    cmd.Parameters.AddWithValue("@PSGCCityMun", psgccitymun);
-                //    //}
-
-                //}
 
                 DataTable dt = new DataTable();
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
@@ -848,6 +684,11 @@ namespace SpinsNew
                     HideColumn(gridView, "Remarks");
                     HideColumn(gridView, "StatusID");
                     HideColumn(gridView, "AssessmentID");
+                    //Hide Region, Province, Municipality, and Barangay
+                    HideColumn(gridView, "PSGCRegion");
+                    HideColumn(gridView, "PSGCProvince");
+                    HideColumn(gridView, "PSGCMunicipality");
+                    HideColumn(gridView, "PSGCBrgy");
                     //HideColumn(gridView, "PSGCRegion");
                     //HideColumn(gridView, "PSGCProvince");
                     //HideColumn(gridView, "PSGCCityMun");
@@ -1212,19 +1053,6 @@ namespace SpinsNew
             }
         }
 
-        private void ck_all_CheckedChanged(object sender, EventArgs e)
-        {
-            //if (ck_all.Checked == true)
-            //{
-            //    cmb_municipality.Text = "All Municipalities";
-            //    cmb_municipality.Enabled = false;
-            //}
-            //else
-            //{
-            //    cmb_municipality.Text = "Select City/Municipality";
-            //    cmb_municipality.Enabled = true;
-            //}
-        }
         public void ReloadMasterlist()
         {
 
@@ -1244,21 +1072,7 @@ namespace SpinsNew
 
         private async void btn_refresh_Click(object sender, EventArgs e)
         {
-            // Get the current search criteria
-            //string currentMunicipality = cmb_municipality.Text;
-            //string currentStatus = cmb_status.Text;
 
-            //// Check if the search criteria have changed
-            //if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
-            //{
-            //    // Criteria haven't changed, do not trigger the search method
-            //    MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    return;
-            //}
-
-            //// Update the previous search criteria
-            //previousMunicipality = currentMunicipality;
-            //previousStatus = currentStatus;
 
             // Your existing logic to handle search
             if (cmb_municipality.Text == "Select City/Municipality" && cmb_status.Text == "Select Status")
@@ -1328,7 +1142,7 @@ namespace SpinsNew
             }
             else
             {
-                NewApplicantForm = new NewApplicant();
+                NewApplicantForm = new NewApplicant(_username);
                 NewApplicantForm.Show();
             }
         }
@@ -1362,7 +1176,7 @@ namespace SpinsNew
                     return; // Exit the method without showing the form
                 }
 
-                delistedForm = new Delisted(this);
+                delistedForm = new Delisted(this, _username);
 
                 // Pass the ID value to the EditApplicant form
                 int id = Convert.ToInt32(row["ID"]);
@@ -1481,7 +1295,7 @@ namespace SpinsNew
                             //    logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}]");
                             //}
                             logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", Environment.UserName); // Replace with the actual user
+                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
                             logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
                             logCmd.ExecuteNonQuery();
                         }
@@ -1596,7 +1410,7 @@ namespace SpinsNew
                     }
 
                     //int statusIDAfter = Convert.ToInt32(lbl_status.Text); // Assuming lbl_sex.Text contains the updated SexID
-                    int statusIDAfter = 99; // Assuming lbl_sex.Text contains the updated SexID
+                    int statusIDAfter = 1; // Assuming lbl_sex.Text contains the updated SexID
 
                     MySqlCommand statusCmdAfter = con.CreateCommand();
                     statusCmdAfter.CommandType = CommandType.Text;
@@ -1658,7 +1472,7 @@ namespace SpinsNew
                             //    logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}]");
                             //}
                             logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", Environment.UserName); // Replace with the actual user
+                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
                             logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
                             logCmd.ExecuteNonQuery();
                         }
@@ -1792,7 +1606,7 @@ namespace SpinsNew
                 return;
             }
 
-            if (cmb_municipality.Text == "Select City/Municipality")
+            if (cmb_municipality.Text == "")
             {
                 XtraMessageBox.Show("Select municipality before creating payroll.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -1807,7 +1621,7 @@ namespace SpinsNew
             }
             else
             {
-                payrollpopupForm = new PayrollPopup(this); //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
+                payrollpopupForm = new PayrollPopup(this, _username); //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
                 payrollpopupForm.Show();
             }
         }
@@ -1853,7 +1667,7 @@ namespace SpinsNew
                             cmd.Parameters.Clear();
                             cmd.Parameters.AddWithValue("@ID", id);
                             cmd.Parameters.AddWithValue("@DateTimeDeleted", DateTime.Now);
-                            cmd.Parameters.AddWithValue("@DeletedBy", Environment.UserName);
+                            cmd.Parameters.AddWithValue("@DeletedBy", _username);
                             cmd.ExecuteNonQuery();
                             con.Close();
 
@@ -1907,7 +1721,7 @@ namespace SpinsNew
                 // Pass the ID value to the EditApplicant form
                 int id = Convert.ToInt32(row["ID"]);
                 //int id = Convert.ToInt32(txt_id.Text);
-                attachmentsForm = new Attachments(masterlistForm, payrollForm);
+                attachmentsForm = new Attachments(masterlistForm, payrollForm, _username);
 
                 attachmentsForm.DisplayID(id);
                 attachmentsForm.Show();
@@ -1927,7 +1741,7 @@ namespace SpinsNew
             }
             else
             {
-                payrollForm = new Payroll();
+                payrollForm = new Payroll(_username);
                 payrollForm.Show();
             }
         }
