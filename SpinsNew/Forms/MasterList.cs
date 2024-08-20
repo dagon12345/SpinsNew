@@ -21,6 +21,8 @@ namespace SpinsNew
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         public string _username;
+        private Replacements replacementsForm;
+        private MasterList masterlistForm;
         //private MasterList masterlistForm;// Call MasterList form
         public MasterList(string username)
         {
@@ -378,6 +380,7 @@ namespace SpinsNew
                 MySqlCommand cmd = con.CreateCommand();
                 cmd.CommandType = CommandType.Text;
                 string query = @"SELECT 
+                    m.IsVerified as Verified,
                     m.ID,
                     IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
                     m.LastName,
@@ -391,7 +394,7 @@ namespace SpinsNew
                     la.Assessment as Assessment,
                 
                     tg_max.ReferenceCode as GIS,
-                    ts.ReferenceCode as SPBUF,
+                    ts_max.ReferenceCode as SPBUF,
                     tg_max.SPISBatch as SpisBatch,
                     tg_max.AssessmentID as AssessmentID,
                     ls.Status as Status,
@@ -440,6 +443,7 @@ namespace SpinsNew
                     m.ModifiedBy as ModifiedBy,
                     m.DateTimeDeleted as DateTimeDeleted,
                     tg_max.ValidationDate
+
                 FROM 
                     tbl_masterlist m
                 LEFT JOIN 
@@ -452,7 +456,14 @@ namespace SpinsNew
                      ) tg2 ON tg1.MasterlistID = tg2.MasterlistID AND tg1.ID = tg2.MaxGISID
                     ) tg_max ON m.ID = tg_max.MasterlistID
                 LEFT JOIN 
-                    tbl_spbuf ts ON m.ID = ts.MasterlistID
+                         (SELECT ts1.*
+                          FROM tbl_spbuf ts1
+                          INNER JOIN (
+                              SELECT MasterlistID, MAX(ID) as MaxSPBUFID
+                              FROM tbl_spbuf
+                              GROUP BY MasterlistID
+                          ) ts2 ON ts1.MasterlistID = ts2.MasterlistID AND ts1.ID = ts2.MaxSPBUFID
+                         ) ts_max ON m.ID = ts_max.MasterlistID
                 LEFT JOIN 
                     lib_region lr ON m.PSGCRegion = lr.PSGCRegion
                 LEFT JOIN 
@@ -676,6 +687,8 @@ namespace SpinsNew
                     // Auto-size all columns based on their content
                     gridView.BestFitColumns();
 
+                    // Move the "Verified" column to the first position
+                    gridView.Columns["Verified"].VisibleIndex = 0;
                     // Hide the columns if they exist
                     HideColumn(gridView, "ID");
                     HideColumn(gridView, "DateTimeDeleted");
@@ -687,7 +700,7 @@ namespace SpinsNew
                     //Hide Region, Province, Municipality, and Barangay
                     HideColumn(gridView, "PSGCRegion");
                     HideColumn(gridView, "PSGCProvince");
-                    HideColumn(gridView, "PSGCMunicipality");
+                    HideColumn(gridView, "PSGCCityMun");
                     HideColumn(gridView, "PSGCBrgy");
                     //HideColumn(gridView, "PSGCRegion");
                     //HideColumn(gridView, "PSGCProvince");
@@ -695,6 +708,9 @@ namespace SpinsNew
                     //HideColumn(gridView, "PSGCBrgy");
 
                     // Freeze the columns if they exist
+                    if (gridView.Columns.ColumnByFieldName("Verified") != null)
+                        gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
                     if (gridView.Columns.ColumnByFieldName("LastName") != null)
                         gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
@@ -706,6 +722,7 @@ namespace SpinsNew
 
                     if (gridView.Columns.ColumnByFieldName("ExtName") != null)
                         gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+                  
 
                     // Ensure horizontal scrollbar is enabled
                     gridView.OptionsView.ColumnAutoWidth = false;
@@ -992,7 +1009,7 @@ namespace SpinsNew
             else
             {
                 // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                EditApplicantForm = new EditApplicant(this);
+                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm);
                 GridView gridView = gridControl1.MainView as GridView;
 
                 // Check if any row is selected
@@ -1184,6 +1201,180 @@ namespace SpinsNew
                 delistedForm.Show();
             }
         }
+        private void UndoVerification()
+        {
+            try
+            {
+                con.Open();
+
+                GridView gridView = gridControl1.MainView as GridView;
+                // Pass the ID value to the EditApplicant form
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row["ID"]);
+
+                //var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+
+                // First query to retrieve the current state
+                cmd.CommandText = @"
+        SELECT 
+            m.IsVerified
+        FROM 
+            tbl_masterlist m
+        WHERE 
+            m.ID = @IDNumber";
+                cmd.Parameters.AddWithValue("@IDNumber", id);
+
+                DataTable dtOld = new DataTable();
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dtOld);
+
+                if (dtOld.Rows.Count > 0)
+                {
+                    DataRow oldRow = dtOld.Rows[0];
+                    bool verificationBefore = oldRow["IsVerified"] != DBNull.Value && Convert.ToBoolean(oldRow["IsVerified"]);
+                    bool verificationAfter = false; // Set the new value to true
+
+                    // Perform the update
+                    cmd.CommandText = @"
+                UPDATE 
+                    tbl_masterlist 
+                SET
+                    IsVerified = @IsVerified
+                WHERE 
+                    ID = @ID";
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@ID", id);
+                    cmd.Parameters.AddWithValue("@IsVerified", verificationAfter);
+                    cmd.ExecuteNonQuery();
+
+                    // Check for changes and log them
+                    if (verificationBefore != verificationAfter)
+                    {
+                        MySqlCommand logCmd = con.CreateCommand();
+                        logCmd.CommandType = CommandType.Text;
+                        logCmd.CommandText = @"
+                    INSERT INTO log_masterlist 
+                    (MasterListID, Log, Logtype, User, DateTimeEntry) 
+                    VALUES 
+                    (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
+                        logCmd.Parameters.AddWithValue("@MasterListID", id);
+                        logCmd.Parameters.AddWithValue("@Log", $"Verification changed from [{verificationBefore}] to [{verificationAfter}]");
+                        logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
+                        logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
+                        logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
+                        logCmd.ExecuteNonQuery();
+                    }
+
+                    con.Close();
+                    ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
+
+
+
+                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    //this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+        private void Verify()
+        {
+            try
+            {
+                con.Open();
+
+                GridView gridView = gridControl1.MainView as GridView;
+                // Pass the ID value to the EditApplicant form
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row["ID"]);
+
+                //var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+
+                // First query to retrieve the current state
+                cmd.CommandText = @"
+        SELECT 
+            m.IsVerified
+        FROM 
+            tbl_masterlist m
+        WHERE 
+            m.ID = @IDNumber";
+                cmd.Parameters.AddWithValue("@IDNumber", id);
+
+                DataTable dtOld = new DataTable();
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dtOld);
+
+                if (dtOld.Rows.Count > 0)
+                {
+                    DataRow oldRow = dtOld.Rows[0];
+                    bool verificationBefore = oldRow["IsVerified"] != DBNull.Value && Convert.ToBoolean(oldRow["IsVerified"]);
+                    bool verificationAfter = true; // Set the new value to true
+
+                    // Perform the update
+                    cmd.CommandText = @"
+                UPDATE 
+                    tbl_masterlist 
+                SET
+                    IsVerified = @IsVerified
+                WHERE 
+                    ID = @ID";
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@ID", id);
+                    cmd.Parameters.AddWithValue("@IsVerified", verificationAfter);
+                    cmd.ExecuteNonQuery();
+
+                    // Check for changes and log them
+                    if (verificationBefore != verificationAfter)
+                    {
+                        MySqlCommand logCmd = con.CreateCommand();
+                        logCmd.CommandType = CommandType.Text;
+                        logCmd.CommandText = @"
+                    INSERT INTO log_masterlist 
+                    (MasterListID, Log, Logtype, User, DateTimeEntry) 
+                    VALUES 
+                    (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
+                        logCmd.Parameters.AddWithValue("@MasterListID", id);
+                        logCmd.Parameters.AddWithValue("@Log", $"Verification changed from [{verificationBefore}] to [{verificationAfter}]");
+                        logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
+                        logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
+                        logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
+                        logCmd.ExecuteNonQuery();
+                    }
+
+                    con.Close();
+                    ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
+
+
+
+                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    //this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
 
         private void UpdateMastertoApplicant()
         {
@@ -1348,10 +1539,11 @@ namespace SpinsNew
             {
                 object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
                 object nameValue = gridView.GetRowCellValue(rowHandle, "LastName"); // Replace "LastName" with the column name of the person's name
+                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
                 if (idValue != null && nameValue != null)
                 {
                     int id = Convert.ToInt32(idValue);
-                    string name = nameValue.ToString();
+                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
                     if (XtraMessageBox.Show($"Are you sure you want to set this {name} to Applicant?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         UpdateMastertoApplicant(); // Set the beneficiary to applicant.
@@ -1564,7 +1756,6 @@ namespace SpinsNew
                 }
             }
         }
-        Replacements replacementsForm;
         private void delistedAndReplacementsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (Application.OpenForms.OfType<Replacements>().Any())
@@ -1574,7 +1765,7 @@ namespace SpinsNew
             }
             else
             {
-                replacementsForm = new Replacements();
+                replacementsForm = new Replacements(_username);
                 replacementsForm.Show();
             }
         }
@@ -1730,7 +1921,6 @@ namespace SpinsNew
 
         }
         private Payroll payrollForm;
-        private MasterList masterlistForm;
 
         private void payrollToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -1754,6 +1944,109 @@ namespace SpinsNew
         private void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void verifyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("Please select a record first.", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Get the selected row
+            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+            if (row == null)
+            {
+                MessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            bool verification = Convert.ToBoolean(row["Verified"]);
+
+            // Check if already verified
+            if (verification)
+            {
+                MessageBox.Show("This beneficiary is already verified.", "Already Verified", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int rowHandle = gridView.FocusedRowHandle;
+            if (rowHandle >= 0)
+            {
+                object idValue = gridView.GetRowCellValue(rowHandle, "ID");
+                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName");
+                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
+
+                if (idValue != null && nameValue != null)
+                {
+                    int id = Convert.ToInt32(idValue);
+                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
+                    DialogResult result = XtraMessageBox.Show($"Are you sure you want to verify {name}?", "Confirm Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        Verify(); // Call the verification method
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("Please select a record first.", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Get the selected row
+            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+            if (row == null)
+            {
+                MessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            bool verification = Convert.ToBoolean(row["Verified"]);
+
+            // Check if already verified
+            if (!verification)
+            {
+                MessageBox.Show("This beneficiary is already not verified", "Not Verified", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int rowHandle = gridView.FocusedRowHandle;
+            if (rowHandle >= 0)
+            {
+                object idValue = gridView.GetRowCellValue(rowHandle, "ID");
+                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName");
+                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
+
+                if (idValue != null && nameValue != null)
+                {
+                    int id = Convert.ToInt32(idValue);
+                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
+                    DialogResult result = XtraMessageBox.Show($"Are you sure you want to undo verifcation of {name}?", "Undo Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        UndoVerification(); // Call the verification method
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

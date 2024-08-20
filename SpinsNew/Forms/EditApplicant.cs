@@ -19,11 +19,13 @@ namespace SpinsWinforms.Forms
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         private MasterList masterlistForm;// Call MasterList form
-        public EditApplicant(MasterList masterlist)//Call the MasterList into our Edit Applicant form.
+        private Replacements replacementsForm;// Call MasterList form
+        public EditApplicant(MasterList masterlist, Replacements replacements)//Call the MasterList into our Edit Applicant form.
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
 
+            replacementsForm = replacements;// Execute the MasterListform.
             masterlistForm = masterlist;// Execute the MasterListform.
             // Subscribe to the ValueChanged event of the DateTimePicker
             dt_birth.EditValueChanged += new EventHandler(Dt_birth_ValueChanged);

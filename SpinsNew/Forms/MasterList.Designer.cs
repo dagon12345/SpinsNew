@@ -60,6 +60,9 @@ namespace SpinsNew
             this.setAsApplicantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.activateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.verificationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.verifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
@@ -268,7 +271,8 @@ namespace SpinsNew
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionToolStripMenuItem,
             this.payrollToolStripMenuItem,
-            this.actionsToolStripMenuItem});
+            this.actionsToolStripMenuItem,
+            this.verificationToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -389,6 +393,32 @@ namespace SpinsNew
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click_1);
+            // 
+            // verificationToolStripMenuItem
+            // 
+            this.verificationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.verifyToolStripMenuItem,
+            this.undoToolStripMenuItem});
+            this.verificationToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_information_16;
+            this.verificationToolStripMenuItem.Name = "verificationToolStripMenuItem";
+            this.verificationToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
+            this.verificationToolStripMenuItem.Text = "Verification";
+            // 
+            // verifyToolStripMenuItem
+            // 
+            this.verifyToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
+            this.verifyToolStripMenuItem.Name = "verifyToolStripMenuItem";
+            this.verifyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.verifyToolStripMenuItem.Text = "Verify";
+            this.verifyToolStripMenuItem.Click += new System.EventHandler(this.verifyToolStripMenuItem_Click);
+            // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_undo_48;
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
             // contextMenuStrip2
             // 
@@ -517,6 +547,9 @@ namespace SpinsNew
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_status;
         private DevExpress.XtraEditors.LabelControl labelControl4;
+        private System.Windows.Forms.ToolStripMenuItem verificationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem verifyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
     }
 }
 

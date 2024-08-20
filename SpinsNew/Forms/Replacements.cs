@@ -2,9 +2,11 @@
 using DevExpress.XtraGrid.Views.Grid;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsWinforms.Forms;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +17,9 @@ namespace SpinsNew.Forms
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         public string _username;
+        EditApplicant EditApplicantForm;
+        private Replacements replacementsForm;
+        private MasterList masterlistForm;
         public Replacements(string username)
         {
             InitializeComponent();
@@ -332,6 +337,7 @@ namespace SpinsNew.Forms
                 tps.ID AS PayrollID,
                 d.ID,
                 d.MasterListID,
+
                 tm.LastName,
                 tm.FirstName,
                 tm.MiddleName,
@@ -351,11 +357,31 @@ namespace SpinsNew.Forms
                 lps.ReportSource as ReportSource,
                 d.DelistedBy,
                 d.DateTimeDelisted,
-                d.ReplacedBy
+                d.ReplacedBy,
+                tg_max.ReferenceCode as GIS,
+                ts_max.ReferenceCode as SPBUF
             FROM 
                 tbl_delisted d
             LEFT JOIN
                 tbl_masterlist tm ON d.MasterListID = tm.ID
+            LEFT JOIN 
+                    (SELECT tg1.*
+                     FROM tbl_gis tg1
+                     INNER JOIN (
+                         SELECT MasterlistID, MAX(ID) as MaxGISID
+                         FROM tbl_gis
+                         GROUP BY MasterlistID
+                     ) tg2 ON tg1.MasterlistID = tg2.MasterlistID AND tg1.ID = tg2.MaxGISID
+                    ) tg_max ON tm.ID = tg_max.MasterlistID
+            LEFT JOIN 
+                         (SELECT ts1.*
+                          FROM tbl_spbuf ts1
+                          INNER JOIN (
+                              SELECT MasterlistID, MAX(ID) as MaxSPBUFID
+                              FROM tbl_spbuf
+                              GROUP BY MasterlistID
+                          ) ts2 ON ts1.MasterlistID = ts2.MasterlistID AND ts1.ID = ts2.MaxSPBUFID
+                         ) ts_max ON tm.ID = ts_max.MasterlistID
             LEFT JOIN
                 tbl_masterlist tm2 ON d.MasterListID_Replacement = tm2.ID
             LEFT JOIN 
@@ -577,13 +603,29 @@ namespace SpinsNew.Forms
                         lb.BrgyName as Barangay,
                         m.BirthDate as BirthDate,
                         TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE()) AS Age,
-                        tg.SPISBatch as SpisBatch
+                        tg_max.SPISBatch as SpisBatch,
+                        tg_max.ReferenceCode as GIS,
+                        ts_max.ReferenceCode as SPBUF
                     FROM 
                         tbl_masterlist m
-                    LEFT JOIN 
-                        tbl_gis tg ON m.ID = tg.MasterlistID
-                    LEFT JOIN 
-                        tbl_spbuf ts ON m.ID = ts.MasterlistID
+                  LEFT JOIN 
+                         (SELECT tg1.*
+                          FROM tbl_gis tg1
+                          INNER JOIN (
+                              SELECT MasterlistID, MAX(ID) as MaxGISID
+                              FROM tbl_gis
+                              GROUP BY MasterlistID
+                          ) tg2 ON tg1.MasterlistID = tg2.MasterlistID AND tg1.ID = tg2.MaxGISID
+                         ) tg_max ON m.ID = tg_max.MasterlistID
+                   LEFT JOIN 
+                         (SELECT ts1.*
+                          FROM tbl_spbuf ts1
+                          INNER JOIN (
+                              SELECT MasterlistID, MAX(ID) as MaxSPBUFID
+                              FROM tbl_spbuf
+                              GROUP BY MasterlistID
+                          ) ts2 ON ts1.MasterlistID = ts2.MasterlistID AND ts1.ID = ts2.MaxSPBUFID
+                         ) ts_max ON m.ID = ts_max.MasterlistID
                     LEFT JOIN 
                         lib_region lr ON m.PSGCRegion = lr.PSGCRegion
                     LEFT JOIN 
@@ -593,11 +635,11 @@ namespace SpinsNew.Forms
                     LEFT JOIN 
                         lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
                     LEFT JOIN 
-                        lib_assessment la ON tg.AssessmentID = la.ID
+                        lib_assessment la ON tg_max.AssessmentID = la.ID
                     WHERE 
                         m.PSGCCityMun = @PSGCCityMun
-                        AND tg.ReferenceCode IS NOT NULL
-                        AND tg.SPISBatch IS NOT NULL
+                        AND tg_max.ReferenceCode IS NOT NULL
+                        AND tg_max.SPISBatch IS NOT NULL
                         AND m.StatusID = 99
                         AND m.DateTimeDeleted IS NULL
                         AND la.ID = 1
@@ -607,7 +649,7 @@ namespace SpinsNew.Forms
                         m.MiddleName,
                         m.ExtName
                     ORDER BY
-                        tg.SPISBATCH
+                        tg_max.SPISBATCH
                         ";
                 // Retrieve the selected item and get the PSGCCityMun Code.
                 var selectedItem = (dynamic)cmb_municipality.SelectedItem;
@@ -1097,6 +1139,87 @@ namespace SpinsNew.Forms
                 await Delisted(); // Display delisted list tbl_delisted.
                 await Waitlisted();
             }
+        }
+
+        private void ShowGISorSpbuf()
+        {
+            if (Application.OpenForms.OfType<EditApplicant>().Any())
+            {
+                EditApplicantForm.Select();
+                EditApplicantForm.BringToFront();
+            }
+            else
+            {
+                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
+                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm);
+                GridView gridView = gridDelisted.MainView as GridView;
+
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to Edit", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing EditApplicantForm
+                }
+
+                // Pass the ID value to the EditApplicant form
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row["MasterListID"]);
+
+                EditApplicantForm.DisplayID(id);
+                EditApplicantForm.Show();
+
+
+
+
+                //Below is to get the reference code under masterlist
+                // Create a new instance of GISForm
+                // GISviewingForm = new GISForm(this);
+                // GridView gridView = gridControl1.MainView as GridView;
+
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to view", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing GISForm
+                }
+
+                // Pass the ID value to the GISForm
+                //DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                string gis = row["GIS"].ToString();
+                string spbuf = row["SPBUF"].ToString();
+
+                if (string.IsNullOrWhiteSpace(gis))
+                {
+                    if (string.IsNullOrWhiteSpace(spbuf))
+                    {
+                        //MessageBox.Show("Both GIS and SPBUF are missing.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // return; // Exit the method without showing GISForm
+                    }
+                    else
+                    {
+                        int spbufId = Convert.ToInt32(spbuf);
+                        EditApplicantForm.DisplaySPBUF(spbufId);
+                    }
+                }
+                else
+                {
+                    int gisId = Convert.ToInt32(gis);
+                    EditApplicantForm.DisplayGIS(gisId);
+                }
+
+                EditApplicantForm.Show();
+
+            }
+        }
+
+        private void gridDelisted_DoubleClick(object sender, EventArgs e)
+        {
+            ShowGISorSpbuf();
+        }
+
+        private void gridWaitlisted_DoubleClick(object sender, EventArgs e)
+        {
+            ShowGISorSpbuf();
         }
     }
 }

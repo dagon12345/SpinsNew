@@ -336,6 +336,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="02 SocPen Logo %28no background%29.ico" />
+    <None Include="Resources\icons8-undo-48.png" />
+    <None Include="Resources\icons8-verify-48.png" />
     <None Include="Resources\icons8-delete-48.png" />
     <None Include="Resources\icons8-activate-48.png" />
     <None Include="Resources\icons8-information-16.png" />

@@ -207,7 +207,7 @@ namespace SpinsNew.Forms
             this.groupControl2.Controls.Add(this.searchControl1);
             this.groupControl2.Location = new System.Drawing.Point(7, 3);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(783, 384);
+            this.groupControl2.Size = new System.Drawing.Size(782, 384);
             this.groupControl2.TabIndex = 1;
             this.groupControl2.Text = "Delisted list";
             // 
@@ -219,11 +219,12 @@ namespace SpinsNew.Forms
             this.gridDelisted.Location = new System.Drawing.Point(4, 45);
             this.gridDelisted.MainView = this.gridView1;
             this.gridDelisted.Name = "gridDelisted";
-            this.gridDelisted.Size = new System.Drawing.Size(774, 334);
+            this.gridDelisted.Size = new System.Drawing.Size(773, 334);
             this.gridDelisted.TabIndex = 1;
             this.gridDelisted.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             this.gridDelisted.Click += new System.EventHandler(this.gridControl1_Click);
+            this.gridDelisted.DoubleClick += new System.EventHandler(this.gridDelisted_DoubleClick);
             // 
             // gridView1
             // 
@@ -243,7 +244,7 @@ namespace SpinsNew.Forms
             this.groupControl3.Controls.Add(this.searchControl2);
             this.groupControl3.Location = new System.Drawing.Point(7, 3);
             this.groupControl3.Name = "groupControl3";
-            this.groupControl3.Size = new System.Drawing.Size(213, 379);
+            this.groupControl3.Size = new System.Drawing.Size(214, 379);
             this.groupControl3.TabIndex = 2;
             this.groupControl3.Text = "Replacements Available";
             // 
@@ -266,11 +267,12 @@ namespace SpinsNew.Forms
             this.gridWaitlisted.Location = new System.Drawing.Point(11, 48);
             this.gridWaitlisted.MainView = this.gridView2;
             this.gridWaitlisted.Name = "gridWaitlisted";
-            this.gridWaitlisted.Size = new System.Drawing.Size(199, 330);
+            this.gridWaitlisted.Size = new System.Drawing.Size(200, 330);
             this.gridWaitlisted.TabIndex = 2;
             this.gridWaitlisted.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView2});
             this.gridWaitlisted.Click += new System.EventHandler(this.gridControl2_Click);
+            this.gridWaitlisted.DoubleClick += new System.EventHandler(this.gridWaitlisted_DoubleClick);
             // 
             // gridView2
             // 
@@ -313,7 +315,7 @@ namespace SpinsNew.Forms
             this.splitContainerControl1.Panel2.Text = "Panel2";
             this.splitContainerControl1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainerControl1_Panel2_Paint);
             this.splitContainerControl1.Size = new System.Drawing.Size(1035, 393);
-            this.splitContainerControl1.SplitterPosition = 800;
+            this.splitContainerControl1.SplitterPosition = 799;
             this.splitContainerControl1.TabIndex = 2;
             // 
             // groupControl4

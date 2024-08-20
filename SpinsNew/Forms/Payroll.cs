@@ -22,7 +22,7 @@ namespace SpinsNew.Forms
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
-            viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.A;
+            viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
             _username = username;
         }
 
@@ -424,8 +424,7 @@ private void UpdateRowCount(int rowCount)
                     CONCAT(lcm.CityMunName, ', ', lprov.ProvinceName) AS ProvinceMunicipality,
                     CONCAT(lp.Months, ', ', '(', lp.Period, ' ', tps.Year , ')') AS PeriodMonth,
                     CONCAT(lp.Months, ' ', tps.Year) AS HeaderPeriodYear,
-                    lit.Type,
-                    m.IDNumber
+                    lit.Type
 
                
 
