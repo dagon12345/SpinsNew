@@ -12,7 +12,7 @@
   <xs:element name="PayrollDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="PayrollDataSet" msprop:Generator_UserDSName="PayrollDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="PayrollDataTable" msprop:Generator_TableClassName="PayrollDataTableDataTable" msprop:Generator_TableVarName="tablePayrollDataTable" msprop:Generator_TablePropName="PayrollDataTable" msprop:Generator_RowDeletingName="PayrollDataTableRowDeleting" msprop:Generator_RowChangingName="PayrollDataTableRowChanging" msprop:Generator_RowEvHandlerName="PayrollDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="PayrollDataTableRowDeleted" msprop:Generator_UserTableName="PayrollDataTable" msprop:Generator_RowChangedName="PayrollDataTableRowChanged" msprop:Generator_RowEvArgName="PayrollDataTableRowChangeEvent" msprop:Generator_RowClassName="PayrollDataTableRow">
+        <xs:element name="PayrollDataTable" msprop:Generator_TableClassName="PayrollDataTableDataTable" msprop:Generator_TableVarName="tablePayrollDataTable" msprop:Generator_RowChangedName="PayrollDataTableRowChanged" msprop:Generator_TablePropName="PayrollDataTable" msprop:Generator_RowDeletingName="PayrollDataTableRowDeleting" msprop:Generator_RowChangingName="PayrollDataTableRowChanging" msprop:Generator_RowEvHandlerName="PayrollDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="PayrollDataTableRowDeleted" msprop:Generator_RowClassName="PayrollDataTableRow" msprop:Generator_UserTableName="PayrollDataTable" msprop:Generator_RowEvArgName="PayrollDataTableRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="FullName" msprop:Generator_ColumnVarNameInTable="columnFullName" msprop:Generator_ColumnPropNameInRow="FullName" msprop:Generator_ColumnPropNameInTable="FullNameColumn" msprop:Generator_UserColumnName="FullName" type="xs:string" minOccurs="0" />
@@ -34,6 +34,7 @@
               <xs:element name="Type" msprop:Generator_ColumnVarNameInTable="columnType" msprop:Generator_ColumnPropNameInRow="Type" msprop:Generator_ColumnPropNameInTable="TypeColumn" msprop:Generator_UserColumnName="Type" type="xs:string" minOccurs="0" />
               <xs:element name="IDNumber" msprop:Generator_ColumnVarNameInTable="columnIDNumber" msprop:Generator_ColumnPropNameInRow="IDNumber" msprop:Generator_ColumnPropNameInTable="IDNumberColumn" msprop:Generator_UserColumnName="IDNumber" type="xs:string" minOccurs="0" />
               <xs:element name="HeaderPeriodYear" msprop:Generator_ColumnVarNameInTable="columnHeaderPeriodYear" msprop:Generator_ColumnPropNameInRow="HeaderPeriodYear" msprop:Generator_ColumnPropNameInTable="HeaderPeriodYearColumn" msprop:Generator_UserColumnName="HeaderPeriodYear" type="xs:string" minOccurs="0" />
+              <xs:element name="Verified" msprop:Generator_ColumnVarNameInTable="columnVerified" msprop:Generator_ColumnPropNameInRow="Verified" msprop:Generator_ColumnPropNameInTable="VerifiedColumn" msprop:Generator_UserColumnName="Verified" type="xs:boolean" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

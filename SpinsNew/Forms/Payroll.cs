@@ -380,6 +380,7 @@ private void UpdateRowCount(int rowCount)
                 cmd.CommandType = CommandType.Text;
                 string query = @"
                 SELECT
+                    m.IsVerified as Verified,
                     tps.MasterlistID,
                     IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
                     IFNULL(tps2.UnclaimedAmounts, '') AS UnclaimedAmounts,
@@ -612,6 +613,7 @@ private void UpdateRowCount(int rowCount)
                     row["Replacement Of"] = string.Join(", ", nameParts);
                 }
 
+                dt.Columns["Verified"].SetOrdinal(0);
                 dt.Columns["FullName"].SetOrdinal(1);
                 dt.Columns["Status Payroll"].SetOrdinal(16);
                 dt.Columns["CurrentStatus"].SetOrdinal(21);
@@ -623,6 +625,9 @@ private void UpdateRowCount(int rowCount)
                 if (gridView != null)
                 {
                     gridView.BestFitColumns();
+
+                    // Move the "Verified" column to the first position
+                    gridView.Columns["Verified"].VisibleIndex = 0;
 
                     gridView.Columns["LastName"].Visible = false;
                     gridView.Columns["FirstName"].Visible = false;
@@ -649,6 +654,7 @@ private void UpdateRowCount(int rowCount)
 
                     // Freeze the columns
                     //gridView.Columns["UnclaimedAmounts"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+                    gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
                     gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
 

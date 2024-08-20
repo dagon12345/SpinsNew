@@ -317,6 +317,8 @@ namespace SpinsNew.DataSets {
             
             private global::System.Data.DataColumn columnHeaderPeriodYear;
             
+            private global::System.Data.DataColumn columnVerified;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public PayrollDataTableDataTable() {
@@ -504,6 +506,14 @@ namespace SpinsNew.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn VerifiedColumn {
+                get {
+                    return this.columnVerified;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -558,7 +568,8 @@ namespace SpinsNew.DataSets {
                         string ExtName, 
                         string Type, 
                         string IDNumber, 
-                        string HeaderPeriodYear) {
+                        string HeaderPeriodYear, 
+                        bool Verified) {
                 PayrollDataTableRow rowPayrollDataTableRow = ((PayrollDataTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         FullName,
@@ -579,7 +590,8 @@ namespace SpinsNew.DataSets {
                         ExtName,
                         Type,
                         IDNumber,
-                        HeaderPeriodYear};
+                        HeaderPeriodYear,
+                        Verified};
                 rowPayrollDataTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPayrollDataTableRow);
                 return rowPayrollDataTableRow;
@@ -621,6 +633,7 @@ namespace SpinsNew.DataSets {
                 this.columnType = base.Columns["Type"];
                 this.columnIDNumber = base.Columns["IDNumber"];
                 this.columnHeaderPeriodYear = base.Columns["HeaderPeriodYear"];
+                this.columnVerified = base.Columns["Verified"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -664,6 +677,8 @@ namespace SpinsNew.DataSets {
                 base.Columns.Add(this.columnIDNumber);
                 this.columnHeaderPeriodYear = new global::System.Data.DataColumn("HeaderPeriodYear", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnHeaderPeriodYear);
+                this.columnVerified = new global::System.Data.DataColumn("Verified", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVerified);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1111,6 +1126,22 @@ namespace SpinsNew.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Verified {
+                get {
+                    try {
+                        return ((bool)(this[this.tablePayrollDataTable.VerifiedColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Verified\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.VerifiedColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsFullNameNull() {
                 return this.IsNull(this.tablePayrollDataTable.FullNameColumn);
             }
@@ -1335,6 +1366,18 @@ namespace SpinsNew.DataSets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetHeaderPeriodYearNull() {
                 this[this.tablePayrollDataTable.HeaderPeriodYearColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsVerifiedNull() {
+                return this.IsNull(this.tablePayrollDataTable.VerifiedColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetVerifiedNull() {
+                this[this.tablePayrollDataTable.VerifiedColumn] = global::System.Convert.DBNull;
             }
         }
         
