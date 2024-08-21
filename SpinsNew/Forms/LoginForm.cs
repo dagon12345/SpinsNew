@@ -125,30 +125,32 @@ namespace SpinsNew.Forms
         }
         private void GitHubUpdater()
         {
-            using (var client1 = new WebClient())
-            using (var stream = client1.OpenRead("http://www.google.com"))
+            WebClient webClient = new WebClient();
+
+            try
             {
                 // Check for updates
-                WebClient webClient = new WebClient();
-                var client = new WebClient();
-
-                // Use the raw content URL to check for the latest version on GitHub
-                string latestVersion = webClient.DownloadString("https://raw.githubusercontent.com/dagon12345/SpinsNew/master/SpinsNew/Updates/Update.txt").Trim();
+                string latestVersion = webClient.DownloadString("https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/Update.txt").Trim();
 
                 // Replace "1.0.0" with your application's current version
                 if (!latestVersion.Contains("1.0.5"))
                 {
-                    XtraMessageBox.Show("Update available!");
+                    // Notify the user of the available update
+                    XtraMessageBox.Show("New Update available!");
 
                     if (MessageBox.Show("New update available! Do you want to install it?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         try
                         {
-                            if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
+                            // Delete old installer if it exists
+                            if (File.Exists(@".\SpinsInstaller.msi"))
+                            {
+                                File.Delete(@".\SpinsInstaller.msi");
+                            }
 
                             // Download the installer from GitHub Releases (Use the raw URL for the ZIP file)
-                            string downloadUrl = "https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/SpinsInstaller.zip"; // Adjust URL accordingly
-                            client.DownloadFile(downloadUrl, @"SpinsInstaller.zip");
+                            string downloadUrl = "https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/SpinsInstaller.zip";
+                            webClient.DownloadFile(downloadUrl, @"SpinsInstaller.zip");
 
                             string zipPath = @".\SpinsInstaller.zip";
                             string extractPath = @".\";
@@ -156,33 +158,47 @@ namespace SpinsNew.Forms
                             // Ensure the downloaded file is a valid ZIP file
                             if (File.Exists(zipPath) && new FileInfo(zipPath).Length > 0)
                             {
-                                ZipFile.ExtractToDirectory(zipPath, extractPath);
+                                try
+                                {
+                                    ZipFile.ExtractToDirectory(zipPath, extractPath);
 
-                                Process process = new Process();
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = String.Format("/i SpinsInstaller.msi");
+                                    // Start the installer
+                                    Process process = new Process();
+                                    process.StartInfo.FileName = "msiexec";
+                                    process.StartInfo.Arguments = String.Format("/i {0}", Path.Combine(extractPath, "SpinsInstaller.msi"));
+                                    process.Start();
 
-                                process.Start();
-                                Application.Exit();
+                                    // Exit application after starting the installer
+                                    Application.Exit();
+                                }
+                                catch (InvalidDataException)
+                                {
+                                    XtraMessageBox.Show("The ZIP file is invalid or corrupted. Please try downloading it again.");
+                                }
                             }
                             else
                             {
-                                XtraMessageBox.Show("Failed to download the update.");
+                                XtraMessageBox.Show("Failed to download the update. The file is either missing or empty.");
                             }
                         }
                         catch (Exception ex)
                         {
-                            XtraMessageBox.Show(ex.Message);
+                            XtraMessageBox.Show("An error occurred while updating: " + ex.Message);
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show("An error occurred while checking for updates: " + ex.Message);
+            }
         }
+
 
 
         //private void GitHubUpdater()
         //{
-           
+
         //        using (var client1 = new WebClient())
         //        using (var stream = client1.OpenRead("http://www.google.com"))
         //        {
@@ -225,7 +241,7 @@ namespace SpinsNew.Forms
         //                }
         //            }
         //        }
-        
+
 
         //}
 
