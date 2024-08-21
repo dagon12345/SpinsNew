@@ -1,11 +1,9 @@
-﻿using MySql.Data.MySqlClient;
-using SpinsNew.Connection;
+﻿using SpinsNew.Connection;
 using SpinsNew.DataSets;
 using SpinsNew.Forms;
 using SpinsNew.Reports;
 using System;
 using System.Data;
-using System.Data.SqlClient;
 using System.Windows.Forms;
 
 namespace SpinsNew.PrintPreviews
