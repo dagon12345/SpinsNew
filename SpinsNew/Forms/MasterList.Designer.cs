@@ -104,7 +104,7 @@ namespace SpinsNew
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridControl1.Location = new System.Drawing.Point(4, 23);
+            this.gridControl1.Location = new System.Drawing.Point(5, 26);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
             this.gridControl1.Size = new System.Drawing.Size(773, 425);
@@ -116,6 +116,15 @@ namespace SpinsNew
             // 
             // gridView1
             // 
+            this.gridView1.Appearance.Preview.BackColor = System.Drawing.Color.Transparent;
+            this.gridView1.Appearance.Preview.BackColor2 = System.Drawing.Color.Transparent;
+            this.gridView1.Appearance.Preview.BorderColor = System.Drawing.Color.Transparent;
+            this.gridView1.Appearance.Preview.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridView1.Appearance.Preview.Options.UseBackColor = true;
+            this.gridView1.Appearance.Preview.Options.UseBorderColor = true;
+            this.gridView1.Appearance.Preview.Options.UseFont = true;
+            this.gridView1.Appearance.Row.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridView1.Appearance.Row.Options.UseFont = true;
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
@@ -147,7 +156,7 @@ namespace SpinsNew
             this.groupControl2.Controls.Add(this.panel_spinner);
             this.groupControl2.Controls.Add(this.btn_search);
             this.groupControl2.Controls.Add(this.cmb_status);
-            this.groupControl2.Location = new System.Drawing.Point(10, 23);
+            this.groupControl2.Location = new System.Drawing.Point(10, 25);
             this.groupControl2.Name = "groupControl2";
             this.groupControl2.Size = new System.Drawing.Size(782, 99);
             this.groupControl2.TabIndex = 0;
@@ -408,7 +417,7 @@ namespace SpinsNew
             // 
             this.verifyToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
             this.verifyToolStripMenuItem.Name = "verifyToolStripMenuItem";
-            this.verifyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.verifyToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.verifyToolStripMenuItem.Text = "Verify";
             this.verifyToolStripMenuItem.Click += new System.EventHandler(this.verifyToolStripMenuItem_Click);
             // 
@@ -416,7 +425,7 @@ namespace SpinsNew
             // 
             this.undoToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_undo_48;
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
@@ -459,6 +468,8 @@ namespace SpinsNew
             this.groupControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl1.Appearance.BackColor = System.Drawing.Color.Black;
+            this.groupControl1.Appearance.Options.UseBackColor = true;
             this.groupControl1.Controls.Add(this.gridControl1);
             this.groupControl1.Location = new System.Drawing.Point(10, 173);
             this.groupControl1.Name = "groupControl1";
@@ -471,6 +482,7 @@ namespace SpinsNew
             this.AcceptButton = this.btn_search;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Gainsboro;
             this.ClientSize = new System.Drawing.Size(802, 636);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.pictureEdit1);

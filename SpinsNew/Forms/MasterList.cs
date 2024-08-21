@@ -76,13 +76,22 @@ namespace SpinsNew
                 gridView.CustomDrawFooterCell += GridView_CustomDrawFooterCell;
             }
 
+            gridView1.CustomDrawCell += gridView1_CustomDrawCell;
+
             //Integrate search control into our grid control.
             searchControl1.Client = gridControl1;
 
 
 
         }
+        private void gridView1_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+        {
+            //// Set the background color to black for all cells
+            //e.Appearance.BackColor = Color.Black;
 
+            //// Optionally, change the text color to white for visibility
+            //e.Appearance.ForeColor = Color.White;
+        }
 
 
         public void Municipality()

@@ -136,7 +136,7 @@ namespace SpinsNew.Forms
                 string latestVersion = webClient.DownloadString("https://raw.githubusercontent.com/dagon12345/SpinsNew/master/SpinsNew/Updates/Update.txt").Trim();
 
                 // Replace "1.0.0" with your application's current version
-                if (!latestVersion.Contains("1.0.4"))
+                if (!latestVersion.Contains("1.0.5"))
                 {
                     XtraMessageBox.Show("Update available!");
 
