@@ -25,7 +25,8 @@ namespace SpinsNew.Forms
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             //CheckForUpdates();
-            Updater();
+            //Updater();
+            GitHubUpdater();
         }
 
         private void Updater()
@@ -134,7 +135,7 @@ namespace SpinsNew.Forms
                     var client = new WebClient();
 
                     // Use the raw content URL to check for the latest version on GitHub
-                    string latestVersion = webClient.DownloadString("https://raw.githubusercontent.com/YourGitHubUsername/YourRepository/main/update.txt").Trim();
+                    string latestVersion = webClient.DownloadString("https://github.com/dagon12345/SpinsNew/tree/master/SpinsNew/Updates/Update.txt").Trim();
 
                     // Replace "1.0.0" with your application's current version
                     if (!latestVersion.Contains("1.0.0"))
@@ -148,7 +149,7 @@ namespace SpinsNew.Forms
                                 if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
 
                                 // Download the installer from GitHub Releases
-                                client.DownloadFile("https://github.com/YourGitHubUsername/YourRepository/releases/download/v" + latestVersion + "/SpinsInstaller.zip", @"SpinsInstaller.zip");
+                                client.DownloadFile("https://github.com/dagon12345/SpinsNew/tree/master/SpinsNew/Updates/SpinsInstaller.zip", @"SpinsInstaller.zip");
 
                                 string zipPath = @".\SpinsInstaller.zip";
                                 string extractPath = @".\";
