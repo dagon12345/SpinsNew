@@ -133,10 +133,10 @@ namespace SpinsNew.Forms
                 var client = new WebClient();
 
                 // Use the raw content URL to check for the latest version on GitHub
-                string latestVersion = webClient.DownloadString("https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/1.0.2/Update.txt").Trim();
+                string latestVersion = webClient.DownloadString("https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/1.0.3/Update.txt").Trim();
 
                 // Replace "1.0.0" with your application's current version
-                if (!latestVersion.Contains("1.0.2"))
+                if (!latestVersion.Contains("1.0.3"))
                 {
                     XtraMessageBox.Show("Update available!");
 
@@ -147,7 +147,7 @@ namespace SpinsNew.Forms
                             if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
 
                             // Download the installer from GitHub Releases (Use the raw URL for the ZIP file)
-                            string downloadUrl = "https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/1.0.2/SpinsInstaller.zip"; // Adjust URL accordingly
+                            string downloadUrl = "https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/1.0.3/SpinsInstaller.zip"; // Adjust URL accordingly
                             client.DownloadFile(downloadUrl, @"SpinsInstaller.zip");
 
                             string zipPath = @".\SpinsInstaller.zip";

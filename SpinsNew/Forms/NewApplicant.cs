@@ -729,7 +729,8 @@ namespace SpinsNew.Forms
                         MAX(lc.CityMunName) as Municipality,
                         MAX(lb.BrgyName) as Barangay,
                         MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate          
+                        MAX(m.BirthDate) as BirthDate,
+                        MAX(ls.Status) as Status
                     FROM 
                         tbl_masterlist m
                     LEFT JOIN 
@@ -740,6 +741,8 @@ namespace SpinsNew.Forms
                         lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
                     LEFT JOIN 
                         lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
+                    LEFT JOIN 
+                        lib_status ls ON m.StatusID = ls.ID
                     WHERE 
 
                 m.DateTimeDeleted IS NULL
