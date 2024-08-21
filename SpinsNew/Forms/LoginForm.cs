@@ -125,34 +125,37 @@ namespace SpinsNew.Forms
         }
         private void GitHubUpdater()
         {
-            try
+            using (var client1 = new WebClient())
+            using (var stream = client1.OpenRead("http://www.google.com"))
             {
-                using (var client1 = new WebClient())
-                using (var stream = client1.OpenRead("http://www.google.com"))
+                // Check for updates
+                WebClient webClient = new WebClient();
+                var client = new WebClient();
+
+                // Use the raw content URL to check for the latest version on GitHub
+                string latestVersion = webClient.DownloadString("https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/Update.txt").Trim();
+
+                // Replace "1.0.0" with your application's current version
+                if (!latestVersion.Contains("1.0.1"))
                 {
-                    // Check for updates
-                    WebClient webClient = new WebClient();
-                    var client = new WebClient();
+                    XtraMessageBox.Show("Update available!");
 
-                    // Use the raw content URL to check for the latest version on GitHub
-                    string latestVersion = webClient.DownloadString("https://github.com/dagon12345/SpinsNew/tree/master/SpinsNew/Updates/Update.txt").Trim();
-
-                    // Replace "1.0.0" with your application's current version
-                    if (!latestVersion.Contains("1.0.1"))
+                    if (MessageBox.Show("New update available! Do you want to install it?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        XtraMessageBox.Show("Update available!");
-
-                        if (MessageBox.Show("New update available! Do you want to install it?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        try
                         {
-                            try
+                            if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
+
+                            // Download the installer from GitHub Releases (Use the raw URL for the ZIP file)
+                            string downloadUrl = "https://github.com/dagon12345/SpinsNew/raw/master/SpinsNew/Updates/SpinsInstaller.zip"; // Adjust URL accordingly
+                            client.DownloadFile(downloadUrl, @"SpinsInstaller.zip");
+
+                            string zipPath = @".\SpinsInstaller.zip";
+                            string extractPath = @".\";
+
+                            // Ensure the downloaded file is a valid ZIP file
+                            if (File.Exists(zipPath) && new FileInfo(zipPath).Length > 0)
                             {
-                                if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
-
-                                // Download the installer from GitHub Releases
-                                client.DownloadFile("https://github.com/dagon12345/SpinsNew/tree/master/SpinsNew/Updates/SpinsInstaller.zip", @"SpinsInstaller.zip");
-
-                                string zipPath = @".\SpinsInstaller.zip";
-                                string extractPath = @".\";
                                 ZipFile.ExtractToDirectory(zipPath, extractPath);
 
                                 Process process = new Process();
@@ -162,20 +165,69 @@ namespace SpinsNew.Forms
                                 process.Start();
                                 Application.Exit();
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                XtraMessageBox.Show(ex.Message);
+                                XtraMessageBox.Show("Failed to download the update.");
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            XtraMessageBox.Show(ex.Message);
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-            }
-
         }
+
+
+        //private void GitHubUpdater()
+        //{
+           
+        //        using (var client1 = new WebClient())
+        //        using (var stream = client1.OpenRead("http://www.google.com"))
+        //        {
+        //            // Check for updates
+        //            WebClient webClient = new WebClient();
+        //            var client = new WebClient();
+
+        //            // Use the raw content URL to check for the latest version on GitHub
+        //            string latestVersion = webClient.DownloadString("https://github.com/dagon12345/SpinsNew/tree/master/SpinsNew/Updates/Update.txt").Trim();
+
+        //            // Replace "1.0.0" with your application's current version
+        //            if (!latestVersion.Contains("1.0.2"))
+        //            {
+        //                XtraMessageBox.Show("Update available!");
+
+        //                if (MessageBox.Show("New update available! Do you want to install it?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        //                {
+        //                    //try
+        //                    //{
+        //                        if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
+
+        //                        // Download the installer from GitHub Releases
+        //                        client.DownloadFile("https://github.com/dagon12345/SpinsNew/blob/master/SpinsNew/Updates/SpinsInstaller.zip", @"SpinsInstaller.zip");
+
+        //                        string zipPath = @".\SpinsInstaller.zip";
+        //                        string extractPath = @".\";
+        //                        ZipFile.ExtractToDirectory(zipPath, extractPath);
+
+        //                        Process process = new Process();
+        //                        process.StartInfo.FileName = "msiexec";
+        //                        process.StartInfo.Arguments = String.Format("/i SpinsInstaller.msi");
+
+        //                        process.Start();
+        //                        Application.Exit();
+        //                    //}
+        //                    //catch (Exception ex)
+        //                    //{
+        //                    //    XtraMessageBox.Show(ex.Message);
+        //                    //}
+        //                }
+        //            }
+        //        }
+        
+
+        //}
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
