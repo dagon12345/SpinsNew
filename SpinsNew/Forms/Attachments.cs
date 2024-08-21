@@ -35,9 +35,11 @@ namespace SpinsNew.Forms
         private Payroll payrollForm; // Assuming you may use this later or remove if unnecessary
         private void Attachments_Load(object sender, EventArgs e)
         {
+ 
             LoadDetails(); // Load details into the details tab above.
             LoadImage(); // Load the image once form is initiated
             LoadLogs();
+            ClickedData();
 
         }
 

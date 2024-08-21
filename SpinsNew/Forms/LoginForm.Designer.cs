@@ -31,19 +31,19 @@ namespace SpinsNew.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+            this.crystalLink = new DevExpress.XtraEditors.HyperlinkLabelControl();
+            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.hyper_register = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.btn_login = new DevExpress.XtraEditors.SimpleButton();
             this.txt_password = new DevExpress.XtraEditors.TextEdit();
             this.txt_username = new DevExpress.XtraEditors.TextEdit();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
-            this.crystalLink = new DevExpress.XtraEditors.HyperlinkLabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_password.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_username.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl2
@@ -61,6 +61,25 @@ namespace SpinsNew.Forms
             this.groupControl2.Size = new System.Drawing.Size(416, 187);
             this.groupControl2.TabIndex = 2;
             this.groupControl2.Text = "Credentials";
+            // 
+            // crystalLink
+            // 
+            this.crystalLink.Location = new System.Drawing.Point(196, 140);
+            this.crystalLink.Name = "crystalLink";
+            this.crystalLink.Size = new System.Drawing.Size(206, 13);
+            this.crystalLink.TabIndex = 4;
+            this.crystalLink.Text = "Download Crystal repot here for reporting.";
+            this.crystalLink.Click += new System.EventHandler(this.crystalLink_Click);
+            // 
+            // pictureEdit1
+            // 
+            this.pictureEdit1.EditValue = ((object)(resources.GetObject("pictureEdit1.EditValue")));
+            this.pictureEdit1.Location = new System.Drawing.Point(5, 41);
+            this.pictureEdit1.Name = "pictureEdit1";
+            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.pictureEdit1.Size = new System.Drawing.Size(102, 106);
+            this.pictureEdit1.TabIndex = 3;
             // 
             // hyper_register
             // 
@@ -98,42 +117,23 @@ namespace SpinsNew.Forms
             // 
             // labelControl1
             // 
-            this.labelControl1.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl1.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl1.Appearance.Options.UseFont = true;
             this.labelControl1.Location = new System.Drawing.Point(130, 56);
             this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(53, 15);
+            this.labelControl1.Size = new System.Drawing.Size(57, 15);
             this.labelControl1.TabIndex = 0;
             this.labelControl1.Text = "Username";
             // 
             // labelControl2
             // 
-            this.labelControl2.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Location = new System.Drawing.Point(133, 89);
             this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(50, 15);
+            this.labelControl2.Size = new System.Drawing.Size(52, 15);
             this.labelControl2.TabIndex = 1;
             this.labelControl2.Text = "Password";
-            // 
-            // pictureEdit1
-            // 
-            this.pictureEdit1.EditValue = ((object)(resources.GetObject("pictureEdit1.EditValue")));
-            this.pictureEdit1.Location = new System.Drawing.Point(5, 41);
-            this.pictureEdit1.Name = "pictureEdit1";
-            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
-            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
-            this.pictureEdit1.Size = new System.Drawing.Size(102, 106);
-            this.pictureEdit1.TabIndex = 3;
-            // 
-            // crystalLink
-            // 
-            this.crystalLink.Location = new System.Drawing.Point(196, 140);
-            this.crystalLink.Name = "crystalLink";
-            this.crystalLink.Size = new System.Drawing.Size(206, 13);
-            this.crystalLink.TabIndex = 4;
-            this.crystalLink.Text = "Download Crystal repot here for reporting.";
-            this.crystalLink.Click += new System.EventHandler(this.crystalLink_Click);
             // 
             // LoginForm
             // 
@@ -154,9 +154,9 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
             this.groupControl2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_password.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_username.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
