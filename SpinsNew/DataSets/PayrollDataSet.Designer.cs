@@ -297,7 +297,7 @@ namespace SpinsNew.DataSets {
             
             private global::System.Data.DataColumn columnProvinceMunicipality;
             
-            private global::System.Data.DataColumn columnUnclaimedAmounts;
+            private global::System.Data.DataColumn columnUnclaimedPayroll;
             
             private global::System.Data.DataColumn columnPeriodMonth;
             
@@ -426,9 +426,9 @@ namespace SpinsNew.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn UnclaimedAmountsColumn {
+            public global::System.Data.DataColumn UnclaimedPayrollColumn {
                 get {
-                    return this.columnUnclaimedAmounts;
+                    return this.columnUnclaimedPayroll;
                 }
             }
             
@@ -559,7 +559,7 @@ namespace SpinsNew.DataSets {
                         string Barangay, 
                         string FullAddress, 
                         string ProvinceMunicipality, 
-                        string UnclaimedAmounts, 
+                        string UnclaimedPayroll, 
                         string PeriodMonth, 
                         string StatusPayroll, 
                         string LastName, 
@@ -581,7 +581,7 @@ namespace SpinsNew.DataSets {
                         Barangay,
                         FullAddress,
                         ProvinceMunicipality,
-                        UnclaimedAmounts,
+                        UnclaimedPayroll,
                         PeriodMonth,
                         StatusPayroll,
                         LastName,
@@ -623,7 +623,7 @@ namespace SpinsNew.DataSets {
                 this.columnBarangay = base.Columns["Barangay"];
                 this.columnFullAddress = base.Columns["FullAddress"];
                 this.columnProvinceMunicipality = base.Columns["ProvinceMunicipality"];
-                this.columnUnclaimedAmounts = base.Columns["UnclaimedAmounts"];
+                this.columnUnclaimedPayroll = base.Columns["UnclaimedPayroll"];
                 this.columnPeriodMonth = base.Columns["PeriodMonth"];
                 this.columnStatusPayroll = base.Columns["StatusPayroll"];
                 this.columnLastName = base.Columns["LastName"];
@@ -657,8 +657,8 @@ namespace SpinsNew.DataSets {
                 base.Columns.Add(this.columnFullAddress);
                 this.columnProvinceMunicipality = new global::System.Data.DataColumn("ProvinceMunicipality", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnProvinceMunicipality);
-                this.columnUnclaimedAmounts = new global::System.Data.DataColumn("UnclaimedAmounts", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnUnclaimedAmounts);
+                this.columnUnclaimedPayroll = new global::System.Data.DataColumn("UnclaimedPayroll", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUnclaimedPayroll);
                 this.columnPeriodMonth = new global::System.Data.DataColumn("PeriodMonth", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPeriodMonth);
                 this.columnStatusPayroll = new global::System.Data.DataColumn("StatusPayroll", typeof(string), null, global::System.Data.MappingType.Element);
@@ -966,17 +966,17 @@ namespace SpinsNew.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string UnclaimedAmounts {
+            public string UnclaimedPayroll {
                 get {
                     try {
-                        return ((string)(this[this.tablePayrollDataTable.UnclaimedAmountsColumn]));
+                        return ((string)(this[this.tablePayrollDataTable.UnclaimedPayrollColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'UnclaimedAmounts\' in table \'PayrollDataTable\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'UnclaimedPayroll\' in table \'PayrollDataTable\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tablePayrollDataTable.UnclaimedAmountsColumn] = value;
+                    this[this.tablePayrollDataTable.UnclaimedPayrollColumn] = value;
                 }
             }
             
@@ -1250,14 +1250,14 @@ namespace SpinsNew.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public bool IsUnclaimedAmountsNull() {
-                return this.IsNull(this.tablePayrollDataTable.UnclaimedAmountsColumn);
+            public bool IsUnclaimedPayrollNull() {
+                return this.IsNull(this.tablePayrollDataTable.UnclaimedPayrollColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public void SetUnclaimedAmountsNull() {
-                this[this.tablePayrollDataTable.UnclaimedAmountsColumn] = global::System.Convert.DBNull;
+            public void SetUnclaimedPayrollNull() {
+                this[this.tablePayrollDataTable.UnclaimedPayrollColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

@@ -378,113 +378,175 @@ private void UpdateRowCount(int rowCount)
                 con.Open();
                 MySqlCommand cmd = con.CreateCommand();
                 cmd.CommandType = CommandType.Text;
-                string query = @"
-                SELECT
-                    m.IsVerified as Verified,
-                    tps.MasterlistID,
-                    IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                    IFNULL(tps2.UnclaimedAmounts, '') AS UnclaimedAmounts,
-                    m.LastName,
-                    m.FirstName,
-                    m.MiddleName,
-                    m.ExtName,
+                string query = @"WITH LatestPayroll AS(
+     SELECT
+         tps.MasterListID,
+         tps.Amount AS LatestAmount,
+         lp.Abbreviation AS LatestAbbreviation,
+         ROW_NUMBER() OVER(PARTITION BY tps.MasterListID ORDER BY tps.ID DESC) AS rn,
+         tps.Year,
+        tps.PayrollStatusID
+    FROM
+        tbl_payroll_socpen tps
+    LEFT JOIN
+        lib_period lp ON tps.PeriodID = lp.PeriodID
+    WHERE
+        tps.Year = @Year
+),
+PayrollData AS(
+    SELECT
+        m.IsVerified,
+        tps.MasterListID,
+        m.LastName,
+        m.FirstName,
+        m.MiddleName,
+        m.ExtName,
+        lb.BrgyName AS Barangay,
+        IF(tps.Address = '' OR tps.Address IS NULL, '', REPLACE(tps.Address, '[^a-zA-Z0-9 ]', '')) AS Address,
+        CONCAT(lb.BrgyName,
+               IF(tps.Address = '' OR tps.Address IS NULL, '', CONCAT(', ', '[', REPLACE(tps.Address, '[^a-zA-Z0-9 ]', ''), ']'))) AS FullAddress,
+        m.BirthDate,
+        ls.Sex AS Sex,
+        lhs.HealthStatus,
+        m.HealthStatusRemarks,
+        m.IDNumber,
+        tps.Amount AS Amounts,
+        tps.Year,
+        lp.Period,
+        lps.PayrollStatus AS StatusPayroll,
+        lct.ClaimType AS ClaimType,
+        tps.DateClaimedFrom AS DateClaimed,
+        lpt.PayrollType AS PayrollType,
+        lptg.PayrollTag AS PayrollTag,
+        lstat.Status AS Status,
+        m.Remarks,
+        m.DateDeceased,
+        lpm.PaymentMode,
+        tps.Remarks AS PayrollRemarks,
+        tm2.LastName AS LastName2,
+        tm2.FirstName AS FirstName2,
+        tm2.MiddleName AS MiddleName2,
+        tm2.ExtName AS ExtName2,
+        tps.DateTimeModified,
+        tps.ModifiedBy,
+        tps.DateTimeReplaced,
+        tps.ReplacedBy,
+        tps.DateTimeEntry,
+        tps.EntryBy,
+        CONCAT(lcm.CityMunName, ', ', lprov.ProvinceName) AS ProvinceMunicipality,
+        CONCAT(lp.Months, ', ', '(', lp.Period, ' ', tps.Year, ')') AS PeriodMonth,
+       CONCAT(lp.Months, ' ', tps.Year) AS HeaderPeriodYear,
+       lit.Type,
+        CASE
+            WHEN LatestPayroll.PayrollStatusID = 2 THEN
+                CONCAT('(', LatestPayroll.LatestAbbreviation, ' - ', LatestPayroll.LatestAmount, ')')
+            ELSE
+                ''
+        END AS UnclaimedPayroll
+    FROM
+        tbl_payroll_socpen tps
+    LEFT JOIN
+        tbl_masterlist m ON tps.MasterListID = m.ID
+    LEFT JOIN
+        tbl_masterlist tm2 ON tps.ReplacementForID = tm2.ID
+    LEFT JOIN
+        lib_barangay lb ON tps.PSGCBrgy = lb.PSGCBrgy
+    LEFT JOIN
+        lib_sex ls ON m.SexID = ls.Id
+    LEFT JOIN
+        lib_health_status lhs ON m.HealthStatusID = lhs.ID
+    LEFT JOIN
+        lib_period lp ON tps.PeriodID = lp.PeriodID
+    LEFT JOIN
+        lib_payroll_status lps ON tps.PayrollStatusID = lps.PayrollStatusID
+    LEFT JOIN
+        lib_claim_type lct ON tps.ClaimTypeID = lct.ClaimTypeID
+    LEFT JOIN
+        lib_payroll_type lpt ON tps.PayrollTypeID = lpt.PayrollTypeID
+    LEFT JOIN
+        lib_payroll_tag lptg ON tps.PayrollTagID = lptg.PayrollTagID
+    LEFT JOIN
+        lib_status lstat ON m.StatusID = lstat.ID
+    LEFT JOIN
+        lib_payment_mode lpm ON tps.PaymentModeID = lpm.PaymentModeID
+    LEFT JOIN
+        lib_province lprov ON tps.PSGCProvince = lprov.PSGCProvince
+    LEFT JOIN
+        lib_city_municipality lcm ON tps.PSGCCityMun = lcm.PSGCCityMun
+    LEFT JOIN
+        lib_id_type lit ON m.IDTypeID = lit.ID
+    LEFT JOIN
+        LatestPayroll ON LatestPayroll.MasterListID = tps.MasterListID AND LatestPayroll.rn = 2
+    WHERE
+        tps.PSGCCityMun = @PSGCCityMun
+        AND tps.Year = @Year
+        AND tps.PeriodID = @PeriodID
+)
+SELECT
+    PayrollData.IsVerified as Verified,
+    PayrollData.MasterListID,
+    IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
+    IFNULL(tps2.UnclaimedAmounts, '') AS UnclaimedAmounts,
+    PayrollData.LastName,
+    PayrollData.FirstName,
+    PayrollData.MiddleName,
+    PayrollData.ExtName,
+    CONCAT(
+        IFNULL(PayrollData.LastName, ''), ', ',
+        IFNULL(PayrollData.FirstName, ''), ' ',
+        IFNULL(PayrollData.MiddleName, ''), ' ',
+        IFNULL(PayrollData.ExtName, ''), ' ',
+        IFNULL(PayrollData.UnclaimedPayroll, '')
+    ) AS FullName,
+    PayrollData.UnclaimedPayroll,
+    PayrollData.Barangay,
+    PayrollData.Address,
+    PayrollData.FullAddress,
+    PayrollData.BirthDate,
+    PayrollData.Sex,
+    PayrollData.HealthStatus,
+    PayrollData.HealthStatusRemarks,
+    PayrollData.IDNumber,
+    PayrollData.Amounts,
+    PayrollData.Year,
+    PayrollData.Period,
+    PayrollData.StatusPayroll,
+    PayrollData.ClaimType,
+    PayrollData.DateClaimed,
+    PayrollData.PayrollType,
+    PayrollData.PayrollTag,
+    PayrollData.Status,
+    PayrollData.Remarks,
+    PayrollData.DateDeceased,
+    PayrollData.PaymentMode,
+    PayrollData.PayrollRemarks,
+    PayrollData.LastName2,
+    PayrollData.FirstName2,
+    PayrollData.MiddleName2,
+    PayrollData.ExtName2,
+    PayrollData.DateTimeModified,
+    PayrollData.ModifiedBy,
+    PayrollData.DateTimeReplaced,
+    PayrollData.ReplacedBy,
+    PayrollData.DateTimeEntry,
+    PayrollData.EntryBy,
+    PayrollData.ProvinceMunicipality,
+    PayrollData.PeriodMonth,
+    PayrollData.HeaderPeriodYear,
+    PayrollData.Type
+FROM
+    PayrollData
+LEFT JOIN
+    (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames
+     FROM tbl_attachments
+     GROUP BY MasterListID) tat ON PayrollData.MasterListID = tat.MasterListID
+LEFT JOIN
+    (SELECT MasterListID, GROUP_CONCAT(CONCAT('(', lp.Abbreviation, ' - ',Amount, ')') ORDER BY Amount SEPARATOR ', ') AS UnclaimedAmounts
+     FROM tbl_payroll_socpen tps2
+     LEFT JOIN lib_period lp ON tps2.PeriodID = lp.PeriodID
+     WHERE PayrollStatusID = 2 AND Year = @Year
+     GROUP BY MasterListID) tps2 ON PayrollData.MasterListID = tps2.MasterListID";
 
-                    lb.BrgyName AS Barangay,
-                    IF(tps.Address = '' OR tps.Address IS NULL, '', REPLACE(tps.Address, '[^a-zA-Z0-9 ]', '')) AS Address,
-                    CONCAT(lb.BrgyName, 
-                           IF(tps.Address = '' OR tps.Address IS NULL, '', CONCAT(', ', '[', REPLACE(tps.Address, '[^a-zA-Z0-9 ]', ''), ']'))) AS FullAddress,
-                    m.BirthDate,
-                    ls.Sex AS Sex,
-                    lhs.HealthStatus,
-                    m.HealthStatusRemarks,
-                    m.IDNumber,
-                    tps.Amount AS Amounts,
-                    tps.Year,
-                    lp.Period,
-                    lps.PayrollStatus AS StatusPayroll,
-                    lct.ClaimType AS ClaimType,
-                    tps.DateClaimedFrom AS DateClaimed,
-                    lpt.PayrollType AS PayrollType,
-                    lptg.PayrollTag AS PayrollTag,
-                    lstat.Status AS Status,
-                    m.Remarks,
-                    m.DateDeceased,
-                    lpm.PaymentMode,
-                    tps.Remarks AS PayrollRemarks,
-                    tm2.LastName AS LastName2,
-                    tm2.FirstName AS FirstName2,
-                    tm2.MiddleName AS MiddleName2,
-                    tm2.ExtName AS ExtName2,
-                    tps.DateTimeModified,
-                    tps.ModifiedBy,
-                    tps.DateTimeReplaced,
-                    tps.ReplacedBy,
-                    tps.DateTimeEntry,
-                    tps.EntryBy,
-
-                    CONCAT(lcm.CityMunName, ', ', lprov.ProvinceName) AS ProvinceMunicipality,
-                    CONCAT(lp.Months, ', ', '(', lp.Period, ' ', tps.Year , ')') AS PeriodMonth,
-                    CONCAT(lp.Months, ' ', tps.Year) AS HeaderPeriodYear,
-                    lit.Type
-
-               
-
-                FROM
-                    tbl_payroll_socpen tps
-                LEFT JOIN
-                    tbl_masterlist m ON tps.MasterListID = m.ID
-                LEFT JOIN
-                    tbl_masterlist tm2 ON tps.ReplacementForID = tm2.ID
-                LEFT JOIN
-                    lib_barangay lb ON tps.PSGCBrgy = lb.PSGCBrgy
-                LEFT JOIN
-                    lib_sex ls ON m.SexID = ls.Id
-                LEFT JOIN
-                    lib_health_status lhs ON m.HealthStatusID = lhs.ID
-                LEFT JOIN
-                    lib_period lp ON tps.PeriodID = lp.PeriodID
-                LEFT JOIN
-                    lib_payroll_status lps ON tps.PayrollStatusID = lps.PayrollStatusID
-                LEFT JOIN
-                    lib_claim_type lct ON tps.ClaimTypeID = lct.ClaimTypeID
-                LEFT JOIN
-                    lib_payroll_type lpt ON tps.PayrollTypeID = lpt.PayrollTypeID
-                LEFT JOIN
-                    lib_payroll_tag lptg ON tps.PayrollTagID = lptg.PayrollTagID
-                LEFT JOIN
-                    lib_status lstat ON m.StatusID = lstat.ID
-                LEFT JOIN
-                    lib_payment_mode lpm ON tps.PaymentModeID = lpm.PaymentModeID
-                LEFT JOIN
-                    lib_province lprov ON tps.PSGCProvince = lprov.PSGCProvince
-                LEFT JOIN
-                    lib_city_municipality lcm ON tps.PSGCCityMun = lcm.PSGCCityMun
-                LEFT JOIN
-                    lib_id_type lit ON m.IDTypeID = lit.ID
-
-                LEFT JOIN
-                    (SELECT
-                        MasterListID,
-                        GROUP_CONCAT(CONCAT('(', lp.Abbreviation, ' - ',Amount, ')') ORDER BY Amount SEPARATOR ', ') AS UnclaimedAmounts 
-                    FROM 
-                        tbl_payroll_socpen tps2
-                    LEFT JOIN 
-                        lib_period lp ON tps2.PeriodID = lp.PeriodID
-                    WHERE
-                        PayrollStatusID = 2 AND Year = @Year
-                    GROUP BY
-                        MasterListID) tps2
-                ON
-                    tps.MasterListID = tps2.MasterListID
-                
-                LEFT JOIN 
-                    (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                    FROM tbl_attachments 
-                    GROUP BY MasterListID) tat ON tps.MasterListID   = tat.MasterListID               
-                WHERE
-                    tps.PSGCCityMun = @PSGCCityMun
-                    AND tps.Year = @Year
-                    AND tps.PeriodID = @PeriodID";
 
                 // Add PayrollStatusID condition if not all statuses are included
                 if (includePayrollStatusID)
@@ -534,7 +596,7 @@ private void UpdateRowCount(int rowCount)
                     this.Invoke(new Action(() => progressBarControl1.EditValue = i));
                 }
 
-                dt.Columns.Add("FullName", typeof(string));
+               // dt.Columns.Add("FullName", typeof(string));
                 dt.Columns.Add("Status Payroll", typeof(string));
                 dt.Columns.Add("CurrentStatus", typeof(string));
                 dt.Columns.Add("Replacement Of", typeof(string));
@@ -584,8 +646,8 @@ private void UpdateRowCount(int rowCount)
                     string middleName = row["MiddleName"].ToString();
                     string extName = row["ExtName"].ToString();
 
-                    row["FullName"] = $"{lastName}, {firstName} {middleName} {extName} {unclaimedAmounts}";
-                    //row["FullName"] = $"{lastName}, {firstName} {middleName} {extName}";
+                   // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName} {unclaimedAmounts}";
+                   // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName}";
                     if (!string.IsNullOrEmpty(dateDeceased))
                     {
                         if (!string.IsNullOrEmpty(remarks))
@@ -640,8 +702,8 @@ private void UpdateRowCount(int rowCount)
 
                     gridView.Columns["StatusPayroll"].Visible = false;
                     gridView.Columns["ClaimType"].Visible = false;
-                    gridView.Columns["UnclaimedAmounts"].Visible = false;
-                    gridView.Columns["MasterlistID"].Visible = false;
+                   // gridView.Columns["UnclaimedAmounts"].Visible = false;
+                    gridView.Columns["MasterListID"].Visible = false;
 
                     gridView.Columns["LastName2"].Visible = false;
                     gridView.Columns["FirstName2"].Visible = false;

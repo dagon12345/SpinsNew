@@ -63,6 +63,16 @@ namespace SpinsNew.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Copy_of_02_SocPen_Logo__no_background_ {
+            get {
+                object obj = ResourceManager.GetObject("Copy of 02 SocPen Logo (no background)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_activate_48 {
             get {
                 object obj = ResourceManager.GetObject("icons8-activate-48", resourceCulture);
