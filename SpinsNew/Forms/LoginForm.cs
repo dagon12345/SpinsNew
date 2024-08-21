@@ -1,13 +1,16 @@
 ﻿using DevExpress.XtraEditors;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
 using SpinsNew.Connection;
+using Squirrel;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Text;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,12 +24,171 @@ namespace SpinsNew.Forms
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
+            //CheckForUpdates();
+            Updater();
+        }
+
+        private void Updater()
+        {
+            try
+            {
+                using (var client1 = new WebClient())
+                using (var stream = client1.OpenRead("http://www.google.com"))
+                {
+
+                    ////////////CHECK UPDATES
+                    //lbl_internet.Invoke((MethodInvoker)delegate
+                    //{
+                    //    // Access lbl_internet here
+                    //    lbl_internet.Text = "Checking for updates...";
+                    //});
+
+                    WebClient webClient = new WebClient();
+                    var client = new WebClient();
+
+                    if (!webClient.DownloadString("https://www.dropbox.com/scl/fi/rh7cf7gp0wvxymt9kxy44/Update.txt?rlkey=w9ta6284ny36up0xiq9ub8y7e&st=v47zh5qg&dl=1").Contains("1.0.0"))
+                    {
+                        XtraMessageBox.Show("Update available!");
+                        //lbl_internet.Invoke((MethodInvoker)delegate
+                        //{
+                        //    // Access lbl_internet here
+                        //    lbl_internet.Text = "Update available!";
+                        //});
+
+                        if (MessageBox.Show("New update available! Do you want to install it?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                //lbl_internet.Invoke((MethodInvoker)delegate
+                                //{
+                                //    // Access lbl_internet here
+                                //    lbl_internet.Text = "Installing update, please wait....";
+                                //});
+
+                                if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
+                                client.DownloadFile("https://www.dropbox.com/scl/fi/ggdfa7m3naiydw8kddwiv/SpinsInstaller.zip?rlkey=ovx09mtlfia6suiy7ejsmo2t2&st=nkgmz3bb&dl=1", @"SpinsInstaller.zip");
+                                string zipPath = @".\SpinsInstaller.zip";
+                                string extractPath = @".\";
+                                ZipFile.ExtractToDirectory(zipPath, extractPath);
+
+
+                                Process process = new Process();
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = String.Format("/i SpinsInstaller.msi");
+
+
+
+                                process.Start();
+
+                                Application.Exit();
+                            }
+                            catch (Exception ex)
+                            {
+                                 XtraMessageBox.Show(ex.Message);
+                            }
+                        }
+                        //else
+                        //{
+                        //    this.Hide();
+                        //    frmSelectSection fs = new frmSelectSection();
+                        //    fs.Show();
+                        //}
+
+                    }
+
+
+
+
+
+                    //lbl_internet.Invoke((MethodInvoker)delegate
+                    //{
+                    //    // Access lbl_internet here
+                    //    lbl_internet.Text = "Online";
+                    //});
+
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+
+                XtraMessageBox.Show(ex.Message);
+                //lbl_internet.Invoke((MethodInvoker)delegate
+                //{
+                //    // Access lbl_internet here
+                //    lbl_internet.Text = "Local Network";
+                //});
+
+            }
+        }
+        private void GitHubUpdater()
+        {
+            try
+            {
+                using (var client1 = new WebClient())
+                using (var stream = client1.OpenRead("http://www.google.com"))
+                {
+                    // Check for updates
+                    WebClient webClient = new WebClient();
+                    var client = new WebClient();
+
+                    // Use the raw content URL to check for the latest version on GitHub
+                    string latestVersion = webClient.DownloadString("https://raw.githubusercontent.com/YourGitHubUsername/YourRepository/main/update.txt").Trim();
+
+                    // Replace "1.0.0" with your application's current version
+                    if (!latestVersion.Contains("1.0.0"))
+                    {
+                        XtraMessageBox.Show("Update available!");
+
+                        if (MessageBox.Show("New update available! Do you want to install it?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                if (File.Exists(@".\SpinsInstaller.msi")) { File.Delete(@".\SpinsInstaller.msi"); }
+
+                                // Download the installer from GitHub Releases
+                                client.DownloadFile("https://github.com/YourGitHubUsername/YourRepository/releases/download/v" + latestVersion + "/SpinsInstaller.zip", @"SpinsInstaller.zip");
+
+                                string zipPath = @".\SpinsInstaller.zip";
+                                string extractPath = @".\";
+                                ZipFile.ExtractToDirectory(zipPath, extractPath);
+
+                                Process process = new Process();
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = String.Format("/i SpinsInstaller.msi");
+
+                                process.Start();
+                                Application.Exit();
+                            }
+                            catch (Exception ex)
+                            {
+                                XtraMessageBox.Show(ex.Message);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show(ex.Message);
+            }
+
         }
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-
+          
         }
+
+        //private async Task CheckForUpdates()
+        //{
+        //    using (var manager = new UpdateManager(@"C:\Users\DSWD\source\repos\SpinsNew\SpinsNew\Release"))
+        //    {
+        //        await manager.UpdateApp();
+        //    }
+        //}
+
         RegistrationForm registrationForm;
         private void hyper_register_Click(object sender, EventArgs e)
         {
@@ -104,6 +266,12 @@ namespace SpinsNew.Forms
         private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void crystalLink_Click(object sender, EventArgs e)
+        {
+            string url = "https://www.dropbox.com/scl/fi/pkc8mobyyll9296tup4je/Cyrstal-report-2019.EXE?rlkey=72gy11cz0jey6a4eafgufspeh&st=nt54574s&dl=1";
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
     }
 }

@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.33927.289
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpinsNew", "SpinsNew\SpinsNew.csproj", "{E8C3F564-F21C-4314-B6C2-789D7A584953}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SpinsInstaller", "SpinsInstaller\SpinsInstaller.vdproj", "{3D7A1F9B-AC52-4C8D-A677-76E0EFAED5C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{E8C3F564-F21C-4314-B6C2-789D7A584953}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8C3F564-F21C-4314-B6C2-789D7A584953}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8C3F564-F21C-4314-B6C2-789D7A584953}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D7A1F9B-AC52-4C8D-A677-76E0EFAED5C5}.Debug|Any CPU.ActiveCfg = Debug
+		{3D7A1F9B-AC52-4C8D-A677-76E0EFAED5C5}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
