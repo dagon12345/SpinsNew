@@ -9,6 +9,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -273,9 +274,29 @@ namespace SpinsNew.Forms
         }
 
 
+        private void DisplayVersion()
+        {
+            // Path to the version file
+            string versionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "version.json");
+
+            if (File.Exists(versionFilePath))
+            {
+                // Read the version from the file
+                string version = File.ReadAllText(versionFilePath).Trim();
+
+                // Set the version information to a label
+               // lblversion.Text = $"Publish Version: {version}";
+            }
+            else
+            {
+               // lblversion.Text = "Version file not found.";
+            }
+        }
+
         private void LoginForm_Load(object sender, EventArgs e)
         {
             //Updater();
+           // DisplayVersion();
         }
 
         //private async Task CheckForUpdates()

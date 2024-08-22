@@ -127,7 +127,7 @@ namespace SpinsNew.Forms
 
                 if (gridView.RowCount == 0)
                 {
-                    XtraMessageBox.Show("No data in the grid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                   // XtraMessageBox.Show("No data in the grid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

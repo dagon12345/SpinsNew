@@ -832,7 +832,7 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_barangay
             // 
-            this.cmb_barangay.Location = new System.Drawing.Point(109, 47);
+            this.cmb_barangay.Location = new System.Drawing.Point(109, 48);
             this.cmb_barangay.Name = "cmb_barangay";
             this.cmb_barangay.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.cmb_barangay.Properties.Appearance.Options.UseFont = true;

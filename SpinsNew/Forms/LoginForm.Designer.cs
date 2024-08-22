@@ -32,13 +32,13 @@ namespace SpinsNew.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.crystalLink = new DevExpress.XtraEditors.HyperlinkLabelControl();
+            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.hyper_register = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.btn_login = new DevExpress.XtraEditors.SimpleButton();
-            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.txt_password = new DevExpress.XtraEditors.TextEdit();
             this.txt_username = new DevExpress.XtraEditors.TextEdit();
+            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
@@ -71,6 +71,16 @@ namespace SpinsNew.Forms
             this.crystalLink.Text = "Download Crystal repot here for reporting.";
             this.crystalLink.Click += new System.EventHandler(this.crystalLink_Click);
             // 
+            // pictureEdit1
+            // 
+            this.pictureEdit1.EditValue = global::SpinsNew.Properties.Resources.Copy_of_02_SocPen_Logo__no_background_;
+            this.pictureEdit1.Location = new System.Drawing.Point(5, 41);
+            this.pictureEdit1.Name = "pictureEdit1";
+            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.pictureEdit1.Size = new System.Drawing.Size(102, 106);
+            this.pictureEdit1.TabIndex = 3;
+            // 
             // hyper_register
             // 
             this.hyper_register.Location = new System.Drawing.Point(196, 113);
@@ -89,6 +99,21 @@ namespace SpinsNew.Forms
             this.btn_login.TabIndex = 2;
             this.btn_login.Text = "Login";
             this.btn_login.Click += new System.EventHandler(this.btn_login_Click);
+            // 
+            // txt_password
+            // 
+            this.txt_password.Location = new System.Drawing.Point(196, 87);
+            this.txt_password.Name = "txt_password";
+            this.txt_password.Properties.UseSystemPasswordChar = true;
+            this.txt_password.Size = new System.Drawing.Size(180, 20);
+            this.txt_password.TabIndex = 1;
+            // 
+            // txt_username
+            // 
+            this.txt_username.Location = new System.Drawing.Point(196, 53);
+            this.txt_username.Name = "txt_username";
+            this.txt_username.Size = new System.Drawing.Size(180, 20);
+            this.txt_username.TabIndex = 0;
             // 
             // labelControl1
             // 
@@ -109,31 +134,6 @@ namespace SpinsNew.Forms
             this.labelControl2.Size = new System.Drawing.Size(52, 15);
             this.labelControl2.TabIndex = 1;
             this.labelControl2.Text = "Password";
-            // 
-            // pictureEdit1
-            // 
-            this.pictureEdit1.EditValue = global::SpinsNew.Properties.Resources.Copy_of_02_SocPen_Logo__no_background_;
-            this.pictureEdit1.Location = new System.Drawing.Point(5, 41);
-            this.pictureEdit1.Name = "pictureEdit1";
-            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
-            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
-            this.pictureEdit1.Size = new System.Drawing.Size(102, 106);
-            this.pictureEdit1.TabIndex = 3;
-            // 
-            // txt_password
-            // 
-            this.txt_password.Location = new System.Drawing.Point(196, 87);
-            this.txt_password.Name = "txt_password";
-            this.txt_password.Properties.UseSystemPasswordChar = true;
-            this.txt_password.Size = new System.Drawing.Size(180, 20);
-            this.txt_password.TabIndex = 1;
-            // 
-            // txt_username
-            // 
-            this.txt_username.Location = new System.Drawing.Point(196, 53);
-            this.txt_username.Name = "txt_username";
-            this.txt_username.Size = new System.Drawing.Size(180, 20);
-            this.txt_username.TabIndex = 0;
             // 
             // LoginForm
             // 

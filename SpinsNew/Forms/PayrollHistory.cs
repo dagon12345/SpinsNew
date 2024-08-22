@@ -5,6 +5,7 @@ using SpinsNew.Connection;
 using System;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SpinsNew.Forms
@@ -40,10 +41,13 @@ namespace SpinsNew.Forms
                 cmd0.CommandType = CommandType.Text;
                 cmd0.CommandText = @"SELECT 
                         s.ID,
+                        s.MasterListID,
                         s.Year,
                         lp.Period,
+                        lp.PeriodID,
                         lpr.ProvinceName as ProvinceName,
                         lcm.CityMunName as Municipality,
+                        lcm.PSGCCityMun,
                         lb.BrgyName as Barangay,
                         s.Amount,
                         lps.PayrollStatus,
@@ -239,6 +243,80 @@ namespace SpinsNew.Forms
             {
                 // Close the form
                 this.Close();
+            }
+        }
+        PayrollFiles payrollFilesForm;
+        private PayrollHistory payrollFormHistory;
+        private void gridControl1_DoubleClick(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<PayrollFiles>().Any())
+            {
+                payrollFilesForm.Select();
+                payrollFilesForm.BringToFront();
+            }
+            else
+            {
+                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
+                payrollFilesForm = new PayrollFiles(payrollFormHistory);
+                GridView gridView = gridControl1.MainView as GridView;
+
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to Edit", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing EditApplicantForm
+                }
+
+                // Pass the ID value to the EditApplicant form
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+               // int id = Convert.ToInt32(row["MasterListID"]);
+                int municipality = Convert.ToInt32(row["PSGCCityMun"]);
+                int year = Convert.ToInt32(row["Year"]);
+                int period = Convert.ToInt32(row["PeriodID"]);
+                payrollFilesForm.DisplayID(municipality, year, period);
+                payrollFilesForm.Show();
+
+
+
+
+                //Below is to get the reference code under masterlist
+                // Create a new instance of GISForm
+                // GISviewingForm = new GISForm(this);
+                // GridView gridView = gridControl1.MainView as GridView;
+
+                // Check if any row is selected
+                //if (gridView.SelectedRowsCount == 0)
+                //{
+                //    MessageBox.Show("Please select a data to view", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return; // Exit the method without showing GISForm
+                //}
+
+                //// Pass the ID value to the GISForm
+                ////DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                //string gis = row["GIS"].ToString();
+                //string spbuf = row["SPBUF"].ToString();
+
+                //if (string.IsNullOrWhiteSpace(gis))
+                //{
+                //    if (string.IsNullOrWhiteSpace(spbuf))
+                //    {
+                //        //MessageBox.Show("Both GIS and SPBUF are missing.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //        // return; // Exit the method without showing GISForm
+                //    }
+                //    else
+                //    {
+                //        int spbufId = Convert.ToInt32(spbuf);
+                //        EditApplicantForm.DisplaySPBUF(spbufId);
+                //    }
+                //}
+                //else
+                //{
+                //    int gisId = Convert.ToInt32(gis);
+                //    EditApplicantForm.DisplayGIS(gisId);
+                //}
+
+                //EditApplicantForm.Show();
+
             }
         }
     }
