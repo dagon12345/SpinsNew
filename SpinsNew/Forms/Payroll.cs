@@ -380,18 +380,27 @@ private void UpdateRowCount(int rowCount)
                 cmd.CommandType = CommandType.Text;
                 string query = @"WITH LatestPayroll AS(
      SELECT
+         tps.ID,
          tps.MasterListID,
          tps.Amount AS LatestAmount,
          lp.Abbreviation AS LatestAbbreviation,
-         ROW_NUMBER() OVER(PARTITION BY tps.MasterListID ORDER BY tps.ID DESC) AS rn,
-         tps.Year,
-        tps.PayrollStatusID
+         tps.PayrollStatusID,
+         ROW_NUMBER() OVER(PARTITION BY tps.MasterListID ORDER BY tps.ID) AS rn -- ORDER by tbl_socpen_payroll ID Ascending
+        
     FROM
         tbl_payroll_socpen tps
     LEFT JOIN
         lib_period lp ON tps.PeriodID = lp.PeriodID
     WHERE
+
+        /*Filter by Year and PeriodID which is not equal, meaning opposite
+         ex: Search year 2024 and Period of 1st semester, since 1st semester was selected
+        therefore 3q unclaimed is the one that shows instead!*/
+        
         tps.Year = @Year
+        AND tps.PeriodID != @PeriodID
+        
+    
 ),
 PayrollData AS(
     SELECT
@@ -476,7 +485,13 @@ PayrollData AS(
     LEFT JOIN
         lib_id_type lit ON m.IDTypeID = lit.ID
     LEFT JOIN
-        LatestPayroll ON LatestPayroll.MasterListID = tps.MasterListID AND LatestPayroll.rn = 2
+    /* Since Ascending order was implemented
+            the LatestPayroll.rn will show the top row with the value of number 1
+            .The filter above is opposite instead of filter 1st semester period is selected
+            then the 3q is the one that is seleceted depending on the filter applied.*/
+
+        LatestPayroll ON LatestPayroll.MasterListID = tps.MasterListID AND LatestPayroll.rn = 1 AND Year = @Year 
+
     WHERE
         tps.PSGCCityMun = @PSGCCityMun
         AND tps.Year = @Year
@@ -542,10 +557,16 @@ LEFT JOIN
      GROUP BY MasterListID) tat ON PayrollData.MasterListID = tat.MasterListID
 LEFT JOIN
     (SELECT MasterListID, GROUP_CONCAT(CONCAT('(', lp.Abbreviation, ' - ',Amount, ')') ORDER BY Amount SEPARATOR ', ') AS UnclaimedAmounts
-     FROM tbl_payroll_socpen tps2
-     LEFT JOIN lib_period lp ON tps2.PeriodID = lp.PeriodID
-     WHERE PayrollStatusID = 2 AND Year = @Year
-     GROUP BY MasterListID) tps2 ON PayrollData.MasterListID = tps2.MasterListID";
+     FROM 
+        tbl_payroll_socpen tps2
+     LEFT JOIN 
+        lib_period lp ON tps2.PeriodID = lp.PeriodID
+     WHERE 
+        PayrollStatusID = 2
+        AND Year = @Year
+        
+     GROUP BY 
+        MasterListID) tps2 ON PayrollData.MasterListID = tps2.MasterListID";
 
 
                 // Add PayrollStatusID condition if not all statuses are included
@@ -702,7 +723,8 @@ LEFT JOIN
 
                     gridView.Columns["StatusPayroll"].Visible = false;
                     gridView.Columns["ClaimType"].Visible = false;
-                   // gridView.Columns["UnclaimedAmounts"].Visible = false;
+                    gridView.Columns["UnclaimedAmounts"].Visible = false;
+                    gridView.Columns["UnclaimedPayroll"].Visible = false;
                     gridView.Columns["MasterListID"].Visible = false;
 
                     gridView.Columns["LastName2"].Visible = false;
