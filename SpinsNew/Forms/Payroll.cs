@@ -217,7 +217,7 @@ namespace SpinsNew.Forms
         //Show the spinner
         private void EnableSpinner()
         {
-            btn_search.Enabled = false;
+            //btn_search.Enabled = false;
             // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
 
@@ -230,6 +230,7 @@ namespace SpinsNew.Forms
                 // MessageBox.Show($"Selected Year: {selectedYear.Year}");
                 LoadPeriodsForYear(selectedYear.Year);
             }
+            Search();
         }
         //Code below is to count the data if the column filter was changed
         /*public Form1()
@@ -795,19 +796,23 @@ private void UpdateRowCount(int rowCount)
         private void DisableSpinner()
         {
             progressBarControl1.EditValue = 0; // Ensure the progress bar is full
-            btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
+            //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
                                        // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
         }
-        private async void btn_search_ClickAsync(object sender, EventArgs e)
+        private async void Search()
         {
-            if(cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period")
+            if (cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period")
             {
-                MessageBox.Show("Fill all the fields before searching", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+               // MessageBox.Show("Fill all the fields before searching", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             EnableSpinner();
             await Payrolls();
+        }
+        private async void btn_search_ClickAsync(object sender, EventArgs e)
+        {
+          
         }
 
 
@@ -895,7 +900,7 @@ private void UpdateRowCount(int rowCount)
                     // Update row count display
                     UpdateRowCount(gridView);
                 }
-
+               // Search();
                 // Return early to avoid further processing
                 return;
             }
@@ -913,9 +918,12 @@ private void UpdateRowCount(int rowCount)
                     UpdateRowCount(gridView);
                 }
 
+                //Search();
+
                 return;
             }
 
+         
             // Optionally, you might want to handle the case where no radio button is checked
             // e.g., lblValue.Text = "Default Value";
 
@@ -928,7 +936,7 @@ private void UpdateRowCount(int rowCount)
 
         private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            Search();
         }
 
         private void rbClaimed_CheckedChanged(object sender, EventArgs e)
@@ -975,5 +983,19 @@ private void UpdateRowCount(int rowCount)
             }
         }
 
+        private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Search();
+        }
+
+        private void cmb_period_Click(object sender, EventArgs e)
+        {
+            //Search();
+        }
+
+        private void cmb_period_MouseClick(object sender, MouseEventArgs e)
+        {
+            //Search();
+        }
     }
 }

@@ -34,7 +34,6 @@ namespace SpinsNew.Forms
             this.panel_spinner = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            this.btn_search = new DevExpress.XtraEditors.SimpleButton();
             this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -103,7 +102,6 @@ namespace SpinsNew.Forms
             this.groupControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupControl1.Controls.Add(this.panel_spinner);
-            this.groupControl1.Controls.Add(this.btn_search);
             this.groupControl1.Controls.Add(this.cmb_period);
             this.groupControl1.Controls.Add(this.cmb_year);
             this.groupControl1.Controls.Add(this.cmb_municipality);
@@ -140,17 +138,6 @@ namespace SpinsNew.Forms
             this.labelControl2.Size = new System.Drawing.Size(138, 13);
             this.labelControl2.TabIndex = 16;
             this.labelControl2.Text = "Retrieving, please wait.......";
-            // 
-            // btn_search
-            // 
-            this.btn_search.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_search.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_search.ImageOptions.Image")));
-            this.btn_search.Location = new System.Drawing.Point(581, 29);
-            this.btn_search.Name = "btn_search";
-            this.btn_search.Size = new System.Drawing.Size(93, 20);
-            this.btn_search.TabIndex = 4;
-            this.btn_search.Text = "Search";
-            this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
             // 
             // cmb_period
             // 
@@ -546,7 +533,6 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.ComboBoxEdit cmb_period;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_year;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_municipality;
-        public DevExpress.XtraEditors.SimpleButton btn_search;
         private DevExpress.XtraGrid.GridControl gridDelisted;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         private DevExpress.XtraEditors.SearchControl searchControl1;

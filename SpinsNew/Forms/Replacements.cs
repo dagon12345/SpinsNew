@@ -30,7 +30,7 @@ namespace SpinsNew.Forms
 
         private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            Search();
         }
 
 
@@ -282,7 +282,7 @@ namespace SpinsNew.Forms
         //Show the spinner
         private void EnableSpinner()
         {
-            btn_search.Enabled = false;
+           // btn_search.Enabled = false;
             // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
             lbl_fromreplace.Text = "-----";
@@ -295,7 +295,7 @@ namespace SpinsNew.Forms
         private void DisableSpinner()
         {
             progressBarControl1.EditValue = 0; // Ensure the progress bar is full
-            btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
+           // btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
                                        // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
         }
@@ -781,23 +781,28 @@ namespace SpinsNew.Forms
                 // MessageBox.Show($"Selected Year: {selectedYear.Year}");
                 LoadPeriodsForYear(selectedYear.Year);
             }
-        }
-
-        private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
-        {
+            Search();
 
         }
-
-        private async void btn_search_Click(object sender, EventArgs e)
+        private async void Search()
         {
             if (cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period")
             {
-                XtraMessageBox.Show("Please fill all the search dropdown before searching", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // XtraMessageBox.Show("Please fill all the search dropdown before searching", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             EnableSpinner();//Enable the spinner
             await Delisted(); // Display delisted list tbl_delisted.
             await Waitlisted();
+        }
+        private async void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Search();
+        }
+
+        private async void btn_search_Click(object sender, EventArgs e)
+        {
+         
         }
 
         private void searchControl1_QueryIsSearchColumn(object sender, QueryIsSearchColumnEventArgs args)

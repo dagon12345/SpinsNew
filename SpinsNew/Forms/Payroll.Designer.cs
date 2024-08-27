@@ -38,7 +38,6 @@ namespace SpinsNew.Forms
             this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.btn_search = new DevExpress.XtraEditors.SimpleButton();
             this.panel_spinner = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
@@ -79,10 +78,9 @@ namespace SpinsNew.Forms
             this.groupControl1.Controls.Add(this.cmb_period);
             this.groupControl1.Controls.Add(this.cmb_year);
             this.groupControl1.Controls.Add(this.cmb_municipality);
-            this.groupControl1.Controls.Add(this.btn_search);
             this.groupControl1.Location = new System.Drawing.Point(10, 31);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(838, 182);
+            this.groupControl1.Size = new System.Drawing.Size(838, 151);
             this.groupControl1.TabIndex = 1;
             this.groupControl1.Text = "Select";
             // 
@@ -95,7 +93,7 @@ namespace SpinsNew.Forms
             // 
             // lblValue
             // 
-            this.lblValue.Location = new System.Drawing.Point(166, 112);
+            this.lblValue.Location = new System.Drawing.Point(360, 109);
             this.lblValue.Name = "lblValue";
             this.lblValue.Size = new System.Drawing.Size(26, 13);
             this.lblValue.TabIndex = 22;
@@ -106,7 +104,7 @@ namespace SpinsNew.Forms
             // 
             this.rbUnclaimed.AutoSize = true;
             this.rbUnclaimed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbUnclaimed.Location = new System.Drawing.Point(86, 111);
+            this.rbUnclaimed.Location = new System.Drawing.Point(86, 27);
             this.rbUnclaimed.Name = "rbUnclaimed";
             this.rbUnclaimed.Size = new System.Drawing.Size(63, 17);
             this.rbUnclaimed.TabIndex = 21;
@@ -119,7 +117,7 @@ namespace SpinsNew.Forms
             this.rbAllStatus.AutoSize = true;
             this.rbAllStatus.Checked = true;
             this.rbAllStatus.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbAllStatus.Location = new System.Drawing.Point(17, 111);
+            this.rbAllStatus.Location = new System.Drawing.Point(17, 27);
             this.rbAllStatus.Name = "rbAllStatus";
             this.rbAllStatus.Size = new System.Drawing.Size(63, 17);
             this.rbAllStatus.TabIndex = 21;
@@ -131,18 +129,21 @@ namespace SpinsNew.Forms
             // cmb_period
             // 
             this.cmb_period.EditValue = "Select Period";
-            this.cmb_period.Location = new System.Drawing.Point(17, 86);
+            this.cmb_period.Location = new System.Drawing.Point(17, 104);
             this.cmb_period.Name = "cmb_period";
             this.cmb_period.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_period.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.cmb_period.Size = new System.Drawing.Size(303, 20);
             this.cmb_period.TabIndex = 20;
+            this.cmb_period.SelectedIndexChanged += new System.EventHandler(this.cmb_period_SelectedIndexChanged);
+            this.cmb_period.Click += new System.EventHandler(this.cmb_period_Click);
+            this.cmb_period.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmb_period_MouseClick);
             // 
             // cmb_year
             // 
             this.cmb_year.EditValue = "Select Year";
-            this.cmb_year.Location = new System.Drawing.Point(17, 60);
+            this.cmb_year.Location = new System.Drawing.Point(17, 78);
             this.cmb_year.Name = "cmb_year";
             this.cmb_year.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -155,7 +156,7 @@ namespace SpinsNew.Forms
             // cmb_municipality
             // 
             this.cmb_municipality.EditValue = "Select City/Municipality";
-            this.cmb_municipality.Location = new System.Drawing.Point(17, 34);
+            this.cmb_municipality.Location = new System.Drawing.Point(17, 52);
             this.cmb_municipality.Name = "cmb_municipality";
             this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -167,22 +168,11 @@ namespace SpinsNew.Forms
             this.cmb_municipality.TabIndex = 18;
             this.cmb_municipality.SelectedIndexChanged += new System.EventHandler(this.cmb_municipality_SelectedIndexChanged);
             // 
-            // btn_search
-            // 
-            this.btn_search.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_search.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_search.ImageOptions.Image")));
-            this.btn_search.Location = new System.Drawing.Point(107, 155);
-            this.btn_search.Name = "btn_search";
-            this.btn_search.Size = new System.Drawing.Size(123, 22);
-            this.btn_search.TabIndex = 4;
-            this.btn_search.Text = "Search";
-            this.btn_search.Click += new System.EventHandler(this.btn_search_ClickAsync);
-            // 
             // panel_spinner
             // 
             this.panel_spinner.Controls.Add(this.pictureBox1);
             this.panel_spinner.Controls.Add(this.labelControl2);
-            this.panel_spinner.Location = new System.Drawing.Point(9, 219);
+            this.panel_spinner.Location = new System.Drawing.Point(9, 191);
             this.panel_spinner.Name = "panel_spinner";
             this.panel_spinner.Size = new System.Drawing.Size(177, 19);
             this.panel_spinner.TabIndex = 17;
@@ -213,9 +203,9 @@ namespace SpinsNew.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupControlPayroll.Controls.Add(this.searchControl1);
             this.groupControlPayroll.Controls.Add(this.gridPayroll);
-            this.groupControlPayroll.Location = new System.Drawing.Point(10, 260);
+            this.groupControlPayroll.Location = new System.Drawing.Point(10, 232);
             this.groupControlPayroll.Name = "groupControlPayroll";
-            this.groupControlPayroll.Size = new System.Drawing.Size(838, 342);
+            this.groupControlPayroll.Size = new System.Drawing.Size(838, 370);
             this.groupControlPayroll.TabIndex = 2;
             this.groupControlPayroll.Text = "Payroll Created";
             // 
@@ -237,7 +227,7 @@ namespace SpinsNew.Forms
             this.gridPayroll.Location = new System.Drawing.Point(17, 60);
             this.gridPayroll.MainView = this.gridView1;
             this.gridPayroll.Name = "gridPayroll";
-            this.gridPayroll.Size = new System.Drawing.Size(805, 277);
+            this.gridPayroll.Size = new System.Drawing.Size(805, 305);
             this.gridPayroll.TabIndex = 1;
             this.gridPayroll.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -291,14 +281,13 @@ namespace SpinsNew.Forms
             // 
             this.progressBarControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarControl1.Location = new System.Drawing.Point(9, 244);
+            this.progressBarControl1.Location = new System.Drawing.Point(9, 216);
             this.progressBarControl1.Name = "progressBarControl1";
             this.progressBarControl1.Size = new System.Drawing.Size(838, 10);
             this.progressBarControl1.TabIndex = 12;
             // 
             // Payroll
             // 
-            this.AcceptButton = this.btn_search;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(859, 612);
@@ -341,7 +330,6 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.Panel panel_spinner;
         private System.Windows.Forms.PictureBox pictureBox1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
-        public DevExpress.XtraEditors.SimpleButton btn_search;
         private DevExpress.XtraEditors.GroupControl groupControlPayroll;
         private DevExpress.XtraGrid.GridControl gridPayroll;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;

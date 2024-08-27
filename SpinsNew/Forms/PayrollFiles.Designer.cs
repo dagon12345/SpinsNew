@@ -33,7 +33,6 @@ namespace SpinsNew.Forms
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.lblPeriod = new DevExpress.XtraEditors.LabelControl();
             this.lbl_municipality = new DevExpress.XtraEditors.LabelControl();
-            this.btn_search = new DevExpress.XtraEditors.SimpleButton();
             this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -41,9 +40,9 @@ namespace SpinsNew.Forms
             this.list_pictures = new DevExpress.XtraEditors.ListBoxControl();
             this.cmb_selectfolder = new DevExpress.XtraEditors.ComboBoxEdit();
             this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
+            this.btn_left = new DevExpress.XtraEditors.SimpleButton();
             this.btn_rotate = new DevExpress.XtraEditors.SimpleButton();
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
-            this.btn_left = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).BeginInit();
@@ -64,7 +63,6 @@ namespace SpinsNew.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupControl1.Controls.Add(this.lblPeriod);
             this.groupControl1.Controls.Add(this.lbl_municipality);
-            this.groupControl1.Controls.Add(this.btn_search);
             this.groupControl1.Controls.Add(this.cmb_period);
             this.groupControl1.Controls.Add(this.cmb_year);
             this.groupControl1.Controls.Add(this.cmb_municipality);
@@ -95,17 +93,6 @@ namespace SpinsNew.Forms
             this.lbl_municipality.TabIndex = 82;
             this.lbl_municipality.Text = "Mun";
             this.lbl_municipality.Visible = false;
-            // 
-            // btn_search
-            // 
-            this.btn_search.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_search.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_search.ImageOptions.Image")));
-            this.btn_search.Location = new System.Drawing.Point(5, 104);
-            this.btn_search.Name = "btn_search";
-            this.btn_search.Size = new System.Drawing.Size(123, 22);
-            this.btn_search.TabIndex = 5;
-            this.btn_search.Text = "Search";
-            this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
             // 
             // cmb_period
             // 
@@ -195,6 +182,16 @@ namespace SpinsNew.Forms
             this.groupControl3.TabIndex = 2;
             this.groupControl3.Text = "Image";
             // 
+            // btn_left
+            // 
+            this.btn_left.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_left.ImageOptions.Image")));
+            this.btn_left.Location = new System.Drawing.Point(5, 29);
+            this.btn_left.Name = "btn_left";
+            this.btn_left.Size = new System.Drawing.Size(195, 23);
+            this.btn_left.TabIndex = 2;
+            this.btn_left.Text = "Rotate Left (Ctrl + Left Arrow)";
+            this.btn_left.Click += new System.EventHandler(this.btn_left_Click);
+            // 
             // btn_rotate
             // 
             this.btn_rotate.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_rotate.ImageOptions.Image")));
@@ -216,16 +213,6 @@ namespace SpinsNew.Forms
             this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
             this.pictureEdit1.Size = new System.Drawing.Size(716, 540);
             this.pictureEdit1.TabIndex = 0;
-            // 
-            // btn_left
-            // 
-            this.btn_left.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
-            this.btn_left.Location = new System.Drawing.Point(5, 29);
-            this.btn_left.Name = "btn_left";
-            this.btn_left.Size = new System.Drawing.Size(195, 23);
-            this.btn_left.TabIndex = 2;
-            this.btn_left.Text = "Rotate Left (Ctrl + Left Arrow)";
-            this.btn_left.Click += new System.EventHandler(this.btn_left_Click);
             // 
             // PayrollFiles
             // 
@@ -270,7 +257,6 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.ComboBoxEdit cmb_period;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_year;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_municipality;
-        public DevExpress.XtraEditors.SimpleButton btn_search;
         private DevExpress.XtraEditors.LabelControl lbl_municipality;
         private DevExpress.XtraEditors.LabelControl lblPeriod;
         private DevExpress.XtraEditors.SimpleButton btn_rotate;

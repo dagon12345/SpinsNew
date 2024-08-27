@@ -603,10 +603,7 @@ namespace SpinsNew.Forms
             PeriodMethod();
         }
 
-        private void btn_search_Click(object sender, EventArgs e)
-        {
-             
-        }
+
 
         private void RotateRight()
         {

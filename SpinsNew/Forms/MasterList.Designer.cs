@@ -34,12 +34,10 @@ namespace SpinsNew
             this.gridSplitContainer1 = new DevExpress.XtraGrid.GridSplitContainer();
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.btn_search = new DevExpress.XtraEditors.SimpleButton();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.cmb_municipality = new DevExpress.XtraEditors.CheckedComboBoxEdit();
-            this.btn_refresh = new DevExpress.XtraEditors.SimpleButton();
             this.searchControl1 = new DevExpress.XtraEditors.SearchControl();
             this.panel_spinner = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -133,17 +131,6 @@ namespace SpinsNew
             this.gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.gridView1.OptionsView.ShowGroupPanel = false;
             // 
-            // btn_search
-            // 
-            this.btn_search.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_search.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_search.ImageOptions.Image")));
-            this.btn_search.Location = new System.Drawing.Point(685, 39);
-            this.btn_search.Name = "btn_search";
-            this.btn_search.Size = new System.Drawing.Size(93, 20);
-            this.btn_search.TabIndex = 5;
-            this.btn_search.Text = "Search";
-            this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
-            // 
             // groupControl2
             // 
             this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -151,10 +138,8 @@ namespace SpinsNew
             this.groupControl2.Controls.Add(this.labelControl4);
             this.groupControl2.Controls.Add(this.labelControl3);
             this.groupControl2.Controls.Add(this.cmb_municipality);
-            this.groupControl2.Controls.Add(this.btn_refresh);
             this.groupControl2.Controls.Add(this.searchControl1);
             this.groupControl2.Controls.Add(this.panel_spinner);
-            this.groupControl2.Controls.Add(this.btn_search);
             this.groupControl2.Controls.Add(this.cmb_status);
             this.groupControl2.Location = new System.Drawing.Point(10, 33);
             this.groupControl2.Name = "groupControl2";
@@ -199,17 +184,6 @@ namespace SpinsNew
             this.cmb_municipality.Size = new System.Drawing.Size(438, 20);
             this.cmb_municipality.TabIndex = 2;
             this.cmb_municipality.EditValueChanged += new System.EventHandler(this.checkedComboBoxEdit1_EditValueChanged);
-            // 
-            // btn_refresh
-            // 
-            this.btn_refresh.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_refresh.Enabled = false;
-            this.btn_refresh.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_refresh.ImageOptions.Image")));
-            this.btn_refresh.Location = new System.Drawing.Point(661, 39);
-            this.btn_refresh.Name = "btn_refresh";
-            this.btn_refresh.Size = new System.Drawing.Size(20, 20);
-            this.btn_refresh.TabIndex = 8;
-            this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
             // searchControl1
             // 
@@ -269,6 +243,7 @@ namespace SpinsNew
             this.cmb_status.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.cmb_status.Size = new System.Drawing.Size(209, 20);
             this.cmb_status.TabIndex = 3;
+            this.cmb_status.SelectedIndexChanged += new System.EventHandler(this.cmb_status_SelectedIndexChanged);
             // 
             // contextMenuStrip1
             // 
@@ -480,7 +455,6 @@ namespace SpinsNew
             // 
             // MasterList
             // 
-            this.AcceptButton = this.btn_search;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gainsboro;
@@ -535,13 +509,11 @@ namespace SpinsNew
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private DevExpress.XtraEditors.ProgressBarControl progressBarControl1;
-        public DevExpress.XtraEditors.SimpleButton btn_search;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private System.Windows.Forms.Panel panel_spinner;
         private System.Windows.Forms.PictureBox pictureBox1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
-        public DevExpress.XtraEditors.SimpleButton btn_refresh;
         private System.Windows.Forms.ToolStripMenuItem payrollToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;

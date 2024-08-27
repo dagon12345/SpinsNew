@@ -779,62 +779,20 @@ namespace SpinsNew
         //Show the spinner
         private void EnableSpinner()
         {
-            btn_search.Enabled = false;
-            btn_refresh.Enabled = false;
+           // btn_search.Enabled = false;
+           // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
         }
         //Hide the spinner
         private void DisableSpinner()
         {
             progressBarControl1.EditValue = 0; // Ensure the progress bar is full
-            btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
-            btn_refresh.Enabled = true;
+            //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
+           // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
         }
         private string previousMunicipality = string.Empty;
         private string previousStatus = string.Empty;
-
-        private async void btn_search_Click(object sender, EventArgs e)
-        {
-
-            // Get the current search criteria
-            string currentMunicipality = cmb_municipality.Text;
-            string currentStatus = cmb_status.Text;
-
-            // Check if the search criteria have changed
-            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
-            {
-                // Criteria haven't changed, do not trigger the search method
-                MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Update the previous search criteria
-            previousMunicipality = currentMunicipality;
-            previousStatus = currentStatus;
-
-            // Your existing logic to handle search
-            if (cmb_municipality.Text == "" && cmb_status.Text == "")
-            {
-                MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_municipality.Text == "")
-            {
-                MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_status.Text == "")
-            {
-                MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            EnableSpinner();//Enable the spinner
-            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-            return;
-
-        }
 
         // Method to update the row count display
         public void UpdateRowCount(GridView gridView)
@@ -1085,7 +1043,7 @@ namespace SpinsNew
         {
 
 
-                btn_search.Enabled = false;
+               // btn_search.Enabled = false;
                 Task task = AllMunicipalities();
                 return;
 
@@ -1102,24 +1060,24 @@ namespace SpinsNew
         {
 
 
-            // Your existing logic to handle search
-            if (cmb_municipality.Text == "Select City/Municipality" && cmb_status.Text == "Select Status")
-            {
-                MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else if (cmb_municipality.Text == "Select City/Municipality")
-            {
-                MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else if (cmb_status.Text == "Select Status")
-            {
-                MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            //// Your existing logic to handle search
+            //if (cmb_municipality.Text == "Select City/Municipality" && cmb_status.Text == "Select Status")
+            //{
+            //    MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //}
+            //else if (cmb_municipality.Text == "Select City/Municipality")
+            //{
+            //    MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //}
+            //else if (cmb_status.Text == "Select Status")
+            //{
+            //    MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //}
 
 
-            EnableSpinner();//Enable the spinner
-            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-            return;
+            //EnableSpinner();//Enable the spinner
+            //await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            //return;
 
         }
         PayrollHistory payrollHistoryForm;
@@ -1952,9 +1910,45 @@ namespace SpinsNew
 
         }
 
-        private void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
+        private async void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
         {
 
+            // Get the current search criteria
+            string currentMunicipality = cmb_municipality.Text;
+            string currentStatus = cmb_status.Text;
+
+            // Check if the search criteria have changed
+            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
+            {
+                // Criteria haven't changed, do not trigger the search method
+                //MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Update the previous search criteria
+            previousMunicipality = currentMunicipality;
+            previousStatus = currentStatus;
+
+            // Your existing logic to handle search
+            if (cmb_municipality.Text == "" && cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_municipality.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            EnableSpinner();//Enable the spinner
+            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            return;
         }
 
         private void verifyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2073,6 +2067,47 @@ namespace SpinsNew
             //        e.Cancel = true; // to don't close form is user change his mind
             //}
          
+        }
+
+        private async void cmb_status_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            // Get the current search criteria
+            string currentMunicipality = cmb_municipality.Text;
+            string currentStatus = cmb_status.Text;
+
+            // Check if the search criteria have changed
+            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
+            {
+                // Criteria haven't changed, do not trigger the search method
+               // MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Update the previous search criteria
+            previousMunicipality = currentMunicipality;
+            previousStatus = currentStatus;
+
+            // Your existing logic to handle search
+            if (cmb_municipality.Text == "" && cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_municipality.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            EnableSpinner();//Enable the spinner
+            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            return;
         }
     }
 }
