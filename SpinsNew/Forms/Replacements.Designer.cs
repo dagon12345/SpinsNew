@@ -62,6 +62,8 @@ namespace SpinsNew.Forms
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
+            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
+            this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             this.panel_spinner.SuspendLayout();
@@ -93,6 +95,7 @@ namespace SpinsNew.Forms
             this.groupControl6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl5)).BeginInit();
             this.groupControl5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl1
@@ -106,7 +109,7 @@ namespace SpinsNew.Forms
             this.groupControl1.Controls.Add(this.cmb_municipality);
             this.groupControl1.Location = new System.Drawing.Point(10, 10);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(1035, 76);
+            this.groupControl1.Size = new System.Drawing.Size(1106, 76);
             this.groupControl1.TabIndex = 0;
             this.groupControl1.Text = "Select";
             // 
@@ -207,7 +210,7 @@ namespace SpinsNew.Forms
             this.groupControl2.Controls.Add(this.searchControl1);
             this.groupControl2.Location = new System.Drawing.Point(7, 3);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(782, 384);
+            this.groupControl2.Size = new System.Drawing.Size(782, 365);
             this.groupControl2.TabIndex = 1;
             this.groupControl2.Text = "Delisted list";
             // 
@@ -219,7 +222,7 @@ namespace SpinsNew.Forms
             this.gridDelisted.Location = new System.Drawing.Point(4, 45);
             this.gridDelisted.MainView = this.gridView1;
             this.gridDelisted.Name = "gridDelisted";
-            this.gridDelisted.Size = new System.Drawing.Size(773, 334);
+            this.gridDelisted.Size = new System.Drawing.Size(773, 315);
             this.gridDelisted.TabIndex = 1;
             this.gridDelisted.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -244,7 +247,7 @@ namespace SpinsNew.Forms
             this.groupControl3.Controls.Add(this.searchControl2);
             this.groupControl3.Location = new System.Drawing.Point(7, 3);
             this.groupControl3.Name = "groupControl3";
-            this.groupControl3.Size = new System.Drawing.Size(214, 379);
+            this.groupControl3.Size = new System.Drawing.Size(285, 360);
             this.groupControl3.TabIndex = 2;
             this.groupControl3.Text = "Replacements Available";
             // 
@@ -267,7 +270,7 @@ namespace SpinsNew.Forms
             this.gridWaitlisted.Location = new System.Drawing.Point(11, 48);
             this.gridWaitlisted.MainView = this.gridView2;
             this.gridWaitlisted.Name = "gridWaitlisted";
-            this.gridWaitlisted.Size = new System.Drawing.Size(200, 330);
+            this.gridWaitlisted.Size = new System.Drawing.Size(271, 311);
             this.gridWaitlisted.TabIndex = 2;
             this.gridWaitlisted.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView2});
@@ -290,7 +293,7 @@ namespace SpinsNew.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBarControl1.Location = new System.Drawing.Point(10, 92);
             this.progressBarControl1.Name = "progressBarControl1";
-            this.progressBarControl1.Size = new System.Drawing.Size(1035, 10);
+            this.progressBarControl1.Size = new System.Drawing.Size(1106, 10);
             this.progressBarControl1.TabIndex = 16;
             // 
             // splitContainerControl1
@@ -298,7 +301,7 @@ namespace SpinsNew.Forms
             this.splitContainerControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainerControl1.Location = new System.Drawing.Point(10, 282);
+            this.splitContainerControl1.Location = new System.Drawing.Point(10, 301);
             this.splitContainerControl1.Name = "splitContainerControl1";
             // 
             // splitContainerControl1.Panel1
@@ -314,7 +317,7 @@ namespace SpinsNew.Forms
             this.splitContainerControl1.Panel2.Controls.Add(this.groupControl3);
             this.splitContainerControl1.Panel2.Text = "Panel2";
             this.splitContainerControl1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainerControl1_Panel2_Paint);
-            this.splitContainerControl1.Size = new System.Drawing.Size(1035, 393);
+            this.splitContainerControl1.Size = new System.Drawing.Size(1106, 374);
             this.splitContainerControl1.SplitterPosition = 799;
             this.splitContainerControl1.TabIndex = 2;
             // 
@@ -328,7 +331,7 @@ namespace SpinsNew.Forms
             this.groupControl4.Controls.Add(this.groupControl5);
             this.groupControl4.Location = new System.Drawing.Point(10, 107);
             this.groupControl4.Name = "groupControl4";
-            this.groupControl4.Size = new System.Drawing.Size(1035, 170);
+            this.groupControl4.Size = new System.Drawing.Size(1106, 170);
             this.groupControl4.TabIndex = 17;
             this.groupControl4.Text = "Selected data for replacement";
             // 
@@ -336,9 +339,9 @@ namespace SpinsNew.Forms
             // 
             this.btn_replacement.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_replacement.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_replacement.ImageOptions.Image")));
-            this.btn_replacement.Location = new System.Drawing.Point(719, 146);
+            this.btn_replacement.Location = new System.Drawing.Point(982, 146);
             this.btn_replacement.Name = "btn_replacement";
-            this.btn_replacement.Size = new System.Drawing.Size(93, 19);
+            this.btn_replacement.Size = new System.Drawing.Size(93, 24);
             this.btn_replacement.TabIndex = 18;
             this.btn_replacement.Text = "Replace";
             this.btn_replacement.Click += new System.EventHandler(this.btn_replacement_Click);
@@ -346,7 +349,7 @@ namespace SpinsNew.Forms
             // pictureBox2
             // 
             this.pictureBox2.Image = global::SpinsNew.Properties.Resources.icons8_left_right_arrow_64;
-            this.pictureBox2.Location = new System.Drawing.Point(385, 57);
+            this.pictureBox2.Location = new System.Drawing.Point(518, 60);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(49, 49);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -359,9 +362,9 @@ namespace SpinsNew.Forms
             this.groupControl6.Controls.Add(this.labelControl5);
             this.groupControl6.Controls.Add(this.lbl_namereplace);
             this.groupControl6.Controls.Add(this.labelControl4);
-            this.groupControl6.Location = new System.Drawing.Point(439, 23);
+            this.groupControl6.Location = new System.Drawing.Point(581, 26);
             this.groupControl6.Name = "groupControl6";
-            this.groupControl6.Size = new System.Drawing.Size(373, 118);
+            this.groupControl6.Size = new System.Drawing.Size(494, 118);
             this.groupControl6.TabIndex = 19;
             this.groupControl6.Text = "Replaced by";
             // 
@@ -409,7 +412,7 @@ namespace SpinsNew.Forms
             this.groupControl5.Controls.Add(this.labelControl1);
             this.groupControl5.Location = new System.Drawing.Point(7, 23);
             this.groupControl5.Name = "groupControl5";
-            this.groupControl5.Size = new System.Drawing.Size(373, 118);
+            this.groupControl5.Size = new System.Drawing.Size(494, 118);
             this.groupControl5.TabIndex = 18;
             this.groupControl5.Text = "To be replaced";
             // 
@@ -459,11 +462,33 @@ namespace SpinsNew.Forms
             this.printPreviewDialog1.Name = "printPreviewDialog1";
             this.printPreviewDialog1.Visible = false;
             // 
+            // pictureEdit1
+            // 
+            this.pictureEdit1.EditValue = ((object)(resources.GetObject("pictureEdit1.EditValue")));
+            this.pictureEdit1.Location = new System.Drawing.Point(8, 281);
+            this.pictureEdit1.Name = "pictureEdit1";
+            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.pictureEdit1.Size = new System.Drawing.Size(17, 17);
+            this.pictureEdit1.TabIndex = 19;
+            // 
+            // labelControl6
+            // 
+            this.labelControl6.Location = new System.Drawing.Point(30, 283);
+            this.labelControl6.Name = "labelControl6";
+            this.labelControl6.Size = new System.Drawing.Size(243, 13);
+            this.labelControl6.TabIndex = 18;
+            this.labelControl6.Text = "Double click for viewing, editing, and adding of GIS";
+            this.labelControl6.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information;
+            this.labelControl6.ToolTipTitle = "Infor";
+            // 
             // Replacements
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1056, 678);
+            this.ClientSize = new System.Drawing.Size(1127, 678);
+            this.Controls.Add(this.pictureEdit1);
+            this.Controls.Add(this.labelControl6);
             this.Controls.Add(this.groupControl4);
             this.Controls.Add(this.splitContainerControl1);
             this.Controls.Add(this.progressBarControl1);
@@ -508,7 +533,9 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl5)).EndInit();
             this.groupControl5.ResumeLayout(false);
             this.groupControl5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -546,5 +573,7 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraEditors.SearchControl searchControl2;
         private System.Windows.Forms.PrintPreviewDialog printPreviewDialog1;
+        private DevExpress.XtraEditors.PictureEdit pictureEdit1;
+        private DevExpress.XtraEditors.LabelControl labelControl6;
     }
 }

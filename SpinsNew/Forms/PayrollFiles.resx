@@ -131,4 +131,24 @@
         cEbvylSsOXZyrRub4D+1dPLvBY5vGoEc6Ii8o88AAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="simpleButton1.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAFnRFWHRUaXRsZQBVbmRvO0Fy
+        cm93O0VkaXQ7y1zxJwAAAK1JREFUOE+tkbEJwzAQRT1HwHiIVAHNk9oTGLxROpcZI2V6L3H5T0hGsc8g
+        kRQP3f1/97Hkzsx+whVbcMUWtiKEMAlO6MUoFrEmqNHw4tw+wAQhN/FIvQceM24AvNL5FHcxJKjRckh/
+        FgBvcRWbn2bQcsiIdhYA8U2yX8zxJfgLfWnsA2DKfjHHdfBW+i+zhn8E+FeoQUsX4T9iLVqcxfE3tsCy
+        iPXBbMUV67HuA2GEdGaa8EdfAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btn_rotate.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAWdEVYdFRpdGxlAFJlZG87QXJyb3c7RWRpdDvoUa+s
+        AAAAtklEQVQ4T6WRMQ6DMBAEeUekiEdQRfJ7qPMCpPwoXUqekZI+n7jsnrwSMgfGopjD3r092aYzs0uE
+        Yguh2IKXlJK4gyf4gF+Ga2r01DdFAx7gDWwHeuyZuC8HcLrCMxhBn+GaGr1v/m4G8IgKDzKzRwawAA8T
+        +WriPWmMMgQ04sdeI19NfCwavQwBbRMm8qsDanhBcPcKNbwguH7EW9l0hBeE9BtfZUMNLwj6kNI8Qyi2
+        EIrnse4PFq50ZgIsLtkAAAAASUVORK5CYII=
+</value>
+  </data>
 </root>

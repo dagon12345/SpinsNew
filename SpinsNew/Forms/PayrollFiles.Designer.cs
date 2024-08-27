@@ -41,7 +41,9 @@ namespace SpinsNew.Forms
             this.list_pictures = new DevExpress.XtraEditors.ListBoxControl();
             this.cmb_selectfolder = new DevExpress.XtraEditors.ComboBoxEdit();
             this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
+            this.btn_rotate = new DevExpress.XtraEditors.SimpleButton();
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
+            this.btn_left = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).BeginInit();
@@ -87,7 +89,7 @@ namespace SpinsNew.Forms
             // 
             this.lbl_municipality.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_municipality.Appearance.Options.UseFont = true;
-            this.lbl_municipality.Location = new System.Drawing.Point(56, 5);
+            this.lbl_municipality.Location = new System.Drawing.Point(79, 5);
             this.lbl_municipality.Name = "lbl_municipality";
             this.lbl_municipality.Size = new System.Drawing.Size(24, 15);
             this.lbl_municipality.TabIndex = 82;
@@ -184,6 +186,8 @@ namespace SpinsNew.Forms
             this.groupControl3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl3.Controls.Add(this.btn_left);
+            this.groupControl3.Controls.Add(this.btn_rotate);
             this.groupControl3.Controls.Add(this.pictureEdit1);
             this.groupControl3.Location = new System.Drawing.Point(238, 12);
             this.groupControl3.Name = "groupControl3";
@@ -191,20 +195,42 @@ namespace SpinsNew.Forms
             this.groupControl3.TabIndex = 2;
             this.groupControl3.Text = "Image";
             // 
+            // btn_rotate
+            // 
+            this.btn_rotate.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_rotate.ImageOptions.Image")));
+            this.btn_rotate.Location = new System.Drawing.Point(206, 29);
+            this.btn_rotate.Name = "btn_rotate";
+            this.btn_rotate.Size = new System.Drawing.Size(195, 23);
+            this.btn_rotate.TabIndex = 1;
+            this.btn_rotate.Text = "Rotate right  (Ctrl + Right Arrow)";
+            this.btn_rotate.Click += new System.EventHandler(this.btn_rotate_Click);
+            // 
             // pictureEdit1
             // 
             this.pictureEdit1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureEdit1.Location = new System.Drawing.Point(5, 29);
+            this.pictureEdit1.Location = new System.Drawing.Point(5, 55);
             this.pictureEdit1.Name = "pictureEdit1";
             this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
             this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
-            this.pictureEdit1.Size = new System.Drawing.Size(716, 566);
+            this.pictureEdit1.Size = new System.Drawing.Size(716, 540);
             this.pictureEdit1.TabIndex = 0;
+            // 
+            // btn_left
+            // 
+            this.btn_left.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
+            this.btn_left.Location = new System.Drawing.Point(5, 29);
+            this.btn_left.Name = "btn_left";
+            this.btn_left.Size = new System.Drawing.Size(195, 23);
+            this.btn_left.TabIndex = 2;
+            this.btn_left.Text = "Rotate Left (Ctrl + Left Arrow)";
+            this.btn_left.Click += new System.EventHandler(this.btn_left_Click);
             // 
             // PayrollFiles
             // 
+            this.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.Appearance.Options.UseBackColor = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 624);
@@ -247,5 +273,7 @@ namespace SpinsNew.Forms
         public DevExpress.XtraEditors.SimpleButton btn_search;
         private DevExpress.XtraEditors.LabelControl lbl_municipality;
         private DevExpress.XtraEditors.LabelControl lblPeriod;
+        private DevExpress.XtraEditors.SimpleButton btn_rotate;
+        private DevExpress.XtraEditors.SimpleButton btn_left;
     }
 }

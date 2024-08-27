@@ -24,8 +24,31 @@ namespace SpinsNew.Forms
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             payrollHistoryForm = payroll;
+
+            //btn_left.shor = Keys.Control | Keys.P;
+
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // For Two Keys
+            if (keyData == (Keys.Control | Keys.Left))
+            {
+                btn_left.PerformClick();
+                return true;
+            }
+
+            // For Two Keys
+            if (keyData == (Keys.Control | Keys.Right))
+            {
+                btn_rotate.PerformClick();
+                return true;
+            }
+
+
+            return base.ProcessCmdKey(ref msg, keyData);
+
+        }
         private void PayrollFiles_Load(object sender, EventArgs e)
         {
             //payrollForm.Municipality();
@@ -41,6 +64,7 @@ namespace SpinsNew.Forms
             //cmb_municipality.SelectedIndexChanged += cmb_municipality_SelectedIndexChanged;
             DisplayFoldersInComboBoxEdit();
             BindEvents();
+            list_pictures.Focus();
 
         }
         private void Clear()
@@ -515,34 +539,49 @@ namespace SpinsNew.Forms
                 Clear();
             }
         }
+        private void ListOfPictures()
+        {
+            // Get the selected image file name
+            string selectedImage = list_pictures.SelectedItem?.ToString();
+            if (!string.IsNullOrEmpty(selectedImage))
+            {
+                // Construct the full image file path
+                string year = cmb_year.SelectedItem?.ToString();
+                string municipality = lbl_municipality.Text;
+                string period = lblPeriod.Text;
+                string selectedFolder = cmb_selectfolder.SelectedItem?.ToString();
+                string imagePath = Path.Combine(@"\\172.26.153.181\Payroll", year, period, municipality, selectedFolder, selectedImage);
 
+                // Check if the image file exists
+                if (File.Exists(imagePath))
+                {
+                    // Load the image into PictureEdit
+                    pictureEdit1.Image = Image.FromFile(imagePath);
+                }
+                else
+                {
+                    //XtraMessageBox.Show("Image file not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Clear();
+                }
+            }
+        }
         private void list_pictures_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                // Get the selected image file name
-                string selectedImage = list_pictures.SelectedItem?.ToString();
-                if (!string.IsNullOrEmpty(selectedImage))
-                {
-                    // Construct the full image file path
-                    string year = cmb_year.SelectedItem?.ToString();
-                    string municipality = lbl_municipality.Text;
-                    string period = lblPeriod.Text;
-                    string selectedFolder = cmb_selectfolder.SelectedItem?.ToString();
-                    string imagePath = Path.Combine(@"\\172.26.153.181\Payroll", year, period, municipality, selectedFolder, selectedImage);
+                ListOfPictures();
+                //if (!ck_default.Checked) // Not checked
+                //{
 
-                    // Check if the image file exists
-                    if (File.Exists(imagePath))
-                    {
-                        // Load the image into PictureEdit
-                        pictureEdit1.Image = Image.FromFile(imagePath);
-                    }
-                    else
-                    {
-                        //XtraMessageBox.Show("Image file not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Clear();
-                    }
-                }
+                //    ListOfPictures();
+                //}
+                //else
+                //{
+                  
+                //    ListOfPictures();
+                //    Rotate();
+                //}
+
             }
             catch (Exception ex)
             {
@@ -569,5 +608,40 @@ namespace SpinsNew.Forms
              
         }
 
+        private void RotateRight()
+        {
+            Image image = pictureEdit1.Image.Clone() as Image;
+            image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            pictureEdit1.Image.Dispose();
+            pictureEdit1.Image = image;
+        }
+        private void RotateLeft()
+        {
+            Image image = pictureEdit1.Image.Clone() as Image;
+            image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+            pictureEdit1.Image.Dispose();
+            pictureEdit1.Image = image;
+        }
+        private void btn_rotate_Click(object sender, EventArgs e)
+        {
+            //Rotate image 90 degrees. Means left side
+            //var bmp = new Bitmap(pictureEdit1.Image);
+
+            //using (var gfx = Graphics.FromImage(bmp))
+            //{
+            //    gfx.Clear(Color.White);
+            //    gfx.DrawImage(pictureEdit1.Image, 0, 0, pictureEdit1.Image.Width, pictureEdit1.Image.Height);
+            //}
+
+            //bmp.RotateFlip(RotateFlipType.Rotate90FlipNone);
+
+            //pictureEdit1.Image = bmp;
+            RotateRight();
+        }
+
+        private void btn_left_Click(object sender, EventArgs e)
+        {
+            RotateLeft();
+        }
     }
 }

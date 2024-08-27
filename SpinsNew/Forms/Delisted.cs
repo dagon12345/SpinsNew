@@ -456,8 +456,8 @@ namespace SpinsNew.Forms
                         if (DateTime.TryParse(dt_deceased.EditValue.ToString(), out deceasedDate))
                         {
                             // Use the formatted date string
-                            string formattedDate = deceasedDate.ToString("MM-dd-yyyy");
-                            cmd.Parameters.AddWithValue("@DateDeceased", formattedDate);
+                            string formattedDate = deceasedDate.ToString("yyyy-MM-dd"); // Must be Year-Month-Date
+                            cmd.Parameters.AddWithValue("@DateDeceased", formattedDate); 
                         }
                         else
                         {

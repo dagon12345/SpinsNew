@@ -35,6 +35,14 @@ namespace SpinsNew.Forms
 
 
         }
+        //public void ToggleControls(object o, EventArgs e)
+        //{
+        //    foreach(Control c in this.Controls)
+        //    {
+        //        c.Enabled = !c.Enabled;
+        //    }
+        //}
+
         MasterList masterlistForm;
         private void MasterlistToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -46,7 +54,7 @@ namespace SpinsNew.Forms
             else
             {
                 masterlistForm = new MasterList(_username);
-                masterlistForm.Show();
+                masterlistForm.ShowDialog();
             }
         }
 
@@ -57,10 +65,33 @@ namespace SpinsNew.Forms
 
         private void Dashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             this.Hide();
             LoginForm login = new LoginForm();
             login.Show();
+
+
+            //if (e.CloseReason == CloseReason.UserClosing)
+            //{
+            //    if (MessageBox.Show("Are you sure you want to exit?",
+            //                        "Confirm",
+            //                        MessageBoxButtons.YesNo,
+            //                        MessageBoxIcon.Information) == DialogResult.Yes)
+            //    {
+            //        // Close the current form
+            //        this.Hide(); // or this.Close(); depending on your use case
+
+            //        // Check if there are any other open forms
+            //        if (Application.OpenForms.Count == 1) // Assuming the last form is the LoginForm
+            //        {
+            //            LoginForm login = new LoginForm();
+            //            login.Show();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        e.Cancel = true; // Prevent closing if the user changes their mind
+            //    }
+            //}
         }
     }
 }

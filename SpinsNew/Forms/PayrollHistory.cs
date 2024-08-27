@@ -170,6 +170,7 @@ namespace SpinsNew.Forms
                     gridView.BestFitColumns();
                     // Hide the "ID" column
                     gridView.Columns["ID"].Visible = false;
+                    gridView.Columns["MasterListID"].Visible = false;
                     gridView.Columns["ProvinceName"].Visible = false;
                     gridView.Columns["Municipality"].Visible = false;
                     gridView.Columns["Barangay"].Visible = false;
@@ -185,6 +186,8 @@ namespace SpinsNew.Forms
                     gridView.Columns["FirstNameReplacementFor"].Visible = false;
                     gridView.Columns["MiddleNameReplacementFor"].Visible = false;
                     gridView.Columns["ExtNameReplacementFor"].Visible = false;
+                    gridView.Columns["PeriodID"].Visible = false;
+                    gridView.Columns["PSGCCityMun"].Visible = false;
                     //gridView.Columns["Type"].Visible = false;
                     // Ensure horizontal scrollbar is enabled
                     gridView.OptionsView.ColumnAutoWidth = false;
@@ -263,7 +266,7 @@ namespace SpinsNew.Forms
                 // Check if any row is selected
                 if (gridView.SelectedRowsCount == 0)
                 {
-                    MessageBox.Show("Please select a data to Edit", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    XtraMessageBox.Show("Please select a data to Edit", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return; // Exit the method without showing EditApplicantForm
                 }
 
@@ -274,7 +277,7 @@ namespace SpinsNew.Forms
                 int year = Convert.ToInt32(row["Year"]);
                 int period = Convert.ToInt32(row["PeriodID"]);
                 payrollFilesForm.DisplayID(municipality, year, period);
-                payrollFilesForm.Show();
+                payrollFilesForm.ShowDialog();
 
 
 

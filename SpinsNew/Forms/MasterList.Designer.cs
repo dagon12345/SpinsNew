@@ -340,7 +340,7 @@ namespace SpinsNew
             // 
             this.viewToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_eye_48;
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(173, 24);
             this.viewToolStripMenuItem.Text = "View (Ctrl + P)";
             this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click_1);
             // 
@@ -348,7 +348,7 @@ namespace SpinsNew
             // 
             this.createToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_add_481;
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(173, 24);
             this.createToolStripMenuItem.Text = "Create";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
@@ -356,7 +356,7 @@ namespace SpinsNew
             // 
             this.payrollToolStripMenuItem1.Image = global::SpinsNew.Properties.Resources.icons8_payroll_481;
             this.payrollToolStripMenuItem1.Name = "payrollToolStripMenuItem1";
-            this.payrollToolStripMenuItem1.Size = new System.Drawing.Size(180, 24);
+            this.payrollToolStripMenuItem1.Size = new System.Drawing.Size(173, 24);
             this.payrollToolStripMenuItem1.Text = "Payroll";
             this.payrollToolStripMenuItem1.Click += new System.EventHandler(this.payrollToolStripMenuItem1_Click);
             // 
@@ -418,7 +418,7 @@ namespace SpinsNew
             // 
             this.verifyToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
             this.verifyToolStripMenuItem.Name = "verifyToolStripMenuItem";
-            this.verifyToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.verifyToolStripMenuItem.Size = new System.Drawing.Size(115, 24);
             this.verifyToolStripMenuItem.Text = "Verify";
             this.verifyToolStripMenuItem.Click += new System.EventHandler(this.verifyToolStripMenuItem_Click);
             // 
@@ -426,7 +426,7 @@ namespace SpinsNew
             // 
             this.undoToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_undo_48;
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(115, 24);
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
@@ -497,6 +497,7 @@ namespace SpinsNew
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Master List";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MasterList_FormClosing);
             this.Load += new System.EventHandler(this.MasterList_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).EndInit();

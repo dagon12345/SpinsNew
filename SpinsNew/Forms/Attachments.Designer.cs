@@ -45,10 +45,11 @@ namespace SpinsNew.Forms
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.groupControl4 = new DevExpress.XtraEditors.GroupControl();
+            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
+            this.pdfViewer1 = new DevExpress.XtraPdfViewer.PdfViewer();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.btn_export = new DevExpress.XtraEditors.SimpleButton();
             this.btn_upload = new DevExpress.XtraEditors.SimpleButton();
-            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.groupControl5 = new DevExpress.XtraEditors.GroupControl();
             this.gv_logs = new DevExpress.XtraGrid.GridControl();
             this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -227,15 +228,39 @@ namespace SpinsNew.Forms
             this.groupControl4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl4.Controls.Add(this.pictureEdit1);
+            this.groupControl4.Controls.Add(this.pdfViewer1);
             this.groupControl4.Controls.Add(this.labelControl3);
             this.groupControl4.Controls.Add(this.btn_export);
             this.groupControl4.Controls.Add(this.btn_upload);
-            this.groupControl4.Controls.Add(this.pictureEdit1);
             this.groupControl4.Location = new System.Drawing.Point(334, 190);
             this.groupControl4.Name = "groupControl4";
             this.groupControl4.Size = new System.Drawing.Size(463, 445);
             this.groupControl4.TabIndex = 0;
             this.groupControl4.Text = "View";
+            // 
+            // pictureEdit1
+            // 
+            this.pictureEdit1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureEdit1.Location = new System.Drawing.Point(5, 71);
+            this.pictureEdit1.Name = "pictureEdit1";
+            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
+            this.pictureEdit1.Size = new System.Drawing.Size(453, 371);
+            this.pictureEdit1.TabIndex = 42;
+            this.pictureEdit1.Visible = false;
+            // 
+            // pdfViewer1
+            // 
+            this.pdfViewer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pdfViewer1.Location = new System.Drawing.Point(5, 71);
+            this.pdfViewer1.Name = "pdfViewer1";
+            this.pdfViewer1.Size = new System.Drawing.Size(453, 369);
+            this.pdfViewer1.TabIndex = 41;
             // 
             // labelControl3
             // 
@@ -253,7 +278,7 @@ namespace SpinsNew.Forms
             this.btn_export.Name = "btn_export";
             this.btn_export.Size = new System.Drawing.Size(116, 20);
             this.btn_export.TabIndex = 2;
-            this.btn_export.Text = "Export Image";
+            this.btn_export.Text = "Download PDF";
             this.btn_export.Click += new System.EventHandler(this.btn_export_Click);
             // 
             // btn_upload
@@ -264,21 +289,8 @@ namespace SpinsNew.Forms
             this.btn_upload.Name = "btn_upload";
             this.btn_upload.Size = new System.Drawing.Size(116, 20);
             this.btn_upload.TabIndex = 0;
-            this.btn_upload.Text = "Upload Image";
+            this.btn_upload.Text = "Upload PDF";
             this.btn_upload.Click += new System.EventHandler(this.btn_upload_Click);
-            // 
-            // pictureEdit1
-            // 
-            this.pictureEdit1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureEdit1.Location = new System.Drawing.Point(4, 68);
-            this.pictureEdit1.Name = "pictureEdit1";
-            this.pictureEdit1.Properties.AllowZoom = DevExpress.Utils.DefaultBoolean.True;
-            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
-            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
-            this.pictureEdit1.Size = new System.Drawing.Size(452, 373);
-            this.pictureEdit1.TabIndex = 0;
             // 
             // groupControl5
             // 
@@ -329,6 +341,8 @@ namespace SpinsNew.Forms
             this.Name = "Attachments";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Attachments";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Attachments_FormClosing);
             this.Load += new System.EventHandler(this.Attachments_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Attachments_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
@@ -368,7 +382,6 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.GroupControl groupControl4;
         public DevExpress.XtraGrid.GridControl gridControl1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
-        private DevExpress.XtraEditors.PictureEdit pictureEdit1;
         private DevExpress.XtraEditors.SimpleButton btn_upload;
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.SimpleButton btn_export;
@@ -379,5 +392,7 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.GroupControl groupControl5;
         public DevExpress.XtraGrid.GridControl gv_logs;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
+        private DevExpress.XtraPdfViewer.PdfViewer pdfViewer1;
+        private DevExpress.XtraEditors.PictureEdit pictureEdit1;
     }
 }

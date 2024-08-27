@@ -1141,6 +1141,77 @@ namespace SpinsNew.Forms
             }
         }
 
+        private void ShowGISorSpbufWaitlisted()
+        {
+            if (Application.OpenForms.OfType<EditApplicant>().Any())
+            {
+                EditApplicantForm.Select();
+                EditApplicantForm.BringToFront();
+            }
+            else
+            {
+                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
+                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm);
+                GridView gridView = gridWaitlisted.MainView as GridView;
+
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to Edit", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing EditApplicantForm
+                }
+
+                // Pass the ID value to the EditApplicant form
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row["ID"]);
+
+                //EditApplicantForm.DisplayID(id);
+                //EditApplicantForm.Show();
+
+
+
+
+                //Below is to get the reference code under masterlist
+                // Create a new instance of GISForm
+                // GISviewingForm = new GISForm(this);
+                // GridView gridView = gridControl1.MainView as GridView;
+
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to view", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing GISForm
+                }
+
+                // Pass the ID value to the GISForm
+                //DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                string gis = row["GIS"].ToString();
+                string spbuf = row["SPBUF"].ToString();
+
+                if (string.IsNullOrWhiteSpace(gis))
+                {
+                    if (string.IsNullOrWhiteSpace(spbuf))
+                    {
+                        //MessageBox.Show("Both GIS and SPBUF are missing.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // return; // Exit the method without showing GISForm
+                    }
+                    else
+                    {
+                        int spbufId = Convert.ToInt32(spbuf);
+                        EditApplicantForm.DisplaySPBUF(spbufId);
+                    }
+                }
+                else
+                {
+                    int gisId = Convert.ToInt32(gis);
+                    EditApplicantForm.DisplayGIS(gisId);
+                }
+                EditApplicantForm.DisplayID(id);
+                EditApplicantForm.ShowDialog();
+
+            }
+        }
+
         private void ShowGISorSpbuf()
         {
             if (Application.OpenForms.OfType<EditApplicant>().Any())
@@ -1165,8 +1236,8 @@ namespace SpinsNew.Forms
                 DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
                 int id = Convert.ToInt32(row["MasterListID"]);
 
-                EditApplicantForm.DisplayID(id);
-                EditApplicantForm.Show();
+                //EditApplicantForm.DisplayID(id);
+                //EditApplicantForm.Show();
 
 
 
@@ -1207,7 +1278,8 @@ namespace SpinsNew.Forms
                     EditApplicantForm.DisplayGIS(gisId);
                 }
 
-                EditApplicantForm.Show();
+                EditApplicantForm.DisplayID(id);
+                EditApplicantForm.ShowDialog();
 
             }
         }
@@ -1219,7 +1291,7 @@ namespace SpinsNew.Forms
 
         private void gridWaitlisted_DoubleClick(object sender, EventArgs e)
         {
-            ShowGISorSpbuf();
+            ShowGISorSpbufWaitlisted();
         }
     }
 }

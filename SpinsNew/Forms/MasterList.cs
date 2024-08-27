@@ -1032,8 +1032,8 @@ namespace SpinsNew
                 DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
                 int id = Convert.ToInt32(row["ID"]);
 
-                EditApplicantForm.DisplayID(id);
-                EditApplicantForm.Show();
+                //EditApplicantForm.DisplayID(id);
+                //EditApplicantForm.ShowDialog();
 
 
 
@@ -1074,7 +1074,9 @@ namespace SpinsNew
                     EditApplicantForm.DisplayGIS(gisId);
                 }
 
-                EditApplicantForm.Show();
+                EditApplicantForm.DisplayID(id);
+
+                EditApplicantForm.ShowDialog();
 
             }
         }
@@ -1148,7 +1150,7 @@ namespace SpinsNew
                 int id = Convert.ToInt32(row["ID"]);
 
                 payrollHistoryForm.DisplayID(id);
-                payrollHistoryForm.Show();
+                payrollHistoryForm.ShowDialog();
 
 
             }
@@ -1169,7 +1171,7 @@ namespace SpinsNew
             else
             {
                 NewApplicantForm = new NewApplicant(_username);
-                NewApplicantForm.Show();
+                NewApplicantForm.ShowDialog();
             }
         }
         Delisted delistedForm;
@@ -1207,7 +1209,7 @@ namespace SpinsNew
                 // Pass the ID value to the EditApplicant form
                 int id = Convert.ToInt32(row["ID"]);
                 delistedForm.DisplayID(id);
-                delistedForm.Show();
+                delistedForm.ShowDialog();
             }
         }
         private void UndoVerification()
@@ -1775,7 +1777,7 @@ namespace SpinsNew
             else
             {
                 replacementsForm = new Replacements(_username);
-                replacementsForm.Show();
+                replacementsForm.ShowDialog();
             }
         }
 
@@ -1822,7 +1824,7 @@ namespace SpinsNew
             else
             {
                 payrollpopupForm = new PayrollPopup(this, _username); //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
-                payrollpopupForm.Show();
+                payrollpopupForm.ShowDialog();
             }
         }
 
@@ -1924,7 +1926,7 @@ namespace SpinsNew
                 attachmentsForm = new Attachments(masterlistForm, payrollForm, _username);
 
                 attachmentsForm.DisplayID(id);
-                attachmentsForm.Show();
+                attachmentsForm.ShowDialog();
             }
 
 
@@ -1941,7 +1943,7 @@ namespace SpinsNew
             else
             {
                 payrollForm = new Payroll(_username);
-                payrollForm.Show();
+                payrollForm.ShowDialog();
             }
         }
 
@@ -2056,6 +2058,21 @@ namespace SpinsNew
                     MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void MasterList_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //if (e.CloseReason == CloseReason.UserClosing)
+            //{
+            //    if (MessageBox.Show("Are you sure want to exit?",
+            //                   "My First Application",
+            //                    MessageBoxButtons.YesNo,
+            //                    MessageBoxIcon.Information) == DialogResult.Yes)
+            //        Environment.Exit(1);
+            //    else
+            //        e.Cancel = true; // to don't close form is user change his mind
+            //}
+         
         }
     }
 }
