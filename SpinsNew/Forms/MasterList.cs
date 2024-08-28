@@ -3,6 +3,7 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
 using SpinsNew.Forms;
 using SpinsNew.Popups;
 using SpinsWinforms.Forms;
@@ -23,6 +24,7 @@ namespace SpinsNew
         public string _username;
         private Replacements replacementsForm;
         private MasterList masterlistForm;
+        //private ApplicationDbContext _dbContext;
         //private MasterList masterlistForm;// Call MasterList form
         public MasterList(string username)
         {

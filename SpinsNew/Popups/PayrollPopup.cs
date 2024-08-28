@@ -2,14 +2,11 @@
 using DevExpress.XtraGrid.Views.Grid;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
+using SpinsNew.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpinsNew.Popups
@@ -18,6 +15,8 @@ namespace SpinsNew.Popups
     {
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
+        private PayrollModel _payroll;
+        private ApplicationDbContext _dbContext;
         public string _username;
         private MasterList masterlistForm;
 
@@ -37,6 +36,7 @@ namespace SpinsNew.Popups
             PayrollTypeMethod();
             PayrollTagMethod();
             PaymentModeMethod();
+            _dbContext = new ApplicationDbContext();
         }
         // Custom class to store Id and Sex
         public class YearItem
@@ -233,12 +233,12 @@ namespace SpinsNew.Popups
                 MessageBox.Show(ex.Message);
             }
 
-          
+
         }
 
         private void cmb_year_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+
             if (cmb_year.SelectedItem is YearItem selectedYear)
             {
                 // MessageBox.Show($"Selected Year: {selectedYear.Year}");
@@ -325,107 +325,84 @@ namespace SpinsNew.Popups
             }
         }
 
-
-        public void InsertIntoPayroll()
-        {
-            try
-            {
-
-                con.Open();
-                var selectedYear = (YearItem)cmb_year.SelectedItem;
-                var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                var selectedType = (PayrollTypeItem)cmb_type.SelectedItem;
-                var selectedTag = (PayrollTagItem)cmb_tag.SelectedItem;
-                var selectedMode = (PaymentModeItem)cmb_payment.SelectedItem;
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "INSERT INTO tbl_payroll_socpen (MasterListID, PSGCRegion, PSGCProvince, PSGCCityMun, PSGCBrgy, Address, Amount, Year, PeriodID, PayrollStatusID," +
-                    "PayrollTypeID, PayrollTagID, PaymentModeID, DateTimeEntry, EntryBy) " +
-                    "VALUES (@MasterListID, @PSGCRegion, @PSGCProvince, @PSGCCityMun, @PSGCBrgy, @Address, @Amount, @Year, @PeriodID, @PayrollStatusID, @PayrollTypeID, @PayrollTagID," +
-                    "@PaymentModeID, @DateTimeEntry, @EntryBy)";
-                cmd.Parameters.Add("@MasterListID", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PSGCRegion", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PSGCProvince", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PSGCCityMun", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PSGCBrgy", MySqlDbType.Int32);
-                cmd.Parameters.Add("@Address", MySqlDbType.TinyText);
-                cmd.Parameters.Add("@Amount", MySqlDbType.Double);
-                cmd.Parameters.Add("@Year", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PeriodID", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PayrollStatusID", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PayrollTypeID", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PayrollTagID", MySqlDbType.Int32);
-                cmd.Parameters.Add("@PaymentModeID", MySqlDbType.Int32);
-                cmd.Parameters.Add("@DateTimeEntry", MySqlDbType.DateTime);
-                cmd.Parameters.Add("@EntryBy", MySqlDbType.String);
-
-                GridView gridView = masterlistForm.gridControl1.MainView as GridView;
-
-                double amount = 0;
-                if (!string.IsNullOrEmpty(txt_amount.Text))
-                {
-                    amount = Convert.ToDouble(txt_amount.Text);
-                }
-           
-                for (int i = 0; i < gridView.RowCount; i++)
-                {
-                    DataRowView row = (DataRowView)gridView.GetRow(i);
-                    if (row != null)
-                    {
-                        //This datatype and variables are from our table masterlist.
-                        int id = Convert.ToInt32(row["ID"]);
-                        int region = Convert.ToInt32(row["PSGCRegion"]);
-                        int province = Convert.ToInt32(row["PSGCProvince"]);
-                        int municipality = Convert.ToInt32(row["PSGCCityMun"]);
-                        int barangay = Convert.ToInt32(row["PSGCBrgy"]);
-                        string address = row["Address"].ToString();
-                       
-                        //Below is from our masterlist form.
-                        cmd.Parameters["@MasterListID"].Value = id;
-                        cmd.Parameters["@PSGCRegion"].Value = region;
-                        cmd.Parameters["@PSGCProvince"].Value = province;
-                        cmd.Parameters["@PSGCCityMun"].Value = municipality;
-                        cmd.Parameters["@PSGCBrgy"].Value = barangay;
-                        cmd.Parameters["@Address"].Value = address;
-
-                        //Below is from our payroll form.
-                        cmd.Parameters["@Amount"].Value = amount;
-                        cmd.Parameters["@Year"].Value = selectedYear.Year;
-                        cmd.Parameters["@PeriodID"].Value = selectedPeriod.PeriodID;
-                        cmd.Parameters["@PayrollStatusID"].Value = 2;
-                        cmd.Parameters["@PayrollTypeID"].Value = selectedType.PayrollTypeID;
-                        cmd.Parameters["@PayrollTagID"].Value = selectedTag.PayrollTagID;
-                        cmd.Parameters["@PaymentModeID"].Value = selectedMode.PaymentModeID;
-                        cmd.Parameters["@DateTimeEntry"].Value = DateTime.Now;
-                        cmd.Parameters["@EntryBy"].Value = _username;
-
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                con.Close();
-                XtraMessageBox.Show("Payroll created successfully. Please proceed to the payroll form to generate reports", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-
-        }
         private void btn_create_Click(object sender, EventArgs e)
         {
             if (masterlistForm != null)
             {
-                if(cmb_year.EditValue == null || cmb_period.EditValue == null || cmb_type.EditValue == null || cmb_tag.EditValue == null || cmb_payment.EditValue == null)
+                if (cmb_year.EditValue == null || cmb_period.EditValue == null || cmb_type.EditValue == null || cmb_tag.EditValue == null || cmb_payment.EditValue == null)
                 {
                     XtraMessageBox.Show("Please fill all the dropboxes before proceeding.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                if(XtraMessageBox.Show("Are you sure you want to proceed?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)== DialogResult.Yes)
+                if (XtraMessageBox.Show("Are you sure you want to proceed?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    InsertIntoPayroll();
+                    //Insertion of payroll code below.
+
+                    try
+                    {
+                        GridView gridView = masterlistForm.gridControl1.MainView as GridView;
+                        var selectedYear = (YearItem)cmb_year.SelectedItem;
+                        var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
+                        var selectedType = (PayrollTypeItem)cmb_type.SelectedItem;
+                        var selectedTag = (PayrollTagItem)cmb_tag.SelectedItem;
+                        var selectedMode = (PaymentModeItem)cmb_payment.SelectedItem;
+                        double amount = 0;
+                        if (!string.IsNullOrEmpty(txt_amount.Text))
+                        {
+                            amount = Convert.ToDouble(txt_amount.Text);
+                        }
+
+                        for (int i = 0; i < gridView.RowCount; i++)
+                        {
+                            DataRowView row = (DataRowView)gridView.GetRow(i);
+                            if (row != null)
+                            {
+
+                                int id = Convert.ToInt32(row["ID"]);
+                                int region = Convert.ToInt32(row["PSGCRegion"]);
+                                int province = Convert.ToInt32(row["PSGCProvince"]);
+                                int municipality = Convert.ToInt32(row["PSGCCityMun"]);
+                                int barangay = Convert.ToInt32(row["PSGCBrgy"]);
+                                string address = row["Address"].ToString();
+
+                                _payroll = new PayrollModel
+                                {
+
+                                    MasterListID = id,
+                                    PSGCRegion = region,
+                                    PSGCProvince = province,
+                                    PSGCCityMun = municipality,
+                                    PSGCBrgy = barangay,
+                                    Address = address,
+                                    Amount = amount,
+                                    Year = selectedYear.Year,
+                                    PeriodID = selectedPeriod.PeriodID,
+                                    PayrollStatusID = 2,
+                                    ClaimTypeID = null,
+                                    PayrollTypeID = selectedType.PayrollTypeID,
+                                    PayrollTagID = selectedTag.PayrollTagID,
+                                    PaymentModeID = selectedMode.PaymentModeID,
+                                    DateTimeEntry = DateTime.Now,
+                                    EntryBy = _username
+                                };
+                                _dbContext.tbl_payroll_socpen.Add(_payroll);
+                                _dbContext.SaveChanges();
+
+                            }
+
+
+                        }
+
+                        XtraMessageBox.Show("Payroll created successfully. Please proceed to the payroll form to generate reports", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Close();
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
             else

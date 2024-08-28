@@ -1,7 +1,9 @@
-﻿using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraPrinting;
+﻿using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Views.Grid;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
+using SpinsNew.Libraries;
 using SpinsNew.PrintPreviews;
 using System;
 using System.Collections.Generic;
@@ -17,17 +19,43 @@ namespace SpinsNew.Forms
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         public string _username;
+        private ApplicationDbContext _dbContext;
+        //private PayrollModel _payrollModel;
+        private List<LibraryClaimType> _libraryClaimType;
+
         public Payroll(string username)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
             viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+            // Get GridView from GridControl
+            //GridView gridView = gridPayroll.MainView as GridView;
+            //gridView.FocusedRowChanged += GridView_FocusedRowChanged;
+
             _username = username;
+            // _dbContext = dbContext;
+            // ComboboxClaimtype();
         }
+
+        // Custom class to hold items
+        private class ComboBoxItem
+        {
+            public int ClaimTypeID { get; set; }
+            public string ClaimType { get; set; }
+
+            public override string ToString()
+            {
+                return ClaimType;
+            }
+        }
+
+
+
 
         private void Payroll_Load(object sender, EventArgs e)
         {
+            _dbContext = new ApplicationDbContext(); // our dbcontext
             Municipality();
             Year();
             Signatories();
@@ -44,6 +72,32 @@ namespace SpinsNew.Forms
 
             //Integrate search control into our grid control.
             searchControl1.Client = gridPayroll;
+
+
+
+
+
+            // Fetch claim types from the database
+            var claimTypes = _dbContext.lib_claim_type.ToList();
+            // Bind data to the ComboBoxEdit
+            cmb_claimtype.Properties.Items.Clear();
+            foreach (var claimType in claimTypes)
+            {
+                cmb_claimtype.Properties.Items.Add(new ComboBoxItem
+                {
+                    ClaimTypeID = claimType.ClaimTypeID,
+                    ClaimType = claimType.ClaimType
+                });
+            }
+
+            // Optionally, select the first item
+            //if (cmb_claimtype.Properties.Items.Count > 0)
+            //{
+            //    cmb_claimtype.EditValue = (cmb_claimtype.Properties.Items[0] as ComboBoxItem).ClaimType;
+            //}
+
+
+
 
         }
 
@@ -276,97 +330,6 @@ private void UpdateRowCount(int rowCount)
         }
 
 
-        //cmd.CommandText = @"WITH LatestPayroll AS (
-        //   SELECT
-        //       tps.MasterListID,
-        //       tps.Amount AS LatestAmount,
-        //       lp.Abbreviation AS LatestAbbreviation,
-        //       ROW_NUMBER() OVER(PARTITION BY tps.MasterListID ORDER BY tps.ID DESC) AS rn,
-        //       tps.Year,
-        //       tps.PayrollStatusID
-        //   FROM
-        //       tbl_payroll_socpen tps
-        //   LEFT JOIN
-        //       lib_period lp ON tps.PeriodID = lp.PeriodID
-        //   WHERE
-        //       tps.Year = @Year
-        //)
-        //SELECT                
-        //     CASE 
-        //         WHEN LatestPayroll.PayrollStatusID = 2 THEN
-        //             CONCAT('(', LatestPayroll.LatestAbbreviation, ' - ', LatestPayroll.LatestAmount, ')')
-        //         ELSE
-        //            ''
-        //    END AS UnclaimedPayroll,
-        //    tps.MasterlistID,
-        //    m.LastName,
-        //    m.FirstName,
-        //    m.MiddleName,
-        //    m.ExtName,
-
-        //    lb.BrgyName AS Barangay,
-        //    tps.Address,
-        //    m.BirthDate,
-        //    ls.Sex AS Sex,
-        //    lhs.HealthStatus,
-        //    m.HealthStatusRemarks,
-        //    m.IDNumber,
-        //    tps.Amount AS Amounts,
-        //    tps.Year,
-        //    lp.Period,
-        //    lps.PayrollStatus AS StatusPayroll,
-        //    lct.ClaimType AS ClaimType,
-        //    tps.DateClaimedFrom AS DateClaimed,
-        //    lpt.PayrollType AS PayrollType,
-        //    lptg.PayrollTag AS PayrollTag,
-        //    lstat.Status AS Status,
-        //    m.Remarks,
-        //    m.DateDeceased,
-        //    lpm.PaymentMode,
-        //    tps.Remarks AS PayrollRemarks,
-        //    tm2.LastName AS LastName2,
-        //    tm2.FirstName AS FirstName2,
-        //    tm2.MiddleName AS MiddleName2,
-        //    tm2.ExtName AS ExtName2,
-        //    tps.DateTimeModified,
-        //    tps.ModifiedBy,
-        //    tps.DateTimeReplaced,
-        //    tps.ReplacedBy,
-        //    tps.DateTimeEntry,
-        //    tps.EntryBy
-
-        //FROM
-        //    tbl_payroll_socpen tps
-        //LEFT JOIN
-        //    tbl_masterlist m ON tps.MasterListID = m.ID
-        //LEFT JOIN
-        //    tbl_masterlist tm2 ON tps.ReplacementForID = tm2.ID
-        //LEFT JOIN
-        //    lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-        //LEFT JOIN
-        //    lib_sex ls ON m.SexID = ls.Id
-        //LEFT JOIN
-        //    lib_health_status lhs ON m.HealthStatusID = lhs.ID
-        //LEFT JOIN
-        //    lib_period lp ON tps.PeriodID = lp.PeriodID
-        //LEFT JOIN
-        //    lib_payroll_status lps ON tps.PayrollStatusID = lps.PayrollStatusID
-        //LEFT JOIN
-        //    lib_claim_type lct ON tps.ClaimTypeID = lct.ClaimTypeID
-        //LEFT JOIN
-        //    lib_payroll_type lpt ON tps.PayrollTypeID = lpt.PayrollTypeID
-        //LEFT JOIN
-        //    lib_payroll_tag lptg ON tps.PayrollTagID = lptg.PayrollTagID
-        //LEFT JOIN
-        //    lib_status lstat ON m.StatusID = lstat.ID
-        //LEFT JOIN
-        //    lib_payment_mode lpm ON tps.PaymentModeID = lpm.PaymentModeID
-        //LEFT JOIN
-        //    LatestPayroll ON LatestPayroll.MasterListID = tps.MasterListID AND LatestPayroll.rn = 2
-        //WHERE
-        //    tps.PSGCCityMun = @PSGCCityMun
-        //    AND tps.Year = @Year
-        //    AND tps.PeriodID = @PeriodID";
 
         public async Task Payrolls() //The query is all about delisted with payroll unclaimed filtered by year and the latest ID inputed into tbl_payroll_socpen
         {
@@ -402,8 +365,9 @@ private void UpdateRowCount(int rowCount)
                            AND tps.PeriodID != @PeriodID
                            
                        
-)                   
+                        )                   
                        SELECT
+                           tps.ID,
                            m.IsVerified as Verified,
                            tps.MasterListID,
                            m.LastName,
@@ -507,89 +471,6 @@ private void UpdateRowCount(int rowCount)
                            tps.PSGCCityMun = @PSGCCityMun
                            AND tps.Year = @Year
                            AND tps.PeriodID = @PeriodID";
-                /*
-                )
-                SELECT
-                    PayrollData.IsVerified as Verified,
-                    PayrollData.MasterListID,
-                    IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                    IFNULL(tps2.UnclaimedAmounts, '') AS UnclaimedAmounts,
-                    PayrollData.LastName,
-                    PayrollData.FirstName,
-                    PayrollData.MiddleName,
-                    PayrollData.ExtName,
-                    CONCAT(
-                        IFNULL(PayrollData.LastName, ''), ', ',
-                        IFNULL(PayrollData.FirstName, ''), ' ',
-                        IFNULL(PayrollData.MiddleName, ''), ' ',
-                        IFNULL(PayrollData.ExtName, ''), ' ',
-                        IFNULL(PayrollData.UnclaimedPayroll, '')
-                    ) AS FullName,
-                    tps.PayrollStatusID,
-                    PayrollData.UnclaimedPayroll,
-                    PayrollData.Barangay,
-                    PayrollData.Address,
-                    PayrollData.FullAddress,
-                    PayrollData.BirthDate,
-                    PayrollData.Sex,
-                    PayrollData.HealthStatus,
-                    PayrollData.HealthStatusRemarks,
-                    PayrollData.IDNumber,
-                    PayrollData.Amounts,
-                    PayrollData.Year,
-                    PayrollData.Period,
-                    PayrollData.StatusPayroll,
-                    PayrollData.ClaimType,
-                    PayrollData.DateClaimed,
-                    PayrollData.PayrollType,
-                    PayrollData.PayrollTag,
-                    PayrollData.Status,
-                    PayrollData.Remarks,
-                    PayrollData.DateDeceased,
-                    PayrollData.PaymentMode,
-                    PayrollData.PayrollRemarks,
-                    PayrollData.LastName2,
-                    PayrollData.FirstName2,
-                    PayrollData.MiddleName2,
-                    PayrollData.ExtName2,
-                    PayrollData.DateTimeModified,
-                    PayrollData.ModifiedBy,
-                    PayrollData.DateTimeReplaced,
-                    PayrollData.ReplacedBy,
-                    PayrollData.DateTimeEntry,
-                    PayrollData.EntryBy,
-                    PayrollData.ProvinceMunicipality,
-                    PayrollData.PeriodMonth,
-                    PayrollData.HeaderPeriodYear,
-                    PayrollData.Type
-                FROM
-                    PayrollData
-                LEFT JOIN
-                    (SELECT 
-                        MasterListID, 
-                        GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames
-                     FROM 
-                        tbl_attachments
-                     GROUP BY
-                        MasterListID) tat
-                   ON PayrollData.MasterListID = tat.MasterListID
-                LEFT JOIN
-                    (SELECT 
-                        MasterListID,
-                        GROUP_CONCAT(CONCAT('(', lp.Abbreviation, ' - ',Amount, ')') ORDER BY Amount SEPARATOR ', ') AS UnclaimedAmounts
-                     FROM 
-                        tbl_payroll_socpen tps2
-                     LEFT JOIN 
-                        lib_period lp ON tps2.PeriodID = lp.PeriodID
-                     WHERE 
-                        PayrollStatusID = 2
-                        AND Year = @Year
-
-                     GROUP BY 
-                        MasterListID) tps2 
-                   ON PayrollData.MasterListID = tps2.MasterListID*/
-
-
                 // Add PayrollStatusID condition if not all statuses are included
                 if (includePayrollStatusID)
                 {
@@ -624,13 +505,13 @@ private void UpdateRowCount(int rowCount)
                 await Task.Run(() =>
                 {
                     da.Fill(dt);
-                   
+
                 });
 
                 // Ensure that the DataTable is accessible in the PayrollPrintPreview form
                 //PayrollPrintPreview payrollPrintPreview = new PayrollPrintPreview(this);
                 //payrollPrintPreview.SetPayrollData(dt); // Pass the DataTable to the form
-               // payrollPrintPreview.Show();
+                // payrollPrintPreview.Show();
 
                 for (int i = 0; i <= 100; i += 10)
                 {
@@ -638,7 +519,7 @@ private void UpdateRowCount(int rowCount)
                     this.Invoke(new Action(() => progressBarControl1.EditValue = i));
                 }
 
-               // dt.Columns.Add("FullName", typeof(string));
+                // dt.Columns.Add("FullName", typeof(string));
                 dt.Columns.Add("Status Payroll", typeof(string));
                 dt.Columns.Add("CurrentStatus", typeof(string));
                 dt.Columns.Add("Replacement Of", typeof(string));
@@ -652,7 +533,7 @@ private void UpdateRowCount(int rowCount)
                     //string amountforUnclaimed = row["Amount"].ToString();
                     //string abbreviation = row["Abbreviation"].ToString();
                     //string unclaimedPayroll = row["UnclaimedPayroll"].ToString();
-                   // string unclaimedAmounts = row["UnclaimedAmounts"].ToString();
+                    // string unclaimedAmounts = row["UnclaimedAmounts"].ToString();
 
                     string status = row["Status"].ToString();
                     string dateDeceased = row["DateDeceased"]?.ToString();
@@ -688,8 +569,8 @@ private void UpdateRowCount(int rowCount)
                     string middleName = row["MiddleName"].ToString();
                     string extName = row["ExtName"].ToString();
 
-                   // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName} {unclaimedAmounts}";
-                   // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName}";
+                    // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName} {unclaimedAmounts}";
+                    // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName}";
                     if (!string.IsNullOrEmpty(dateDeceased))
                     {
                         if (!string.IsNullOrEmpty(remarks))
@@ -732,6 +613,8 @@ private void UpdateRowCount(int rowCount)
 
                     // Move the "Verified" column to the first position
                     gridView.Columns["Verified"].VisibleIndex = 0;
+
+                    gridView.Columns["ID"].Visible = false;
 
                     gridView.Columns["LastName"].Visible = false;
                     gridView.Columns["FirstName"].Visible = false;
@@ -778,7 +661,7 @@ private void UpdateRowCount(int rowCount)
                 this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
                 DisableSpinner();
                 //QueryPayroll();
-               
+
             }
             catch (Exception ex)
             {
@@ -796,15 +679,15 @@ private void UpdateRowCount(int rowCount)
         private void DisableSpinner()
         {
             progressBarControl1.EditValue = 0; // Ensure the progress bar is full
-            //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
-                                       // btn_refresh.Enabled = true;
+                                               //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
+                                               // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
         }
         private async void Search()
         {
             if (cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period")
             {
-               // MessageBox.Show("Fill all the fields before searching", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // MessageBox.Show("Fill all the fields before searching", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             EnableSpinner();
@@ -812,7 +695,7 @@ private void UpdateRowCount(int rowCount)
         }
         private async void btn_search_ClickAsync(object sender, EventArgs e)
         {
-          
+
         }
 
 
@@ -868,7 +751,7 @@ private void UpdateRowCount(int rowCount)
         private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GridView gridView = gridPayroll.MainView as GridView;
-     
+
             if (gridView.SelectedRowsCount == 0)
             {
                 MessageBox.Show("There Is Nothing To Be Printed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -900,7 +783,7 @@ private void UpdateRowCount(int rowCount)
                     // Update row count display
                     UpdateRowCount(gridView);
                 }
-               // Search();
+                // Search();
                 // Return early to avoid further processing
                 return;
             }
@@ -923,7 +806,7 @@ private void UpdateRowCount(int rowCount)
                 return;
             }
 
-         
+
             // Optionally, you might want to handle the case where no radio button is checked
             // e.g., lblValue.Text = "Default Value";
 
@@ -996,6 +879,229 @@ private void UpdateRowCount(int rowCount)
         private void cmb_period_MouseClick(object sender, MouseEventArgs e)
         {
             //Search();
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void dt_from_EditValueChanged(object sender, EventArgs e)
+        {
+            // Ensure dt_to is not null and is enabled before setting its value
+            if (dt_to != null && dt_from != null)
+            {
+                dt_to.EditValue = dt_from.EditValue;
+            }
+
+        }
+
+        private async Task UpdatePayrollRecordAsync()
+        {
+            try
+            {
+                // Retrieve selected values
+                var selectedItem = (dynamic)cmb_municipality.SelectedItem;
+                int psgccitymun = selectedItem.PSGCCityMun;
+
+                var selectedPeriod = (dynamic)cmb_period.SelectedItem;
+                int periodID = selectedPeriod.PeriodID;
+
+                var selectedClaimType = (dynamic)cmb_claimtype.SelectedItem;
+                int claimTypeID = selectedClaimType.ClaimTypeID;
+
+                GridView gridView = gridPayroll.MainView as GridView;
+
+                if (gridView != null)
+                {
+                    // Get the row data
+                    DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
+
+                    if (row != null && row["ID"] != DBNull.Value)
+                    {
+                        int id = Convert.ToInt32(row["ID"]);
+
+                        // Debugging: Print values being used
+                        //Console.WriteLine($"ID: {id}");
+                        //Console.WriteLine($"Checked: {ck_all.Checked}");
+                        //Console.WriteLine($"PeriodID: {periodID}");
+                        //Console.WriteLine($"PSGCCityMun: {psgccitymun}");
+                        //Console.WriteLine($"Year: {cmb_year.EditValue}");
+                        //Console.WriteLine($"PayrollStatusID: {lblValue.Text}");
+
+                        // Retrieve the payroll record based on the checkbox state
+                        var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id); // unchecked
+
+                        if (payroll != null)
+                        {
+                            // Update payroll details
+                            payroll.DateClaimedFrom = Convert.ToDateTime(dt_from.EditValue);
+                            payroll.DateClaimedTo = Convert.ToDateTime(dt_to.EditValue);
+                            payroll.ClaimTypeID = claimTypeID;
+                            payroll.Remarks = txt_remarks.Text;
+                            payroll.PayrollStatusID = 1;
+                            payroll.DateTimeModified = DateTime.Now;
+                            payroll.ModifiedBy = _username;
+
+                            // Save changes to the database
+                            _dbContext.tbl_payroll_socpen.Update(payroll);
+                            await _dbContext.SaveChangesAsync();
+
+                            XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Search(); // Call your search method to refresh data
+                        }
+                        else
+                        {
+                            XtraMessageBox.Show("Payroll record not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        XtraMessageBox.Show("Invalid or missing ID value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    XtraMessageBox.Show("GridView or row handle is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"Error message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void btn_claimed_Click(object sender, EventArgs e)
+        {
+            //EF code for claimed updating
+            if (dt_from.Text == "" || dt_to.Text == "")
+            {
+                XtraMessageBox.Show("Please select a date before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_claimtype.Text == "")
+            {
+                XtraMessageBox.Show("Please select Claim Type before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            await  UpdatePayrollRecordAsync();
+
+        }
+
+        private void btn_unclaimed_Click(object sender, EventArgs e)
+        {
+            //EF code for claimed updating
+            //if (dt_from.Text == "" || dt_to.Text == "")
+            //{
+            //    XtraMessageBox.Show("Please select a date before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+            //}
+            //if (cmb_claimtype.Text == "")
+            //{
+            //    XtraMessageBox.Show("Please select Claim Type before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+
+            //}
+            //if (XtraMessageBox.Show("Are ", "Fill", MessageBoxButtons.YesNo, MessageBoxIcon.Question);)
+            var selectedItem = (dynamic)cmb_municipality.SelectedItem;
+            int psgccitymun = selectedItem.PSGCCityMun;
+
+            var selectedPeriod = (dynamic)cmb_period.SelectedItem;
+            int periodID = selectedPeriod.PeriodID;
+
+
+
+            var selectedClaimType = (dynamic)cmb_claimtype.SelectedItem;
+            int claimTypeID = selectedClaimType.ClaimTypeID;
+            GridView gridView = gridPayroll.MainView as GridView;
+
+            try
+            {
+
+
+                if (gridView != null)
+                {
+                    // Get the row data
+                    DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
+
+                    if (row != null && row["ID"] != DBNull.Value)
+                    {
+                        int id = Convert.ToInt32(row["ID"]);
+
+                        // Retrieve the payroll record
+                        var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
+
+                        if (payroll != null)
+                        {
+                            // Update payroll details
+                            payroll.DateClaimedFrom = null;
+                            payroll.DateClaimedTo = null;
+                            payroll.ClaimTypeID = null;
+                            payroll.Remarks = txt_remarks.Text;
+                            payroll.PayrollStatusID = 2; // Unclaimed
+                            payroll.DateTimeModified = DateTime.Now;
+                            payroll.ModifiedBy = _username;
+
+                            // Save changes to the database
+                            _dbContext.tbl_payroll_socpen.Update(payroll);
+                            _dbContext.SaveChangesAsync();
+
+                            XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Search();
+                        }
+                        else
+                        {
+                            XtraMessageBox.Show("Payroll record not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        XtraMessageBox.Show("Invalid or missing ID value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    XtraMessageBox.Show("GridView or row handle is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                XtraMessageBox.Show($"Error message {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //Th
+            }
+        }
+
+        private void GridView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            //GridView gridView = sender as GridView;
+
+            //// Check if gridView is not null and e.FocusedRowHandle is valid
+            //if (gridView != null && e.FocusedRowHandle >= 0)
+            //{
+            //    // Get the current focused row
+            //    DataRow row = gridView.GetDataRow(e.FocusedRowHandle);
+
+            //    if (row != null)
+            //    {
+            //        // Retrieve the ID value from the row
+            //        int id = Convert.ToInt32(row["ID"]);
+
+            //        // Set the ID value to the label
+            //        labelControl1.Text = id.ToString();
+            //    }
+            //}
+        }
+
+        private void gridPayroll_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void searchControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
