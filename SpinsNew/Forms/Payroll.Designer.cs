@@ -45,9 +45,6 @@ namespace SpinsNew.Forms
             this.dt_to = new DevExpress.XtraEditors.DateEdit();
             this.dt_from = new DevExpress.XtraEditors.DateEdit();
             this.separatorControl1 = new DevExpress.XtraEditors.SeparatorControl();
-            this.lblValue = new DevExpress.XtraEditors.LabelControl();
-            this.rbUnclaimed = new System.Windows.Forms.RadioButton();
-            this.rbAllStatus = new System.Windows.Forms.RadioButton();
             this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -64,6 +61,9 @@ namespace SpinsNew.Forms
             this.viewAttachmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
+            this.rbAllStatus = new System.Windows.Forms.RadioButton();
+            this.rbUnclaimed = new System.Windows.Forms.RadioButton();
+            this.lblValue = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
@@ -250,41 +250,6 @@ namespace SpinsNew.Forms
             this.separatorControl1.Size = new System.Drawing.Size(304, 23);
             this.separatorControl1.TabIndex = 23;
             // 
-            // lblValue
-            // 
-            this.lblValue.Location = new System.Drawing.Point(155, 29);
-            this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(26, 13);
-            this.lblValue.TabIndex = 22;
-            this.lblValue.Text = "value";
-            this.lblValue.Visible = false;
-            // 
-            // rbUnclaimed
-            // 
-            this.rbUnclaimed.AutoSize = true;
-            this.rbUnclaimed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbUnclaimed.Location = new System.Drawing.Point(86, 27);
-            this.rbUnclaimed.Name = "rbUnclaimed";
-            this.rbUnclaimed.Size = new System.Drawing.Size(63, 17);
-            this.rbUnclaimed.TabIndex = 21;
-            this.rbUnclaimed.Text = "Unpaid";
-            this.rbUnclaimed.UseVisualStyleBackColor = true;
-            this.rbUnclaimed.CheckedChanged += new System.EventHandler(this.rbUnclaimed_CheckedChanged);
-            // 
-            // rbAllStatus
-            // 
-            this.rbAllStatus.AutoSize = true;
-            this.rbAllStatus.Checked = true;
-            this.rbAllStatus.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbAllStatus.Location = new System.Drawing.Point(17, 27);
-            this.rbAllStatus.Name = "rbAllStatus";
-            this.rbAllStatus.Size = new System.Drawing.Size(63, 17);
-            this.rbAllStatus.TabIndex = 21;
-            this.rbAllStatus.TabStop = true;
-            this.rbAllStatus.Text = "Default";
-            this.rbAllStatus.UseVisualStyleBackColor = true;
-            this.rbAllStatus.CheckedChanged += new System.EventHandler(this.rbAllStatus_CheckedChangedAsync);
-            // 
             // cmb_period
             // 
             this.cmb_period.EditValue = "Select Period";
@@ -455,6 +420,41 @@ namespace SpinsNew.Forms
             this.progressBarControl1.Size = new System.Drawing.Size(838, 10);
             this.progressBarControl1.TabIndex = 12;
             // 
+            // rbAllStatus
+            // 
+            this.rbAllStatus.AutoSize = true;
+            this.rbAllStatus.Checked = true;
+            this.rbAllStatus.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbAllStatus.Location = new System.Drawing.Point(17, 27);
+            this.rbAllStatus.Name = "rbAllStatus";
+            this.rbAllStatus.Size = new System.Drawing.Size(63, 17);
+            this.rbAllStatus.TabIndex = 21;
+            this.rbAllStatus.TabStop = true;
+            this.rbAllStatus.Text = "Default";
+            this.rbAllStatus.UseVisualStyleBackColor = true;
+            this.rbAllStatus.CheckedChanged += new System.EventHandler(this.rbAllStatus_CheckedChangedAsync);
+            // 
+            // rbUnclaimed
+            // 
+            this.rbUnclaimed.AutoSize = true;
+            this.rbUnclaimed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbUnclaimed.Location = new System.Drawing.Point(86, 27);
+            this.rbUnclaimed.Name = "rbUnclaimed";
+            this.rbUnclaimed.Size = new System.Drawing.Size(63, 17);
+            this.rbUnclaimed.TabIndex = 21;
+            this.rbUnclaimed.Text = "Unpaid";
+            this.rbUnclaimed.UseVisualStyleBackColor = true;
+            this.rbUnclaimed.CheckedChanged += new System.EventHandler(this.rbUnclaimed_CheckedChanged);
+            // 
+            // lblValue
+            // 
+            this.lblValue.Location = new System.Drawing.Point(155, 29);
+            this.lblValue.Name = "lblValue";
+            this.lblValue.Size = new System.Drawing.Size(26, 13);
+            this.lblValue.TabIndex = 22;
+            this.lblValue.Text = "value";
+            this.lblValue.Visible = false;
+            // 
             // Payroll
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -520,9 +520,6 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newApplicantToolStripMenuItem;
         private DevExpress.XtraEditors.ProgressBarControl progressBarControl1;
-        private DevExpress.XtraEditors.LabelControl lblValue;
-        public System.Windows.Forms.RadioButton rbAllStatus;
-        public System.Windows.Forms.RadioButton rbUnclaimed;
         private DevExpress.XtraEditors.SeparatorControl separatorControl1;
         private System.Windows.Forms.ToolStripMenuItem viewAttachmentsToolStripMenuItem;
         private DevExpress.XtraEditors.GroupControl groupControl2;
@@ -539,5 +536,8 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private DevExpress.XtraEditors.LabelControl lblValue;
+        public System.Windows.Forms.RadioButton rbUnclaimed;
+        public System.Windows.Forms.RadioButton rbAllStatus;
     }
 }
