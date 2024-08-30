@@ -1,10 +1,11 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
-using SpinsNew.Libraries;
 using SpinsNew.PrintPreviews;
+using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,7 +23,7 @@ namespace SpinsNew.Forms
         public string _userRole;
         private ApplicationDbContext _dbContext;
         //private PayrollModel _payrollModel;
-        private List<LibraryClaimType> _libraryClaimType;
+        //private List<LibraryClaimType> _libraryClaimType;
 
         public Payroll(string username, string userRole)
         {
@@ -34,7 +35,7 @@ namespace SpinsNew.Forms
             _username = username;
             _userRole = userRole;
 
-            if(userRole == "1") // 1 means administration have an access to all the functions.
+            if (userRole == "1") // 1 means administration have an access to all the functions.
             {
                 ts_delete.Visible = true;
             }
@@ -42,7 +43,8 @@ namespace SpinsNew.Forms
             {
                 ts_delete.Visible = false;
             }
-            
+
+
         }
 
         // Custom class to hold items
@@ -286,6 +288,86 @@ namespace SpinsNew.Forms
 
             // Assign formatted row count to txt_total (or any other control)
             groupControlPayroll.Text = $"Payroll List: {formattedRowCount}";
+        }
+
+        public async Task PayrollsEntity()
+        {
+            _dbContext = new ApplicationDbContext();
+
+            var payrolls = await _dbContext.tbl_payroll_socpen
+            .Include(p => p.MasterListModel)// Include our MasterList
+            .ThenInclude(p => p.LibrarySex)//then include our sex library
+
+            .Include(p => p.MasterListModel) // Include our MasterList
+            .ThenInclude(p => p.LibraryHealthStatus) //then include our Health status library
+
+            .Include(p => p.MasterListModel) // Include our MasterList
+            .ThenInclude(p => p.LibraryIDType) //then include our Id type library
+
+            .Include(p => p.LibraryBarangay)
+            .Take(1000)
+            .AsNoTracking()
+            .ToListAsync();
+
+            var payrollViewModel = payrolls.Select(p => new PayrollViewModel
+            {
+                ID = p.ID,
+                Verified = p.MasterListModel.IsVerified,
+                FullName = $"{p.MasterListModel.LastName}, {p.MasterListModel.FirstName} {p.MasterListModel.MiddleName} {p.MasterListModel.ExtName}", //Joined from our tbl_masterlist
+                MasterListID = p.MasterListID,
+                PSGCRegion = p.PSGCRegion,
+                PSGCCityMun = p.PSGCCityMun,
+                PSGCProvince = p.PSGCProvince,
+                Barangay = p.LibraryBarangay.BrgyName, // Joined library barangay
+                BirthDate = p.MasterListModel.BirthDate, // Joined from masterlist
+                Sex = p.MasterListModel.LibrarySex.Sex, // Joined from masterlist SexID then library sex
+                HealthStatus = p.MasterListModel.LibraryHealthStatus.HealthStatus, // Joined from masterlist HealthStatusID then Library HealthStatus
+                HealthStatusRemarks = p.MasterListModel.HealthStatusRemarks, // Joined from masterlist
+
+                /*Conditional below, remove the dash sign if the p.MasterListModel.IDNumber does not exist
+                 .This table was Joined into our library idtype*/
+                IdType = p.MasterListModel.IDNumber != null
+                 ? $"{p.MasterListModel.LibraryIDType.Type} - {p.MasterListModel.IDNumber}"
+                 : p.MasterListModel.LibraryIDType.Type,
+
+                PSGCBrgy = p.PSGCBrgy,
+                Address = p.Address,
+                Amount = p.Amount,
+                Year = p.Year,
+                PeriodID = p.PeriodID,
+                PayrollStatusID = p.PayrollStatusID,
+                ClaimTypeID = p.ClaimTypeID,
+                DateClaimedFrom = p.DateClaimedFrom,
+                DateClaimedTo = p.DateClaimedTo,
+                Remarks = p.Remarks,
+                PayrollTypeID = p.PayrollTypeID,
+                PayrollTagID = p.PayrollTagID,
+                PaymentModeID = p.PaymentModeID,
+                DateTimeEntry = p.DateTimeEntry,
+                DateTimeModified = p.DateTimeModified,
+                ModifiedBy = p.ModifiedBy
+
+
+
+            }).ToList();
+
+         
+            // Bind data to the control
+            payrollViewModelBindingSource.DataSource = payrollViewModel;
+            gridPayroll.DataSource = payrollViewModelBindingSource;
+
+            GridView gridView = gridPayroll.MainView as GridView;
+            gridView.BestFitColumns();
+            gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+            gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+   
+
+
+        }
+
+        private async void btn_sample_Click(object sender, EventArgs e)
+        {
+            await PayrollsEntity();
         }
 
 
@@ -818,7 +900,7 @@ namespace SpinsNew.Forms
 
         private async void btn_claimed_Click(object sender, EventArgs e)
         {
-            
+
             GridView gridView = gridPayroll.MainView as GridView;
             if (dt_from.Text == "" || dt_to.Text == "")
             {
@@ -927,7 +1009,7 @@ namespace SpinsNew.Forms
 
                                 // Refresh the data in the GridControl
                                 Search();
-                               // gridPayroll.Refresh();
+                                // gridPayroll.Refresh();
                             }
                         }
 
@@ -1095,7 +1177,7 @@ namespace SpinsNew.Forms
                     _dbContext.Remove(_dbContext.tbl_payroll_socpen.Single(x => x.ID == idGrid));
                 }
 
-       
+
                 _dbContext.SaveChanges();
                 Search();
                 MessageBox.Show("Data displayed all deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1112,10 +1194,10 @@ namespace SpinsNew.Forms
             }
             else
             {
-               
+
                 payrollFilesForm = new PayrollFiles(payrollHistoryForm, payrollForm);
 
-                if(cmb_municipality.Text == "Select City/Municipality")
+                if (cmb_municipality.Text == "Select City/Municipality")
                 {
                     MessageBox.Show("Please Select City/Municipality", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -1145,11 +1227,13 @@ namespace SpinsNew.Forms
                 int period = periodID;
                 int year = yearID;
 
-                
+
                 payrollFilesForm.DisplayID(municipality, year, period);
                 payrollFilesForm.ShowDialog();
 
             }
         }
+
+
     }
 }

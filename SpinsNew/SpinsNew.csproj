@@ -344,7 +344,12 @@
     <Compile Include="Forms\Replacements.Designer.cs">
       <DependentUpon>Replacements.cs</DependentUpon>
     </Compile>
+    <Compile Include="Libraries\LibraryBarangay.cs" />
     <Compile Include="Libraries\LibraryClaimType.cs" />
+    <Compile Include="Libraries\LibraryHealthStatus.cs" />
+    <Compile Include="Libraries\LibraryIDType.cs" />
+    <Compile Include="Libraries\LibrarySex.cs" />
+    <Compile Include="Models\MasterListModel.cs" />
     <Compile Include="Models\PayrollModel.cs" />
     <Compile Include="Popups\PayrollPopup.cs">
       <SubType>Form</SubType>
@@ -366,6 +371,7 @@
       <DependentUpon>PayrollReporting.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ViewModel\PayrollViewModel.cs" />
     <EmbeddedResource Include="Forms\Attachments.resx">
       <DependentUpon>Attachments.cs</DependentUpon>
     </EmbeddedResource>
@@ -450,6 +456,7 @@
       <DependentUpon>SignatoriesDataSet.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\SpinsNew.ViewModel.PayrollViewModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

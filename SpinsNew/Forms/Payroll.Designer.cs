@@ -29,8 +29,10 @@ namespace SpinsNew.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Payroll));
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+            this.btn_sample = new DevExpress.XtraEditors.SimpleButton();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
@@ -57,7 +59,38 @@ namespace SpinsNew.Forms
             this.groupControlPayroll = new DevExpress.XtraEditors.GroupControl();
             this.searchControl1 = new DevExpress.XtraEditors.SearchControl();
             this.gridPayroll = new DevExpress.XtraGrid.GridControl();
+            this.payrollViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMasterListID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colVerified = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colBarangay = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAddress = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colBirthDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colSex = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colHealthStatus = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colHealthStatusRemarks = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPSGCBrgy = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPSGCCityMun = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPSGCProvince = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPSGCRegion = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAmount = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colYear = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPeriodID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPayrollStatusID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colClaimTypeID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateClaimedFrom = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateClaimedTo = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colEntryBy = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPayrollTypeID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPayrollTagID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPaymentModeID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateTimeEntry = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateTimeModified = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colModifiedBy = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colRemarks = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.tbl_payroll_socpenBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newApplicantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,6 +98,7 @@ namespace SpinsNew.Forms
             this.uploadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ts_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
+            this.colIdType = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
@@ -86,7 +120,9 @@ namespace SpinsNew.Forms
             this.groupControlPayroll.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridPayroll)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbl_payroll_socpenBindingSource)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).BeginInit();
             this.SuspendLayout();
@@ -95,6 +131,7 @@ namespace SpinsNew.Forms
             // 
             this.groupControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl1.Controls.Add(this.btn_sample);
             this.groupControl1.Controls.Add(this.groupControl2);
             this.groupControl1.Controls.Add(this.separatorControl1);
             this.groupControl1.Controls.Add(this.lblValue);
@@ -108,6 +145,17 @@ namespace SpinsNew.Forms
             this.groupControl1.Size = new System.Drawing.Size(838, 226);
             this.groupControl1.TabIndex = 1;
             this.groupControl1.Text = "Select";
+            // 
+            // btn_sample
+            // 
+            this.btn_sample.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_sample.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_sample.ImageOptions.Image")));
+            this.btn_sample.Location = new System.Drawing.Point(16, 196);
+            this.btn_sample.Name = "btn_sample";
+            this.btn_sample.Size = new System.Drawing.Size(85, 23);
+            this.btn_sample.TabIndex = 9;
+            this.btn_sample.Text = "Sample";
+            this.btn_sample.Click += new System.EventHandler(this.btn_sample_Click);
             // 
             // groupControl2
             // 
@@ -385,6 +433,7 @@ namespace SpinsNew.Forms
             this.gridPayroll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridPayroll.DataSource = this.payrollViewModelBindingSource;
             this.gridPayroll.Location = new System.Drawing.Point(17, 60);
             this.gridPayroll.MainView = this.gridView1;
             this.gridPayroll.Name = "gridPayroll";
@@ -394,8 +443,43 @@ namespace SpinsNew.Forms
             this.gridView1});
             this.gridPayroll.Click += new System.EventHandler(this.gridPayroll_Click);
             // 
+            // payrollViewModelBindingSource
+            // 
+            this.payrollViewModelBindingSource.DataSource = typeof(SpinsNew.ViewModel.PayrollViewModel);
+            // 
             // gridView1
             // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colID,
+            this.colMasterListID,
+            this.colVerified,
+            this.colFullName,
+            this.colBarangay,
+            this.colAddress,
+            this.colBirthDate,
+            this.colSex,
+            this.colHealthStatus,
+            this.colHealthStatusRemarks,
+            this.colIdType,
+            this.colPSGCBrgy,
+            this.colPSGCCityMun,
+            this.colPSGCProvince,
+            this.colPSGCRegion,
+            this.colAmount,
+            this.colYear,
+            this.colPeriodID,
+            this.colPayrollStatusID,
+            this.colClaimTypeID,
+            this.colDateClaimedFrom,
+            this.colDateClaimedTo,
+            this.colEntryBy,
+            this.colPayrollTypeID,
+            this.colPayrollTagID,
+            this.colPaymentModeID,
+            this.colDateTimeEntry,
+            this.colDateTimeModified,
+            this.colModifiedBy,
+            this.colRemarks});
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridPayroll;
             this.gridView1.Name = "gridView1";
@@ -403,7 +487,229 @@ namespace SpinsNew.Forms
             this.gridView1.OptionsCustomization.AllowGroup = false;
             this.gridView1.OptionsFind.FindFilterColumns = "LastName;FirstName;MiddleName";
             this.gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.gridView1.OptionsView.ColumnAutoWidth = false;
             this.gridView1.OptionsView.ShowGroupPanel = false;
+            this.gridView1.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colPSGCBrgy, DevExpress.Data.ColumnSortOrder.Ascending)});
+            // 
+            // colID
+            // 
+            this.colID.FieldName = "ID";
+            this.colID.Name = "colID";
+            this.colID.Width = 39;
+            // 
+            // colMasterListID
+            // 
+            this.colMasterListID.FieldName = "MasterListID";
+            this.colMasterListID.Name = "colMasterListID";
+            this.colMasterListID.Width = 37;
+            // 
+            // colVerified
+            // 
+            this.colVerified.FieldName = "Verified";
+            this.colVerified.Name = "colVerified";
+            this.colVerified.Visible = true;
+            this.colVerified.VisibleIndex = 0;
+            // 
+            // colFullName
+            // 
+            this.colFullName.FieldName = "FullName";
+            this.colFullName.Name = "colFullName";
+            this.colFullName.Visible = true;
+            this.colFullName.VisibleIndex = 1;
+            this.colFullName.Width = 67;
+            // 
+            // colBarangay
+            // 
+            this.colBarangay.FieldName = "Barangay";
+            this.colBarangay.Name = "colBarangay";
+            this.colBarangay.Visible = true;
+            this.colBarangay.VisibleIndex = 2;
+            // 
+            // colAddress
+            // 
+            this.colAddress.FieldName = "Address";
+            this.colAddress.Name = "colAddress";
+            this.colAddress.Visible = true;
+            this.colAddress.VisibleIndex = 3;
+            this.colAddress.Width = 76;
+            // 
+            // colBirthDate
+            // 
+            this.colBirthDate.DisplayFormat.FormatString = "MMM-dd-yyyy";
+            this.colBirthDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Custom;
+            this.colBirthDate.FieldName = "BirthDate";
+            this.colBirthDate.Name = "colBirthDate";
+            this.colBirthDate.Visible = true;
+            this.colBirthDate.VisibleIndex = 4;
+            // 
+            // colSex
+            // 
+            this.colSex.FieldName = "Sex";
+            this.colSex.Name = "colSex";
+            this.colSex.Visible = true;
+            this.colSex.VisibleIndex = 5;
+            // 
+            // colHealthStatus
+            // 
+            this.colHealthStatus.FieldName = "HealthStatus";
+            this.colHealthStatus.Name = "colHealthStatus";
+            this.colHealthStatus.Visible = true;
+            this.colHealthStatus.VisibleIndex = 6;
+            // 
+            // colHealthStatusRemarks
+            // 
+            this.colHealthStatusRemarks.FieldName = "HealthStatusRemarks";
+            this.colHealthStatusRemarks.Name = "colHealthStatusRemarks";
+            this.colHealthStatusRemarks.Visible = true;
+            this.colHealthStatusRemarks.VisibleIndex = 7;
+            // 
+            // colPSGCBrgy
+            // 
+            this.colPSGCBrgy.FieldName = "PSGCBrgy";
+            this.colPSGCBrgy.Name = "colPSGCBrgy";
+            this.colPSGCBrgy.Width = 84;
+            // 
+            // colPSGCCityMun
+            // 
+            this.colPSGCCityMun.FieldName = "PSGCCityMun";
+            this.colPSGCCityMun.Name = "colPSGCCityMun";
+            this.colPSGCCityMun.Width = 37;
+            // 
+            // colPSGCProvince
+            // 
+            this.colPSGCProvince.FieldName = "PSGCProvince";
+            this.colPSGCProvince.Name = "colPSGCProvince";
+            this.colPSGCProvince.Width = 37;
+            // 
+            // colPSGCRegion
+            // 
+            this.colPSGCRegion.FieldName = "PSGCRegion";
+            this.colPSGCRegion.Name = "colPSGCRegion";
+            this.colPSGCRegion.Width = 37;
+            // 
+            // colAmount
+            // 
+            this.colAmount.FieldName = "Amount";
+            this.colAmount.Name = "colAmount";
+            this.colAmount.Visible = true;
+            this.colAmount.VisibleIndex = 9;
+            this.colAmount.Width = 37;
+            // 
+            // colYear
+            // 
+            this.colYear.FieldName = "Year";
+            this.colYear.Name = "colYear";
+            this.colYear.Visible = true;
+            this.colYear.VisibleIndex = 10;
+            this.colYear.Width = 37;
+            // 
+            // colPeriodID
+            // 
+            this.colPeriodID.FieldName = "PeriodID";
+            this.colPeriodID.Name = "colPeriodID";
+            this.colPeriodID.Visible = true;
+            this.colPeriodID.VisibleIndex = 12;
+            this.colPeriodID.Width = 35;
+            // 
+            // colPayrollStatusID
+            // 
+            this.colPayrollStatusID.FieldName = "PayrollStatusID";
+            this.colPayrollStatusID.Name = "colPayrollStatusID";
+            this.colPayrollStatusID.Visible = true;
+            this.colPayrollStatusID.VisibleIndex = 11;
+            this.colPayrollStatusID.Width = 37;
+            // 
+            // colClaimTypeID
+            // 
+            this.colClaimTypeID.FieldName = "ClaimTypeID";
+            this.colClaimTypeID.Name = "colClaimTypeID";
+            this.colClaimTypeID.Visible = true;
+            this.colClaimTypeID.VisibleIndex = 13;
+            this.colClaimTypeID.Width = 37;
+            // 
+            // colDateClaimedFrom
+            // 
+            this.colDateClaimedFrom.FieldName = "DateClaimedFrom";
+            this.colDateClaimedFrom.Name = "colDateClaimedFrom";
+            this.colDateClaimedFrom.Visible = true;
+            this.colDateClaimedFrom.VisibleIndex = 18;
+            this.colDateClaimedFrom.Width = 20;
+            // 
+            // colDateClaimedTo
+            // 
+            this.colDateClaimedTo.FieldName = "DateClaimedTo";
+            this.colDateClaimedTo.Name = "colDateClaimedTo";
+            this.colDateClaimedTo.Visible = true;
+            this.colDateClaimedTo.VisibleIndex = 19;
+            this.colDateClaimedTo.Width = 20;
+            // 
+            // colEntryBy
+            // 
+            this.colEntryBy.FieldName = "EntryBy";
+            this.colEntryBy.Name = "colEntryBy";
+            this.colEntryBy.Visible = true;
+            this.colEntryBy.VisibleIndex = 20;
+            this.colEntryBy.Width = 20;
+            // 
+            // colPayrollTypeID
+            // 
+            this.colPayrollTypeID.FieldName = "PayrollTypeID";
+            this.colPayrollTypeID.Name = "colPayrollTypeID";
+            this.colPayrollTypeID.Visible = true;
+            this.colPayrollTypeID.VisibleIndex = 15;
+            this.colPayrollTypeID.Width = 33;
+            // 
+            // colPayrollTagID
+            // 
+            this.colPayrollTagID.FieldName = "PayrollTagID";
+            this.colPayrollTagID.Name = "colPayrollTagID";
+            this.colPayrollTagID.Visible = true;
+            this.colPayrollTagID.VisibleIndex = 14;
+            this.colPayrollTagID.Width = 37;
+            // 
+            // colPaymentModeID
+            // 
+            this.colPaymentModeID.FieldName = "PaymentModeID";
+            this.colPaymentModeID.Name = "colPaymentModeID";
+            this.colPaymentModeID.Visible = true;
+            this.colPaymentModeID.VisibleIndex = 16;
+            this.colPaymentModeID.Width = 37;
+            // 
+            // colDateTimeEntry
+            // 
+            this.colDateTimeEntry.FieldName = "DateTimeEntry";
+            this.colDateTimeEntry.Name = "colDateTimeEntry";
+            this.colDateTimeEntry.Visible = true;
+            this.colDateTimeEntry.VisibleIndex = 17;
+            this.colDateTimeEntry.Width = 37;
+            // 
+            // colDateTimeModified
+            // 
+            this.colDateTimeModified.FieldName = "DateTimeModified";
+            this.colDateTimeModified.Name = "colDateTimeModified";
+            this.colDateTimeModified.Visible = true;
+            this.colDateTimeModified.VisibleIndex = 21;
+            this.colDateTimeModified.Width = 38;
+            // 
+            // colModifiedBy
+            // 
+            this.colModifiedBy.FieldName = "ModifiedBy";
+            this.colModifiedBy.Name = "colModifiedBy";
+            this.colModifiedBy.Visible = true;
+            this.colModifiedBy.VisibleIndex = 22;
+            this.colModifiedBy.Width = 52;
+            // 
+            // colRemarks
+            // 
+            this.colRemarks.FieldName = "Remarks";
+            this.colRemarks.Name = "colRemarks";
+            this.colRemarks.Visible = true;
+            this.colRemarks.VisibleIndex = 23;
+            // 
+            // tbl_payroll_socpenBindingSource
+            // 
+            this.tbl_payroll_socpenBindingSource.DataSource = typeof(SpinsNew.Models.PayrollModel);
             // 
             // menuStrip1
             // 
@@ -433,7 +739,7 @@ namespace SpinsNew.Forms
             // 
             this.newApplicantToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_payroll_64;
             this.newApplicantToolStripMenuItem.Name = "newApplicantToolStripMenuItem";
-            this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.newApplicantToolStripMenuItem.Text = "Print payroll";
             this.newApplicantToolStripMenuItem.Click += new System.EventHandler(this.newApplicantToolStripMenuItem_Click);
             // 
@@ -441,7 +747,7 @@ namespace SpinsNew.Forms
             // 
             this.viewAttachmentsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_attachment_16;
             this.viewAttachmentsToolStripMenuItem.Name = "viewAttachmentsToolStripMenuItem";
-            this.viewAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.viewAttachmentsToolStripMenuItem.Text = "View Attachments";
             this.viewAttachmentsToolStripMenuItem.Click += new System.EventHandler(this.viewAttachmentsToolStripMenuItem_Click);
             // 
@@ -469,6 +775,13 @@ namespace SpinsNew.Forms
             this.progressBarControl1.Name = "progressBarControl1";
             this.progressBarControl1.Size = new System.Drawing.Size(838, 10);
             this.progressBarControl1.TabIndex = 12;
+            // 
+            // colIdType
+            // 
+            this.colIdType.FieldName = "IdType";
+            this.colIdType.Name = "colIdType";
+            this.colIdType.Visible = true;
+            this.colIdType.VisibleIndex = 8;
             // 
             // Payroll
             // 
@@ -509,7 +822,9 @@ namespace SpinsNew.Forms
             this.groupControlPayroll.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridPayroll)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbl_payroll_socpenBindingSource)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).EndInit();
@@ -555,5 +870,38 @@ namespace SpinsNew.Forms
         public System.Windows.Forms.RadioButton rbUnclaimed;
         public System.Windows.Forms.RadioButton rbAllStatus;
         private System.Windows.Forms.ToolStripMenuItem uploadToolStripMenuItem;
+        private System.Windows.Forms.BindingSource tbl_payroll_socpenBindingSource;
+        private DevExpress.XtraEditors.SimpleButton btn_sample;
+        private System.Windows.Forms.BindingSource payrollViewModelBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colID;
+        private DevExpress.XtraGrid.Columns.GridColumn colMasterListID;
+        private DevExpress.XtraGrid.Columns.GridColumn colPSGCBrgy;
+        private DevExpress.XtraGrid.Columns.GridColumn colPSGCCityMun;
+        private DevExpress.XtraGrid.Columns.GridColumn colPSGCProvince;
+        private DevExpress.XtraGrid.Columns.GridColumn colPSGCRegion;
+        private DevExpress.XtraGrid.Columns.GridColumn colAddress;
+        private DevExpress.XtraGrid.Columns.GridColumn colAmount;
+        private DevExpress.XtraGrid.Columns.GridColumn colYear;
+        private DevExpress.XtraGrid.Columns.GridColumn colPeriodID;
+        private DevExpress.XtraGrid.Columns.GridColumn colPayrollStatusID;
+        private DevExpress.XtraGrid.Columns.GridColumn colClaimTypeID;
+        private DevExpress.XtraGrid.Columns.GridColumn colPayrollTypeID;
+        private DevExpress.XtraGrid.Columns.GridColumn colPayrollTagID;
+        private DevExpress.XtraGrid.Columns.GridColumn colPaymentModeID;
+        private DevExpress.XtraGrid.Columns.GridColumn colDateTimeEntry;
+        private DevExpress.XtraGrid.Columns.GridColumn colDateClaimedFrom;
+        private DevExpress.XtraGrid.Columns.GridColumn colDateClaimedTo;
+        private DevExpress.XtraGrid.Columns.GridColumn colEntryBy;
+        private DevExpress.XtraGrid.Columns.GridColumn colDateTimeModified;
+        private DevExpress.XtraGrid.Columns.GridColumn colModifiedBy;
+        private DevExpress.XtraGrid.Columns.GridColumn colFullName;
+        private DevExpress.XtraGrid.Columns.GridColumn colVerified;
+        private DevExpress.XtraGrid.Columns.GridColumn colRemarks;
+        private DevExpress.XtraGrid.Columns.GridColumn colBarangay;
+        private DevExpress.XtraGrid.Columns.GridColumn colBirthDate;
+        private DevExpress.XtraGrid.Columns.GridColumn colSex;
+        private DevExpress.XtraGrid.Columns.GridColumn colHealthStatus;
+        private DevExpress.XtraGrid.Columns.GridColumn colHealthStatusRemarks;
+        private DevExpress.XtraGrid.Columns.GridColumn colIdType;
     }
 }
