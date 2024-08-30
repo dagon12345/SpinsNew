@@ -22,11 +22,12 @@ namespace SpinsNew
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         public string _username;
+        public string _userRole;
         private Replacements replacementsForm;
         private MasterList masterlistForm;
         //private ApplicationDbContext _dbContext;
         //private MasterList masterlistForm;// Call MasterList form
-        public MasterList(string username)
+        public MasterList(string username, string userRole)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
@@ -46,6 +47,14 @@ namespace SpinsNew
             gridView.ColumnFilterChanged += gridView1_ColumnFilterChanged;
 
             _username = username; // Retrieve the username
+            _userRole = userRole;
+
+            if(userRole == "3")// Number 3 is the encoders
+            {
+                payrollToolStripMenuItem.Visible = false;
+                verificationToolStripMenuItem.Visible = false;
+                actionsToolStripMenuItem.Visible = false;
+            }
 
 
         }
@@ -1902,7 +1911,7 @@ namespace SpinsNew
             }
             else
             {
-                payrollForm = new Payroll(_username);
+                payrollForm = new Payroll(_username, _userRole);
                 payrollForm.ShowDialog();
             }
         }

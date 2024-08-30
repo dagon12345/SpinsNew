@@ -19,23 +19,30 @@ namespace SpinsNew.Forms
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         public string _username;
+        public string _userRole;
         private ApplicationDbContext _dbContext;
         //private PayrollModel _payrollModel;
         private List<LibraryClaimType> _libraryClaimType;
 
-        public Payroll(string username)
+        public Payroll(string username, string userRole)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
             viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            // Get GridView from GridControl
-            //GridView gridView = gridPayroll.MainView as GridView;
-            //gridView.FocusedRowChanged += GridView_FocusedRowChanged;
 
             _username = username;
-            // _dbContext = dbContext;
-            // ComboboxClaimtype();
+            _userRole = userRole;
+
+            if(userRole == "1") // 1 means administration have an access to all the functions.
+            {
+                ts_delete.Visible = true;
+            }
+            else // all users except 1
+            {
+                ts_delete.Visible = false;
+            }
+            
         }
 
         // Custom class to hold items
@@ -63,19 +70,7 @@ namespace SpinsNew.Forms
             // Cast the MainView to GridView
             GridView gridView = gridPayroll.MainView as GridView;
 
-            //if (gridView != null)
-            //{
-            //    gridView.RowStyle += gridView_RowStyle;
-            //    // Subscribe to the CustomDrawFooterCell event
-            //    gridView.CustomDrawFooterCell += GridView_CustomDrawFooterCell;
-            //}
-
-            //Integrate search control into our grid control.
             searchControl1.Client = gridPayroll;
-
-
-
-
 
             // Fetch claim types from the database
             var claimTypes = _dbContext.lib_claim_type.ToList();
@@ -89,13 +84,6 @@ namespace SpinsNew.Forms
                     ClaimType = claimType.ClaimType
                 });
             }
-
-            // Optionally, select the first item
-            //if (cmb_claimtype.Properties.Items.Count > 0)
-            //{
-            //    cmb_claimtype.EditValue = (cmb_claimtype.Properties.Items[0] as ComboBoxItem).ClaimType;
-            //}
-
 
 
 
@@ -286,36 +274,7 @@ namespace SpinsNew.Forms
             }
             Search();
         }
-        //Code below is to count the data if the column filter was changed
-        /*public Form1()
-{
-    InitializeComponent();
 
-    // Subscribe to the FilterChanged event
-    GridView gridView = (GridView)gridControl1.MainView;
-    gridView.FilterChanged += GridView_FilterChanged;
-}
-
-private void GridView_FilterChanged(object sender, EventArgs e)
-{
-    GridView gridView = (GridView)sender;
-
-    // Get the count of rows that match the current filter
-    int rowCount = gridView.DataRowCount;
-
-    // Update your control with the row count
-    UpdateRowCount(rowCount);
-}
-
-private void UpdateRowCount(int rowCount)
-{
-    // Format the row count with thousands separator
-    string formattedRowCount = rowCount.ToString("N0");
-
-    // Assign formatted row count to a label or any other control
-    groupControl1.Text = $"Total Count: {formattedRowCount}";
-}
-*/
         // Method to update the row count display
         public void UpdateRowCount(GridView gridView)
         {
@@ -508,10 +467,6 @@ private void UpdateRowCount(int rowCount)
 
                 });
 
-                // Ensure that the DataTable is accessible in the PayrollPrintPreview form
-                //PayrollPrintPreview payrollPrintPreview = new PayrollPrintPreview(this);
-                //payrollPrintPreview.SetPayrollData(dt); // Pass the DataTable to the form
-                // payrollPrintPreview.Show();
 
                 for (int i = 0; i <= 100; i += 10)
                 {
@@ -529,11 +484,6 @@ private void UpdateRowCount(int rowCount)
                     string statusPayroll = row["StatusPayroll"].ToString(); //Payroll Status
                     string claimType = row["ClaimType"].ToString();
 
-                    //string payrollStatus = row["PayrollStatus"].ToString();
-                    //string amountforUnclaimed = row["Amount"].ToString();
-                    //string abbreviation = row["Abbreviation"].ToString();
-                    //string unclaimedPayroll = row["UnclaimedPayroll"].ToString();
-                    // string unclaimedAmounts = row["UnclaimedAmounts"].ToString();
 
                     string status = row["Status"].ToString();
                     string dateDeceased = row["DateDeceased"]?.ToString();
@@ -550,27 +500,11 @@ private void UpdateRowCount(int rowCount)
                     if (!string.IsNullOrEmpty(middleName2)) nameParts.Add(middleName2);
                     if (!string.IsNullOrEmpty(extName2)) nameParts.Add(extName2);
 
-                    //string unclaimedPayrolls = string.Empty;
-
-                    //if (!string.IsNullOrEmpty(abbreviation))
-                    //{
-                    //    unclaimedPayrolls = abbreviation;
-
-                    //    if (!string.IsNullOrEmpty(amountforUnclaimed))
-                    //    {
-                    //        unclaimedPayrolls += $" - {amountforUnclaimed}";
-                    //    }
-
-                    //    unclaimedPayrolls = $"({unclaimedPayrolls})";
-                    //}
-
                     string lastName = row["LastName"].ToString();
                     string firstName = row["FirstName"].ToString();
                     string middleName = row["MiddleName"].ToString();
                     string extName = row["ExtName"].ToString();
 
-                    // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName} {unclaimedAmounts}";
-                    // row["FullName"] = $"{lastName}, {firstName} {middleName} {extName}";
                     if (!string.IsNullOrEmpty(dateDeceased))
                     {
                         if (!string.IsNullOrEmpty(remarks))
@@ -627,8 +561,6 @@ private void UpdateRowCount(int rowCount)
 
                     gridView.Columns["StatusPayroll"].Visible = false;
                     gridView.Columns["ClaimType"].Visible = false;
-                    //gridView.Columns["UnclaimedAmounts"].Visible = false;
-                    //gridView.Columns["UnclaimedPayroll"].Visible = false;
                     gridView.Columns["MasterListID"].Visible = false;
 
                     gridView.Columns["LastName2"].Visible = false;
@@ -645,11 +577,6 @@ private void UpdateRowCount(int rowCount)
                     gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
                     gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
-
-                    //gridView.Columns["PayrollStatus"].Visible = false;
-                    //gridView.Columns["Abbreviation"].Visible = false;
-                    //gridView.Columns["PayrollID"].Visible = false;
-                    //gridView.Columns["Amounts"].Visible = false;
 
                     // Ensure horizontal scrollbar is enabled
                     gridView.OptionsView.ColumnAutoWidth = false;
@@ -693,13 +620,6 @@ private void UpdateRowCount(int rowCount)
             EnableSpinner();
             await Payrolls();
         }
-        private async void btn_search_ClickAsync(object sender, EventArgs e)
-        {
-
-        }
-
-
-
 
         public DataTable Signatories()
         {
@@ -896,97 +816,23 @@ private void UpdateRowCount(int rowCount)
 
         }
 
-        private async Task UpdatePayrollRecordAsync()
-        {
-            //try
-            //{
-            var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-            int psgccitymun = selectedItem.PSGCCityMun;
-
-            var selectedPeriod = (dynamic)cmb_period.SelectedItem;
-            int periodID = selectedPeriod.PeriodID;
-
-            var selectedYear = (dynamic)cmb_year.SelectedItem;
-            int yearID = selectedYear.Year;
-
-            var payrollStatus = Convert.ToInt32(lblValue.ToString());
-
-
-            var selectedClaimType = (dynamic)cmb_claimtype.SelectedItem;
-            int claimTypeID = selectedClaimType.ClaimTypeID;
-
-
-            GridView gridView = gridPayroll.MainView as GridView;
-
-            if (gridView != null)
-            {
-                // Get the row data
-                DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
-
-                if (row != null && row["ID"] != DBNull.Value)
-                {
-                    int id = Convert.ToInt32(row["ID"]);
-
-
-
-                    // Retrieve the payroll record based on the checkbox state
-                    var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id); // unchecked
-                                                                                                 //var payroll = (ck_all.Checked)
-                                                                                                 //     ? _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.PSGCCityMun == psgccitymun
-                                                                                                 //     && x.PeriodID == periodID
-                                                                                                 //     && x.Year == yearID  ) // When checked
-                                                                                                 //     : _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id); // When unchecked
-
-                    if (payroll != null)
-                    {
-                        // Update payroll details
-                        payroll.DateClaimedFrom = Convert.ToDateTime(dt_from.EditValue);
-                        payroll.DateClaimedTo = Convert.ToDateTime(dt_to.EditValue);
-                        payroll.ClaimTypeID = claimTypeID;
-                        payroll.Remarks = txt_remarks.Text;
-                        payroll.PayrollStatusID = 1;
-                        payroll.DateTimeModified = DateTime.Now;
-                        payroll.ModifiedBy = _username;
-
-                        // Save changes to the database
-                        _dbContext.tbl_payroll_socpen.Update(payroll);
-                        await _dbContext.SaveChangesAsync();
-
-                        XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        Search(); // Call your search method to refresh data
-                    }
-                    else
-                    {
-                        XtraMessageBox.Show("Payroll record not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-                    XtraMessageBox.Show("Invalid or missing ID value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                XtraMessageBox.Show("GridView or row handle is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            //}
-            //catch (Exception ex)
-            //{
-            //    XtraMessageBox.Show($"Error message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-        }
-
         private async void btn_claimed_Click(object sender, EventArgs e)
         {
-            //EF code for claimed updating
+            
+            GridView gridView = gridPayroll.MainView as GridView;
             if (dt_from.Text == "" || dt_to.Text == "")
             {
-                XtraMessageBox.Show("Please select a date before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                XtraMessageBox.Show("Please select a date before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (cmb_claimtype.Text == "")
             {
-                XtraMessageBox.Show("Please select Claim Type before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                XtraMessageBox.Show("Please select Claim Type before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (gridView.RowCount == 0)
+            {
+                XtraMessageBox.Show("Search a payroll first before updating.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             try
@@ -1006,7 +852,6 @@ private void UpdateRowCount(int rowCount)
                 int claimTypeID = selectedClaimType.ClaimTypeID;
 
 
-                GridView gridView = gridPayroll.MainView as GridView;
 
                 if (gridView != null)
                 {
@@ -1017,12 +862,10 @@ private void UpdateRowCount(int rowCount)
                     {
                         int id = Convert.ToInt32(row["ID"]);
 
-
-
                         // Check if 'ck_all' is checked
                         if (ck_all.Checked)
                         {
-                            if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                             {
                                 // Iterate over all visible rows in the GridControl
                                 for (int i = 0; i < gridView1.RowCount; i++)
@@ -1056,6 +899,7 @@ private void UpdateRowCount(int rowCount)
                                 XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                                 // Refresh the data in the GridControl
+                                //gridPayroll.Refresh();
                                 Search();
                             }
                         }
@@ -1083,6 +927,7 @@ private void UpdateRowCount(int rowCount)
 
                                 // Refresh the data in the GridControl
                                 Search();
+                               // gridPayroll.Refresh();
                             }
                         }
 
@@ -1107,7 +952,14 @@ private void UpdateRowCount(int rowCount)
         private async void btn_unclaimed_Click(object sender, EventArgs e)
         {
 
+
             GridView gridView = gridPayroll.MainView as GridView;
+
+            if (gridView.RowCount == 0)
+            {
+                XtraMessageBox.Show("Search a payroll first before updating.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             try
             {
@@ -1125,7 +977,7 @@ private void UpdateRowCount(int rowCount)
                         // Check if 'ck_all' is checked
                         if (ck_all.Checked)//Update all 
                         {
-                            if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                             {
                                 // Iterate over all visible rows in the GridControl
                                 for (int i = 0; i < gridView1.RowCount; i++)
@@ -1206,29 +1058,12 @@ private void UpdateRowCount(int rowCount)
             {
 
                 XtraMessageBox.Show($"Error message {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //Th
+
             }
         }
 
         private void GridView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
-            //GridView gridView = sender as GridView;
-
-            //// Check if gridView is not null and e.FocusedRowHandle is valid
-            //if (gridView != null && e.FocusedRowHandle >= 0)
-            //{
-            //    // Get the current focused row
-            //    DataRow row = gridView.GetDataRow(e.FocusedRowHandle);
-
-            //    if (row != null)
-            //    {
-            //        // Retrieve the ID value from the row
-            //        int id = Convert.ToInt32(row["ID"]);
-
-            //        // Set the ID value to the label
-            //        labelControl1.Text = id.ToString();
-            //    }
-            //}
         }
 
         private void gridPayroll_Click(object sender, EventArgs e)
@@ -1239,6 +1074,82 @@ private void UpdateRowCount(int rowCount)
         private void searchControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void ts_delete_Click(object sender, EventArgs e)
+        {
+            if (XtraMessageBox.Show("This will delete all the data displayed. Continue?", "Delete all", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+
+                GridView gridView = gridPayroll.MainView as GridView;
+                // Get the row data
+                DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
+                // Retrieve the visible row handle
+
+                for (int i = 0; i < gridView1.RowCount; i++)
+                {
+                    int rowHandle = gridView1.GetVisibleRowHandle(i);
+                    int idGrid = Convert.ToInt32(gridView1.GetRowCellValue(rowHandle, "ID"));
+
+                    //searchControl
+                    _dbContext.Remove(_dbContext.tbl_payroll_socpen.Single(x => x.ID == idGrid));
+                }
+
+       
+                _dbContext.SaveChanges();
+                Search();
+                MessageBox.Show("Data displayed all deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        private PayrollFiles payrollFilesForm;
+        private PayrollHistory payrollHistoryForm;
+        private void uploadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<PayrollFiles>().Any())
+            {
+                payrollFilesForm.Select();
+                payrollFilesForm.BringToFront();
+            }
+            else
+            {
+               
+                payrollFilesForm = new PayrollFiles(payrollHistoryForm, payrollForm);
+
+                if(cmb_municipality.Text == "Select City/Municipality")
+                {
+                    MessageBox.Show("Please Select City/Municipality", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (cmb_year.Text == "Select Year")
+                {
+                    MessageBox.Show("Please Select Year", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (cmb_period.Text == "Select Period")
+                {
+                    MessageBox.Show("Please Select Period", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var selectedMunicipality = (dynamic)cmb_municipality.SelectedItem;
+                int psgccitymun = selectedMunicipality.PSGCCityMun;
+
+                var selectedPeriod = (dynamic)cmb_period.SelectedItem;
+                int periodID = selectedPeriod.PeriodID;
+
+                var selectedYear = (dynamic)cmb_year.SelectedItem;
+                int yearID = selectedYear.Year;
+
+                // int id = Convert.ToInt32(row["MasterListID"]);
+                int municipality = psgccitymun;
+                int period = periodID;
+                int year = yearID;
+
+                
+                payrollFilesForm.DisplayID(municipality, year, period);
+                payrollFilesForm.ShowDialog();
+
+            }
         }
     }
 }

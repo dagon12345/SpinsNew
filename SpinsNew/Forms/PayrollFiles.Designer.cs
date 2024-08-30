@@ -37,6 +37,7 @@ namespace SpinsNew.Forms
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+            this.btn_upload = new DevExpress.XtraEditors.SimpleButton();
             this.list_pictures = new DevExpress.XtraEditors.ListBoxControl();
             this.cmb_selectfolder = new DevExpress.XtraEditors.ComboBoxEdit();
             this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
@@ -68,7 +69,7 @@ namespace SpinsNew.Forms
             this.groupControl1.Controls.Add(this.cmb_municipality);
             this.groupControl1.Location = new System.Drawing.Point(12, 12);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(220, 132);
+            this.groupControl1.Size = new System.Drawing.Size(220, 114);
             this.groupControl1.TabIndex = 0;
             this.groupControl1.Text = "Filter";
             // 
@@ -76,7 +77,7 @@ namespace SpinsNew.Forms
             // 
             this.lblPeriod.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lblPeriod.Appearance.Options.UseFont = true;
-            this.lblPeriod.Location = new System.Drawing.Point(180, 104);
+            this.lblPeriod.Location = new System.Drawing.Point(168, 5);
             this.lblPeriod.Name = "lblPeriod";
             this.lblPeriod.Size = new System.Drawing.Size(35, 15);
             this.lblPeriod.TabIndex = 83;
@@ -139,11 +140,22 @@ namespace SpinsNew.Forms
             | System.Windows.Forms.AnchorStyles.Left)));
             this.groupControl2.Controls.Add(this.list_pictures);
             this.groupControl2.Controls.Add(this.cmb_selectfolder);
-            this.groupControl2.Location = new System.Drawing.Point(12, 150);
+            this.groupControl2.Location = new System.Drawing.Point(12, 132);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(220, 462);
+            this.groupControl2.Size = new System.Drawing.Size(220, 480);
             this.groupControl2.TabIndex = 1;
             this.groupControl2.Text = "Files";
+            // 
+            // btn_upload
+            // 
+            this.btn_upload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_upload.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
+            this.btn_upload.Location = new System.Drawing.Point(626, 26);
+            this.btn_upload.Name = "btn_upload";
+            this.btn_upload.Size = new System.Drawing.Size(95, 23);
+            this.btn_upload.TabIndex = 2;
+            this.btn_upload.Text = "Upload Files";
+            this.btn_upload.Click += new System.EventHandler(this.btn_upload_Click);
             // 
             // list_pictures
             // 
@@ -152,7 +164,7 @@ namespace SpinsNew.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.list_pictures.Location = new System.Drawing.Point(5, 52);
             this.list_pictures.Name = "list_pictures";
-            this.list_pictures.Size = new System.Drawing.Size(210, 405);
+            this.list_pictures.Size = new System.Drawing.Size(210, 423);
             this.list_pictures.TabIndex = 1;
             this.list_pictures.SelectedIndexChanged += new System.EventHandler(this.list_pictures_SelectedIndexChanged);
             // 
@@ -173,6 +185,7 @@ namespace SpinsNew.Forms
             this.groupControl3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl3.Controls.Add(this.btn_upload);
             this.groupControl3.Controls.Add(this.btn_left);
             this.groupControl3.Controls.Add(this.btn_rotate);
             this.groupControl3.Controls.Add(this.pictureEdit1);
@@ -224,6 +237,7 @@ namespace SpinsNew.Forms
             this.Controls.Add(this.groupControl3);
             this.Controls.Add(this.groupControl2);
             this.Controls.Add(this.groupControl1);
+            this.IconOptions.Icon = ((System.Drawing.Icon)(resources.GetObject("PayrollFiles.IconOptions.Icon")));
             this.Name = "PayrollFiles";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PayrollFiles";
@@ -261,5 +275,6 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl lblPeriod;
         private DevExpress.XtraEditors.SimpleButton btn_rotate;
         private DevExpress.XtraEditors.SimpleButton btn_left;
+        private DevExpress.XtraEditors.SimpleButton btn_upload;
     }
 }

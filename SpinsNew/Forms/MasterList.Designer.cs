@@ -315,7 +315,7 @@ namespace SpinsNew
             // 
             this.viewToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_eye_48;
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(173, 24);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.viewToolStripMenuItem.Text = "View (Ctrl + P)";
             this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click_1);
             // 
@@ -323,7 +323,7 @@ namespace SpinsNew
             // 
             this.createToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_add_481;
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(173, 24);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.createToolStripMenuItem.Text = "Create";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
@@ -331,7 +331,7 @@ namespace SpinsNew
             // 
             this.payrollToolStripMenuItem1.Image = global::SpinsNew.Properties.Resources.icons8_payroll_481;
             this.payrollToolStripMenuItem1.Name = "payrollToolStripMenuItem1";
-            this.payrollToolStripMenuItem1.Size = new System.Drawing.Size(173, 24);
+            this.payrollToolStripMenuItem1.Size = new System.Drawing.Size(180, 24);
             this.payrollToolStripMenuItem1.Text = "Payroll";
             this.payrollToolStripMenuItem1.Click += new System.EventHandler(this.payrollToolStripMenuItem1_Click);
             // 

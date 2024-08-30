@@ -53,7 +53,7 @@ namespace SpinsNew.Forms
             }
             else
             {
-                masterlistForm = new MasterList(_username);
+                masterlistForm = new MasterList(_username, _userRole);
                 masterlistForm.ShowDialog();
             }
         }

@@ -19,12 +19,13 @@ namespace SpinsNew.Forms
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         private PayrollHistory payrollHistoryForm;
-        public PayrollFiles(PayrollHistory payroll)
+        private Payroll _payrollForm;
+        public PayrollFiles(PayrollHistory payroll, Payroll payrollForm)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
             payrollHistoryForm = payroll;
-
+            _payrollForm = payrollForm;
             //btn_left.shor = Keys.Control | Keys.P;
 
         }
@@ -51,17 +52,10 @@ namespace SpinsNew.Forms
         }
         private void PayrollFiles_Load(object sender, EventArgs e)
         {
-            //payrollForm.Municipality();
-            // payrollForm.Year();
-            // LoadDataAsync();
+
             Municipality();
             Year();
             FillMunicipalityAndYear();
-            //DisplayImage();
-            //DisplayFoldersInComboBoxEdit();
-            // BindEvents();
-            // UpdateFolderComboBox();
-            //cmb_municipality.SelectedIndexChanged += cmb_municipality_SelectedIndexChanged;
             DisplayFoldersInComboBoxEdit();
             BindEvents();
             list_pictures.Focus();
@@ -639,6 +633,57 @@ namespace SpinsNew.Forms
         private void btn_left_Click(object sender, EventArgs e)
         {
             RotateLeft();
+        }
+
+        private void btn_upload_Click(object sender, EventArgs e)
+        {
+            // Retrieve values from controls
+            string year = cmb_year.SelectedItem?.ToString();
+            string municipality = lbl_municipality.Text;
+            string period = lblPeriod.Text;
+
+            // Define the base path
+            string basePath = @"\\172.26.153.181\Payroll";
+
+            // Check and create year, period, and municipality folders if they don't exist
+            string folderPath = Path.Combine(basePath, year, period, municipality);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            // Determine the incremented folder
+            string destinationFolder = folderPath;
+            int folderIncrement = 1;
+            while (Directory.Exists(destinationFolder))
+            {
+                destinationFolder = Path.Combine(folderPath, $"{folderIncrement}");
+                folderIncrement++;
+            }
+
+            // Create the incremented folder
+            Directory.CreateDirectory(destinationFolder);
+
+            // Open file dialog to select JPG files
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "JPEG Files (*.jpg)|*.jpg";
+                openFileDialog.Multiselect = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Loop through selected files and copy them to the incremented folder
+                    foreach (string fileName in openFileDialog.FileNames)
+                    {
+                        string destinationPath = Path.Combine(destinationFolder, Path.GetFileName(fileName));
+                        File.Copy(fileName, destinationPath, overwrite: true);
+                    }
+
+                    XtraMessageBox.Show("Files uploaded successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
+                }
+            }
+
         }
     }
 }

@@ -250,6 +250,7 @@ namespace SpinsNew.Forms
         }
         PayrollFiles payrollFilesForm;
         private PayrollHistory payrollFormHistory;
+        private Payroll payrollForm;
         private void gridControl1_DoubleClick(object sender, EventArgs e)
         {
             if (Application.OpenForms.OfType<PayrollFiles>().Any())
@@ -260,7 +261,7 @@ namespace SpinsNew.Forms
             else
             {
                 // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                payrollFilesForm = new PayrollFiles(payrollFormHistory);
+                payrollFilesForm = new PayrollFiles(payrollFormHistory, payrollForm);
                 GridView gridView = gridControl1.MainView as GridView;
 
                 // Check if any row is selected
@@ -278,48 +279,6 @@ namespace SpinsNew.Forms
                 int period = Convert.ToInt32(row["PeriodID"]);
                 payrollFilesForm.DisplayID(municipality, year, period);
                 payrollFilesForm.ShowDialog();
-
-
-
-
-                //Below is to get the reference code under masterlist
-                // Create a new instance of GISForm
-                // GISviewingForm = new GISForm(this);
-                // GridView gridView = gridControl1.MainView as GridView;
-
-                // Check if any row is selected
-                //if (gridView.SelectedRowsCount == 0)
-                //{
-                //    MessageBox.Show("Please select a data to view", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    return; // Exit the method without showing GISForm
-                //}
-
-                //// Pass the ID value to the GISForm
-                ////DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                //string gis = row["GIS"].ToString();
-                //string spbuf = row["SPBUF"].ToString();
-
-                //if (string.IsNullOrWhiteSpace(gis))
-                //{
-                //    if (string.IsNullOrWhiteSpace(spbuf))
-                //    {
-                //        //MessageBox.Show("Both GIS and SPBUF are missing.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //        // return; // Exit the method without showing GISForm
-                //    }
-                //    else
-                //    {
-                //        int spbufId = Convert.ToInt32(spbuf);
-                //        EditApplicantForm.DisplaySPBUF(spbufId);
-                //    }
-                //}
-                //else
-                //{
-                //    int gisId = Convert.ToInt32(gis);
-                //    EditApplicantForm.DisplayGIS(gisId);
-                //}
-
-                //EditApplicantForm.Show();
-
             }
         }
     }

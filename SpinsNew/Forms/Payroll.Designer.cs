@@ -45,6 +45,9 @@ namespace SpinsNew.Forms
             this.dt_to = new DevExpress.XtraEditors.DateEdit();
             this.dt_from = new DevExpress.XtraEditors.DateEdit();
             this.separatorControl1 = new DevExpress.XtraEditors.SeparatorControl();
+            this.lblValue = new DevExpress.XtraEditors.LabelControl();
+            this.rbUnclaimed = new System.Windows.Forms.RadioButton();
+            this.rbAllStatus = new System.Windows.Forms.RadioButton();
             this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -59,11 +62,9 @@ namespace SpinsNew.Forms
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newApplicantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewAttachmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.uploadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ts_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
-            this.rbAllStatus = new System.Windows.Forms.RadioButton();
-            this.rbUnclaimed = new System.Windows.Forms.RadioButton();
-            this.lblValue = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
@@ -173,7 +174,7 @@ namespace SpinsNew.Forms
             // 
             this.ck_all.Location = new System.Drawing.Point(76, 144);
             this.ck_all.Name = "ck_all";
-            this.ck_all.Properties.Caption = "Set all";
+            this.ck_all.Properties.Caption = "Update all";
             this.ck_all.Size = new System.Drawing.Size(75, 20);
             this.ck_all.TabIndex = 5;
             // 
@@ -200,7 +201,7 @@ namespace SpinsNew.Forms
             // 
             this.btn_unclaimed.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_unclaimed.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_unclaimed.ImageOptions.Image")));
-            this.btn_unclaimed.Location = new System.Drawing.Point(167, 167);
+            this.btn_unclaimed.Location = new System.Drawing.Point(167, 170);
             this.btn_unclaimed.Name = "btn_unclaimed";
             this.btn_unclaimed.Size = new System.Drawing.Size(85, 23);
             this.btn_unclaimed.TabIndex = 5;
@@ -211,7 +212,7 @@ namespace SpinsNew.Forms
             // 
             this.btn_claimed.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_claimed.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_claimed.ImageOptions.Image")));
-            this.btn_claimed.Location = new System.Drawing.Point(76, 168);
+            this.btn_claimed.Location = new System.Drawing.Point(76, 170);
             this.btn_claimed.Name = "btn_claimed";
             this.btn_claimed.Size = new System.Drawing.Size(85, 23);
             this.btn_claimed.TabIndex = 4;
@@ -245,15 +246,50 @@ namespace SpinsNew.Forms
             // 
             // separatorControl1
             // 
-            this.separatorControl1.Location = new System.Drawing.Point(16, 126);
+            this.separatorControl1.Location = new System.Drawing.Point(16, 173);
             this.separatorControl1.Name = "separatorControl1";
             this.separatorControl1.Size = new System.Drawing.Size(304, 23);
             this.separatorControl1.TabIndex = 23;
             // 
+            // lblValue
+            // 
+            this.lblValue.Location = new System.Drawing.Point(155, 46);
+            this.lblValue.Name = "lblValue";
+            this.lblValue.Size = new System.Drawing.Size(26, 13);
+            this.lblValue.TabIndex = 22;
+            this.lblValue.Text = "value";
+            this.lblValue.Visible = false;
+            // 
+            // rbUnclaimed
+            // 
+            this.rbUnclaimed.AutoSize = true;
+            this.rbUnclaimed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbUnclaimed.Location = new System.Drawing.Point(86, 44);
+            this.rbUnclaimed.Name = "rbUnclaimed";
+            this.rbUnclaimed.Size = new System.Drawing.Size(63, 17);
+            this.rbUnclaimed.TabIndex = 21;
+            this.rbUnclaimed.Text = "Unpaid";
+            this.rbUnclaimed.UseVisualStyleBackColor = true;
+            this.rbUnclaimed.CheckedChanged += new System.EventHandler(this.rbUnclaimed_CheckedChanged);
+            // 
+            // rbAllStatus
+            // 
+            this.rbAllStatus.AutoSize = true;
+            this.rbAllStatus.Checked = true;
+            this.rbAllStatus.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbAllStatus.Location = new System.Drawing.Point(17, 44);
+            this.rbAllStatus.Name = "rbAllStatus";
+            this.rbAllStatus.Size = new System.Drawing.Size(63, 17);
+            this.rbAllStatus.TabIndex = 21;
+            this.rbAllStatus.TabStop = true;
+            this.rbAllStatus.Text = "Default";
+            this.rbAllStatus.UseVisualStyleBackColor = true;
+            this.rbAllStatus.CheckedChanged += new System.EventHandler(this.rbAllStatus_CheckedChangedAsync);
+            // 
             // cmb_period
             // 
             this.cmb_period.EditValue = "Select Period";
-            this.cmb_period.Location = new System.Drawing.Point(17, 104);
+            this.cmb_period.Location = new System.Drawing.Point(17, 141);
             this.cmb_period.Name = "cmb_period";
             this.cmb_period.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -267,7 +303,7 @@ namespace SpinsNew.Forms
             // cmb_year
             // 
             this.cmb_year.EditValue = "Select Year";
-            this.cmb_year.Location = new System.Drawing.Point(17, 78);
+            this.cmb_year.Location = new System.Drawing.Point(16, 105);
             this.cmb_year.Name = "cmb_year";
             this.cmb_year.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -280,7 +316,7 @@ namespace SpinsNew.Forms
             // cmb_municipality
             // 
             this.cmb_municipality.EditValue = "Select City/Municipality";
-            this.cmb_municipality.Location = new System.Drawing.Point(17, 52);
+            this.cmb_municipality.Location = new System.Drawing.Point(17, 69);
             this.cmb_municipality.Name = "cmb_municipality";
             this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -373,7 +409,8 @@ namespace SpinsNew.Forms
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionToolStripMenuItem,
-            this.toolStripMenuItem1});
+            this.uploadToolStripMenuItem,
+            this.ts_delete});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -387,29 +424,42 @@ namespace SpinsNew.Forms
             this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newApplicantToolStripMenuItem,
             this.viewAttachmentsToolStripMenuItem});
+            this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_vertical_48;
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
             this.optionToolStripMenuItem.Text = "Option";
             // 
             // newApplicantToolStripMenuItem
             // 
+            this.newApplicantToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_payroll_64;
             this.newApplicantToolStripMenuItem.Name = "newApplicantToolStripMenuItem";
-            this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newApplicantToolStripMenuItem.Text = "Print payroll";
             this.newApplicantToolStripMenuItem.Click += new System.EventHandler(this.newApplicantToolStripMenuItem_Click);
             // 
             // viewAttachmentsToolStripMenuItem
             // 
+            this.viewAttachmentsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_attachment_16;
             this.viewAttachmentsToolStripMenuItem.Name = "viewAttachmentsToolStripMenuItem";
-            this.viewAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.viewAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.viewAttachmentsToolStripMenuItem.Text = "View Attachments";
             this.viewAttachmentsToolStripMenuItem.Click += new System.EventHandler(this.viewAttachmentsToolStripMenuItem_Click);
             // 
-            // toolStripMenuItem1
+            // uploadToolStripMenuItem
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(22, 20);
-            this.toolStripMenuItem1.Text = " ";
+            this.uploadToolStripMenuItem.Image = global::SpinsNew.Properties.Resources._8725982_image_upload_icon;
+            this.uploadToolStripMenuItem.Name = "uploadToolStripMenuItem";
+            this.uploadToolStripMenuItem.Size = new System.Drawing.Size(144, 20);
+            this.uploadToolStripMenuItem.Text = "Upload Attachments";
+            this.uploadToolStripMenuItem.Click += new System.EventHandler(this.uploadToolStripMenuItem_Click);
+            // 
+            // ts_delete
+            // 
+            this.ts_delete.Image = global::SpinsNew.Properties.Resources.icons8_delete_48;
+            this.ts_delete.Name = "ts_delete";
+            this.ts_delete.Size = new System.Drawing.Size(88, 20);
+            this.ts_delete.Text = " Delete All";
+            this.ts_delete.Click += new System.EventHandler(this.ts_delete_Click);
             // 
             // progressBarControl1
             // 
@@ -419,41 +469,6 @@ namespace SpinsNew.Forms
             this.progressBarControl1.Name = "progressBarControl1";
             this.progressBarControl1.Size = new System.Drawing.Size(838, 10);
             this.progressBarControl1.TabIndex = 12;
-            // 
-            // rbAllStatus
-            // 
-            this.rbAllStatus.AutoSize = true;
-            this.rbAllStatus.Checked = true;
-            this.rbAllStatus.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbAllStatus.Location = new System.Drawing.Point(17, 27);
-            this.rbAllStatus.Name = "rbAllStatus";
-            this.rbAllStatus.Size = new System.Drawing.Size(63, 17);
-            this.rbAllStatus.TabIndex = 21;
-            this.rbAllStatus.TabStop = true;
-            this.rbAllStatus.Text = "Default";
-            this.rbAllStatus.UseVisualStyleBackColor = true;
-            this.rbAllStatus.CheckedChanged += new System.EventHandler(this.rbAllStatus_CheckedChangedAsync);
-            // 
-            // rbUnclaimed
-            // 
-            this.rbUnclaimed.AutoSize = true;
-            this.rbUnclaimed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbUnclaimed.Location = new System.Drawing.Point(86, 27);
-            this.rbUnclaimed.Name = "rbUnclaimed";
-            this.rbUnclaimed.Size = new System.Drawing.Size(63, 17);
-            this.rbUnclaimed.TabIndex = 21;
-            this.rbUnclaimed.Text = "Unpaid";
-            this.rbUnclaimed.UseVisualStyleBackColor = true;
-            this.rbUnclaimed.CheckedChanged += new System.EventHandler(this.rbUnclaimed_CheckedChanged);
-            // 
-            // lblValue
-            // 
-            this.lblValue.Location = new System.Drawing.Point(155, 29);
-            this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(26, 13);
-            this.lblValue.TabIndex = 22;
-            this.lblValue.Text = "value";
-            this.lblValue.Visible = false;
             // 
             // Payroll
             // 
@@ -535,9 +550,10 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl labelControl4;
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.LabelControl labelControl1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem ts_delete;
         private DevExpress.XtraEditors.LabelControl lblValue;
         public System.Windows.Forms.RadioButton rbUnclaimed;
         public System.Windows.Forms.RadioButton rbAllStatus;
+        private System.Windows.Forms.ToolStripMenuItem uploadToolStripMenuItem;
     }
 }
