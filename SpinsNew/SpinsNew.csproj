@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>12</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -348,7 +348,13 @@
     <Compile Include="Libraries\LibraryClaimType.cs" />
     <Compile Include="Libraries\LibraryHealthStatus.cs" />
     <Compile Include="Libraries\LibraryIDType.cs" />
+    <Compile Include="Libraries\LibraryPaymentMode.cs" />
+    <Compile Include="Libraries\LibraryPayrollStatus.cs" />
+    <Compile Include="Libraries\LibraryPayrollTag.cs" />
+    <Compile Include="Libraries\LibraryPayrollType.cs" />
+    <Compile Include="Libraries\LibraryPeriod.cs" />
     <Compile Include="Libraries\LibrarySex.cs" />
+    <Compile Include="Libraries\LibraryStatus.cs" />
     <Compile Include="Models\MasterListModel.cs" />
     <Compile Include="Models\PayrollModel.cs" />
     <Compile Include="Popups\PayrollPopup.cs">

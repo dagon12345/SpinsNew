@@ -19,26 +19,39 @@ namespace SpinsNew.Models
         public double Amount { get; set; }
         public int Year { get; set; }
         public int PeriodID { get; set; }
+
         public int PayrollStatusID { get; set; }
         public int? ClaimTypeID { get; set; }
+
+        [Display(Name = "Date Claimed")]
         public DateTime? DateClaimedFrom { get; set; }
         public DateTime? DateClaimedTo { get; set; }
+
         public string Remarks { get; set; }
         public int PayrollTypeID { get; set; }
         public int PayrollTagID { get; set; }
         public int PaymentModeID { get; set; }
+        [DisplayFormat(DataFormatString = "MMM-dd-yyyy")]
         public DateTime? DateTimeEntry { get; set; }
         public string EntryBy { get; set; }
 
 
 
-
+        [DisplayFormat(DataFormatString = "MMM-dd-yyyy")]
         public DateTime? DateTimeModified { get; set; }
         public string ModifiedBy { get; set; }
 
-        public MasterListModel MasterListModel { get; set; } = null;// Required reference navigation to principal
-        public LibraryBarangay LibraryBarangay { get; set; } = null;//
-       // public LibrarySex LibrarySex { get; set; } = null;//
+
+        //public int LatestPayroll { get; set; }//experiment
+        /* Required reference navigation to principal*/
+        public MasterListModel MasterListModel { get; set; } = null;
+        public LibraryBarangay LibraryBarangay { get; set; } = null;
+        public LibraryPeriod LibraryPeriod { get; set; }
+        public LibraryPayrollStatus LibraryPayrollStatus  { get; set; }
+        public LibraryClaimType LibraryClaimType { get; set; }
+        public LibraryPayrollType LibraryPayrollType { get; set; }
+        public LibraryPayrollTag LibraryPayrollTag { get; set; }
+        public LibraryPaymentMode LibraryPaymentMode { get; set; }
 
 
     }

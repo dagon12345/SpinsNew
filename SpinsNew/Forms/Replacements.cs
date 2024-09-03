@@ -282,7 +282,7 @@ namespace SpinsNew.Forms
         //Show the spinner
         private void EnableSpinner()
         {
-           // btn_search.Enabled = false;
+            // btn_search.Enabled = false;
             // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
             lbl_fromreplace.Text = "-----";
@@ -290,14 +290,17 @@ namespace SpinsNew.Forms
             lbl_fromtobe.Text = "-----";
             lbl_nametobe.Text = "-----";
 
+            groupControl1.Enabled = false;
+
         }
         //Hide the spinner
         private void DisableSpinner()
         {
             progressBarControl1.EditValue = 0; // Ensure the progress bar is full
-           // btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
-                                       // btn_refresh.Enabled = true;
+                                               // btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
+                                               // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
+            groupControl1.Enabled = true;
         }
         public async Task Delisted() //The query is all about delisted with payroll unclaimed filtered by year and the latest ID inputed into tbl_payroll_socpen
         {
@@ -309,6 +312,17 @@ namespace SpinsNew.Forms
                 MySqlCommand cmd = con.CreateCommand();
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = @"WITH LatestPayroll AS (
+                SELECT 
+                    MasterListID,
+                    MAX(ID) AS MaxID
+                FROM 
+                    tbl_payroll_socpen
+                WHERE
+                    Year = @Year
+                GROUP BY 
+                    MasterListID
+            ),
+             ReplacementPayroll AS (
                 SELECT 
                     MasterListID,
                     MAX(ID) AS MaxID
@@ -335,9 +349,28 @@ namespace SpinsNew.Forms
                 END AS Abbreviation,
 
                 tps.ID AS PayrollID,
+                /*tpsReplace.ID AS ReplacementPayrollID,*/
+                tps2.ID AS ReplacementsPayrollID,
                 d.ID,
                 d.MasterListID,
+                d.PSGCRegion,
+                d.PSGCProvince,
+                d.PSGCCityMun,
+                d.PSGCBrgy,
 
+                d.MasterListID_Replacement,
+                d.PSGCRegion_Replacement,
+                d.PSGCProvince_Replacement,
+                d.PSGCCityMun_Replacement,
+                d.PSGCBrgy_Replacement,
+
+                tps2.ReplacementForID,
+                tps2.PSGCRegion_ReplacementFor,
+                tps2.PSGCProvince_ReplacementFor,
+                tps2.PSGCCityMun_ReplacementFor,
+                tps2.PSGCBrgy_ReplacementFor,
+
+                
                 tm.LastName,
                 tm.FirstName,
                 tm.MiddleName,
@@ -346,6 +379,7 @@ namespace SpinsNew.Forms
                 tm.BirthDate,
                 ls.Status as Reason,
                 d.StatusRemarks,
+                tm2.ID as MasterListIDReplacement,
                 tm2.LastName as LastName2,
                 tm2.FirstName as FirstName2,
                 tm2.MiddleName as MiddleName2,
@@ -354,10 +388,12 @@ namespace SpinsNew.Forms
                 tm2.Birthdate as ReplacementBirthdate,
                 lpr.Period as Period,
                 d.Year,
+                d.PeriodID,
                 lps.ReportSource as ReportSource,
                 d.DelistedBy,
                 d.DateTimeDelisted,
                 d.ReplacedBy,
+                d.DateTimeReplaced,
                 tg_max.ReferenceCode as GIS,
                 ts_max.ReferenceCode as SPBUF
             FROM 
@@ -412,6 +448,10 @@ namespace SpinsNew.Forms
             LEFT JOIN
                 tbl_payroll_socpen tps ON d.MasterListID = tps.MasterListID
                 AND tps.ID = (SELECT MaxID FROM LatestPayroll WHERE MasterListID = tps.MasterListID)
+
+            LEFT JOIN
+                tbl_payroll_socpen tps2 ON d.MasterListID_Replacement = tps2.MasterListID
+                AND tps2.ID = (SELECT MaxID FROM ReplacementPayroll WHERE MasterListID = tps2.MasterListID)
 
 
 
@@ -528,7 +568,11 @@ namespace SpinsNew.Forms
                 // Move the new column to the 6th position
                 dt.Columns["Unclaimed Payrolls"].SetOrdinal(0);
                 dt.Columns["FullName"].SetOrdinal(1);
-                dt.Columns["Name of Replacement"].SetOrdinal(13);
+                dt.Columns["BirthDate"].SetOrdinal(2);
+                dt.Columns["Barangay"].SetOrdinal(3);
+                dt.Columns["Name of Replacement"].SetOrdinal(4);
+                dt.Columns["FromBarangay"].SetOrdinal(5);
+                dt.Columns["DateTimeReplaced"].SetOrdinal(6);
 
 
 
@@ -543,8 +587,35 @@ namespace SpinsNew.Forms
                     gridView.BestFitColumns();
 
                     // Hide the "ID" column
+                    /*Hide latest table that we've added*/
+                    gridView.Columns["PayrollID"].Visible = false;
+                    gridView.Columns["ReplacementsPayrollID"].Visible = false;
                     gridView.Columns["ID"].Visible = false;
                     gridView.Columns["MasterListID"].Visible = false;
+                    gridView.Columns["MasterListID_Replacement"].Visible = false;
+                    gridView.Columns["PSGCRegion_Replacement"].Visible = false;
+                    gridView.Columns["PSGCProvince_Replacement"].Visible = false;
+                    gridView.Columns["PSGCCityMun_Replacement"].Visible = false;
+                    gridView.Columns["PSGCBrgy_Replacement"].Visible = false;
+                    gridView.Columns["ReplacementForID"].Visible = false;
+                    gridView.Columns["PSGCRegion_ReplacementFor"].Visible = false;
+                    gridView.Columns["PSGCProvince_ReplacementFor"].Visible = false;
+                    gridView.Columns["PSGCCityMun_ReplacementFor"].Visible = false;
+                    gridView.Columns["PSGCBrgy_ReplacementFor"].Visible = false;
+                    gridView.Columns["MasterListIDReplacement"].Visible = false;
+                    gridView.Columns["PeriodID"].Visible = false;
+
+
+
+
+
+
+
+                    gridView.Columns["PSGCRegion"].Visible = false;
+                    gridView.Columns["PSGCProvince"].Visible = false;
+                    gridView.Columns["PSGCCityMun"].Visible = false;
+                    gridView.Columns["PSGCBrgy"].Visible = false;
+
                     gridView.Columns["LastName"].Visible = false;
                     gridView.Columns["FirstName"].Visible = false;
                     gridView.Columns["MiddleName"].Visible = false;
@@ -556,10 +627,11 @@ namespace SpinsNew.Forms
                     gridView.Columns["PayrollStatus"].Visible = false;
                     gridView.Columns["Amount"].Visible = false;
                     gridView.Columns["Abbreviation"].Visible = false;
-                    gridView.Columns["PayrollID"].Visible = false;
+                    //gridView.Columns["PayrollID"].Visible = false;
                     // Freeze the columns
-                    gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
                     gridView.Columns["Unclaimed Payrolls"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+                    gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+                
                     // Ensure horizontal scrollbar is enabled
                     gridView.OptionsView.ColumnAutoWidth = false;
 
@@ -569,6 +641,7 @@ namespace SpinsNew.Forms
                 }
                 // Update row count display
                 UpdateRowCount(gridView);
+                //groupControl1.Enabled = true;
                 //DisableSpinner();
             }
             catch (Exception ex)
@@ -604,6 +677,7 @@ namespace SpinsNew.Forms
                         m.BirthDate as BirthDate,
                         TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE()) AS Age,
                         tg_max.SPISBatch as SpisBatch,
+                        tg_max.SPISDateReturned as DateWaitlisted,
                         tg_max.ReferenceCode as GIS,
                         ts_max.ReferenceCode as SPBUF
                     FROM 
@@ -795,14 +869,14 @@ namespace SpinsNew.Forms
             await Delisted(); // Display delisted list tbl_delisted.
             await Waitlisted();
         }
-        private async void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
         {
             Search();
         }
 
-        private async void btn_search_Click(object sender, EventArgs e)
+        private void btn_search_Click(object sender, EventArgs e)
         {
-         
+
         }
 
         private void searchControl1_QueryIsSearchColumn(object sender, QueryIsSearchColumnEventArgs args)
@@ -984,7 +1058,7 @@ namespace SpinsNew.Forms
 
         private void splitContainerControl1_Panel2_Paint(object sender, PaintEventArgs e)
         {
-           
+
         }
 
         private void gridControl2_Click(object sender, EventArgs e)
@@ -1000,26 +1074,26 @@ namespace SpinsNew.Forms
         }
         private void ReplaceUpdate()
         {
-            try
-            {
-                //Below code is updating of masterlist status from waitlisted to active.
-                con.Open();
-                GridView gridView = gridWaitlisted.MainView as GridView;
-                // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]); // ID is the masterlistid in tbl_masterlist
-                //int masterlistID = Convert.ToInt32(row["MasterlistID"]);
+            //try
+            //{
+            //Below code is updating of masterlist status from waitlisted to active.
+            con.Open();
+            GridView gridView = gridWaitlisted.MainView as GridView;
+            // Pass the ID value to the EditApplicant form
+            DataRowView rowMasterlist = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+            int idFromMasterlistTable = Convert.ToInt32(rowMasterlist["ID"]); // ID is the masterlistid in tbl_masterlist
+                                                                              //int masterListIdFromMasterListTable = Convert.ToInt32(rowMasterlist["MasterlistID"]);
 
-                //int masterlistID = Convert.ToInt32(row["MasterListID"]);
-                int psgcRegion = Convert.ToInt32(row["PSGCRegion"]);
-                int psgcProvince = Convert.ToInt32(row["PSGCProvince"]);
-                int psgcCityMun = Convert.ToInt32(row["PSGCCityMun"]);
-                int psgcBrgy = Convert.ToInt32(row["PSGCBrgy"]);
+            //int masterlistID = Convert.ToInt32(row["MasterListID"]);
+            int psgcRegionFromMasterlistTable = Convert.ToInt32(rowMasterlist["PSGCRegion"]);
+            int psgcProvinceFromMasterlistTable = Convert.ToInt32(rowMasterlist["PSGCProvince"]);
+            int psgcCityMunFromMasterlistTable = Convert.ToInt32(rowMasterlist["PSGCCityMun"]);
+            int psgcBrgyFromMasterlistTable = Convert.ToInt32(rowMasterlist["PSGCBrgy"]);
 
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                // Perform the update
-                cmd.CommandText = @"
+            MySqlCommand cmd = con.CreateCommand();
+            cmd.CommandType = CommandType.Text;
+            // Perform the update
+            cmd.CommandText = @"
             UPDATE 
                 tbl_masterlist 
             SET
@@ -1028,26 +1102,31 @@ namespace SpinsNew.Forms
                 RegTypeID = @RegTypeID
             WHERE 
                 ID = @ID";
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@ID", id);
-                    cmd.Parameters.AddWithValue("@StatusID", 1);
-                    cmd.Parameters.AddWithValue("@RegTypeID", 2);// CHange the regtype into replaced
-                    cmd.Parameters.AddWithValue("@InclusionDate", DateTime.Now);
-                    cmd.ExecuteNonQuery();
+            cmd.Parameters.Clear();
+            cmd.Parameters.AddWithValue("@ID", idFromMasterlistTable);
+            cmd.Parameters.AddWithValue("@StatusID", 1);
+            cmd.Parameters.AddWithValue("@RegTypeID", 2);// CHange the regtype into replaced
+            cmd.Parameters.AddWithValue("@InclusionDate", DateTime.Now);
+            cmd.ExecuteNonQuery();
 
 
-                //Below code is updating of tbl_delisted as replacement from waitlisted from tbl_masterlist.
-                GridView gridViewDelisted = gridDelisted.MainView as GridView;
-                // Pass the ID value to the EditApplicant form
-                DataRowView delistedRow = (DataRowView)gridViewDelisted.GetRow(gridViewDelisted.FocusedRowHandle);
-                int idforReplacement = Convert.ToInt32(delistedRow["ID"]);
+            //Below code is updating of tbl_delisted as replacement from waitlisted from tbl_masterlist.
+            GridView gridViewDelisted = gridDelisted.MainView as GridView;
+            DataRowView delistedRow = (DataRowView)gridViewDelisted.GetRow(gridViewDelisted.FocusedRowHandle);
 
-                int masterlistidforReplacement = Convert.ToInt32(delistedRow["PayrollID"]);
+            int idforReplacement = Convert.ToInt32(delistedRow["ID"]);
+            int masterlistidforReplacement = Convert.ToInt32(delistedRow["PayrollID"]);//From tbl_delisted Joined from tbl_payroll_socpen
+            int delistedMasterListID = Convert.ToInt32(delistedRow["MasterListID"]);
+            int delistedPSGCRegion = Convert.ToInt32(delistedRow["PSGCRegion"]);
+            int deslitedPSGCProvince = Convert.ToInt32(delistedRow["PSGCProvince"]);
+            int delistedPSGCCityMun = Convert.ToInt32(delistedRow["PSGCCityMun"]);
+            int deslistedPSGCBrgy = Convert.ToInt32(delistedRow["PSGCBrgy"]);
 
-                MySqlCommand replaceCmd = con.CreateCommand();
-                replaceCmd.CommandType = CommandType.Text;
-                // Perform the update
-                replaceCmd.CommandText = @"
+
+            MySqlCommand replaceCmd = con.CreateCommand();
+            replaceCmd.CommandType = CommandType.Text;
+            // Perform the update
+            replaceCmd.CommandText = @"
             UPDATE 
                 tbl_delisted 
             SET
@@ -1060,65 +1139,81 @@ namespace SpinsNew.Forms
                 DateTimeReplaced = @DateTimeReplaced
             WHERE 
                 ID = @ID";
-                replaceCmd.Parameters.Clear();
-                replaceCmd.Parameters.AddWithValue("@ID", idforReplacement);// this variable is based on the delisted
+            replaceCmd.Parameters.Clear();
+            replaceCmd.Parameters.AddWithValue("@ID", idforReplacement);// this variable is based on the delisted
 
-                replaceCmd.Parameters.AddWithValue("@MasterlistID_Replacement", id); // This variables are based on the masterlist
-                replaceCmd.Parameters.AddWithValue("@PSGCRegion_Replacement", psgcRegion);
-                replaceCmd.Parameters.AddWithValue("@PSGCProvince_Replacement", psgcProvince);
-                replaceCmd.Parameters.AddWithValue("@PSGCCityMun_Replacement", psgcCityMun);
-                replaceCmd.Parameters.AddWithValue("@PSGCBrgy_Replacement", psgcBrgy);
+            replaceCmd.Parameters.AddWithValue("@MasterlistID_Replacement", idFromMasterlistTable); // This variables are based on the masterlist
+            replaceCmd.Parameters.AddWithValue("@PSGCRegion_Replacement", psgcRegionFromMasterlistTable);
+            replaceCmd.Parameters.AddWithValue("@PSGCProvince_Replacement", psgcProvinceFromMasterlistTable);
+            replaceCmd.Parameters.AddWithValue("@PSGCCityMun_Replacement", psgcCityMunFromMasterlistTable);
+            replaceCmd.Parameters.AddWithValue("@PSGCBrgy_Replacement", psgcBrgyFromMasterlistTable);
 
-                replaceCmd.Parameters.AddWithValue("@ReplacedBy", _username);
-                replaceCmd.Parameters.AddWithValue("@DateTimeReplaced", DateTime.Now);
-                replaceCmd.ExecuteNonQuery();
+            replaceCmd.Parameters.AddWithValue("@ReplacedBy", _username);
+            replaceCmd.Parameters.AddWithValue("@DateTimeReplaced", DateTime.Now);
+            replaceCmd.ExecuteNonQuery();
 
 
 
-                //Below code is updating of tbl_payroll_socpen from tbl_masterlist.
+            //Below code is updating of tbl_payroll_socpen from tbl_masterlist.
 
-                MySqlCommand payrollCmd = con.CreateCommand();
-                payrollCmd.CommandType = CommandType.Text;
-                // Perform the update
-                payrollCmd.CommandText = @"
+            MySqlCommand payrollCmd = con.CreateCommand();
+            payrollCmd.CommandType = CommandType.Text;
+            // Perform the update
+            payrollCmd.CommandText = @"
             UPDATE 
                 tbl_payroll_socpen 
             SET
-                ReplacementForID = @ReplacementForID,
-                PSGCRegion_ReplacementFor = @PSGCRegion_ReplacementFor,
-                PSGCProvince_ReplacementFor = @PSGCProvince_ReplacementFor,
-                PSGCCityMun_ReplacementFor = @PSGCCityMun_ReplacementFor,
-                PSGCBrgy_ReplacementFor = @PSGCBrgy_ReplacementFor,
+                /*Masterlist here*/
+
+                MasterListID = @fromWaitlistedReplacementForID,
+                PSGCRegion = @fromWaitlistedPSGCRegion,
+                PSGCProvince = @fromWaitlistedPSGCProvince,
+                PSGCCityMun = @fromWaitlistedPSGCCityMun,
+                PSGCBrgy = @fromWaitlistedPSGCBrgy,
+                
+
+                /*tbl_payroll_socpen table properties*/
+
+                ReplacementForID = @fromDelistedReplacementForID,
+                PSGCRegion_ReplacementFor = @fromDelistedPSGCRegion,
+                PSGCProvince_ReplacementFor = @fromDelistedPSGCProvince,
+                PSGCCityMun_ReplacementFor = @fromDelistedPSGCCityMun,
+                PSGCBrgy_ReplacementFor = @fromDelistedPSGCBrgy,
+
+
                 ReplacedBy = @ReplacedBy,
                 DateTimeReplaced = @DateTimeReplaced
             WHERE 
-                ID = @PayrollID";
-                payrollCmd.Parameters.Clear();
-                payrollCmd.Parameters.AddWithValue("@PayrollID", masterlistidforReplacement);// this variable is based on the tbl_masterlist
+                ID = @ID";
+            payrollCmd.Parameters.Clear();
+            payrollCmd.Parameters.AddWithValue("@ID", masterlistidforReplacement);// Nag base sa joined id from tbl_payroll_socpen. Currently the table is based from tbl_delisted but we might want to use this joined payrollID from tbl_payroll_socpen
 
-                payrollCmd.Parameters.AddWithValue("@ReplacementForID", id); // This variables are based on the masterlist
-                payrollCmd.Parameters.AddWithValue("@PSGCRegion_ReplacementFor", psgcRegion);
-                payrollCmd.Parameters.AddWithValue("@PSGCProvince_ReplacementFor", psgcProvince);
-                payrollCmd.Parameters.AddWithValue("@PSGCCityMun_ReplacementFor", psgcCityMun);
-                payrollCmd.Parameters.AddWithValue("@PSGCBrgy_ReplacementFor", psgcBrgy);
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedReplacementForID", idFromMasterlistTable); // This variables are based on the masterlist
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCRegion", psgcRegionFromMasterlistTable);
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCProvince", psgcProvinceFromMasterlistTable);
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCCityMun", psgcCityMunFromMasterlistTable);
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCBrgy", psgcBrgyFromMasterlistTable);
 
-                payrollCmd.Parameters.AddWithValue("@ReplacedBy", Environment.UserName);
-                payrollCmd.Parameters.AddWithValue("@DateTimeReplaced", DateTime.Now);
-                payrollCmd.ExecuteNonQuery();
+            /*tbl_payroll_socpen table properties*/
+            payrollCmd.Parameters.AddWithValue("@fromDelistedReplacementForID", delistedMasterListID); // This variables are based on the masterlist
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCRegion", delistedPSGCRegion);
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCProvince", deslitedPSGCProvince);
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCCityMun", delistedPSGCCityMun);
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCBrgy", deslistedPSGCBrgy);
 
+            payrollCmd.Parameters.AddWithValue("@ReplacedBy", _username);
+            payrollCmd.Parameters.AddWithValue("@DateTimeReplaced", DateTime.Now);
+            payrollCmd.ExecuteNonQuery();
 
+            con.Close();
+            XtraMessageBox.Show("Replaced Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-
-
-                con.Close();
-                XtraMessageBox.Show("Replaced Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-              
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Handle exceptions
+            //    MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
 
         }
         private async void btn_replacement_Click(object sender, EventArgs e)
@@ -1173,13 +1268,6 @@ namespace SpinsNew.Forms
                 //EditApplicantForm.DisplayID(id);
                 //EditApplicantForm.Show();
 
-
-
-
-                //Below is to get the reference code under masterlist
-                // Create a new instance of GISForm
-                // GISviewingForm = new GISForm(this);
-                // GridView gridView = gridControl1.MainView as GridView;
 
                 // Check if any row is selected
                 if (gridView.SelectedRowsCount == 0)
@@ -1244,9 +1332,6 @@ namespace SpinsNew.Forms
                 //EditApplicantForm.DisplayID(id);
                 //EditApplicantForm.Show();
 
-
-
-
                 //Below is to get the reference code under masterlist
                 // Create a new instance of GISForm
                 // GISviewingForm = new GISForm(this);
@@ -1297,6 +1382,176 @@ namespace SpinsNew.Forms
         private void gridWaitlisted_DoubleClick(object sender, EventArgs e)
         {
             ShowGISorSpbufWaitlisted();
+        }
+
+        private void UndoReplacementUpdate()
+        {
+            //try
+            //{
+            //Below code is updating of masterlist status from waitlisted to active.
+            con.Open();
+            GridView gridViewDelisted = gridDelisted.MainView as GridView;
+            DataRowView delistedRow = (DataRowView)gridViewDelisted.GetRow(gridViewDelisted.FocusedRowHandle);
+            int idforUndo = Convert.ToInt32(delistedRow["ReplacementForID"]);
+            int MasterlistIdDelistedRow = Convert.ToInt32(delistedRow["MasterListID"]);
+            //int delistedMasterListID = Convert.ToInt32(delistedRow["MasterListID"]);
+            int delistedPSGCRegion = Convert.ToInt32(delistedRow["PSGCRegion_ReplacementFor"]);
+            int deslitedPSGCProvince = Convert.ToInt32(delistedRow["PSGCProvince_ReplacementFor"]);
+            int delistedPSGCCityMun = Convert.ToInt32(delistedRow["PSGCCityMun_ReplacementFor"]);
+            int deslistedPSGCBrgy = Convert.ToInt32(delistedRow["PSGCBrgy_ReplacementFor"]);
+
+            int idforReplacement = Convert.ToInt32(delistedRow["ReplacementsPayrollID"]);//Masterlist ID from tbl_delisted because tbl_payroll_socpen is empty.
+           // int yearFilterForReplacement = Convert.ToInt32(delistedRow["PayrollYear"]);//Year from tbl_delisted because tbl_payroll_socpen is empty.
+            //int periodIDFilterForReplacement = Convert.ToInt32(delistedRow["PayrollPeriodID"]);//PeriodID from tbl_delisted because tbl_payroll_socpen is empty.
+
+            int idforDelisted = Convert.ToInt32(delistedRow["ID"]);
+
+
+            GridView gridView = gridDelisted.MainView as GridView;
+            // Pass the ID value to the EditApplicant form
+            DataRowView rowDelisted = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+            int id = Convert.ToInt32(rowDelisted["MasterListID"]); // ID is the masterlistid in tbl_masterlist
+                                                                   //int masterlistID = Convert.ToInt32(row["MasterlistID"]);
+
+            //int masterlistID = Convert.ToInt32(row["MasterListID"]);
+            int psgcRegion = Convert.ToInt32(rowDelisted["PSGCRegion"]);
+            int psgcProvince = Convert.ToInt32(rowDelisted["PSGCProvince"]);
+            int psgcCityMun = Convert.ToInt32(rowDelisted["PSGCCityMun"]);
+            int psgcBrgy = Convert.ToInt32(rowDelisted["PSGCBrgy"]);
+
+            MySqlCommand cmd = con.CreateCommand();
+            cmd.CommandType = CommandType.Text;
+            // Perform the update
+            cmd.CommandText = @"
+            UPDATE 
+                tbl_masterlist 
+            SET
+                StatusID = @StatusID,
+                InclusionDate = @InclusionDate,
+                RegTypeID = @RegTypeID
+            WHERE 
+                ID = @ID";
+            cmd.Parameters.Clear();
+            cmd.Parameters.AddWithValue("@ID", MasterlistIdDelistedRow);//MasterlistID from tbl_delisted is based on our ID into tbl_masterlist
+            cmd.Parameters.AddWithValue("@StatusID", 99);
+            cmd.Parameters.AddWithValue("@RegTypeID", 1);// CHange the regtype back to addtional / new
+            cmd.Parameters.AddWithValue("@InclusionDate", null);
+            cmd.ExecuteNonQuery();
+
+            MySqlCommand replaceCmd = con.CreateCommand();
+            replaceCmd.CommandType = CommandType.Text;
+            // Perform the update
+            replaceCmd.CommandText = @"
+            UPDATE 
+                tbl_delisted 
+            SET
+                MasterlistID_Replacement = @MasterlistID_Replacement,
+                PSGCRegion_Replacement = @PSGCRegion_Replacement,
+                PSGCProvince_Replacement = @PSGCProvince_Replacement,
+                PSGCCityMun_Replacement = @PSGCCityMun_Replacement,
+                PSGCBrgy_Replacement = @PSGCBrgy_Replacement,
+                ReplacedBy = @ReplacedBy,
+                DateTimeReplaced = @DateTimeReplaced
+            WHERE 
+                ID = @ID";
+            replaceCmd.Parameters.Clear();
+            replaceCmd.Parameters.AddWithValue("@ID", idforDelisted);// this variable is based on the delisted
+            replaceCmd.Parameters.AddWithValue("@MasterlistID_Replacement", null); // This variables are based on the masterlist
+            replaceCmd.Parameters.AddWithValue("@PSGCRegion_Replacement", null);
+            replaceCmd.Parameters.AddWithValue("@PSGCProvince_Replacement", null);
+            replaceCmd.Parameters.AddWithValue("@PSGCCityMun_Replacement", null);
+            replaceCmd.Parameters.AddWithValue("@PSGCBrgy_Replacement", null);
+            replaceCmd.Parameters.AddWithValue("@ReplacedBy", null);
+            replaceCmd.Parameters.AddWithValue("@DateTimeReplaced", null);
+            replaceCmd.ExecuteNonQuery();
+
+            //Below code is updating of tbl_payroll_socpen from tbl_masterlist.
+            MySqlCommand payrollCmd = con.CreateCommand();
+            payrollCmd.CommandType = CommandType.Text;
+            // Perform the update
+            payrollCmd.CommandText = @"
+            UPDATE 
+                tbl_payroll_socpen 
+            SET
+                /*tbl_payroll_socpen primary MasterListID here*/
+
+                MasterListID = @fromDelistedReplacementForID,
+                PSGCRegion = @fromDelistedPSGCRegion,
+                PSGCProvince = @fromDelistedPSGCProvince,
+                PSGCCityMun = @fromDelistedPSGCCityMun,
+                PSGCBrgy = @fromDelistedPSGCBrgy,
+                
+
+                /*tbl_payroll_socpen table properties*/
+
+                ReplacementForID = @fromWaitlistedReplacementForID,
+                PSGCRegion_ReplacementFor = @fromWaitlistedPSGCRegion,
+                PSGCProvince_ReplacementFor =  @fromWaitlistedPSGCProvince,
+                PSGCCityMun_ReplacementFor = @fromWaitlistedPSGCCityMun,
+                PSGCBrgy_ReplacementFor = @fromWaitlistedPSGCBrgy,
+
+
+                ReplacedBy = @ReplacedBy,
+                DateTimeReplaced = @DateTimeReplaced
+            WHERE 
+                ID = @MasterListIDFromDelisted";
+            payrollCmd.Parameters.Clear();
+
+            payrollCmd.Parameters.AddWithValue("@MasterListIDFromDelisted", idforReplacement);// This is based on our table payroll socpen there are 2 joins in tbl_delisted.
+
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedReplacementForID", null); // Return null if undo replaced
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCRegion", null);
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCProvince", null);
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCCityMun", null);
+            payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCBrgy", null);
+
+            /*tbl_delisted table properties*/
+            payrollCmd.Parameters.AddWithValue("@fromDelistedReplacementForID", idforUndo); // This variables are based on the masterlist
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCRegion", delistedPSGCRegion);
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCProvince", deslitedPSGCProvince);
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCCityMun", delistedPSGCCityMun);
+            payrollCmd.Parameters.AddWithValue("@fromDelistedPSGCBrgy", deslistedPSGCBrgy);
+
+            payrollCmd.Parameters.AddWithValue("@ReplacedBy", null);
+            payrollCmd.Parameters.AddWithValue("@DateTimeReplaced", null);
+            payrollCmd.ExecuteNonQuery();
+
+            con.Close();
+            XtraMessageBox.Show("Data undo was Successful", "Undo Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Handle exceptions
+            //    MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+
+        }
+
+        private async void btn_Undo_Click(object sender, EventArgs e)
+        {
+            GridView gridViewDelisted = gridDelisted.MainView as GridView;
+            if (gridViewDelisted.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method without showing EditApplicantForm
+
+            }
+            if (lbl_nametobe.Text == "-----")
+            {
+                MessageBox.Show("Please select data you want to undo.", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method without showing EditApplicantForm
+
+            }
+            if (XtraMessageBox.Show($"Are you sure you want to proceed?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                UndoReplacementUpdate();
+                EnableSpinner();//Enable the spinner
+                await Delisted(); // Display delisted list tbl_delisted.
+                await Waitlisted();
+            }
+
+
         }
     }
 }

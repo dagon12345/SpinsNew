@@ -32,7 +32,13 @@ namespace SpinsNew.Forms
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Payroll));
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
-            this.btn_sample = new DevExpress.XtraEditors.SimpleButton();
+            this.btn_refresh = new DevExpress.XtraEditors.SimpleButton();
+            this.gb_details = new System.Windows.Forms.GroupBox();
+            this.rbAllStatus = new System.Windows.Forms.RadioButton();
+            this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.rbUnclaimed = new System.Windows.Forms.RadioButton();
+            this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
@@ -46,21 +52,16 @@ namespace SpinsNew.Forms
             this.btn_claimed = new DevExpress.XtraEditors.SimpleButton();
             this.dt_to = new DevExpress.XtraEditors.DateEdit();
             this.dt_from = new DevExpress.XtraEditors.DateEdit();
-            this.separatorControl1 = new DevExpress.XtraEditors.SeparatorControl();
-            this.lblValue = new DevExpress.XtraEditors.LabelControl();
-            this.rbUnclaimed = new System.Windows.Forms.RadioButton();
-            this.rbAllStatus = new System.Windows.Forms.RadioButton();
-            this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
             this.panel_spinner = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.groupControlPayroll = new DevExpress.XtraEditors.GroupControl();
             this.searchControl1 = new DevExpress.XtraEditors.SearchControl();
+            this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridPayroll = new DevExpress.XtraGrid.GridControl();
             this.payrollViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridView0 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colMasterListID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colVerified = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -71,6 +72,7 @@ namespace SpinsNew.Forms
             this.colSex = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colHealthStatus = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colHealthStatusRemarks = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colIdType = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPSGCBrgy = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPSGCCityMun = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPSGCProvince = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -78,18 +80,26 @@ namespace SpinsNew.Forms
             this.colAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colYear = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPeriodID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPeriod = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPayrollStatusID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colClaimTypeID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPayrollStatus = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDateClaimedFrom = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDateClaimedTo = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colEntryBy = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPayrollTypeID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colType = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPayrollTagID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colTag = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPaymentModeID = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDateTimeEntry = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDateTimeModified = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colModifiedBy = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPaymentMode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colRemarks = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colModified = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCreated = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colModifiedBy = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateTimeModified = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateTimeEntry = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colEntryBy = new DevExpress.XtraGrid.Columns.GridColumn();
             this.tbl_payroll_socpenBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,9 +108,12 @@ namespace SpinsNew.Forms
             this.uploadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ts_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
-            this.colIdType = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
+            this.gb_details.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ck_all.Properties)).BeginInit();
@@ -110,18 +123,16 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dt_to.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.separatorControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).BeginInit();
             this.panel_spinner.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControlPayroll)).BeginInit();
             this.groupControlPayroll.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridPayroll)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView0)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbl_payroll_socpenBindingSource)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).BeginInit();
@@ -131,35 +142,109 @@ namespace SpinsNew.Forms
             // 
             this.groupControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupControl1.Controls.Add(this.btn_sample);
+            this.groupControl1.Controls.Add(this.btn_refresh);
+            this.groupControl1.Controls.Add(this.gb_details);
             this.groupControl1.Controls.Add(this.groupControl2);
-            this.groupControl1.Controls.Add(this.separatorControl1);
-            this.groupControl1.Controls.Add(this.lblValue);
-            this.groupControl1.Controls.Add(this.rbUnclaimed);
-            this.groupControl1.Controls.Add(this.rbAllStatus);
-            this.groupControl1.Controls.Add(this.cmb_period);
-            this.groupControl1.Controls.Add(this.cmb_year);
-            this.groupControl1.Controls.Add(this.cmb_municipality);
             this.groupControl1.Location = new System.Drawing.Point(10, 31);
             this.groupControl1.Name = "groupControl1";
             this.groupControl1.Size = new System.Drawing.Size(838, 226);
             this.groupControl1.TabIndex = 1;
             this.groupControl1.Text = "Select";
             // 
-            // btn_sample
+            // btn_refresh
             // 
-            this.btn_sample.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_sample.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_sample.ImageOptions.Image")));
-            this.btn_sample.Location = new System.Drawing.Point(16, 196);
-            this.btn_sample.Name = "btn_sample";
-            this.btn_sample.Size = new System.Drawing.Size(85, 23);
-            this.btn_sample.TabIndex = 9;
-            this.btn_sample.Text = "Sample";
-            this.btn_sample.Click += new System.EventHandler(this.btn_sample_Click);
+            this.btn_refresh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_refresh.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_refresh.ImageOptions.Image")));
+            this.btn_refresh.Location = new System.Drawing.Point(16, 196);
+            this.btn_refresh.Name = "btn_refresh";
+            this.btn_refresh.Size = new System.Drawing.Size(85, 23);
+            this.btn_refresh.TabIndex = 9;
+            this.btn_refresh.Text = "Refresh";
+            this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
+            // 
+            // gb_details
+            // 
+            this.gb_details.Controls.Add(this.rbAllStatus);
+            this.gb_details.Controls.Add(this.cmb_municipality);
+            this.gb_details.Controls.Add(this.rbUnclaimed);
+            this.gb_details.Controls.Add(this.cmb_year);
+            this.gb_details.Controls.Add(this.cmb_period);
+            this.gb_details.Location = new System.Drawing.Point(16, 26);
+            this.gb_details.Name = "gb_details";
+            this.gb_details.Size = new System.Drawing.Size(341, 164);
+            this.gb_details.TabIndex = 25;
+            this.gb_details.TabStop = false;
+            // 
+            // rbAllStatus
+            // 
+            this.rbAllStatus.AutoSize = true;
+            this.rbAllStatus.Checked = true;
+            this.rbAllStatus.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbAllStatus.Location = new System.Drawing.Point(22, 29);
+            this.rbAllStatus.Name = "rbAllStatus";
+            this.rbAllStatus.Size = new System.Drawing.Size(63, 17);
+            this.rbAllStatus.TabIndex = 21;
+            this.rbAllStatus.TabStop = true;
+            this.rbAllStatus.Text = "Default";
+            this.rbAllStatus.UseVisualStyleBackColor = true;
+            this.rbAllStatus.CheckedChanged += new System.EventHandler(this.rbAllStatus_CheckedChangedAsync);
+            // 
+            // cmb_municipality
+            // 
+            this.cmb_municipality.EditValue = "Select City/Municipality";
+            this.cmb_municipality.Location = new System.Drawing.Point(22, 54);
+            this.cmb_municipality.Name = "cmb_municipality";
+            this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmb_municipality.Properties.DropDownRows = 20;
+            this.cmb_municipality.Properties.HideSelection = false;
+            this.cmb_municipality.Properties.HighlightedItemStyle = DevExpress.XtraEditors.HighlightStyle.Standard;
+            this.cmb_municipality.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.cmb_municipality.Size = new System.Drawing.Size(303, 20);
+            this.cmb_municipality.TabIndex = 18;
+            this.cmb_municipality.SelectedIndexChanged += new System.EventHandler(this.cmb_municipality_SelectedIndexChanged);
+            // 
+            // rbUnclaimed
+            // 
+            this.rbUnclaimed.AutoSize = true;
+            this.rbUnclaimed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbUnclaimed.Location = new System.Drawing.Point(91, 29);
+            this.rbUnclaimed.Name = "rbUnclaimed";
+            this.rbUnclaimed.Size = new System.Drawing.Size(63, 17);
+            this.rbUnclaimed.TabIndex = 21;
+            this.rbUnclaimed.Text = "Unpaid";
+            this.rbUnclaimed.UseVisualStyleBackColor = true;
+            this.rbUnclaimed.CheckedChanged += new System.EventHandler(this.rbUnclaimed_CheckedChanged);
+            // 
+            // cmb_year
+            // 
+            this.cmb_year.EditValue = "Select Year";
+            this.cmb_year.Location = new System.Drawing.Point(21, 90);
+            this.cmb_year.Name = "cmb_year";
+            this.cmb_year.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmb_year.Properties.DropDownRows = 15;
+            this.cmb_year.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.cmb_year.Size = new System.Drawing.Size(303, 20);
+            this.cmb_year.TabIndex = 19;
+            this.cmb_year.SelectedIndexChanged += new System.EventHandler(this.cmb_year_SelectedIndexChanged);
+            // 
+            // cmb_period
+            // 
+            this.cmb_period.EditValue = "Select Period";
+            this.cmb_period.Location = new System.Drawing.Point(22, 126);
+            this.cmb_period.Name = "cmb_period";
+            this.cmb_period.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmb_period.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.cmb_period.Size = new System.Drawing.Size(303, 20);
+            this.cmb_period.TabIndex = 20;
+            this.cmb_period.SelectedIndexChanged += new System.EventHandler(this.cmb_period_SelectedIndexChanged);
+            this.cmb_period.Click += new System.EventHandler(this.cmb_period_Click);
+            this.cmb_period.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmb_period_MouseClick);
             // 
             // groupControl2
             // 
-            this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupControl2.Controls.Add(this.labelControl6);
             this.groupControl2.Controls.Add(this.labelControl5);
             this.groupControl2.Controls.Add(this.labelControl4);
@@ -172,7 +257,7 @@ namespace SpinsNew.Forms
             this.groupControl2.Controls.Add(this.btn_claimed);
             this.groupControl2.Controls.Add(this.dt_to);
             this.groupControl2.Controls.Add(this.dt_from);
-            this.groupControl2.Location = new System.Drawing.Point(501, 26);
+            this.groupControl2.Location = new System.Drawing.Point(363, 26);
             this.groupControl2.Name = "groupControl2";
             this.groupControl2.Size = new System.Drawing.Size(332, 195);
             this.groupControl2.TabIndex = 24;
@@ -292,90 +377,6 @@ namespace SpinsNew.Forms
             this.dt_from.TabIndex = 0;
             this.dt_from.EditValueChanged += new System.EventHandler(this.dt_from_EditValueChanged);
             // 
-            // separatorControl1
-            // 
-            this.separatorControl1.Location = new System.Drawing.Point(16, 173);
-            this.separatorControl1.Name = "separatorControl1";
-            this.separatorControl1.Size = new System.Drawing.Size(304, 23);
-            this.separatorControl1.TabIndex = 23;
-            // 
-            // lblValue
-            // 
-            this.lblValue.Location = new System.Drawing.Point(155, 46);
-            this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(26, 13);
-            this.lblValue.TabIndex = 22;
-            this.lblValue.Text = "value";
-            this.lblValue.Visible = false;
-            // 
-            // rbUnclaimed
-            // 
-            this.rbUnclaimed.AutoSize = true;
-            this.rbUnclaimed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbUnclaimed.Location = new System.Drawing.Point(86, 44);
-            this.rbUnclaimed.Name = "rbUnclaimed";
-            this.rbUnclaimed.Size = new System.Drawing.Size(63, 17);
-            this.rbUnclaimed.TabIndex = 21;
-            this.rbUnclaimed.Text = "Unpaid";
-            this.rbUnclaimed.UseVisualStyleBackColor = true;
-            this.rbUnclaimed.CheckedChanged += new System.EventHandler(this.rbUnclaimed_CheckedChanged);
-            // 
-            // rbAllStatus
-            // 
-            this.rbAllStatus.AutoSize = true;
-            this.rbAllStatus.Checked = true;
-            this.rbAllStatus.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbAllStatus.Location = new System.Drawing.Point(17, 44);
-            this.rbAllStatus.Name = "rbAllStatus";
-            this.rbAllStatus.Size = new System.Drawing.Size(63, 17);
-            this.rbAllStatus.TabIndex = 21;
-            this.rbAllStatus.TabStop = true;
-            this.rbAllStatus.Text = "Default";
-            this.rbAllStatus.UseVisualStyleBackColor = true;
-            this.rbAllStatus.CheckedChanged += new System.EventHandler(this.rbAllStatus_CheckedChangedAsync);
-            // 
-            // cmb_period
-            // 
-            this.cmb_period.EditValue = "Select Period";
-            this.cmb_period.Location = new System.Drawing.Point(17, 141);
-            this.cmb_period.Name = "cmb_period";
-            this.cmb_period.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.cmb_period.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_period.Size = new System.Drawing.Size(303, 20);
-            this.cmb_period.TabIndex = 20;
-            this.cmb_period.SelectedIndexChanged += new System.EventHandler(this.cmb_period_SelectedIndexChanged);
-            this.cmb_period.Click += new System.EventHandler(this.cmb_period_Click);
-            this.cmb_period.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmb_period_MouseClick);
-            // 
-            // cmb_year
-            // 
-            this.cmb_year.EditValue = "Select Year";
-            this.cmb_year.Location = new System.Drawing.Point(16, 105);
-            this.cmb_year.Name = "cmb_year";
-            this.cmb_year.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.cmb_year.Properties.DropDownRows = 15;
-            this.cmb_year.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_year.Size = new System.Drawing.Size(303, 20);
-            this.cmb_year.TabIndex = 19;
-            this.cmb_year.SelectedIndexChanged += new System.EventHandler(this.cmb_year_SelectedIndexChanged);
-            // 
-            // cmb_municipality
-            // 
-            this.cmb_municipality.EditValue = "Select City/Municipality";
-            this.cmb_municipality.Location = new System.Drawing.Point(17, 69);
-            this.cmb_municipality.Name = "cmb_municipality";
-            this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.cmb_municipality.Properties.DropDownRows = 20;
-            this.cmb_municipality.Properties.HideSelection = false;
-            this.cmb_municipality.Properties.HighlightedItemStyle = DevExpress.XtraEditors.HighlightStyle.Standard;
-            this.cmb_municipality.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_municipality.Size = new System.Drawing.Size(303, 20);
-            this.cmb_municipality.TabIndex = 18;
-            this.cmb_municipality.SelectedIndexChanged += new System.EventHandler(this.cmb_municipality_SelectedIndexChanged);
-            // 
             // panel_spinner
             // 
             this.panel_spinner.Controls.Add(this.pictureBox1);
@@ -410,6 +411,7 @@ namespace SpinsNew.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupControlPayroll.Controls.Add(this.searchControl1);
+            this.groupControlPayroll.Controls.Add(this.gridControl1);
             this.groupControlPayroll.Controls.Add(this.gridPayroll);
             this.groupControlPayroll.Location = new System.Drawing.Point(10, 304);
             this.groupControlPayroll.Name = "groupControlPayroll";
@@ -424,9 +426,32 @@ namespace SpinsNew.Forms
             this.searchControl1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Repository.ClearButton(),
             new DevExpress.XtraEditors.Repository.SearchButton()});
-            this.searchControl1.Size = new System.Drawing.Size(279, 20);
-            this.searchControl1.TabIndex = 2;
-            this.searchControl1.SelectedIndexChanged += new System.EventHandler(this.searchControl1_SelectedIndexChanged);
+            this.searchControl1.Properties.FindDelay = 500;
+            this.searchControl1.Size = new System.Drawing.Size(302, 20);
+            this.searchControl1.TabIndex = 4;
+            // 
+            // gridControl1
+            // 
+            this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridControl1.EmbeddedNavigator.Buttons.Edit.Enabled = false;
+            this.gridControl1.Location = new System.Drawing.Point(16, 55);
+            this.gridControl1.MainView = this.gridView1;
+            this.gridControl1.Name = "gridControl1";
+            this.gridControl1.Size = new System.Drawing.Size(817, 238);
+            this.gridControl1.TabIndex = 3;
+            this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView1});
+            // 
+            // gridView1
+            // 
+            this.gridView1.GridControl = this.gridControl1;
+            this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.Editable = false;
+            this.gridView1.OptionsFind.FindDelay = 500;
+            this.gridView1.OptionsFind.FindFilterColumns = "FindFilterColumns = \'LastName;FirstName;MiddleName\'";
+            this.gridView1.OptionsView.ShowGroupPanel = false;
             // 
             // gridPayroll
             // 
@@ -434,22 +459,23 @@ namespace SpinsNew.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gridPayroll.DataSource = this.payrollViewModelBindingSource;
-            this.gridPayroll.Location = new System.Drawing.Point(17, 60);
-            this.gridPayroll.MainView = this.gridView1;
+            this.gridPayroll.Location = new System.Drawing.Point(386, 26);
+            this.gridPayroll.MainView = this.gridView0;
             this.gridPayroll.Name = "gridPayroll";
-            this.gridPayroll.Size = new System.Drawing.Size(805, 233);
+            this.gridPayroll.Size = new System.Drawing.Size(447, 45);
             this.gridPayroll.TabIndex = 1;
             this.gridPayroll.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView1});
+            this.gridView0});
+            this.gridPayroll.Visible = false;
             this.gridPayroll.Click += new System.EventHandler(this.gridPayroll_Click);
             // 
             // payrollViewModelBindingSource
             // 
             this.payrollViewModelBindingSource.DataSource = typeof(SpinsNew.ViewModel.PayrollViewModel);
             // 
-            // gridView1
+            // gridView0
             // 
-            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridView0.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colID,
             this.colMasterListID,
             this.colVerified,
@@ -468,28 +494,36 @@ namespace SpinsNew.Forms
             this.colAmount,
             this.colYear,
             this.colPeriodID,
+            this.colPeriod,
             this.colPayrollStatusID,
             this.colClaimTypeID,
+            this.colPayrollStatus,
             this.colDateClaimedFrom,
             this.colDateClaimedTo,
-            this.colEntryBy,
             this.colPayrollTypeID,
+            this.colType,
             this.colPayrollTagID,
+            this.colTag,
+            this.colStatus,
             this.colPaymentModeID,
-            this.colDateTimeEntry,
-            this.colDateTimeModified,
+            this.colPaymentMode,
+            this.colRemarks,
+            this.colModified,
+            this.colCreated,
             this.colModifiedBy,
-            this.colRemarks});
-            this.gridView1.DetailHeight = 303;
-            this.gridView1.GridControl = this.gridPayroll;
-            this.gridView1.Name = "gridView1";
-            this.gridView1.OptionsBehavior.Editable = false;
-            this.gridView1.OptionsCustomization.AllowGroup = false;
-            this.gridView1.OptionsFind.FindFilterColumns = "LastName;FirstName;MiddleName";
-            this.gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.gridView1.OptionsView.ColumnAutoWidth = false;
-            this.gridView1.OptionsView.ShowGroupPanel = false;
-            this.gridView1.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            this.colDateTimeModified,
+            this.colDateTimeEntry,
+            this.colEntryBy});
+            this.gridView0.DetailHeight = 303;
+            this.gridView0.GridControl = this.gridPayroll;
+            this.gridView0.Name = "gridView0";
+            this.gridView0.OptionsBehavior.Editable = false;
+            this.gridView0.OptionsCustomization.AllowGroup = false;
+            this.gridView0.OptionsFind.FindFilterColumns = "LastName;FirstName;MiddleName";
+            this.gridView0.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.gridView0.OptionsView.ColumnAutoWidth = false;
+            this.gridView0.OptionsView.ShowGroupPanel = false;
+            this.gridView0.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
             new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colPSGCBrgy, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // colID
@@ -564,6 +598,13 @@ namespace SpinsNew.Forms
             this.colHealthStatusRemarks.Visible = true;
             this.colHealthStatusRemarks.VisibleIndex = 7;
             // 
+            // colIdType
+            // 
+            this.colIdType.FieldName = "IdType";
+            this.colIdType.Name = "colIdType";
+            this.colIdType.Visible = true;
+            this.colIdType.VisibleIndex = 8;
+            // 
             // colPSGCBrgy
             // 
             this.colPSGCBrgy.FieldName = "PSGCBrgy";
@@ -608,104 +649,140 @@ namespace SpinsNew.Forms
             // 
             this.colPeriodID.FieldName = "PeriodID";
             this.colPeriodID.Name = "colPeriodID";
-            this.colPeriodID.Visible = true;
-            this.colPeriodID.VisibleIndex = 12;
             this.colPeriodID.Width = 35;
+            // 
+            // colPeriod
+            // 
+            this.colPeriod.FieldName = "Period";
+            this.colPeriod.Name = "colPeriod";
+            this.colPeriod.Visible = true;
+            this.colPeriod.VisibleIndex = 11;
             // 
             // colPayrollStatusID
             // 
             this.colPayrollStatusID.FieldName = "PayrollStatusID";
             this.colPayrollStatusID.Name = "colPayrollStatusID";
-            this.colPayrollStatusID.Visible = true;
-            this.colPayrollStatusID.VisibleIndex = 11;
             this.colPayrollStatusID.Width = 37;
             // 
             // colClaimTypeID
             // 
             this.colClaimTypeID.FieldName = "ClaimTypeID";
             this.colClaimTypeID.Name = "colClaimTypeID";
-            this.colClaimTypeID.Visible = true;
-            this.colClaimTypeID.VisibleIndex = 13;
             this.colClaimTypeID.Width = 37;
+            // 
+            // colPayrollStatus
+            // 
+            this.colPayrollStatus.FieldName = "PayrollStatus";
+            this.colPayrollStatus.Name = "colPayrollStatus";
+            this.colPayrollStatus.Visible = true;
+            this.colPayrollStatus.VisibleIndex = 12;
             // 
             // colDateClaimedFrom
             // 
+            this.colDateClaimedFrom.DisplayFormat.FormatString = "MMM-dd-yyyy";
+            this.colDateClaimedFrom.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             this.colDateClaimedFrom.FieldName = "DateClaimedFrom";
             this.colDateClaimedFrom.Name = "colDateClaimedFrom";
             this.colDateClaimedFrom.Visible = true;
-            this.colDateClaimedFrom.VisibleIndex = 18;
+            this.colDateClaimedFrom.VisibleIndex = 13;
             this.colDateClaimedFrom.Width = 20;
             // 
             // colDateClaimedTo
             // 
             this.colDateClaimedTo.FieldName = "DateClaimedTo";
             this.colDateClaimedTo.Name = "colDateClaimedTo";
-            this.colDateClaimedTo.Visible = true;
-            this.colDateClaimedTo.VisibleIndex = 19;
             this.colDateClaimedTo.Width = 20;
-            // 
-            // colEntryBy
-            // 
-            this.colEntryBy.FieldName = "EntryBy";
-            this.colEntryBy.Name = "colEntryBy";
-            this.colEntryBy.Visible = true;
-            this.colEntryBy.VisibleIndex = 20;
-            this.colEntryBy.Width = 20;
             // 
             // colPayrollTypeID
             // 
             this.colPayrollTypeID.FieldName = "PayrollTypeID";
             this.colPayrollTypeID.Name = "colPayrollTypeID";
-            this.colPayrollTypeID.Visible = true;
-            this.colPayrollTypeID.VisibleIndex = 15;
             this.colPayrollTypeID.Width = 33;
+            // 
+            // colType
+            // 
+            this.colType.FieldName = "Type";
+            this.colType.Name = "colType";
+            this.colType.Visible = true;
+            this.colType.VisibleIndex = 14;
             // 
             // colPayrollTagID
             // 
             this.colPayrollTagID.FieldName = "PayrollTagID";
             this.colPayrollTagID.Name = "colPayrollTagID";
-            this.colPayrollTagID.Visible = true;
-            this.colPayrollTagID.VisibleIndex = 14;
             this.colPayrollTagID.Width = 37;
+            // 
+            // colTag
+            // 
+            this.colTag.FieldName = "Tag";
+            this.colTag.Name = "colTag";
+            this.colTag.Visible = true;
+            this.colTag.VisibleIndex = 15;
+            // 
+            // colStatus
+            // 
+            this.colStatus.FieldName = "Status";
+            this.colStatus.Name = "colStatus";
+            this.colStatus.Visible = true;
+            this.colStatus.VisibleIndex = 16;
             // 
             // colPaymentModeID
             // 
             this.colPaymentModeID.FieldName = "PaymentModeID";
             this.colPaymentModeID.Name = "colPaymentModeID";
-            this.colPaymentModeID.Visible = true;
-            this.colPaymentModeID.VisibleIndex = 16;
             this.colPaymentModeID.Width = 37;
             // 
-            // colDateTimeEntry
+            // colPaymentMode
             // 
-            this.colDateTimeEntry.FieldName = "DateTimeEntry";
-            this.colDateTimeEntry.Name = "colDateTimeEntry";
-            this.colDateTimeEntry.Visible = true;
-            this.colDateTimeEntry.VisibleIndex = 17;
-            this.colDateTimeEntry.Width = 37;
-            // 
-            // colDateTimeModified
-            // 
-            this.colDateTimeModified.FieldName = "DateTimeModified";
-            this.colDateTimeModified.Name = "colDateTimeModified";
-            this.colDateTimeModified.Visible = true;
-            this.colDateTimeModified.VisibleIndex = 21;
-            this.colDateTimeModified.Width = 38;
-            // 
-            // colModifiedBy
-            // 
-            this.colModifiedBy.FieldName = "ModifiedBy";
-            this.colModifiedBy.Name = "colModifiedBy";
-            this.colModifiedBy.Visible = true;
-            this.colModifiedBy.VisibleIndex = 22;
-            this.colModifiedBy.Width = 52;
+            this.colPaymentMode.FieldName = "PaymentMode";
+            this.colPaymentMode.Name = "colPaymentMode";
+            this.colPaymentMode.Visible = true;
+            this.colPaymentMode.VisibleIndex = 17;
             // 
             // colRemarks
             // 
             this.colRemarks.FieldName = "Remarks";
             this.colRemarks.Name = "colRemarks";
             this.colRemarks.Visible = true;
-            this.colRemarks.VisibleIndex = 23;
+            this.colRemarks.VisibleIndex = 18;
+            // 
+            // colModified
+            // 
+            this.colModified.FieldName = "Modified";
+            this.colModified.Name = "colModified";
+            this.colModified.Visible = true;
+            this.colModified.VisibleIndex = 19;
+            // 
+            // colCreated
+            // 
+            this.colCreated.FieldName = "Created";
+            this.colCreated.Name = "colCreated";
+            this.colCreated.Visible = true;
+            this.colCreated.VisibleIndex = 20;
+            // 
+            // colModifiedBy
+            // 
+            this.colModifiedBy.FieldName = "ModifiedBy";
+            this.colModifiedBy.Name = "colModifiedBy";
+            this.colModifiedBy.Width = 52;
+            // 
+            // colDateTimeModified
+            // 
+            this.colDateTimeModified.FieldName = "DateTimeModified";
+            this.colDateTimeModified.Name = "colDateTimeModified";
+            this.colDateTimeModified.Width = 38;
+            // 
+            // colDateTimeEntry
+            // 
+            this.colDateTimeEntry.FieldName = "DateTimeEntry";
+            this.colDateTimeEntry.Name = "colDateTimeEntry";
+            this.colDateTimeEntry.Width = 37;
+            // 
+            // colEntryBy
+            // 
+            this.colEntryBy.FieldName = "EntryBy";
+            this.colEntryBy.Name = "colEntryBy";
+            this.colEntryBy.Width = 20;
             // 
             // tbl_payroll_socpenBindingSource
             // 
@@ -734,6 +811,7 @@ namespace SpinsNew.Forms
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
             this.optionToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
             this.optionToolStripMenuItem.Text = "Option";
+            this.optionToolStripMenuItem.Click += new System.EventHandler(this.optionToolStripMenuItem_Click);
             // 
             // newApplicantToolStripMenuItem
             // 
@@ -776,13 +854,6 @@ namespace SpinsNew.Forms
             this.progressBarControl1.Size = new System.Drawing.Size(838, 10);
             this.progressBarControl1.TabIndex = 12;
             // 
-            // colIdType
-            // 
-            this.colIdType.FieldName = "IdType";
-            this.colIdType.Name = "colIdType";
-            this.colIdType.Visible = true;
-            this.colIdType.VisibleIndex = 8;
-            // 
             // Payroll
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -800,7 +871,11 @@ namespace SpinsNew.Forms
             this.Load += new System.EventHandler(this.Payroll_Load);
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
-            this.groupControl1.PerformLayout();
+            this.gb_details.ResumeLayout(false);
+            this.gb_details.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
             this.groupControl2.PerformLayout();
@@ -811,19 +886,17 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dt_to.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.separatorControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).EndInit();
             this.panel_spinner.ResumeLayout(false);
             this.panel_spinner.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControlPayroll)).EndInit();
             this.groupControlPayroll.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridPayroll)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView0)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbl_payroll_socpenBindingSource)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -841,16 +914,14 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.GroupControl groupControlPayroll;
         private DevExpress.XtraGrid.GridControl gridPayroll;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView0;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_period;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_year;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_municipality;
-        private DevExpress.XtraEditors.SearchControl searchControl1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newApplicantToolStripMenuItem;
         private DevExpress.XtraEditors.ProgressBarControl progressBarControl1;
-        private DevExpress.XtraEditors.SeparatorControl separatorControl1;
         private System.Windows.Forms.ToolStripMenuItem viewAttachmentsToolStripMenuItem;
         private DevExpress.XtraEditors.GroupControl groupControl2;
         private DevExpress.XtraEditors.DateEdit dt_from;
@@ -866,12 +937,10 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private System.Windows.Forms.ToolStripMenuItem ts_delete;
-        private DevExpress.XtraEditors.LabelControl lblValue;
         public System.Windows.Forms.RadioButton rbUnclaimed;
         public System.Windows.Forms.RadioButton rbAllStatus;
         private System.Windows.Forms.ToolStripMenuItem uploadToolStripMenuItem;
         private System.Windows.Forms.BindingSource tbl_payroll_socpenBindingSource;
-        private DevExpress.XtraEditors.SimpleButton btn_sample;
         private System.Windows.Forms.BindingSource payrollViewModelBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colID;
         private DevExpress.XtraGrid.Columns.GridColumn colMasterListID;
@@ -903,5 +972,18 @@ namespace SpinsNew.Forms
         private DevExpress.XtraGrid.Columns.GridColumn colHealthStatus;
         private DevExpress.XtraGrid.Columns.GridColumn colHealthStatusRemarks;
         private DevExpress.XtraGrid.Columns.GridColumn colIdType;
+        private DevExpress.XtraGrid.Columns.GridColumn colPeriod;
+        private DevExpress.XtraGrid.Columns.GridColumn colPayrollStatus;
+        private DevExpress.XtraGrid.Columns.GridColumn colType;
+        private DevExpress.XtraGrid.Columns.GridColumn colTag;
+        private DevExpress.XtraGrid.Columns.GridColumn colStatus;
+        private DevExpress.XtraGrid.Columns.GridColumn colPaymentMode;
+        private DevExpress.XtraGrid.Columns.GridColumn colModified;
+        private DevExpress.XtraGrid.Columns.GridColumn colCreated;
+        private DevExpress.XtraGrid.GridControl gridControl1;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private DevExpress.XtraEditors.SearchControl searchControl1;
+        private System.Windows.Forms.GroupBox gb_details;
+        private DevExpress.XtraEditors.SimpleButton btn_refresh;
     }
 }

@@ -21,12 +21,19 @@ namespace SpinsNew.Models
         public string HealthStatusRemarks { get; set; }
         public int IDtypeID { get; set; } //OSCA id related Library ID Type
         public string IDNumber { get; set; }//OSCA id related Library ID Type
+        public int StatusID { get; set; }//from libraryStatus
+
+        public string Remarks { get; set; }
+        public string DateDeceased { get; set; }
+
         public bool IsVerified { get; set; }
 
+        /*Below our tables and libraries that is referenced for joining*/
         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
         public LibrarySex LibrarySex { get; set; }
         public LibraryHealthStatus LibraryHealthStatus { get; set; }
         public LibraryIDType LibraryIDType { get; set; }
-        // public PayrollModel PayrollModel { get; set; }
+        public LibraryStatus LibraryStatus { get; set; }
+
     }
 }

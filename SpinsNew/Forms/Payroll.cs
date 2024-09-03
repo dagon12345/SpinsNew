@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
@@ -9,6 +10,7 @@ using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,11 +26,13 @@ namespace SpinsNew.Forms
         private ApplicationDbContext _dbContext;
         //private PayrollModel _payrollModel;
         //private List<LibraryClaimType> _libraryClaimType;
-
+        //private int targetRowHandle = -1; // Store the row handle that needs to be colored
         public Payroll(string username, string userRole)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
+            // Attach the CustomDrawCell event to the GridView
+
             newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
             viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
 
@@ -62,6 +66,7 @@ namespace SpinsNew.Forms
 
 
 
+
         private void Payroll_Load(object sender, EventArgs e)
         {
             _dbContext = new ApplicationDbContext(); // our dbcontext
@@ -72,7 +77,7 @@ namespace SpinsNew.Forms
             // Cast the MainView to GridView
             GridView gridView = gridPayroll.MainView as GridView;
 
-            searchControl1.Client = gridPayroll;
+            searchControl1.Client = gridControl1;
 
             // Fetch claim types from the database
             var claimTypes = _dbContext.lib_claim_type.ToList();
@@ -264,6 +269,8 @@ namespace SpinsNew.Forms
             //btn_search.Enabled = false;
             // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
+            gb_details.Enabled = false;
+            btn_refresh.Enabled = false;
 
 
         }
@@ -274,6 +281,7 @@ namespace SpinsNew.Forms
                 // MessageBox.Show($"Selected Year: {selectedYear.Year}");
                 LoadPeriodsForYear(selectedYear.Year);
             }
+            //await PayrollsEntity();
             Search();
         }
 
@@ -289,35 +297,74 @@ namespace SpinsNew.Forms
             // Assign formatted row count to txt_total (or any other control)
             groupControlPayroll.Text = $"Payroll List: {formattedRowCount}";
         }
-
+        
         public async Task PayrollsEntity()
         {
+            //try
+            //{
+            EnableSpinner();
+            progressBarControl1.Properties.Maximum = 100;
+            progressBarControl1.Properties.Minimum = 0;
+            progressBarControl1.EditValue = 0;
+            var selectedItem = (dynamic)cmb_municipality.SelectedItem;
+            int psgccitymun = selectedItem.PSGCCityMun;
+
+            var selectedPeriod = (dynamic)cmb_period.SelectedItem;
+            int periodID = selectedPeriod.PeriodID;
+
+            var selectedYear = (dynamic)cmb_year.SelectedItem;
+            int Year = selectedYear.Year;
+
+            bool includePayrollStatusID = rbUnclaimed.Checked;// if checked unclaimed
+                                                              // Fetch the opposite PeriodID
+           
             _dbContext = new ApplicationDbContext();
 
-            var payrolls = await _dbContext.tbl_payroll_socpen
+            var payrollsQuery = await _dbContext.tbl_payroll_socpen
             .Include(p => p.MasterListModel)// Include our MasterList
-            .ThenInclude(p => p.LibrarySex)//then include our sex library
-
+              .ThenInclude(p => p.LibrarySex)//then include our sex library
             .Include(p => p.MasterListModel) // Include our MasterList
-            .ThenInclude(p => p.LibraryHealthStatus) //then include our Health status library
-
+             .ThenInclude(p => p.LibraryHealthStatus) //then include our Health status library
             .Include(p => p.MasterListModel) // Include our MasterList
-            .ThenInclude(p => p.LibraryIDType) //then include our Id type library
-
+             .ThenInclude(p => p.LibraryIDType) //then include our Id type library
             .Include(p => p.LibraryBarangay)
-            .Take(1000)
+            .Include(p => p.LibraryPeriod)
+            .Include(p => p.LibraryPayrollStatus)
+            .Include(p => p.LibraryClaimType)
+            .Include(p => p.LibraryPayrollType)
+            .Include(p => p.LibraryPayrollTag)
+            .Include(p => p.LibraryPaymentMode)
+            .Include(p => p.MasterListModel) // Include our masterList
+             .ThenInclude(p => p.LibraryStatus)//Then include our LibraryStatus
+            .Where(x => x.PSGCCityMun == psgccitymun && x.PeriodID == periodID && x.Year == Year)
             .AsNoTracking()
             .ToListAsync();
 
-            var payrollViewModel = payrolls.Select(p => new PayrollViewModel
+            if(includePayrollStatusID)
+            {
+                payrollsQuery = payrollsQuery
+                      .Where(x => x.PayrollStatusID == 2)
+                      .ToList();
+            }
+            //var filterUnclaimed = payrollsQuery
+            //    .Where(x => x.Year == Year && x.PayrollStatusID == 2 && x.PeriodID != periodID)
+            //    .OrderByDescending(x => x.ID)
+            //    .FirstOrDefault(); 
+
+            var payrollViewModel = payrollsQuery.Select(p => new PayrollViewModel
             {
                 ID = p.ID,
                 Verified = p.MasterListModel.IsVerified,
-                FullName = $"{p.MasterListModel.LastName}, {p.MasterListModel.FirstName} {p.MasterListModel.MiddleName} {p.MasterListModel.ExtName}", //Joined from our tbl_masterlist
+
+                FullName = $"{p.MasterListModel.LastName}, {p.MasterListModel.FirstName} {p.MasterListModel.MiddleName} {p.MasterListModel.ExtName}", //+
+              // (filterUnclaimed?.LibraryPeriod?.Abbreviation != null ? $" {filterUnclaimed.LibraryPeriod.Abbreviation}" : ""), // Include the latest period abbreviation if it exists
+
                 MasterListID = p.MasterListID,
                 PSGCRegion = p.PSGCRegion,
                 PSGCCityMun = p.PSGCCityMun,
                 PSGCProvince = p.PSGCProvince,
+                PSGCBrgy = p.PSGCBrgy,
+                Address = p.Address,
                 Barangay = p.LibraryBarangay.BrgyName, // Joined library barangay
                 BirthDate = p.MasterListModel.BirthDate, // Joined from masterlist
                 Sex = p.MasterListModel.LibrarySex.Sex, // Joined from masterlist SexID then library sex
@@ -327,31 +374,51 @@ namespace SpinsNew.Forms
                 /*Conditional below, remove the dash sign if the p.MasterListModel.IDNumber does not exist
                  .This table was Joined into our library idtype*/
                 IdType = p.MasterListModel.IDNumber != null
-                 ? $"{p.MasterListModel.LibraryIDType.Type} - {p.MasterListModel.IDNumber}"
-                 : p.MasterListModel.LibraryIDType.Type,
+                   ? $"{p.MasterListModel.LibraryIDType.Type} - {p.MasterListModel.IDNumber}"
+                   : p.MasterListModel.LibraryIDType.Type,
 
-                PSGCBrgy = p.PSGCBrgy,
-                Address = p.Address,
                 Amount = p.Amount,
                 Year = p.Year,
+
                 PeriodID = p.PeriodID,
+                Period = p.LibraryPeriod.Period,//Joined from library period
+
                 PayrollStatusID = p.PayrollStatusID,
                 ClaimTypeID = p.ClaimTypeID,
+                PayrollStatus = p.LibraryClaimType != null ? $"{p.LibraryPayrollStatus.PayrollStatus} - {p.LibraryClaimType.ClaimType}" : $"{p.LibraryPayrollStatus.PayrollStatus}", // Joined from libraries payrollstatus and claimtype
+
                 DateClaimedFrom = p.DateClaimedFrom,
                 DateClaimedTo = p.DateClaimedTo,
-                Remarks = p.Remarks,
+
                 PayrollTypeID = p.PayrollTypeID,
+                Type = p.LibraryPayrollType.PayrollType, // Joined from our librarypayrollType
                 PayrollTagID = p.PayrollTagID,
+                Tag = p.LibraryPayrollTag.PayrollTag,// Joined from our libraryPayrollTag
+
+                Status = p.MasterListModel.Remarks != null || p.MasterListModel.DateDeceased != null
+                  ? $"{p.MasterListModel.LibraryStatus.Status} ({p.MasterListModel.Remarks} {p.MasterListModel.DateDeceased})"
+                  : $"{p.MasterListModel.LibraryStatus.Status} ",
+
                 PaymentModeID = p.PaymentModeID,
-                DateTimeEntry = p.DateTimeEntry,
-                DateTimeModified = p.DateTimeModified,
-                ModifiedBy = p.ModifiedBy
+                PaymentMode = p.LibraryPaymentMode.PaymentMode,// Joined from libraryPaymentMode.
+                Remarks = p.Remarks,
 
+                Modified = p.DateTimeModified != null
+                  ? $"{p.DateTimeModified}, {p.ModifiedBy}"
+                  : " ",
 
+                Created = p.DateTimeEntry != null
+                  ? $"{p.DateTimeEntry}, {p.EntryBy}"
+                  : " "
 
             }).ToList();
 
-         
+            for (int i = 0; i <= 100; i += 10)
+            {
+                await Task.Delay(50); // Simulate a delay
+                this.Invoke(new Action(() => progressBarControl1.EditValue = i));
+            }
+
             // Bind data to the control
             payrollViewModelBindingSource.DataSource = payrollViewModel;
             gridPayroll.DataSource = payrollViewModelBindingSource;
@@ -360,14 +427,23 @@ namespace SpinsNew.Forms
             gridView.BestFitColumns();
             gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
             gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-   
 
+            UpdateRowCount(gridView);
+            this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
+            DisableSpinner();
+
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    MessageBox.Show($"Error encountered: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
 
         }
 
         private async void btn_sample_Click(object sender, EventArgs e)
         {
-            await PayrollsEntity();
+            //await PayrollsEntity();
         }
 
 
@@ -379,7 +455,7 @@ namespace SpinsNew.Forms
             {
                 bool includePayrollStatusID = rbUnclaimed.Checked; // Example of how you might check radio button state
                 // Assuming gridView is your GridView instance associated with gridPayroll
-                GridView gridView = gridPayroll.MainView as GridView;
+                GridView gridView = gridControl1.MainView as GridView;
                 con.Open();
                 MySqlCommand cmd = con.CreateCommand();
                 cmd.CommandType = CommandType.Text;
@@ -465,7 +541,13 @@ namespace SpinsNew.Forms
                            CONCAT(lcm.CityMunName, ', ', lprov.ProvinceName) AS ProvinceMunicipality,
                            CONCAT(lp.Months, ', ', '(', lp.Period, ' ', tps.Year, ')') AS PeriodMonth,
                           CONCAT(lp.Months, ' ', tps.Year) AS HeaderPeriodYear,
-                          lit.Type
+                          lit.Type,
+                           CASE
+                                   WHEN LatestPayroll.PayrollStatusID = 2 THEN
+                                       CONCAT('(', LatestPayroll.LatestAbbreviation, ' - ', LatestPayroll.LatestAmount, ')')
+                                   ELSE
+                                       ''
+                               END AS UnclaimedPayroll
                        FROM
                            tbl_payroll_socpen tps
                        LEFT JOIN
@@ -532,7 +614,7 @@ namespace SpinsNew.Forms
                 // Add PayrollStatusID parameter if not including all statuses
                 if (includePayrollStatusID)
                 {
-                    cmd.Parameters.AddWithValue("@PayrollStatusID", lblValue.Text);
+                    cmd.Parameters.AddWithValue("@PayrollStatusID", 2);
                 }
 
                 DataTable dt = new DataTable();
@@ -621,7 +703,7 @@ namespace SpinsNew.Forms
                 dt.Columns["Replacement Of"].SetOrdinal(27);
 
 
-                gridPayroll.DataSource = dt;
+                gridControl1.DataSource = dt;
 
                 if (gridView != null)
                 {
@@ -691,6 +773,8 @@ namespace SpinsNew.Forms
                                                //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
                                                // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
+            gb_details.Enabled = true ;
+            btn_refresh.Enabled = true;
         }
         private async void Search()
         {
@@ -700,6 +784,7 @@ namespace SpinsNew.Forms
                 return;
             }
             EnableSpinner();
+            //await PayrollsEntity();
             await Payrolls();
         }
 
@@ -752,7 +837,7 @@ namespace SpinsNew.Forms
 
         private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GridView gridView = gridPayroll.MainView as GridView;
+            GridView gridView = gridControl1.MainView as GridView;
 
             if (gridView.SelectedRowsCount == 0)
             {
@@ -760,7 +845,7 @@ namespace SpinsNew.Forms
                 return;
             }
 
-            DataTable payrollData = (DataTable)gridPayroll.DataSource; // Ensure this is the correct DataTable
+            DataTable payrollData = (DataTable)gridControl1.DataSource; // Ensure this is the correct DataTable
             DataTable signatoriesData = GetSignatoriesData(); // Retrieve the signatories data
             if (payrollData == null || payrollData.Rows.Count == 0)
             {
@@ -773,40 +858,40 @@ namespace SpinsNew.Forms
         private void radioButton()
         {
             // Check if the 'All Status' radio button is checked
-            if (rbAllStatus.Checked)
-            {
-                lblValue.Text = "All";
+            //if (rbAllStatus.Checked)
+            //{
+            //    lblValue.Text = "All";
 
-                // Clear the GridView data source
-                GridView gridView = gridPayroll.MainView as GridView;
-                if (gridView != null)
-                {
-                    gridPayroll.DataSource = null;
-                    // Update row count display
-                    UpdateRowCount(gridView);
-                }
-                // Search();
-                // Return early to avoid further processing
-                return;
-            }
+            //    // Clear the GridView data source
+            //    GridView gridView = gridPayroll.MainView as GridView;
+            //    if (gridView != null)
+            //    {
+            //        gridPayroll.DataSource = null;
+            //        // Update row count display
+            //        UpdateRowCount(gridView);
+            //    }
+            //    // Search();
+            //    // Return early to avoid further processing
+            //    return;
+            //}
 
-            // Check if the 'Unclaimed' radio button is checked
-            if (rbUnclaimed.Checked)
-            {
-                lblValue.Text = "2";
-                // Clear the GridView data source
-                GridView gridView = gridPayroll.MainView as GridView;
-                if (gridView != null)
-                {
-                    gridPayroll.DataSource = null;
-                    // Update row count display
-                    UpdateRowCount(gridView);
-                }
+            //// Check if the 'Unclaimed' radio button is checked
+            //if (rbUnclaimed.Checked)
+            //{
+            //    lblValue.Text = "2";
+            //    // Clear the GridView data source
+            //    GridView gridView = gridPayroll.MainView as GridView;
+            //    if (gridView != null)
+            //    {
+            //        gridPayroll.DataSource = null;
+            //        // Update row count display
+            //        UpdateRowCount(gridView);
+            //    }
 
-                //Search();
+            //    //Search();
 
-                return;
-            }
+            //    return;
+            //}
 
 
             // Optionally, you might want to handle the case where no radio button is checked
@@ -822,6 +907,7 @@ namespace SpinsNew.Forms
         private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
         {
             Search();
+            // await PayrollsEntity();
         }
 
         private void rbClaimed_CheckedChanged(object sender, EventArgs e)
@@ -846,12 +932,12 @@ namespace SpinsNew.Forms
         {
             if (Application.OpenForms.OfType<Attachments>().Any())
             {
-                gridPayroll.Select();
-                gridPayroll.BringToFront();
+                gridControl1.Select();
+                gridControl1.BringToFront();
             }
             else
             {
-                GridView gridView = gridPayroll.MainView as GridView;
+                GridView gridView = gridControl1.MainView as GridView;
 
                 if (gridView.SelectedRowsCount == 0)
                 {
@@ -870,6 +956,7 @@ namespace SpinsNew.Forms
 
         private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //await PayrollsEntity();
             Search();
         }
 
@@ -898,10 +985,70 @@ namespace SpinsNew.Forms
 
         }
 
+        
+
+        private void AlternativeUpdatingSingle()
+        {
+
+            GridView gridView = gridControl1.MainView as GridView;
+            // Update the value of a particular column in the focused row
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "Status Payroll", $"Claimed - {cmb_claimtype.Text}"); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateClaimed", dt_from.Text); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateTimeModified", DateTime.Now); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "ModifiedBy", _username); // Replace 'ColumnName' and 'NewValue'
+
+
+        }
+
+        private void AlternativeUpdatingAllRows()
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+
+            // Loop through all rows in the GridView
+            for (int rowHandle = 0; rowHandle < gridView.RowCount; rowHandle++)
+            {
+                // Update the value of the particular columns in the current row
+                gridView.SetRowCellValue(rowHandle, "Status Payroll", $"Claimed - {cmb_claimtype.Text}");
+                gridView.SetRowCellValue(rowHandle, "DateClaimed", dt_from.Text);
+                gridView.SetRowCellValue(rowHandle, "DateTimeModified", DateTime.Now);
+                gridView.SetRowCellValue(rowHandle, "ModifiedBy", _username);
+            }
+        }
+
+        private void AlternativeUnclaimingAllRows()
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+
+            // Loop through all rows in the GridView
+            for (int rowHandle = 0; rowHandle < gridView.RowCount; rowHandle++)
+            {
+                // Update the value of the particular columns in the current row
+                gridView.SetRowCellValue(rowHandle, "Status Payroll", $"Unclaimed - ");
+                gridView.SetRowCellValue(rowHandle, "DateClaimed", null);
+                gridView.SetRowCellValue(rowHandle, "DateTimeModified", DateTime.Now);
+                gridView.SetRowCellValue(rowHandle, "ModifiedBy", _username);
+            }
+        }
+
+
+
+        private void unclaimedUpdatingSingle()
+        {
+
+            GridView gridView = gridControl1.MainView as GridView;
+            // Update the value of a particular column in the focused row
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "Status Payroll", $"Unclaimed -"); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateClaimed", null); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateTimeModified", DateTime.Now); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "ModifiedBy", _username); // Replace 'ColumnName' and 'NewValue'
+
+
+        }
+
         private async void btn_claimed_Click(object sender, EventArgs e)
         {
 
-            GridView gridView = gridPayroll.MainView as GridView;
+            GridView gridView = gridControl1.MainView as GridView;
             if (dt_from.Text == "" || dt_to.Text == "")
             {
                 XtraMessageBox.Show("Please select a date before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -972,7 +1119,12 @@ namespace SpinsNew.Forms
 
                                         // Update the payroll record in the database context
                                         _dbContext.tbl_payroll_socpen.Update(payroll);
+                                        AlternativeUpdatingAllRows();
+                                        // AlternativeUpdating();
                                     }
+                        
+
+
                                 }
 
                                 // Save all changes to the database after updating all records
@@ -980,9 +1132,10 @@ namespace SpinsNew.Forms
 
                                 XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                               
                                 // Refresh the data in the GridControl
                                 //gridPayroll.Refresh();
-                                Search();
+                                //Search();
                             }
                         }
                         else
@@ -1006,9 +1159,10 @@ namespace SpinsNew.Forms
                                 await _dbContext.SaveChangesAsync();
 
                                 XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                AlternativeUpdatingSingle();
 
                                 // Refresh the data in the GridControl
-                                Search();
+                                //Search();
                                 // gridPayroll.Refresh();
                             }
                         }
@@ -1035,7 +1189,7 @@ namespace SpinsNew.Forms
         {
 
 
-            GridView gridView = gridPayroll.MainView as GridView;
+            GridView gridView = gridControl1.MainView as GridView;
 
             if (gridView.RowCount == 0)
             {
@@ -1082,6 +1236,8 @@ namespace SpinsNew.Forms
 
                                         // Update the payroll record in the database context
                                         _dbContext.tbl_payroll_socpen.Update(payroll);
+                                        AlternativeUnclaimingAllRows();
+                                        // AlternativeUpdating();
                                         //await _dbContext.SaveChangesAsync();
                                     }
                                 }
@@ -1089,9 +1245,9 @@ namespace SpinsNew.Forms
                                 await _dbContext.SaveChangesAsync();
 
                                 XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                        
                                 // Refresh the data in the GridControl
-                                Search();
+                               // Search();
 
                             }
                         }
@@ -1116,7 +1272,8 @@ namespace SpinsNew.Forms
                                 await _dbContext.SaveChangesAsync();
 
                                 XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                Search();
+                                unclaimedUpdatingSingle();
+                                //Search();
                             }
                             else
                             {
@@ -1160,10 +1317,17 @@ namespace SpinsNew.Forms
 
         private void ts_delete_Click(object sender, EventArgs e)
         {
+            if(gridControl1.DataSource == null)
+
+            {
+                MessageBox.Show("Search data you want to delete", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (XtraMessageBox.Show("This will delete all the data displayed. Continue?", "Delete all", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
 
-                GridView gridView = gridPayroll.MainView as GridView;
+                GridView gridView = gridControl1.MainView as GridView;
                 // Get the row data
                 DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
                 // Retrieve the visible row handle
@@ -1234,6 +1398,19 @@ namespace SpinsNew.Forms
             }
         }
 
+        private void optionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void btn_refresh_Click(object sender, EventArgs e)
+        {
+            if (gridControl1.DataSource == null)
+            {
+                 MessageBox.Show("Empty table no need to refresh", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Search();
+        }
     }
 }

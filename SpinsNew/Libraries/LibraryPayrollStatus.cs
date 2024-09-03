@@ -1,14 +1,15 @@
 ﻿using SpinsNew.Models;
+using System;
 using System.Collections.Generic;
 
 namespace SpinsNew.Libraries
 {
-    public class LibraryClaimType
+    public class LibraryPayrollStatus
     {
-        
         public int Id { get; set; }
-        public int ClaimTypeID { get; set; }
-        public string ClaimType { get; set; }
+        public int PayrollStatusID { get; set; }
+        public string PayrollStatus { get; set; }
+        public DateTime? DateTimeEntry { get; set; }
 
         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
     }
