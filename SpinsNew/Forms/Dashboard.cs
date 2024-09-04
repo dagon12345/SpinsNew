@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpinsWinforms.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,6 +45,8 @@ namespace SpinsNew.Forms
         //}
 
         MasterList masterlistForm;
+
+        EditApplicant editapplicantForm;
         private void MasterlistToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (Application.OpenForms.OfType<MasterList>().Any())
@@ -53,7 +56,7 @@ namespace SpinsNew.Forms
             }
             else
             {
-                masterlistForm = new MasterList(_username, _userRole);
+                masterlistForm = new MasterList(_username, _userRole, editapplicantForm);
                 masterlistForm.ShowDialog();
             }
         }

@@ -24,10 +24,10 @@ namespace SpinsNew
         public string _username;
         public string _userRole;
         private Replacements replacementsForm;
-        private MasterList masterlistForm;
+        private EditApplicant editApplicantForm;
         //private ApplicationDbContext _dbContext;
         //private MasterList masterlistForm;// Call MasterList form
-        public MasterList(string username, string userRole)
+        public MasterList(string username, string userRole, EditApplicant editapplicant)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
@@ -48,7 +48,9 @@ namespace SpinsNew
 
             _username = username; // Retrieve the username
             _userRole = userRole;
-
+            editApplicantForm = editapplicant;
+            
+            
             if(userRole == "3")// Number 3 is the encoders
             {
                 payrollToolStripMenuItem.Visible = false;
@@ -848,8 +850,7 @@ namespace SpinsNew
         {
 
         }
-        EditApplicant EditApplicantForm;
-        AuthorizeRepresentative AuthorizeRepresentativeForm;
+       
         private void simpleButton1_Click(object sender, EventArgs e)
         {
 
@@ -976,9 +977,10 @@ namespace SpinsNew
         {
 
         }
-
+        EditApplicant EditApplicantForm;
         private void gridControl1_DoubleClick(object sender, EventArgs e)
         {
+            EditApplicantForm = new EditApplicant(this, replacementsForm, _username);
             if (Application.OpenForms.OfType<EditApplicant>().Any())
             {
                 EditApplicantForm.Select();
@@ -986,8 +988,7 @@ namespace SpinsNew
             }
             else
             {
-                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm);
+             
                 GridView gridView = gridControl1.MainView as GridView;
 
                 // Check if any row is selected
@@ -1000,7 +1001,8 @@ namespace SpinsNew
                 // Pass the ID value to the EditApplicant form
                 DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
                 int id = Convert.ToInt32(row["ID"]);
-
+                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
+               
                 //EditApplicantForm.DisplayID(id);
                 //EditApplicantForm.ShowDialog();
 
@@ -1042,9 +1044,9 @@ namespace SpinsNew
                     int gisId = Convert.ToInt32(gis);
                     EditApplicantForm.DisplayGIS(gisId);
                 }
+             
 
                 EditApplicantForm.DisplayID(id);
-
                 EditApplicantForm.ShowDialog();
 
             }
@@ -1892,7 +1894,7 @@ namespace SpinsNew
                 // Pass the ID value to the EditApplicant form
                 int id = Convert.ToInt32(row["ID"]);
                 //int id = Convert.ToInt32(txt_id.Text);
-                attachmentsForm = new Attachments(masterlistForm, payrollForm, _username);
+                attachmentsForm = new Attachments(this, payrollForm, _username);
 
                 attachmentsForm.DisplayID(id);
                 attachmentsForm.ShowDialog();

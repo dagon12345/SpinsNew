@@ -1251,7 +1251,7 @@ namespace SpinsNew.Forms
             else
             {
                 // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm);
+                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm, _username);
                 GridView gridView = gridWaitlisted.MainView as GridView;
 
                 // Check if any row is selected
@@ -1315,7 +1315,7 @@ namespace SpinsNew.Forms
             else
             {
                 // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm);
+                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm, _username);
                 GridView gridView = gridDelisted.MainView as GridView;
 
                 // Check if any row is selected

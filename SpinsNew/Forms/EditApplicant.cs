@@ -20,13 +20,14 @@ namespace SpinsWinforms.Forms
         MySqlConnection con = null;
         private MasterList masterlistForm;// Call MasterList form
         private Replacements replacementsForm;// Call MasterList form
-        public EditApplicant(MasterList masterlist, Replacements replacements)//Call the MasterList into our Edit Applicant form.
+        public string _username;
+        public EditApplicant(MasterList masterlist, Replacements replacements, string username)//Call the MasterList into our Edit Applicant form.
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
 
             replacementsForm = replacements;// Execute the MasterListform.
-            masterlistForm = masterlist;// Execute the MasterListform.
+            
             // Subscribe to the ValueChanged event of the DateTimePicker
             dt_birth.EditValueChanged += new EventHandler(Dt_birth_ValueChanged);
 
@@ -35,6 +36,9 @@ namespace SpinsWinforms.Forms
 
             // Set minimum date to 60 years ahead
             dt_birth.Properties.MaxValue = DateTime.Today.AddYears(-60);
+
+            _username = username;
+            masterlistForm = masterlist;// Execute the MasterListform.
         }
 
         public void DisplayID(int id)
@@ -363,6 +367,9 @@ namespace SpinsWinforms.Forms
             Validator();
 
             cmb_municipality.SelectedIndexChanged += cmb_municipality_SelectedIndexChanged;
+
+          
+
 
         }
 
@@ -1208,7 +1215,7 @@ namespace SpinsWinforms.Forms
                     cmd.Parameters.AddWithValue("@PSGCCityMun", lbl_municipality.Text);
                     cmd.Parameters.AddWithValue("@PSGCBrgy", lbl_barangay.Text);
                     cmd.Parameters.AddWithValue("@DateTimeModified", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@ModifiedBy", Environment.UserName);
+                    cmd.Parameters.AddWithValue("@ModifiedBy", _username);
 
                     cmd.ExecuteNonQuery();
 
@@ -2030,6 +2037,8 @@ namespace SpinsWinforms.Forms
 
         }
         AuthorizeRepresentative AuthorizeRepresentativeForm;
+        private MasterList masterlist;
+
         private void btn_authrep_Click(object sender, EventArgs e)
         {
             if (Application.OpenForms.OfType<AuthorizeRepresentative>().Any())
