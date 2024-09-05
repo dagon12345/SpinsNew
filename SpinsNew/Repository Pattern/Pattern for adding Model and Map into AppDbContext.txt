@@ -1,0 +1,1 @@
+Create Model>Identify Relationship : Ex: one is many> Map and assign the table name into ApplicationDbContext>Query using LINQ

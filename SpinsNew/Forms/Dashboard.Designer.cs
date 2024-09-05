@@ -31,14 +31,16 @@ namespace SpinsNew.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Dashboard));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MasterlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblName = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripSplitButton2 = new System.Windows.Forms.ToolStripSplitButton();
             this.lblUsername = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.lblUserrole = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSplitButton2 = new System.Windows.Forms.ToolStripSplitButton();
+            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MasterlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -46,30 +48,14 @@ namespace SpinsNew.Forms
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionToolStripMenuItem});
+            this.optionToolStripMenuItem,
+            this.statisticsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(813, 24);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // optionToolStripMenuItem
-            // 
-            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MasterlistToolStripMenuItem});
-            this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
-            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
-            this.optionToolStripMenuItem.Text = "Menu";
-            // 
-            // MasterlistToolStripMenuItem
-            // 
-            this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
-            this.MasterlistToolStripMenuItem.Name = "MasterlistToolStripMenuItem";
-            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.MasterlistToolStripMenuItem.Text = "Masterlist";
-            this.MasterlistToolStripMenuItem.Click += new System.EventHandler(this.MasterlistToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -91,6 +77,18 @@ namespace SpinsNew.Forms
             this.lblName.Size = new System.Drawing.Size(39, 17);
             this.lblName.Text = "Name";
             // 
+            // lblUsername
+            // 
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(60, 17);
+            this.lblUsername.Text = "Username";
+            // 
+            // lblUserrole
+            // 
+            this.lblUserrole.Name = "lblUserrole";
+            this.lblUserrole.Size = new System.Drawing.Size(50, 17);
+            this.lblUserrole.Text = "Userrole";
+            // 
             // toolStripSplitButton2
             // 
             this.toolStripSplitButton2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -99,14 +97,8 @@ namespace SpinsNew.Forms
             this.toolStripSplitButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton2.Image")));
             this.toolStripSplitButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripSplitButton2.Name = "toolStripSplitButton2";
-            this.toolStripSplitButton2.Size = new System.Drawing.Size(5, 20);
+            this.toolStripSplitButton2.Size = new System.Drawing.Size(5, 4);
             this.toolStripSplitButton2.Text = "toolStripSplitButton1";
-            // 
-            // lblUsername
-            // 
-            this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(60, 17);
-            this.lblUsername.Text = "Username";
             // 
             // toolStripSplitButton1
             // 
@@ -116,14 +108,42 @@ namespace SpinsNew.Forms
             this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
             this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripSplitButton1.Name = "toolStripSplitButton1";
-            this.toolStripSplitButton1.Size = new System.Drawing.Size(5, 20);
+            this.toolStripSplitButton1.Size = new System.Drawing.Size(5, 4);
             this.toolStripSplitButton1.Text = "toolStripSplitButton1";
             // 
-            // lblUserrole
+            // optionToolStripMenuItem
             // 
-            this.lblUserrole.Name = "lblUserrole";
-            this.lblUserrole.Size = new System.Drawing.Size(50, 17);
-            this.lblUserrole.Text = "Userrole";
+            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MasterlistToolStripMenuItem});
+            this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
+            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.optionToolStripMenuItem.Text = "Menu";
+            // 
+            // MasterlistToolStripMenuItem
+            // 
+            this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
+            this.MasterlistToolStripMenuItem.Name = "MasterlistToolStripMenuItem";
+            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.MasterlistToolStripMenuItem.Text = "Masterlist";
+            this.MasterlistToolStripMenuItem.Click += new System.EventHandler(this.MasterlistToolStripMenuItem_Click);
+            // 
+            // statisticsToolStripMenuItem
+            // 
+            this.statisticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.statisticsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources._9004856_chart_graph_statistics_bar_icon;
+            this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+            this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.statisticsToolStripMenuItem.Text = "Statistics";
+            this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.statisticsToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem1.Text = "Paid Statistics";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // Dashboard
             // 
@@ -159,5 +179,7 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.ToolStripStatusLabel lblName;
         private System.Windows.Forms.ToolStripSplitButton toolStripSplitButton1;
         private System.Windows.Forms.ToolStripStatusLabel lblUserrole;
+        private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }

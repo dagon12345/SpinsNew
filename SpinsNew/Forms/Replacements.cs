@@ -570,9 +570,11 @@ namespace SpinsNew.Forms
                 dt.Columns["FullName"].SetOrdinal(1);
                 dt.Columns["BirthDate"].SetOrdinal(2);
                 dt.Columns["Barangay"].SetOrdinal(3);
-                dt.Columns["Name of Replacement"].SetOrdinal(4);
-                dt.Columns["FromBarangay"].SetOrdinal(5);
-                dt.Columns["DateTimeReplaced"].SetOrdinal(6);
+                dt.Columns["Reason"].SetOrdinal(4);
+                dt.Columns["StatusRemarks"].SetOrdinal(5);
+                dt.Columns["Name of Replacement"].SetOrdinal(6);
+                dt.Columns["FromBarangay"].SetOrdinal(7);
+                dt.Columns["DateTimeReplaced"].SetOrdinal(8);
 
 
 
@@ -588,10 +590,10 @@ namespace SpinsNew.Forms
 
                     // Hide the "ID" column
                     /*Hide latest table that we've added*/
-                    gridView.Columns["PayrollID"].Visible = false;
-                    gridView.Columns["ReplacementsPayrollID"].Visible = false;
-                    gridView.Columns["ID"].Visible = false;
-                    gridView.Columns["MasterListID"].Visible = false;
+                    //gridView.Columns["PayrollID"].Visible = false;
+                   // gridView.Columns["ReplacementsPayrollID"].Visible = false;
+                    //gridView.Columns["ID"].Visible = false;
+                    //gridView.Columns["MasterListID"].Visible = false;
                     gridView.Columns["MasterListID_Replacement"].Visible = false;
                     gridView.Columns["PSGCRegion_Replacement"].Visible = false;
                     gridView.Columns["PSGCProvince_Replacement"].Visible = false;
@@ -1115,7 +1117,7 @@ namespace SpinsNew.Forms
             DataRowView delistedRow = (DataRowView)gridViewDelisted.GetRow(gridViewDelisted.FocusedRowHandle);
 
             int idforReplacement = Convert.ToInt32(delistedRow["ID"]);
-            int masterlistidforReplacement = Convert.ToInt32(delistedRow["PayrollID"]);//From tbl_delisted Joined from tbl_payroll_socpen
+            //int masterlistidforReplacement = Convert.ToInt32(delistedRow["PayrollID"]);//From tbl_delisted Joined from tbl_payroll_socpen
             int delistedMasterListID = Convert.ToInt32(delistedRow["MasterListID"]);
             int delistedPSGCRegion = Convert.ToInt32(delistedRow["PSGCRegion"]);
             int deslitedPSGCProvince = Convert.ToInt32(delistedRow["PSGCProvince"]);
@@ -1186,7 +1188,7 @@ namespace SpinsNew.Forms
             WHERE 
                 ID = @ID";
             payrollCmd.Parameters.Clear();
-            payrollCmd.Parameters.AddWithValue("@ID", masterlistidforReplacement);// Nag base sa joined id from tbl_payroll_socpen. Currently the table is based from tbl_delisted but we might want to use this joined payrollID from tbl_payroll_socpen
+            payrollCmd.Parameters.AddWithValue("@ID", idforReplacement);// Nag base sa joined id from tbl_payroll_socpen. Currently the table is based from tbl_delisted but we might want to use this joined payrollID from tbl_payroll_socpen
 
             payrollCmd.Parameters.AddWithValue("@fromWaitlistedReplacementForID", idFromMasterlistTable); // This variables are based on the masterlist
             payrollCmd.Parameters.AddWithValue("@fromWaitlistedPSGCRegion", psgcRegionFromMasterlistTable);

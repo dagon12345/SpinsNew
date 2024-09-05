@@ -1,4 +1,6 @@
-﻿using SpinsWinforms.Forms;
+﻿using SpinsNew.Interfaces;
+using SpinsNew.StatisticsForm;
+using SpinsWinforms.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace SpinsNew.Forms
 {
@@ -96,5 +100,38 @@ namespace SpinsNew.Forms
             //    }
             //}
         }
+
+        private void statisticsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private PaidStatisticsForm paidstatisticsForm;
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<PaidStatisticsForm>().Any())
+            {
+                paidstatisticsForm.Select();
+                paidstatisticsForm.BringToFront();
+            }
+            else
+            {
+                // Resolve the ITablePayroll service from the Program.ServiceProvider
+                var tablePayroll = Program.ServiceProvider.GetRequiredService<ITablePayroll>(); //We called the DI lifecycle inside our Program.cs
+
+                // Ensure the service is resolved correctly
+                if (tablePayroll != null)
+                {
+                    paidstatisticsForm = new PaidStatisticsForm(tablePayroll);
+                    paidstatisticsForm.Show(); // Or ShowDialog() for modal display
+                }
+                else
+                {
+                    MessageBox.Show("Failed to resolve ITablePayroll service.");
+                }
+            }
+        }
+
     }
 }

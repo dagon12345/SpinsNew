@@ -13,6 +13,15 @@ namespace SpinsNew.Libraries
         public string YearsUsed { get; set; }
         public int StipendMultiplier { get; set; }
 
+
+        
+        public override string ToString()
+        {
+            return $"{Period} ({Abbreviation}) {Months}"; // override to  Display Period and Abbreviation, month in the ComboBox
+        }
+
+
+
         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();//Get reference from our principal model PayrollModel
 
     }

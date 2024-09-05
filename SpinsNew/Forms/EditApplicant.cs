@@ -1193,13 +1193,13 @@ namespace SpinsWinforms.Forms
                     cmd.Parameters.AddWithValue("@IDNumber", txt_idno.Text);
                     //cmd.Parameters.AddWithValue("@IDDateIssued", dt_dateissued.EditValue);
                     // Handle null value for IDDateIssued
-                    if (dt_dateissued.EditValue == null)
+                    if (dt_dateissued.EditValue == null || dt_dateissued.Text == "")
                     {
                         cmd.Parameters.AddWithValue("@IDDateIssued", DBNull.Value);
                     }
                     else
                     {
-                        cmd.Parameters.AddWithValue("@IDDateIssued", dt_dateissued.EditValue);
+                        cmd.Parameters.AddWithValue("@IDDateIssued", dt_dateissued.Text ?? null);
                     }
                     cmd.Parameters.AddWithValue("@Pantawid", ck_pantawid.Checked);
                     cmd.Parameters.AddWithValue("@Indigenous", ck_indigenous.Checked);
@@ -1268,7 +1268,7 @@ namespace SpinsWinforms.Forms
                                 logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}]");
                             }
                             logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", Environment.UserName); // Replace with the actual user
+                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
                             logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
 
                             logCmd.ExecuteNonQuery();
@@ -1322,7 +1322,7 @@ namespace SpinsWinforms.Forms
                 insertCmd.Parameters.AddWithValue("@AssessmentID", lbl_assessment.Text);
                 insertCmd.Parameters.AddWithValue("@ValidatedByID", lbl_validator.Text);
                 insertCmd.Parameters.AddWithValue("@ValidationDate", dt_accomplished.EditValue);
-                insertCmd.Parameters.AddWithValue("@EntryBy", Environment.UserName);
+                insertCmd.Parameters.AddWithValue("@EntryBy", _username);
                 insertCmd.Parameters.AddWithValue("@EntryDateTime", DateTime.Now);
                 insertCmd.ExecuteNonQuery();
                 //int referenceCode = Convert.ToInt32(insertCmd.ExecuteScalar()); // Get auto-incremented ID
@@ -1479,7 +1479,7 @@ namespace SpinsWinforms.Forms
                                 logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}] [Source:GIS]");
                             }
                             logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", Environment.UserName); // Replace with the actual user
+                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
                             logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
 
                             logCmd.ExecuteNonQuery();

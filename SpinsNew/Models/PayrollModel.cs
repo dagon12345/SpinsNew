@@ -1,18 +1,19 @@
 ﻿using SpinsNew.Libraries;
+using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SpinsNew.Models
 {
-    public class PayrollModel
+    public class PayrollModel 
     {
         //Child model of masterlist/Barangay
         public int ID { get; set; }
         public int MasterListID { get; set; }
         public int PSGCRegion { get; set; }
-        public int PSGCProvince { get; set; }
-        public int PSGCCityMun { get; set; }
+        public int PSGCProvince { get; set; }//Province
+        public int PSGCCityMun { get; set; }//Municipality
         public int PSGCBrgy { get; set; }
         [Display(Name = "Full Address")]
         public string Address { get; set; }
@@ -52,6 +53,13 @@ namespace SpinsNew.Models
         public LibraryPayrollType LibraryPayrollType { get; set; }
         public LibraryPayrollTag LibraryPayrollTag { get; set; }
         public LibraryPaymentMode LibraryPaymentMode { get; set; }
+        public LibraryProvince LibraryProvince { get; set; }
+        public LibraryMunicipality LibraryMunicipality { get; set; }
+        //public ICollection<LibraryProvince> LibraryProvinces { get; } = new List<LibraryProvince>();
+        //public ICollection<GisModel> GisModels { get; } = new List<GisModel>();
+        public LibraryYear LibraryYear { get; set; }
+        public GisModel GisModel { get; set; }
+        //public ICollection<PayrollandGisManyToMany> PayrollandGisManyToManys { get; } = new List<PayrollandGisManyToMany>(); //Linking Entitiy many to many relationship
 
 
     }

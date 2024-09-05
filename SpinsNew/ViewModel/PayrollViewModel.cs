@@ -8,6 +8,9 @@ namespace SpinsNew.ViewModel
     {
         //View model for joining
         public bool Verified { get; set; }// From tbl_masterlist
+        public string Province { get; set; }//from tbl_payroll_socpen
+        public string Municipality { get; set; }//from tbl_payroll_socpen
+        public int District { get; set; }//from lib_city_mun
         public string FullName { get; set; }// From tbl_masterlist
         public string Barangay { get; set; }// From tbl_masterlist
         public DateTime? BirthDate { get; set; }// From tbl_masterlist
@@ -29,6 +32,8 @@ namespace SpinsNew.ViewModel
         [Display(Name = "Created by")]
         public string Created { get; set; }
 
+        public int TotalTarget { get; set; }//Count from our statistics
+        public int WaitListed { get; set; }//Count of Waitlisted
         //public int LatestPayroll { get; set; }
     }
 }
