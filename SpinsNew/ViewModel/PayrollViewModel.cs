@@ -34,6 +34,11 @@ namespace SpinsNew.ViewModel
 
         public int TotalTarget { get; set; }//Count from our statistics
         public int WaitListed { get; set; }//Count of Waitlisted
+        public int Male { get; set; }//Count of males
+        public int Female { get; set; }//Count of females
+        public double Amount { get; set; }
+        public int TotalAmount3000 { get; set; }
+
         //public int LatestPayroll { get; set; }
     }
 }

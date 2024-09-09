@@ -338,8 +338,8 @@ namespace SpinsNew.Popups
                 {
                     //Insertion of payroll code below.
 
-                    try
-                    {
+                    //try
+                    //{
                         GridView gridView = masterlistForm.gridControl1.MainView as GridView;
                         var selectedYear = (YearItem)cmb_year.SelectedItem;
                         var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
@@ -397,12 +397,12 @@ namespace SpinsNew.Popups
                         this.Close();
 
 
-                    }
-                    catch (Exception ex)
-                    {
+                    //}
+                    //catch (Exception ex)
+                    //{
 
-                        XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    //    XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}
                 }
             }
             else

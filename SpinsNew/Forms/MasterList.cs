@@ -1748,7 +1748,7 @@ namespace SpinsNew
             else
             {
                 replacementsForm = new Replacements(_username);
-                replacementsForm.ShowDialog();
+                replacementsForm.Show();
             }
         }
 
@@ -1914,7 +1914,7 @@ namespace SpinsNew
             else
             {
                 payrollForm = new Payroll(_username, _userRole);
-                payrollForm.ShowDialog();
+                payrollForm.Show();
             }
         }
 

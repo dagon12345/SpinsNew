@@ -16,10 +16,10 @@ namespace SpinsNew.Models
         public int AssessmentID { get; set; }
         public int? SpisBatch { get; set; }
 
-         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
+       //  public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
 
        // public ICollection<PayrollandGisManyToMany> PayrollandGisManyToManys { get; } = new List<PayrollandGisManyToMany>(); //Linking Entitiy many to many relationship
-        // public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
-        public MasterListModel MasterListModel { get; set; }
+         public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
+        //public MasterListModel MasterListModel { get; set; }
     }
 }

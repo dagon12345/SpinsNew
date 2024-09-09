@@ -40,7 +40,7 @@ namespace SpinsNew.Forms
         private Payroll payrollForm; // Assuming you may use this later or remove if unnecessary
         private void Attachments_Load(object sender, EventArgs e)
         {
-
+            //GenerateReferenceCode();
             LoadDetails(); // Load details into the details tab above.
             LoadImage(); // Load the image once form is initiated
             LoadLogs();
@@ -99,209 +99,100 @@ namespace SpinsNew.Forms
 
         }
 
-        // Method to convert byte array to Image
-        //private Image ByteArrayToImage(byte[] byteArrayIn)
-        //{
-        //    using (MemoryStream ms = new MemoryStream(byteArrayIn))
-        //    {
-        //        Image img = Image.FromStream(ms);
-        //        return img;
-        //    }
-        //}
-        private Image ByteArrayToImage(byte[] byteArray)
+
+        private void LoadAndDisplayPdf(string pdfPath)
         {
-            using (MemoryStream ms = new MemoryStream(byteArray))
+            // Assuming pdfViewer1 is your PDF viewer control
+            if (File.Exists(pdfPath))
             {
-                return Image.FromStream(ms);
+                pdfViewer1.LoadDocument(pdfPath);
+            }
+            else
+            {
+                XtraMessageBox.Show("PDF file not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void DisableProperty()
-        {
-            txt_attachmentname.Enabled = false;
-            btn_save.Enabled = false;
-        }
         public void ClickedData()
         {
             try
             {
-                if (gridControl1 == null)
-                {
-                    XtraMessageBox.Show("Grid control is not initialized.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
                 GridView gridView = gridControl1.MainView as GridView;
-                if (gridView == null)
-                {
-                    XtraMessageBox.Show("Grid view is not initialized.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (gridView.RowCount == 0)
-                {
-                    return;
-                }
-
                 DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+
                 if (row == null)
                 {
                     XtraMessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                int id = Convert.ToInt32(row["ID"]);
+                // Retrieve the MasterListID and AttachmentName
+                string masterListID = txt_id.Text; // Assuming txt_id contains the MasterListID
+                string attachmentName = row["AttachmentName"].ToString();
 
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT * FROM tbl_attachments WHERE Id=@id";
-                cmd.Parameters.AddWithValue("@Id", id);
-                DataTable dt = new DataTable();
-                using (var da = new MySqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
-                foreach (DataRow dr in dt.Rows)
-                {
-                    DisableProperty();
-                    // Get the attachment name and file extension
-                    string attachmentName = dr["AttachmentName"].ToString();
-                    string fileExtension = Path.GetExtension(attachmentName).TrimStart('.').ToLower();
+                // Combine MasterListID with AttachmentName to form the filename
+                // Assuming the AttachmentName does not include the extension
+                string combinedName = $"{masterListID} {attachmentName}.pdf";
 
-                        txt_attachmentname.EditValue = attachmentName;
-                        fileData = (byte[])dr["AttachmentUrl"]; // Assuming the BLOB data is stored in the 'AttachmentUrl' column
+                // Build the path to the PDF file
+                string pdfPath = $@"\\172.26.153.181\AttachmentsSupportingDocuments\{combinedName}";
 
-                        // Handle PDF file
-                        // Save the PDF to a temporary location and open it with a PDF viewer
-                        string tempFilePath = Path.Combine(Path.GetTempPath(), attachmentName);
-                        File.WriteAllBytes(tempFilePath, fileData);
-
-                    // Open the PDF with a default viewer or load it into a PDF viewer control
-                        pdfViewer1.CloseDocument();
-                        pdfViewer1.LoadDocument(tempFilePath);
-  
-
-                }
-                con.Close();
+                // Display the PDF in the PDF viewer
+                LoadAndDisplayPdf(pdfPath);
             }
             catch (Exception ex)
             {
                 XtraMessageBox.Show(ex.Message);
             }
         }
-        //public void ClickedData()
-        //{
-        //    try
-        //    {
-        //        if (gridControl1 == null)
-        //        {
-        //            XtraMessageBox.Show("Grid control is not initialized.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            return;
-        //        }
 
-        //        GridView gridView = gridControl1.MainView as GridView;
-        //        if (gridView == null)
-        //        {
-        //            XtraMessageBox.Show("Grid view is not initialized.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            return;
-        //        }
 
-        //        if (gridView.RowCount == 0)
-        //        {
-        //           // XtraMessageBox.Show("No data in the grid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            return;
-        //        }
 
-        //        DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-        //        if (row == null)
-        //        {
-        //            XtraMessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            return;
-        //        }
 
-        //        // Pass the ID value to the EditApplicant form
-        //        int id = Convert.ToInt32(row["ID"]);
-        //        // GridView gridView = gridControl1.MainView as GridView;
-        //        con.Open();
-        //        MySqlCommand cmd = con.CreateCommand();
-        //        cmd.CommandType = CommandType.Text;
-        //        cmd.CommandText = "SELECT * FROM tbl_attachments WHERE Id=@id";
-        //        cmd.Parameters.AddWithValue("@Id", id);
-        //        DataTable dt = new DataTable();
-        //        using (var da = new MySqlDataAdapter(cmd))
-        //        {
-        //            da.Fill(dt);
-        //        }
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            DisableProperty();
 
-        //            txt_attachmentname.EditValue = dr["AttachmentName"].ToString();
-        //            // Assuming the blob data is in the second column (index 1)
-        //            byte[] blobData = (byte[])dr[3];
-
-        //            //// Convert blob data to Image
-        //            Image image = ByteArrayToImage(blobData);
-
-        //            //// Display image in PictureBox
-        //            pictureEdit1.Image = image;
-
-        //        }
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        XtraMessageBox.Show(ex.Message);
-        //    }
-        //}
         public void LoadImage()
         {
-            try
+
+            con.Open();
+            MySqlCommand cmd0 = con.CreateCommand();
+            cmd0.CommandType = CommandType.Text;
+            cmd0.CommandText = @"SELECT 
+                        ID,
+                        AttachmentName,
+                        MasterListID
+                    FROM
+                        tbl_attachments
+                    WHERE 
+                        MasterListID = @MasterlistID";
+
+            cmd0.Parameters.AddWithValue("@MasterlistID", txt_id.Text);
+
+            DataTable dt0 = new DataTable();
+            MySqlDataAdapter da0 = new MySqlDataAdapter(cmd0);
+            //Await to reduce lag while loading large amount of datas
+            //await Task.Run(() => da0.Fill(dt0));
+            da0.Fill(dt0);
+            //We are using DevExpress datagridview
+            gridControl1.DataSource = dt0;
+            // Get the GridView instance
+            GridView gridView = gridControl1.MainView as GridView;
+            if (gridView != null)
             {
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "select Id,AttachmentName,MasterListID from tbl_attachments WHERE MasterListID=@MasterListID";
-                cmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                //await Task.Run(async () =>
-                //{
-                //    await Task.Run(() => da.Fill(dt));
-                //});
-                da.Fill(dt);
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the "ID" column
-                    gridView.Columns["Id"].Visible = false;
-                    gridView.Columns["MasterListID"].Visible = false;
-
-                    // Ensure horizontal scrollbar is enabled
-                    //gridView.OptionsView.ColumnAutoWidth = false;
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                }
+                // Auto-size all columns based on their content
+                gridView.BestFitColumns();
+                // Hide the "ID" column
+                gridView.Columns["ID"].Visible = false;
+                // Ensure horizontal scrollbar is enabled
+                gridView.OptionsView.ColumnAutoWidth = false;
+                // Disable editing
+                gridView.OptionsBehavior.Editable = false;
 
                 con.Close();
             }
-            catch (Exception ex)
-            {
 
-                XtraMessageBox.Show(ex.Message);
-            }
+
+
+
         }
         public void DisplayID(int id)
         {
@@ -385,34 +276,55 @@ namespace SpinsNew.Forms
         }
         private void DeleteAttachment()
         {
-            //DELETE USERS FROM DATABASE.
-            if (txt_attachmentname.Text == "")
+            if (MessageBox.Show("Are you sure you want to delete this data?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                XtraMessageBox.Show("Select data you want to delete", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-
-            else if (MessageBox.Show("Are you sure you want to delete this data?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
+                pdfViewer1.CloseDocument();
                 try
                 {
                     GridView gridView = gridControl1.MainView as GridView;
-                    con.Open();
-                    // Pass the ID value to the EditApplicant form
                     DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+
+                    if (row == null)
+                    {
+                        XtraMessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     int id = Convert.ToInt32(row["ID"]);
-                    MySqlCommand cmd = con.CreateCommand();
-                    cmd.CommandText = "DELETE FROM tbl_attachments WHERE id=" + id + "";
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+
+                    // Retrieve the file path for the attachment
+                    string attachmentName = row["AttachmentName"].ToString();
+                    string masterListID = txt_id.Text; // Assuming txt_id contains the MasterListID
+                    string combinedName = $"{masterListID} {attachmentName}.pdf";
+                    string pdfPath = $@"\\172.26.153.181\AttachmentsSupportingDocuments\{combinedName}";
+
+                    // Delete the file from the folder
+                    if (File.Exists(pdfPath))
+                    {
+                        File.Delete(pdfPath);
+                    }
+                    else
+                    {
+                        XtraMessageBox.Show("PDF file not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    // Delete the record from the database
+                
+                        con.Open();
+                        MySqlCommand cmd = con.CreateCommand();
+                        cmd.CommandText = "DELETE FROM tbl_attachments WHERE ID = @ID";
+                        cmd.Parameters.AddWithValue("@ID", id);
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    
+
+                    // Refresh the UI
                     DeleteLogs();
                     XtraMessageBox.Show("Data successfully deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
-                    EnableProperties();// Enable property after saving.
-                    pdfViewer1.CloseDocument(); //clear PDF
-                    LoadImage();//Load image into gridcontrol once the data was deleted
-                    LoadLogs(); //Refresh the logs
-
+                    EnableProperties(); // Enable properties after saving.
+                    pdfViewer1.CloseDocument(); // Clear PDF viewer
+                    LoadImage(); // Load image into grid control once the data was deleted
+                    LoadLogs(); // Refresh the logs
                 }
                 catch (Exception ex)
                 {
@@ -420,6 +332,7 @@ namespace SpinsNew.Forms
                 }
             }
         }
+
         //private byte[] GetImage()
         //{
         //    if (pictureEdit1.Image == null)
@@ -578,6 +491,8 @@ namespace SpinsNew.Forms
         //        XtraMessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         //    }
         //}
+     
+
         public void InsertAttachment()
         {
             try
@@ -594,52 +509,49 @@ namespace SpinsNew.Forms
                     return;
                 }
 
-                // Determine file type and convert it to byte array
-                string fileExtension = Path.GetExtension(selectedPdfPath).ToLower();
-                byte[] fileData = null;
-
-                // Handle different file types
-                //if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png")
-                //{
-                //    // Convert image to byte array
-                //    fileData = GetImage();
-                //    if (fileData == null || fileData.Length == 0)
-                //    {
-                //        XtraMessageBox.Show("Failed to convert the image to a byte array.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //        return;
-                //    }
-                //}
-                //else if (fileExtension == ".pdf")
-                //{
-                // Convert PDF to byte array
-                fileData = File.ReadAllBytes(selectedPdfPath);
-                if (fileData == null || fileData.Length == 0)
-                {
-                    XtraMessageBox.Show("Failed to load the PDF file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                //}
-                //else
-                //{
-                //    XtraMessageBox.Show("Unsupported file type. Please upload an image or PDF file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //    return;
-                //}
-
                 // Insert the file data into the database
                 using (MySqlConnection con = new MySqlConnection("Server=172.26.153.181;uid=spinsv3;Password=Pn#z800^*OsR6B0;Database=caraga-spins2;default command timeout=3600;Allow User Variables=True;"))
                 {
+                    GridView gridView = gridControl1.MainView as GridView;
+                    DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+
+                    string attachmentName = txt_attachmentname.Text;
+                    string masterListID = txt_id.Text;
+
                     con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand("INSERT INTO tbl_attachments (AttachmentName, MasterlistId, AttachmentUrl) VALUES (@AttachmentName, @MasterlistId, @AttachmentUrl)", con))
+
+                    MySqlCommand checkCmd = new MySqlCommand("SELECT COUNT(*) FROM tbl_attachments WHERE AttachmentName = @AttachmentName AND MasterListID = @MasterListID", con);
+                    checkCmd.Parameters.AddWithValue("@AttachmentName", attachmentName);
+                    checkCmd.Parameters.AddWithValue("@MasterListID", masterListID);
+
+                    int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        XtraMessageBox.Show("An attachment with this name already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand("INSERT INTO tbl_attachments (AttachmentName, MasterlistId) VALUES (@AttachmentName, @MasterlistId)", con))
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.AddWithValue("@AttachmentName", txt_attachmentname.Text);
                         cmd.Parameters.AddWithValue("@MasterlistId", txt_id.Text);
-                        cmd.Parameters.AddWithValue("@AttachmentUrl", fileData);
+                        //cmd.Parameters.AddWithValue("@AttachmentUrl", fileData);
                         // cmd.Parameters.AddWithValue("@FileType", fileExtension); // Store file type for later retrieval
                         cmd.ExecuteNonQuery();
+
+                        // Save the PDF file to network path with custom filename based on referenceCode
+                        string fileName = Path.GetFileName(selectedPdfPath);
+                        //string destinationPath = @"\\172.26.153.181\gis\" + referenceCode + ".pdf";
+                        string destinationPath = @"\\172.26.153.181\AttachmentsSupportingDocuments\" + txt_id.Text + " " + txt_attachmentname.Text + ".pdf";
+                        //string destinationPath = @"E:\SPInS Documents\" + lbl_reference.Text + ".pdf";
+                        File.Copy(selectedPdfPath, destinationPath, true);
+
+
+
                     }
                 }
 
+                //GenerateReferenceCode();
                 // Insert logs from attachments to log_masterlist
                 InsertLogs();
 
@@ -682,7 +594,7 @@ namespace SpinsNew.Forms
 
         private void gridControl1_Click(object sender, EventArgs e)
         {
-            pdfViewer1.CloseDocument();//close then trigger the clicked data
+            //pdfViewer1.CloseDocument();//close then trigger the clicked data
             ClickedData(); //Click into gridcontrol
         }
 
@@ -699,195 +611,38 @@ namespace SpinsNew.Forms
 
         private void UploadFile()
         {
-            try
-            {
-                // Open file dialog   
-                OpenFileDialog open = new OpenFileDialog();
-                // File filters for images and PDFs
-                open.Filter = "PDF Files (*.pdf)|*.pdf";
+    
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "PDF Files|*.pdf";
+                openFileDialog.Title = "Select a PDF File";
 
-                if (open.ShowDialog() == DialogResult.OK)
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // Check the size of the selected file
-                    FileInfo fileInfo = new FileInfo(open.FileName);
-                    long fileSizeInBytes = fileInfo.Length;
-                    long fileSizeInKB = fileSizeInBytes / 1024;
-                    long fileSizeInMB = fileSizeInKB / 1024;
-
-                    // Check if file size exceeds 2MB
-                    if (fileSizeInMB > 2)
-                    {
-                        MessageBox.Show("Please select a file that is less than 2MB in size.", "File Size Limit Exceeded", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return; // Exit the method without further processing
-                    }
-
-                    //// Handle image files
-                    //if (open.FilterIndex == 1)
-                    //{
-                    //    // Display image in picture box  
-                    //    pictureEdit1.Image = new Bitmap(open.FileName);
-                    //}
-                    // Handle PDF files (consider using a different control for PDF preview if needed)
-
-                    // Convert the file to a byte array
-                    fileData = File.ReadAllBytes(open.FileName);
-
-
-
-                    //if (open.ShowDialog() == DialogResult.OK)
-                    //{
                     // Display selected PDF in PdfViewer or store path for later use
-                    pdfViewer1.LoadDocument(open.FileName);
-                    selectedPdfPath = open.FileName;
-                    //}
-                    // Store the byte array (fileData) in your database as LONG BLOB
-                    //SaveToDatabase(fileData, fileInfo.Extension);
-
-                    // Store the file path
-                    //selectedFilePath = open.FileName;
-
-                    // Enable and clear attachment name textbox  
-                    EnableProperties();
+                    pdfViewer1.LoadDocument(openFileDialog.FileName);
+                    selectedPdfPath = openFileDialog.FileName;
                 }
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-            }
+            
+
         }
-        //private void UploadImage()
-        //{
-        //    try
-        //    {
-        //        // Open file dialog   
-        //        OpenFileDialog open = new OpenFileDialog();
-        //        // Image filters  
-        //        open.Filter = "Image Files(*.jpg; *.jpeg; *.png)|*.jpg; *.jpeg; *.png";
 
-        //        if (open.ShowDialog() == DialogResult.OK)
-        //        {
-        //            // Check the size of the selected image
-        //            FileInfo fileInfo = new FileInfo(open.FileName);
-        //            long fileSizeInBytes = fileInfo.Length; // File size in bytes
-        //            long fileSizeInKB = fileSizeInBytes / 1024; // File size in kilobytes
-        //            long fileSizeInMB = fileSizeInKB / 1024; // File size in megabytes
-
-        //            // Check if file size exceeds 2MB
-        //            if (fileSizeInMB > 2)
-        //            {
-        //                MessageBox.Show("Please select an image file that is less than 2MB in size.", "File Size Limit Exceeded", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //                return; // Exit the method without further processing
-        //            }
-
-        //            // Display image in picture box  
-        //            pictureEdit1.Image = new Bitmap(open.FileName);
-
-        //            // Store the file path
-        //            selectedFilePath = open.FileName;
-        //            // Enable and clear attachment name textbox  
-        //            EnableProperties();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        XtraMessageBox.Show(ex.Message);
-        //    }
-        //}
         private void btn_upload_Click(object sender, EventArgs e)
         {
-            //UploadImage();
+            pdfViewer1.CloseDocument();
             UploadFile();
         }
-        //private void DownloadImage()
-        //{
-        //    // Check if PictureEdit contains an image
-        //    if (pictureEdit1.Image != null)
-        //    {
-        //        // Open a SaveFileDialog to choose where to save the image
-        //        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-        //        {
-        //            saveFileDialog.Filter = "JPEG Image|*.jpg|PNG Image|*.png";
-        //            saveFileDialog.Title = $"{lbl_fullname.Text} - {txt_attachmentname.Text}";
-        //            saveFileDialog.FileName = $"{lbl_fullname.Text} - {txt_attachmentname.Text}";
-        //            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-        //            {
-        //                // Determine the image format based on the selected file extension
-        //                ImageFormat imageFormat = ImageFormat.Bmp;
-        //                switch (saveFileDialog.FilterIndex)
-        //                {
-        //                    case 1:
-        //                        imageFormat = ImageFormat.Jpeg;
-        //                        break;
-        //                    case 2:
-        //                        imageFormat = ImageFormat.Png;
-        //                        break;
-        //                        //case 3:
-        //                        //    imageFormat = ImageFormat.Bmp;
-        //                        //    break;
-        //                }
-
-        //                // Save the image to the selected file path
-        //                using (Image imageToSave = new Bitmap(pictureEdit1.Image)) // Create a copy to avoid potential issues
-        //                {
-        //                    imageToSave.Save(saveFileDialog.FileName, imageFormat);
-        //                }
-
-        //                XtraMessageBox.Show("Image saved successfully.");
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        XtraMessageBox.Show("No image to export.");
-        //    }
-        //}
-
-        private void DownloadFile()
-        {
-            try
-            {
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-                {
-                    saveFileDialog.Filter = "PDF File|*.pdf";
-                    saveFileDialog.Title = $"{lbl_fullname.Text} - {txt_attachmentname.Text}";
-                    saveFileDialog.FileName = $"{lbl_fullname.Text} - {txt_attachmentname.Text}.pdf";
-
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        // Assuming 'fileData' is the byte array containing the PDF file data from the database
-                        File.WriteAllBytes(saveFileDialog.FileName, fileData);
-                        XtraMessageBox.Show("PDF saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        //XtraMessageBox.Show("PDF saved successfully.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-            }
-        }
 
 
 
-        // Helper methods to check file type and handle file operations
-        private bool IsImageFile(string fileExtension)
-        {
-            // Check if the file extension is one of the common image types
-            return fileExtension.Equals("jpg", StringComparison.OrdinalIgnoreCase) ||
-                   fileExtension.Equals("jpeg", StringComparison.OrdinalIgnoreCase) ||
-                   fileExtension.Equals("png", StringComparison.OrdinalIgnoreCase);
-        }
 
-        private bool IsPdfFile(string fileName)
-        {
-            // Check if the file name ends with .pdf
-            return fileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
-        }
+
+
+
+
         private void btn_export_Click(object sender, EventArgs e)
         {
             //DownloadImage();
-            DownloadFile();
+            //DownloadFile();
         }
 
 

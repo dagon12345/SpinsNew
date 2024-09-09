@@ -58,7 +58,7 @@ namespace SpinsNew.Models
         //public ICollection<LibraryProvince> LibraryProvinces { get; } = new List<LibraryProvince>();
         //public ICollection<GisModel> GisModels { get; } = new List<GisModel>();
         public LibraryYear LibraryYear { get; set; }
-        public GisModel GisModel { get; set; }
+        //public GisModel GisModel { get; set; }
         //public ICollection<PayrollandGisManyToMany> PayrollandGisManyToManys { get; } = new List<PayrollandGisManyToMany>(); //Linking Entitiy many to many relationship
 
 

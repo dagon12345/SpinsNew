@@ -48,7 +48,6 @@ namespace SpinsNew.Forms
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.pdfViewer1 = new DevExpress.XtraPdfViewer.PdfViewer();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
-            this.btn_export = new DevExpress.XtraEditors.SimpleButton();
             this.btn_upload = new DevExpress.XtraEditors.SimpleButton();
             this.groupControl5 = new DevExpress.XtraEditors.GroupControl();
             this.gv_logs = new DevExpress.XtraGrid.GridControl();
@@ -231,7 +230,6 @@ namespace SpinsNew.Forms
             this.groupControl4.Controls.Add(this.pictureEdit1);
             this.groupControl4.Controls.Add(this.pdfViewer1);
             this.groupControl4.Controls.Add(this.labelControl3);
-            this.groupControl4.Controls.Add(this.btn_export);
             this.groupControl4.Controls.Add(this.btn_upload);
             this.groupControl4.Location = new System.Drawing.Point(334, 190);
             this.groupControl4.Name = "groupControl4";
@@ -269,17 +267,6 @@ namespace SpinsNew.Forms
             this.labelControl3.Size = new System.Drawing.Size(120, 13);
             this.labelControl3.TabIndex = 40;
             this.labelControl3.Text = "Image max size only 2MB";
-            // 
-            // btn_export
-            // 
-            this.btn_export.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_export.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_export.ImageOptions.Image")));
-            this.btn_export.Location = new System.Drawing.Point(125, 23);
-            this.btn_export.Name = "btn_export";
-            this.btn_export.Size = new System.Drawing.Size(116, 20);
-            this.btn_export.TabIndex = 2;
-            this.btn_export.Text = "Download PDF";
-            this.btn_export.Click += new System.EventHandler(this.btn_export_Click);
             // 
             // btn_upload
             // 
@@ -384,7 +371,6 @@ namespace SpinsNew.Forms
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         private DevExpress.XtraEditors.SimpleButton btn_upload;
         private DevExpress.XtraEditors.LabelControl labelControl3;
-        private DevExpress.XtraEditors.SimpleButton btn_export;
         private DevExpress.XtraEditors.LabelControl labelControl4;
         private DevExpress.XtraEditors.TextEdit txt_attachmentname;
         private DevExpress.XtraEditors.SimpleButton btn_save;

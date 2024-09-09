@@ -153,10 +153,10 @@ namespace SpinsNew.Data
             //    .HasPrincipalKey(x => x.MasterListID);
 
             modelBuilder.Entity<MasterListModel>()
-                .HasMany(x => x.GisModels)
-                .WithOne(x => x.MasterListModel)
-                .HasForeignKey(x => x.MasterListID)
-                .HasPrincipalKey(x => x.Id);
+                .HasOne(g => g.GisModel)
+                .WithMany(m => m.MasterListModels)
+                .HasForeignKey(m => m.Id)
+                .HasPrincipalKey(g => g.Id);
 
             modelBuilder.Entity<MasterListModel>()
                 .HasMany(e => e.PayrollModels)

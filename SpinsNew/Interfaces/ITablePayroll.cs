@@ -9,5 +9,6 @@ namespace SpinsNew.Interfaces
     {
         //We create an method that we can write a logic inside our TablePayroll services
         Task<List<PayrollViewModel>> GetPayrollAsync(int year, int periodID);
+        //Task<List<Payroll>>
     }
 }

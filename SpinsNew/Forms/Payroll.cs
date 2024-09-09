@@ -713,7 +713,7 @@ namespace SpinsNew.Forms
                     // Move the "Verified" column to the first position
                     gridView.Columns["Verified"].VisibleIndex = 0;
 
-                    gridView.Columns["ID"].Visible = false;
+                    //gridView.Columns["ID"].Visible = false;
 
                     gridView.Columns["LastName"].Visible = false;
                     gridView.Columns["FirstName"].Visible = false;

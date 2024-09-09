@@ -14,6 +14,8 @@ namespace SpinsNew.Models
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string ExtName { get; set; }
+        public int PSGCProvince { get; set; }
+        public int PSGCCityMun { get; set; }
         public DateTime? BirthDate { get; set; }
         public int? SexID { get; set; }
         public int? HealthStatusID { get; set; }
@@ -34,8 +36,8 @@ namespace SpinsNew.Models
         public LibraryHealthStatus LibraryHealthStatus { get; set; }
         public LibraryIDType LibraryIDType { get; set; }
         public LibraryStatus LibraryStatus { get; set; }
-        //public GisModel GisModel { get; set; }
-        public ICollection<GisModel> GisModels { get; } = new List<GisModel>();
+        public GisModel GisModel { get; set; }
+        //public ICollection<GisModel> GisModels { get; } = new List<GisModel>();
 
     }
 }

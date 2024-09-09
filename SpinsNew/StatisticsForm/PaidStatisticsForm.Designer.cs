@@ -29,22 +29,15 @@ namespace SpinsNew.StatisticsForm
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
-            this.payrollViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colProvince = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colMunicipality = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDistrict = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colTotalTarget = new DevExpress.XtraGrid.Columns.GridColumn();
             this.panel_spinner = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            this.colWaitListed = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).BeginInit();
@@ -52,7 +45,6 @@ namespace SpinsNew.StatisticsForm
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.panel_spinner.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -112,7 +104,6 @@ namespace SpinsNew.StatisticsForm
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridControl1.DataSource = this.payrollViewModelBindingSource;
             this.gridControl1.Location = new System.Drawing.Point(5, 26);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
@@ -121,49 +112,12 @@ namespace SpinsNew.StatisticsForm
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             // 
-            // payrollViewModelBindingSource
-            // 
-            this.payrollViewModelBindingSource.DataSource = typeof(SpinsNew.ViewModel.PayrollViewModel);
-            // 
             // gridView1
             // 
-            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colProvince,
-            this.colMunicipality,
-            this.colDistrict,
-            this.colTotalTarget,
-            this.colWaitListed});
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.Editable = false;
             this.gridView1.OptionsView.ShowGroupPanel = false;
-            // 
-            // colProvince
-            // 
-            this.colProvince.FieldName = "Province";
-            this.colProvince.Name = "colProvince";
-            this.colProvince.Visible = true;
-            this.colProvince.VisibleIndex = 0;
-            // 
-            // colMunicipality
-            // 
-            this.colMunicipality.FieldName = "Municipality";
-            this.colMunicipality.Name = "colMunicipality";
-            this.colMunicipality.Visible = true;
-            this.colMunicipality.VisibleIndex = 1;
-            // 
-            // colDistrict
-            // 
-            this.colDistrict.FieldName = "District";
-            this.colDistrict.Name = "colDistrict";
-            this.colDistrict.Visible = true;
-            this.colDistrict.VisibleIndex = 2;
-            // 
-            // colTotalTarget
-            // 
-            this.colTotalTarget.FieldName = "TotalTarget";
-            this.colTotalTarget.Name = "colTotalTarget";
-            this.colTotalTarget.Visible = true;
-            this.colTotalTarget.VisibleIndex = 3;
             // 
             // panel_spinner
             // 
@@ -194,13 +148,6 @@ namespace SpinsNew.StatisticsForm
             this.labelControl2.Text = "Retrieving large amount of data. It may take a couple of minutes. Please wait...." +
     "...";
             // 
-            // colWaitListed
-            // 
-            this.colWaitListed.FieldName = "WaitListed";
-            this.colWaitListed.Name = "colWaitListed";
-            this.colWaitListed.Visible = true;
-            this.colWaitListed.VisibleIndex = 4;
-            // 
             // PaidStatisticsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -221,7 +168,6 @@ namespace SpinsNew.StatisticsForm
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.panel_spinner.ResumeLayout(false);
             this.panel_spinner.PerformLayout();
@@ -236,16 +182,10 @@ namespace SpinsNew.StatisticsForm
         private DevExpress.XtraEditors.GroupControl groupControl2;
         private DevExpress.XtraGrid.GridControl gridControl1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
-        private System.Windows.Forms.BindingSource payrollViewModelBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colProvince;
-        private DevExpress.XtraGrid.Columns.GridColumn colMunicipality;
-        private DevExpress.XtraGrid.Columns.GridColumn colDistrict;
-        private DevExpress.XtraGrid.Columns.GridColumn colTotalTarget;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_year;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_period;
         private System.Windows.Forms.Panel panel_spinner;
         private System.Windows.Forms.PictureBox pictureBox1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
-        private DevExpress.XtraGrid.Columns.GridColumn colWaitListed;
     }
 }
