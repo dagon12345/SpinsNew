@@ -75,7 +75,7 @@ namespace SpinsNew.Forms
             Signatories();
             groupControlPayroll.Text = "Count of showed data: [0]";
             // Cast the MainView to GridView
-            GridView gridView = gridPayroll.MainView as GridView;
+            //GridView gridView = gridPayroll.MainView as GridView;
 
             searchControl1.Client = gridControl1;
 
@@ -421,14 +421,14 @@ namespace SpinsNew.Forms
 
             // Bind data to the control
             payrollViewModelBindingSource.DataSource = payrollViewModel;
-            gridPayroll.DataSource = payrollViewModelBindingSource;
+            //gridPayroll.DataSource = payrollViewModelBindingSource;
 
-            GridView gridView = gridPayroll.MainView as GridView;
-            gridView.BestFitColumns();
-            gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-            gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+            //GridView gridView = gridPayroll.MainView as GridView;
+            //gridView.BestFitColumns();
+           // gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+           // gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
-            UpdateRowCount(gridView);
+           // UpdateRowCount(gridView);
             this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
             DisableSpinner();
 
@@ -747,7 +747,7 @@ namespace SpinsNew.Forms
                     gridView.OptionsView.ColumnAutoWidth = false;
                 }
 
-                gridView.OptionsCustomization.AllowFilter = false;
+                //gridView.OptionsCustomization.AllowFilter = false;
                 // Update row count display
                 UpdateRowCount(gridView);
                 this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
@@ -995,6 +995,18 @@ namespace SpinsNew.Forms
             // Update the value of a particular column in the focused row
             gridView.SetRowCellValue(gridView.FocusedRowHandle, "Status Payroll", $"Claimed - {cmb_claimtype.Text}"); // Replace 'ColumnName' and 'NewValue'
             gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateClaimed", dt_from.Text); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateTimeModified", DateTime.Now); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "ModifiedBy", _username); // Replace 'ColumnName' and 'NewValue'
+
+
+        }
+        private void ArchivingUpdatingSingle()
+        {
+
+            GridView gridView = gridControl1.MainView as GridView;
+            // Update the value of a particular column in the focused row
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "Status Payroll", $"Archive"); // Replace 'ColumnName' and 'NewValue'
+            gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateClaimed", null); // Replace 'ColumnName' and 'NewValue'
             gridView.SetRowCellValue(gridView.FocusedRowHandle, "DateTimeModified", DateTime.Now); // Replace 'ColumnName' and 'NewValue'
             gridView.SetRowCellValue(gridView.FocusedRowHandle, "ModifiedBy", _username); // Replace 'ColumnName' and 'NewValue'
 
@@ -1316,7 +1328,7 @@ namespace SpinsNew.Forms
 
         }
 
-        private void ts_delete_Click(object sender, EventArgs e)
+        private async void ts_delete_Click(object sender, EventArgs e)
         {
             if(gridControl1.DataSource == null)
 
@@ -1343,7 +1355,7 @@ namespace SpinsNew.Forms
                 }
 
 
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
                 Search();
                 MessageBox.Show("Data displayed all deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -1412,6 +1424,44 @@ namespace SpinsNew.Forms
                 return;
             }
             Search();
+        }
+
+        private async void btnArchive_Click(object sender, EventArgs e)
+        {
+
+            GridView gridView = gridControl1.MainView as GridView;
+            // Get the row data
+            DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
+            // Handle the case where 'ck_all' is not checked (updating a single record)
+            int id = Convert.ToInt32(row["ID"]);
+
+            if (gridView.RowCount == 0)
+            {
+                XtraMessageBox.Show("Search a payroll first before archiving", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
+            var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
+
+            if (payroll != null)
+            {
+
+                payroll.PayrollStatusID = 3;
+                payroll.DateTimeModified = DateTime.Now;
+                payroll.ModifiedBy = _username;
+
+                // Save changes to the database
+                _dbContext.tbl_payroll_socpen.Update(payroll);
+                await _dbContext.SaveChangesAsync();
+
+                XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ArchivingUpdatingSingle();
+
+                // Refresh the data in the GridControl
+                //Search();
+                // gridPayroll.Refresh();
+            }
         }
     }
 }

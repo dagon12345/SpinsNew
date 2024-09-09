@@ -325,7 +325,7 @@ namespace SpinsNew.Popups
             }
         }
 
-        private void btn_create_Click(object sender, EventArgs e)
+        private async void btn_create_Click(object sender, EventArgs e)
         {
             if (masterlistForm != null)
             {
@@ -340,61 +340,66 @@ namespace SpinsNew.Popups
 
                     //try
                     //{
-                        GridView gridView = masterlistForm.gridControl1.MainView as GridView;
-                        var selectedYear = (YearItem)cmb_year.SelectedItem;
-                        var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                        var selectedType = (PayrollTypeItem)cmb_type.SelectedItem;
-                        var selectedTag = (PayrollTagItem)cmb_tag.SelectedItem;
-                        var selectedMode = (PaymentModeItem)cmb_payment.SelectedItem;
-                        double amount = 0;
-                        if (!string.IsNullOrEmpty(txt_amount.Text))
-                        {
-                            amount = Convert.ToDouble(txt_amount.Text);
-                        }
+                    GridView gridView = masterlistForm.gridControl1.MainView as GridView;
+                    var selectedYear = (YearItem)cmb_year.SelectedItem;
+                    var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
+                    var selectedType = (PayrollTypeItem)cmb_type.SelectedItem;
+                    var selectedTag = (PayrollTagItem)cmb_tag.SelectedItem;
+                    var selectedMode = (PaymentModeItem)cmb_payment.SelectedItem;
+                    double amount = 0;
+                    if (!string.IsNullOrEmpty(txt_amount.Text))
+                    {
+                        amount = Convert.ToDouble(txt_amount.Text);
+                    }
 
-                        for (int i = 0; i < gridView.RowCount; i++)
+                    for (int i = 0; i < gridView.RowCount; i++)
+                    {
+                        DataRowView row = (DataRowView)gridView.GetRow(i);
+                        if (row != null)
                         {
-                            DataRowView row = (DataRowView)gridView.GetRow(i);
-                            if (row != null)
+
+                            int id = Convert.ToInt32(row["ID"]);
+                            int region = Convert.ToInt32(row["PSGCRegion"]);
+                            int province = Convert.ToInt32(row["PSGCProvince"]);
+                            int municipality = Convert.ToInt32(row["PSGCCityMun"]);
+                            int barangay = Convert.ToInt32(row["PSGCBrgy"]);
+                            string address = row["Address"].ToString();
+
+                            _payroll = new PayrollModel
                             {
 
-                                int id = Convert.ToInt32(row["ID"]);
-                                int region = Convert.ToInt32(row["PSGCRegion"]);
-                                int province = Convert.ToInt32(row["PSGCProvince"]);
-                                int municipality = Convert.ToInt32(row["PSGCCityMun"]);
-                                int barangay = Convert.ToInt32(row["PSGCBrgy"]);
-                                string address = row["Address"].ToString();
-
-                                _payroll = new PayrollModel
-                                {
-
-                                    MasterListID = id,
-                                    PSGCRegion = region,
-                                    PSGCProvince = province,
-                                    PSGCCityMun = municipality,
-                                    PSGCBrgy = barangay,
-                                    Address = address,
-                                    Amount = amount,
-                                    Year = selectedYear.Year,
-                                    PeriodID = selectedPeriod.PeriodID,
-                                    PayrollStatusID = 2,
-                                    ClaimTypeID = null,
-                                    PayrollTypeID = selectedType.PayrollTypeID,
-                                    PayrollTagID = selectedTag.PayrollTagID,
-                                    PaymentModeID = selectedMode.PaymentModeID,
-                                    DateTimeEntry = DateTime.Now,
-                                    EntryBy = _username
-                                };
-                                _dbContext.tbl_payroll_socpen.Add(_payroll);
-                                _dbContext.SaveChanges();
-
-                            }
+                                MasterListID = id,
+                                PSGCRegion = region,
+                                PSGCProvince = province,
+                                PSGCCityMun = municipality,
+                                PSGCBrgy = barangay,
+                                Address = address,
+                                Amount = amount,
+                                Year = selectedYear.Year,
+                                PeriodID = selectedPeriod.PeriodID,
+                                PayrollStatusID = 2,
+                                ClaimTypeID = null,
+                                PayrollTypeID = selectedType.PayrollTypeID,
+                                PayrollTagID = selectedTag.PayrollTagID,
+                                PaymentModeID = selectedMode.PaymentModeID,
+                                DateTimeEntry = DateTime.Now,
+                                EntryBy = _username
+                            };
+                            _dbContext.tbl_payroll_socpen.Add(_payroll);
 
 
                         }
 
-                        XtraMessageBox.Show("Payroll created successfully. Please proceed to the payroll form to generate reports", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        this.Close();
+                       
+                     
+                    }
+                    panel_spinner.Visible = true;
+                    btn_create.Enabled = false;
+                    await _dbContext.SaveChangesAsync();
+
+                    panel_spinner.Visible = false;
+                    XtraMessageBox.Show("Payroll created successfully. Please proceed to the payroll form to generate reports", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
 
 
                     //}

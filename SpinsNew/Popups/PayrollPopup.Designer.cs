@@ -45,6 +45,9 @@ namespace SpinsNew.Popups
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.panel_spinner = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txt_amount.Properties)).BeginInit();
@@ -55,10 +58,13 @@ namespace SpinsNew.Popups
             ((System.ComponentModel.ISupportInitialize)(this.cmb_tag.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_type.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).BeginInit();
+            this.panel_spinner.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl1
             // 
+            this.groupControl1.Controls.Add(this.panel_spinner);
             this.groupControl1.Controls.Add(this.txt_amount);
             this.groupControl1.Controls.Add(this.txt_multiplier);
             this.groupControl1.Controls.Add(this.txt_monthlystipend);
@@ -224,6 +230,34 @@ namespace SpinsNew.Popups
             this.cmb_year.TabIndex = 0;
             this.cmb_year.SelectedIndexChanged += new System.EventHandler(this.cmb_year_SelectedIndexChanged);
             // 
+            // panel_spinner
+            // 
+            this.panel_spinner.Controls.Add(this.pictureBox1);
+            this.panel_spinner.Controls.Add(this.labelControl5);
+            this.panel_spinner.Location = new System.Drawing.Point(87, 179);
+            this.panel_spinner.Name = "panel_spinner";
+            this.panel_spinner.Size = new System.Drawing.Size(179, 19);
+            this.panel_spinner.TabIndex = 16;
+            this.panel_spinner.Visible = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 2);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 17;
+            this.pictureBox1.TabStop = false;
+            // 
+            // labelControl5
+            // 
+            this.labelControl5.Location = new System.Drawing.Point(29, 3);
+            this.labelControl5.Name = "labelControl5";
+            this.labelControl5.Size = new System.Drawing.Size(130, 13);
+            this.labelControl5.TabIndex = 16;
+            this.labelControl5.Text = "Creating, please wait.......";
+            // 
             // PayrollPopup
             // 
             this.AcceptButton = this.btn_create;
@@ -251,6 +285,9 @@ namespace SpinsNew.Popups
             ((System.ComponentModel.ISupportInitialize)(this.cmb_tag.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_type.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).EndInit();
+            this.panel_spinner.ResumeLayout(false);
+            this.panel_spinner.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -272,5 +309,8 @@ namespace SpinsNew.Popups
         private DevExpress.XtraEditors.TextEdit txt_monthlystipend;
         private DevExpress.XtraEditors.TextEdit txt_multiplier;
         public DevExpress.XtraEditors.TextEdit txt_amount;
+        private System.Windows.Forms.Panel panel_spinner;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private DevExpress.XtraEditors.LabelControl labelControl5;
     }
 }
