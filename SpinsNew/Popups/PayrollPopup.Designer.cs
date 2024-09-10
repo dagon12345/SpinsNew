@@ -121,7 +121,7 @@ namespace SpinsNew.Popups
             // 
             this.btn_create.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_create.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_create.ImageOptions.Image")));
-            this.btn_create.Location = new System.Drawing.Point(142, 158);
+            this.btn_create.Location = new System.Drawing.Point(142, 153);
             this.btn_create.Name = "btn_create";
             this.btn_create.Size = new System.Drawing.Size(90, 20);
             this.btn_create.TabIndex = 7;
@@ -234,7 +234,7 @@ namespace SpinsNew.Popups
             // 
             this.panel_spinner.Controls.Add(this.pictureBox1);
             this.panel_spinner.Controls.Add(this.labelControl5);
-            this.panel_spinner.Location = new System.Drawing.Point(87, 179);
+            this.panel_spinner.Location = new System.Drawing.Point(87, 173);
             this.panel_spinner.Name = "panel_spinner";
             this.panel_spinner.Size = new System.Drawing.Size(179, 19);
             this.panel_spinner.TabIndex = 16;

@@ -1,5 +1,5 @@
 ﻿using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
@@ -10,7 +10,6 @@ using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -70,7 +69,7 @@ namespace SpinsNew.Forms
         private void Payroll_Load(object sender, EventArgs e)
         {
             _dbContext = new ApplicationDbContext(); // our dbcontext
-            Municipality();
+            MunicipalityNew();
             Year();
             Signatories();
             groupControlPayroll.Text = "Count of showed data: [0]";
@@ -215,7 +214,199 @@ namespace SpinsNew.Forms
             }
         }
 
+        // Municipality fill when selected indexchanged was click with concatenated province
+        private void UpdateMunicipalityLabel(string cityMunName)
+        {
+            try
+            {
+                con.Open();
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT PSGCCityMun, CityMunName FROM lib_city_municipality WHERE CityMunName=@CityMunName";
+                cmd.Parameters.AddWithValue("@CityMunName", cityMunName);
+                DataTable dt = new DataTable();
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                //foreach (DataRow dr in dt.Rows)
+                //{
+                //    lbl_municipality.Text = dr["PSGCCityMun"].ToString();
+                //}
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void FillBarangay()
+        {
+            //Municipality
+            if (cmb_municipality.SelectedItem is MunicipalityItem selectedMunicipality)
+            {
 
+                cmb_barangay.Text = "";
+                Barangay(selectedMunicipality.PSGCCityMun);
+                //Search();
+
+            }
+        }
+
+        // Custom class for barangay combobox cascaded into municipality
+        public class BarangayItem
+        {
+            public int PSGCBrgy { get; set; }
+            public string BrgyName { get; set; }
+            public int PSGCCityMun { get; set; }
+
+            public override string ToString()
+            {
+                return BrgyName; // Display DataSource in the ComboBox
+            }
+        }
+
+
+        //Fill combobox barangay
+        public void Barangay(int selectedCityMun)
+        {
+            try
+            {
+                // Fetch data from the database and bind to ComboBox
+                con.Open();
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT PSGCBrgy, BrgyName, PSGCCityMun FROM lib_barangay WHERE PSGCCityMun = @PSGCCityMun"; // Specify the columns to retrieve
+                cmd.Parameters.AddWithValue("@PSGCCityMun", selectedCityMun);
+                cmd.ExecuteNonQuery();
+                DataTable dt = new DataTable();
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                // Clear existing items in the ComboBoxEdit
+                cmb_barangay.Properties.Items.Clear();
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    // Add DataSourceItem to the ComboBox
+                    cmb_barangay.Properties.Items.Add(new CheckedListBoxItem(
+
+                        //PSGCBrgy = Convert.ToInt32(dr["PSGCBrgy"]),
+                        //BrgyName = dr["BrgyName"].ToString(),
+                        //PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"])
+
+                        value: Convert.ToInt32(dr["PSGCBrgy"]), // The value to store (usually the ID)
+                        description: dr["BrgyName"].ToString(), // The display text
+                        checkState: CheckState.Checked // Initially checked all
+
+                    ));
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                // Ensure connection is closed in the finally block
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+
+        }
+
+        public void BarangayFilter(int selectedCityMun)
+        {
+            try
+            {
+                // Fetch data from the database and bind to CheckedComboBoxEdit
+                con.Open();
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = @"
+            SELECT 
+               lb.PSGCBrgy, 
+               lb.BrgyName, 
+               lb.PSGCCityMun
+            FROM 
+                lib_barangay lb
+                INNER JOIN
+                    lib_city_municipality lcm ON lb.PSGCCityMun = lcm.PSGCCityMun
+            ORDER BY 
+                lcm.CityMunName"; // Join with lib_province to get ProvinceName
+                cmd.ExecuteNonQuery();
+                DataTable dt = new DataTable();
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                // Clear existing items in the CheckedComboBoxEdit
+                cmb_barangay.Properties.Items.Clear();
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    // Add each municipality to the CheckedComboBoxEdit with a checkbox
+                    cmb_barangay.Properties.Items.Add(new CheckedListBoxItem(
+                        value: Convert.ToInt32(dr["PSGCBrgy"]), // The value to store (usually the ID)
+                        description: dr["BrgyName"].ToString(), // The display text
+                        checkState: CheckState.Unchecked // Initially unchecked
+                    ));
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                con.Close();
+            }
+
+        }
+
+        //Fill combobox Municipality
+        public void MunicipalityNew()
+        {
+            try
+            {
+                // Fetch data from the database and bind to ComboBox
+                con.Open();
+                MySqlCommand cmd = con.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = @"
+            SELECT 
+                m.PSGCCityMun, 
+                m.CityMunName, 
+                m.PSGCProvince, 
+                p.ProvinceName 
+            FROM 
+                lib_city_municipality m
+                INNER JOIN lib_province p ON m.PSGCProvince = p.PSGCProvince
+                ORDER BY ProvinceName"; // Join with lib_province to get ProvinceName
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                List<MunicipalityItem> municipalityItems = new List<MunicipalityItem>();
+
+                while (reader.Read())
+                {
+                    municipalityItems.Add(new MunicipalityItem
+                    {
+                        PSGCCityMun = reader.GetInt32("PSGCCityMun"),
+                        CityMunName = reader.GetString("CityMunName"),
+                        PSGCProvince = reader.GetInt32("PSGCProvince"),
+                        ProvinceName = reader.GetString("ProvinceName")
+                    });
+                }
+
+                cmb_municipality.Properties.Items.Clear();
+                cmb_municipality.Properties.Items.AddRange(municipalityItems);
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
         //Fill the combobox
         public void Municipality()
         {
@@ -270,7 +461,9 @@ namespace SpinsNew.Forms
             // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
             gb_details.Enabled = false;
+            gb_Update.Enabled = false;
             btn_refresh.Enabled = false;
+            btnSearch.Enabled = false;
 
 
         }
@@ -282,7 +475,7 @@ namespace SpinsNew.Forms
                 LoadPeriodsForYear(selectedYear.Year);
             }
             //await PayrollsEntity();
-            Search();
+            // Search();
         }
 
         // Method to update the row count display
@@ -297,7 +490,7 @@ namespace SpinsNew.Forms
             // Assign formatted row count to txt_total (or any other control)
             groupControlPayroll.Text = $"Payroll List: {formattedRowCount}";
         }
-        
+
         public async Task PayrollsEntity()
         {
             //try
@@ -317,7 +510,7 @@ namespace SpinsNew.Forms
 
             bool includePayrollStatusID = rbUnclaimed.Checked;// if checked unclaimed
                                                               // Fetch the opposite PeriodID
-           
+
             _dbContext = new ApplicationDbContext();
 
             var payrollsQuery = await _dbContext.tbl_payroll_socpen
@@ -340,7 +533,7 @@ namespace SpinsNew.Forms
             .AsNoTracking()
             .ToListAsync();
 
-            if(includePayrollStatusID)
+            if (includePayrollStatusID)
             {
                 payrollsQuery = payrollsQuery
                       .Where(x => x.PayrollStatusID == 2)
@@ -357,7 +550,7 @@ namespace SpinsNew.Forms
                 Verified = p.MasterListModel.IsVerified,
 
                 FullName = $"{p.MasterListModel.LastName}, {p.MasterListModel.FirstName} {p.MasterListModel.MiddleName} {p.MasterListModel.ExtName}", //+
-              // (filterUnclaimed?.LibraryPeriod?.Abbreviation != null ? $" {filterUnclaimed.LibraryPeriod.Abbreviation}" : ""), // Include the latest period abbreviation if it exists
+                                                                                                                                                      // (filterUnclaimed?.LibraryPeriod?.Abbreviation != null ? $" {filterUnclaimed.LibraryPeriod.Abbreviation}" : ""), // Include the latest period abbreviation if it exists
 
                 MasterListID = p.MasterListID,
                 PSGCRegion = p.PSGCRegion,
@@ -425,10 +618,10 @@ namespace SpinsNew.Forms
 
             //GridView gridView = gridPayroll.MainView as GridView;
             //gridView.BestFitColumns();
-           // gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-           // gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+            // gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+            // gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
-           // UpdateRowCount(gridView);
+            // UpdateRowCount(gridView);
             this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
             DisableSpinner();
 
@@ -600,6 +793,28 @@ namespace SpinsNew.Forms
                 {
                     query += " AND tps.PayrollStatusID = @PayrollStatusID";
                 }
+
+                // Construct a filter for selected barangays
+                // Using GetCheckedValues to get the selected items' values.
+                var checkedItems = cmb_barangay.Properties.GetCheckedItems();
+
+                // Convert the checked items to a string array
+                var barangaysArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Check if there are any selected municipalities
+                if (barangaysArray.Length > 0)
+                {
+                    // Join the selected municipality values into a single comma-separated string
+                    string barangaysList = string.Join(",", barangaysArray.Select(m => $"'{m.Trim()}'"));
+
+                    // Append the condition to the query
+                    query += $" AND m.PSGCBrgy IN ({barangaysList})";
+
+                }
+
+
+
+
                 cmd.CommandText = query;
 
                 var selectedItem = (dynamic)cmb_municipality.SelectedItem;
@@ -747,7 +962,7 @@ namespace SpinsNew.Forms
                     gridView.OptionsView.ColumnAutoWidth = false;
                 }
 
-                //gridView.OptionsCustomization.AllowFilter = false;
+                gridView.OptionsCustomization.AllowFilter = false;
                 // Update row count display
                 UpdateRowCount(gridView);
                 this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
@@ -774,16 +989,14 @@ namespace SpinsNew.Forms
                                                //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
                                                // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
-            gb_details.Enabled = true ;
+            gb_details.Enabled = true;
+            gb_Update.Enabled = true;
             btn_refresh.Enabled = true;
+            btnSearch.Enabled = true;
         }
         private async void Search()
         {
-            if (cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period")
-            {
-                // MessageBox.Show("Fill all the fields before searching", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+
             EnableSpinner();
             //await PayrollsEntity();
             await Payrolls();
@@ -835,6 +1048,21 @@ namespace SpinsNew.Forms
             payrollprintPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
             payrollprintPreview.Show();
         }
+        private void PrintCOERegular(DataTable payrollData, DataTable signatoriesData)
+        {
+            CoeRegularPrintPreview coepayrollPreview = new CoeRegularPrintPreview(this);
+            coepayrollPreview.SetPayrollData(payrollData);
+           coepayrollPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
+            coepayrollPreview.Show();
+        }
+
+        //private void PrintCOERegular(DataTable payrollData, DataTable signatoriesData)
+        //{
+        //    CoeRegularPrintPreview coepayrollPreview = new CoeRegularPrintPreview(this);
+        //    coepayrollPreview.SetPayrollData(payrollData);
+        //    coepayrollPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
+        //    coepayrollPreview.Show();
+        //}
 
         private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -907,7 +1135,8 @@ namespace SpinsNew.Forms
 
         private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Search();
+            FillBarangay();
+            //Search();
             // await PayrollsEntity();
         }
 
@@ -958,7 +1187,7 @@ namespace SpinsNew.Forms
         private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
         {
             //await PayrollsEntity();
-            Search();
+            //Search();
         }
 
         private void cmb_period_Click(object sender, EventArgs e)
@@ -986,7 +1215,7 @@ namespace SpinsNew.Forms
 
         }
 
-        
+
 
         private void AlternativeUpdatingSingle()
         {
@@ -1135,7 +1364,7 @@ namespace SpinsNew.Forms
                                         AlternativeUpdatingAllRows();
                                         // AlternativeUpdating();
                                     }
-                        
+
 
 
                                 }
@@ -1145,7 +1374,7 @@ namespace SpinsNew.Forms
 
                                 XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                               
+
                                 // Refresh the data in the GridControl
                                 //gridPayroll.Refresh();
                                 //Search();
@@ -1258,9 +1487,9 @@ namespace SpinsNew.Forms
                                 await _dbContext.SaveChangesAsync();
 
                                 XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        
+
                                 // Refresh the data in the GridControl
-                               // Search();
+                                // Search();
 
                             }
                         }
@@ -1330,7 +1559,7 @@ namespace SpinsNew.Forms
 
         private async void ts_delete_Click(object sender, EventArgs e)
         {
-            if(gridControl1.DataSource == null)
+            if (gridControl1.DataSource == null)
 
             {
                 MessageBox.Show("Search data you want to delete", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1353,8 +1582,7 @@ namespace SpinsNew.Forms
                     //searchControl
                     _dbContext.Remove(_dbContext.tbl_payroll_socpen.Single(x => x.ID == idGrid));
                 }
-
-
+                EnableSpinner();
                 await _dbContext.SaveChangesAsync();
                 Search();
                 MessageBox.Show("Data displayed all deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1420,7 +1648,7 @@ namespace SpinsNew.Forms
         {
             if (gridControl1.DataSource == null)
             {
-                 MessageBox.Show("Empty table no need to refresh", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Empty table no need to refresh", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             Search();
@@ -1432,36 +1660,77 @@ namespace SpinsNew.Forms
             GridView gridView = gridControl1.MainView as GridView;
             // Get the row data
             DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
-            // Handle the case where 'ck_all' is not checked (updating a single record)
-            int id = Convert.ToInt32(row["ID"]);
+
 
             if (gridView.RowCount == 0)
             {
                 XtraMessageBox.Show("Search a payroll first before archiving", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-
-            var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
-
-            if (payroll != null)
+            if (MessageBox.Show("Are you sure you want to archive this data?", "Archive", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
 
-                payroll.PayrollStatusID = 3;
-                payroll.DateTimeModified = DateTime.Now;
-                payroll.ModifiedBy = _username;
 
-                // Save changes to the database
-                _dbContext.tbl_payroll_socpen.Update(payroll);
-                await _dbContext.SaveChangesAsync();
+                // Handle the case where 'ck_all' is not checked (updating a single record)
+                int id = Convert.ToInt32(row["ID"]);
 
-                XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ArchivingUpdatingSingle();
+                var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
 
-                // Refresh the data in the GridControl
-                //Search();
-                // gridPayroll.Refresh();
+                if (payroll != null)
+                {
+
+                    payroll.PayrollStatusID = 3;
+                    payroll.DateTimeModified = DateTime.Now;
+                    payroll.ModifiedBy = _username;
+
+                    // Save changes to the database
+                    _dbContext.tbl_payroll_socpen.Update(payroll);
+                    await _dbContext.SaveChangesAsync();
+
+                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ArchivingUpdatingSingle();
+
+                    // Refresh the data in the GridControl
+                    //Search();
+                    // gridPayroll.Refresh();
+                }
             }
+        }
+
+        private void cmb_barangay_EditValueChanged(object sender, EventArgs e)
+        {
+            //Search();
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period" || cmb_barangay.Text == "Select Barangay")
+            {
+                MessageBox.Show("Fill all the fields before searching", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            Search();
+        }
+
+        private void claimedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("There Is Nothing To Be Printed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataTable payrollData = (DataTable)gridControl1.DataSource; // Ensure this is the correct DataTable
+            DataTable signatoriesData = GetSignatoriesData(); // Retrieve the signatories data
+            if (payrollData == null || payrollData.Rows.Count == 0)
+            {
+                MessageBox.Show("No data available to print.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            PrintCOERegular(payrollData, signatoriesData);
+            //PrintCOERegular(payrollData);
         }
     }
 }

@@ -63,6 +63,26 @@ namespace SpinsNew.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _299112_warning_shield_icon {
+            get {
+                object obj = ResourceManager.GetObject("299112_warning_shield_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _4212933_achievement_award_certificate_degrees_icon {
+            get {
+                object obj = ResourceManager.GetObject("4212933_achievement_award_certificate_degrees_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _8725982_image_upload_icon {
             get {
                 object obj = ResourceManager.GetObject("8725982_image_upload_icon", resourceCulture);

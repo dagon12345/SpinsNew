@@ -139,6 +139,9 @@
   <data name="icons8-verify-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons8-verify-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="4212933_achievement_award_certificate_degrees_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\4212933_achievement_award_certificate_degrees_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="icons8-add-481" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons8-add-481.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -183,5 +186,8 @@
   </data>
   <data name="9004856_chart_graph_statistics_bar_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\9004856_chart_graph_statistics_bar_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="299112_warning_shield_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\299112_warning_shield_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

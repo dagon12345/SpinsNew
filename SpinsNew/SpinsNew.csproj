@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>19</ApplicationRevision>
+    <ApplicationRevision>20</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -444,6 +444,12 @@
     <Compile Include="Popups\PayrollPopup.Designer.cs">
       <DependentUpon>PayrollPopup.cs</DependentUpon>
     </Compile>
+    <Compile Include="PrintPreviews\CoeRegularPrintPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrintPreviews\CoeRegularPrintPreview.Designer.cs">
+      <DependentUpon>CoeRegularPrintPreview.cs</DependentUpon>
+    </Compile>
     <Compile Include="PrintPreviews\PayrollPrintPreview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -452,6 +458,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CertificateOfEligibilityDefault.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CertificateOfEligibilityDefault.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\PayrollReporting.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -508,6 +520,9 @@
     <EmbeddedResource Include="Popups\PayrollPopup.resx">
       <DependentUpon>PayrollPopup.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PrintPreviews\CoeRegularPrintPreview.resx">
+      <DependentUpon>CoeRegularPrintPreview.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PrintPreviews\PayrollPrintPreview.resx">
       <DependentUpon>PayrollPrintPreview.cs</DependentUpon>
     </EmbeddedResource>
@@ -522,6 +537,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Reports\CertificateOfEligibilityDefault.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CertificateOfEligibilityDefault.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PayrollReporting.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PayrollReporting.cs</LastGenOutput>
@@ -582,6 +601,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="02 SocPen Logo %28no background%29.ico" />
+    <None Include="Resources\299112_warning_shield_icon.png" />
+    <None Include="Resources\4212933_achievement_award_certificate_degrees_icon.png" />
     <None Include="Resources\9004856_chart_graph_statistics_bar_icon.png" />
     <None Include="Resources\8725982_image_upload_icon.png" />
     <None Include="Resources\Copy of 02 SocPen Logo %28no background%29.png" />

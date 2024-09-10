@@ -1,5 +1,4 @@
-﻿using SpinsNew.Connection;
-using SpinsNew.DataSets;
+﻿using SpinsNew.DataSets;
 using SpinsNew.Forms;
 using SpinsNew.Reports;
 using System;
@@ -8,19 +7,17 @@ using System.Windows.Forms;
 
 namespace SpinsNew.PrintPreviews
 {
-    public partial class PayrollPrintPreview : Form
+    public partial class CoeRegularPrintPreview : Form
     {
         Payroll payrollForm;
-        public PayrollPrintPreview(Payroll payroll)
-        {
-            InitializeComponent();
-            payrollForm = payroll;
-        }
-
-
         private DataTable payrollData;
         private DataTable signatoriesData;
+        public CoeRegularPrintPreview(Payroll payroll)
+        {
+            InitializeComponent();
 
+            payrollForm = payroll;
+        }
         public void SetPayrollData(DataTable dt)
         {
             payrollData = dt;
@@ -31,22 +28,11 @@ namespace SpinsNew.PrintPreviews
             signatoriesData = dt;
         }
 
-       
-        private string GetStatusText()
-        {
-            if (payrollForm?.rbAllStatus?.Checked ?? false)
-                return "";
-            if (payrollForm?.rbUnclaimed?.Checked ?? false)
-                return "Unpaid";
-
-            return ""; // Default value
-        }
-
-        private void PayrollPrintPreview_Load(object sender, EventArgs e)
+        private void CoeRegularPrintPreview_Load(object sender, EventArgs e)
         {
             try
             {
-         
+
                 if (payrollData != null && payrollData.Rows.Count > 0)
                 {
                     PayrollDataSet ds = new PayrollDataSet(); // Replace with your actual DataSet class
@@ -63,7 +49,7 @@ namespace SpinsNew.PrintPreviews
                         return;
                     }
 
-                    PayrollReporting rpt = new PayrollReporting(); // Replace with your actual Crystal Report class
+                    CertificateOfEligibilityDefault rpt = new CertificateOfEligibilityDefault(); // Replace with your actual Crystal Report class
                     rpt.SetDataSource(ds); // Set the DataSource of the report
                     foreach (DataRow row in signatoriesData.Rows)
                     {
@@ -72,20 +58,37 @@ namespace SpinsNew.PrintPreviews
                         string position = row["Position"].ToString();
 
                         // Example of setting parameters based on ID
-                        if (id == 1) // 1 is Division Chief
+                        //if (id == 1) // 1 is Division Chief
+                        //{
+                        //    rpt.SetParameterValue("Division Chief", name); // Assuming Name1 is a parameter in your report
+                        //    rpt.SetParameterValue("Number1Position", position);
+                        //}
+                        //else if (id == 2) //2 is Certified Sign
+                        //{
+                        //    rpt.SetParameterValue("Certified Sign", name); // Assuming Name2 is a parameter in your report
+                        //    rpt.SetParameterValue("Number2Position", position);
+                        //}
+                        //else if (id == 3) //2 is Certified Sign
+                        //{
+                        //    rpt.SetParameterValue("Regional Director", name); // Assuming Name2 is a parameter in your report
+                        //    rpt.SetParameterValue("Number3Position", position);
+                        //}
+                        switch (id)
                         {
-                            rpt.SetParameterValue("Division Chief", name); // Assuming Name1 is a parameter in your report
-                            rpt.SetParameterValue("Number1Position", position); 
-                        }
-                        else if (id == 2) //2 is Certified Sign
-                        {
-                            rpt.SetParameterValue("Certified Sign", name); // Assuming Name2 is a parameter in your report
-                            rpt.SetParameterValue("Number2Position", position);
-                        }
-                        else if (id == 3) //2 is Certified Sign
-                        {
-                            rpt.SetParameterValue("Regional Director", name); // Assuming Name2 is a parameter in your report
-                            rpt.SetParameterValue("Number3Position", position);
+                            case 3:
+                                rpt.SetParameterValue("ApprovedBy", name); // Assuming Name1 is a parameter in your report
+                                rpt.SetParameterValue("Number1Position", position);
+                                break;
+                            case 1:
+                                rpt.SetParameterValue("RecommendingApproval", name);
+                                rpt.SetParameterValue("Number2Position", position);
+                                break;
+                            case 5:
+                                rpt.SetParameterValue("PreparedBy", name);
+                                rpt.SetParameterValue("Number3Position", position);
+                                break;
+                            default:
+                                break;
                         }
                     }
 
@@ -94,7 +97,7 @@ namespace SpinsNew.PrintPreviews
 
 
                     // Set the parameter value
-                    rpt.SetParameterValue("pStatusText", GetStatusText());
+                    // rpt.SetParameterValue("pStatusText", GetStatusText());
 
 
                     crystalReportViewer1.ReportSource = rpt; // Set the ReportSource of the CrystalReportViewer
@@ -110,7 +113,6 @@ namespace SpinsNew.PrintPreviews
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             }
-   
         }
     }
 }
