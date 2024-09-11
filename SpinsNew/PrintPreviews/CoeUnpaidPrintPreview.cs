@@ -2,33 +2,38 @@
 using SpinsNew.Forms;
 using SpinsNew.Reports;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpinsNew.PrintPreviews
 {
-    public partial class CoeRegularPrintPreview : Form
+    public partial class CoeUnpaidPrintPreview : Form
     {
         Payroll payrollForm;
         private DataTable payrollData;
         private DataTable signatoriesData;
-        public CoeRegularPrintPreview(Payroll payroll)
+        public CoeUnpaidPrintPreview(Payroll payroll)
         {
             InitializeComponent();
-
             payrollForm = payroll;
         }
+
         public void SetPayrollData(DataTable dt)
         {
             payrollData = dt;
         }
-
         public void SetSignatoriesData(DataTable dt)
         {
             signatoriesData = dt;
         }
 
-        private void CoeRegularPrintPreview_Load(object sender, EventArgs e)
+        private void CoeUnpaidPrintPreview_Load(object sender, EventArgs e)
         {
             try
             {
@@ -49,7 +54,7 @@ namespace SpinsNew.PrintPreviews
                         return;
                     }
 
-                    CertificateOfEligibilityDefault rpt = new CertificateOfEligibilityDefault(); // Replace with your actual Crystal Report class
+                    CertificateOfEligibilityUnpaid rpt = new CertificateOfEligibilityUnpaid(); // Replace with your actual Crystal Report class
                     rpt.SetDataSource(ds); // Set the DataSource of the report
                     foreach (DataRow row in signatoriesData.Rows)
                     {
@@ -90,6 +95,8 @@ namespace SpinsNew.PrintPreviews
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             }
+
         }
+
     }
 }

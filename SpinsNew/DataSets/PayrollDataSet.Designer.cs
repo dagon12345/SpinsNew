@@ -319,6 +319,34 @@ namespace SpinsNew.DataSets {
             
             private global::System.Data.DataColumn columnVerified;
             
+            private global::System.Data.DataColumn columnStatus;
+            
+            private global::System.Data.DataColumn columnRemarks;
+            
+            private global::System.Data.DataColumn columnDateDeceased;
+            
+            private global::System.Data.DataColumn columnLastName2;
+            
+            private global::System.Data.DataColumn columnFirstName2;
+            
+            private global::System.Data.DataColumn columnMiddleName2;
+            
+            private global::System.Data.DataColumn columnExtName2;
+            
+            private global::System.Data.DataColumn columnStatus2;
+            
+            private global::System.Data.DataColumn columnRemarks2;
+            
+            private global::System.Data.DataColumn columnDateDeceased2;
+            
+            private global::System.Data.DataColumn columnBarangay2;
+            
+            private global::System.Data.DataColumn columnBirthDate2;
+            
+            private global::System.Data.DataColumn columnType2;
+            
+            private global::System.Data.DataColumn columnIDNumber2;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public PayrollDataTableDataTable() {
@@ -514,6 +542,118 @@ namespace SpinsNew.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn StatusColumn {
+                get {
+                    return this.columnStatus;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn RemarksColumn {
+                get {
+                    return this.columnRemarks;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn DateDeceasedColumn {
+                get {
+                    return this.columnDateDeceased;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn LastName2Column {
+                get {
+                    return this.columnLastName2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn FirstName2Column {
+                get {
+                    return this.columnFirstName2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn MiddleName2Column {
+                get {
+                    return this.columnMiddleName2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ExtName2Column {
+                get {
+                    return this.columnExtName2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Status2Column {
+                get {
+                    return this.columnStatus2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Remarks2Column {
+                get {
+                    return this.columnRemarks2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn DateDeceased2Column {
+                get {
+                    return this.columnDateDeceased2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Barangay2Column {
+                get {
+                    return this.columnBarangay2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn BirthDate2Column {
+                get {
+                    return this.columnBirthDate2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Type2Column {
+                get {
+                    return this.columnType2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn IDNumber2Column {
+                get {
+                    return this.columnIDNumber2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -569,7 +709,21 @@ namespace SpinsNew.DataSets {
                         string Type, 
                         string IDNumber, 
                         string HeaderPeriodYear, 
-                        bool Verified) {
+                        bool Verified, 
+                        string Status, 
+                        string Remarks, 
+                        string DateDeceased, 
+                        string LastName2, 
+                        string FirstName2, 
+                        string MiddleName2, 
+                        string ExtName2, 
+                        string Status2, 
+                        string Remarks2, 
+                        string DateDeceased2, 
+                        string Barangay2, 
+                        System.DateTime BirthDate2, 
+                        string Type2, 
+                        string IDNumber2) {
                 PayrollDataTableRow rowPayrollDataTableRow = ((PayrollDataTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         FullName,
@@ -591,7 +745,21 @@ namespace SpinsNew.DataSets {
                         Type,
                         IDNumber,
                         HeaderPeriodYear,
-                        Verified};
+                        Verified,
+                        Status,
+                        Remarks,
+                        DateDeceased,
+                        LastName2,
+                        FirstName2,
+                        MiddleName2,
+                        ExtName2,
+                        Status2,
+                        Remarks2,
+                        DateDeceased2,
+                        Barangay2,
+                        BirthDate2,
+                        Type2,
+                        IDNumber2};
                 rowPayrollDataTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPayrollDataTableRow);
                 return rowPayrollDataTableRow;
@@ -634,6 +802,20 @@ namespace SpinsNew.DataSets {
                 this.columnIDNumber = base.Columns["IDNumber"];
                 this.columnHeaderPeriodYear = base.Columns["HeaderPeriodYear"];
                 this.columnVerified = base.Columns["Verified"];
+                this.columnStatus = base.Columns["Status"];
+                this.columnRemarks = base.Columns["Remarks"];
+                this.columnDateDeceased = base.Columns["DateDeceased"];
+                this.columnLastName2 = base.Columns["LastName2"];
+                this.columnFirstName2 = base.Columns["FirstName2"];
+                this.columnMiddleName2 = base.Columns["MiddleName2"];
+                this.columnExtName2 = base.Columns["ExtName2"];
+                this.columnStatus2 = base.Columns["Status2"];
+                this.columnRemarks2 = base.Columns["Remarks2"];
+                this.columnDateDeceased2 = base.Columns["DateDeceased2"];
+                this.columnBarangay2 = base.Columns["Barangay2"];
+                this.columnBirthDate2 = base.Columns["BirthDate2"];
+                this.columnType2 = base.Columns["Type2"];
+                this.columnIDNumber2 = base.Columns["IDNumber2"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -679,6 +861,34 @@ namespace SpinsNew.DataSets {
                 base.Columns.Add(this.columnHeaderPeriodYear);
                 this.columnVerified = new global::System.Data.DataColumn("Verified", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnVerified);
+                this.columnStatus = new global::System.Data.DataColumn("Status", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStatus);
+                this.columnRemarks = new global::System.Data.DataColumn("Remarks", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRemarks);
+                this.columnDateDeceased = new global::System.Data.DataColumn("DateDeceased", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDateDeceased);
+                this.columnLastName2 = new global::System.Data.DataColumn("LastName2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLastName2);
+                this.columnFirstName2 = new global::System.Data.DataColumn("FirstName2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFirstName2);
+                this.columnMiddleName2 = new global::System.Data.DataColumn("MiddleName2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMiddleName2);
+                this.columnExtName2 = new global::System.Data.DataColumn("ExtName2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnExtName2);
+                this.columnStatus2 = new global::System.Data.DataColumn("Status2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStatus2);
+                this.columnRemarks2 = new global::System.Data.DataColumn("Remarks2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRemarks2);
+                this.columnDateDeceased2 = new global::System.Data.DataColumn("DateDeceased2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDateDeceased2);
+                this.columnBarangay2 = new global::System.Data.DataColumn("Barangay2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBarangay2);
+                this.columnBirthDate2 = new global::System.Data.DataColumn("BirthDate2", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBirthDate2);
+                this.columnType2 = new global::System.Data.DataColumn("Type2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnType2);
+                this.columnIDNumber2 = new global::System.Data.DataColumn("IDNumber2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnIDNumber2);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1142,6 +1352,230 @@ namespace SpinsNew.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Status {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.StatusColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Status\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.StatusColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Remarks {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.RemarksColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Remarks\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.RemarksColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string DateDeceased {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.DateDeceasedColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DateDeceased\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.DateDeceasedColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string LastName2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.LastName2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LastName2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.LastName2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string FirstName2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.FirstName2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'FirstName2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.FirstName2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string MiddleName2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.MiddleName2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'MiddleName2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.MiddleName2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ExtName2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.ExtName2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ExtName2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.ExtName2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Status2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.Status2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Status2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.Status2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Remarks2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.Remarks2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Remarks2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.Remarks2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string DateDeceased2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.DateDeceased2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DateDeceased2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.DateDeceased2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Barangay2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.Barangay2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Barangay2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.Barangay2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public System.DateTime BirthDate2 {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tablePayrollDataTable.BirthDate2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BirthDate2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.BirthDate2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Type2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.Type2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Type2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.Type2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string IDNumber2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablePayrollDataTable.IDNumber2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'IDNumber2\' in table \'PayrollDataTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePayrollDataTable.IDNumber2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsFullNameNull() {
                 return this.IsNull(this.tablePayrollDataTable.FullNameColumn);
             }
@@ -1378,6 +1812,174 @@ namespace SpinsNew.DataSets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetVerifiedNull() {
                 this[this.tablePayrollDataTable.VerifiedColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsStatusNull() {
+                return this.IsNull(this.tablePayrollDataTable.StatusColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetStatusNull() {
+                this[this.tablePayrollDataTable.StatusColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsRemarksNull() {
+                return this.IsNull(this.tablePayrollDataTable.RemarksColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetRemarksNull() {
+                this[this.tablePayrollDataTable.RemarksColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDateDeceasedNull() {
+                return this.IsNull(this.tablePayrollDataTable.DateDeceasedColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDateDeceasedNull() {
+                this[this.tablePayrollDataTable.DateDeceasedColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsLastName2Null() {
+                return this.IsNull(this.tablePayrollDataTable.LastName2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetLastName2Null() {
+                this[this.tablePayrollDataTable.LastName2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsFirstName2Null() {
+                return this.IsNull(this.tablePayrollDataTable.FirstName2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetFirstName2Null() {
+                this[this.tablePayrollDataTable.FirstName2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsMiddleName2Null() {
+                return this.IsNull(this.tablePayrollDataTable.MiddleName2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetMiddleName2Null() {
+                this[this.tablePayrollDataTable.MiddleName2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsExtName2Null() {
+                return this.IsNull(this.tablePayrollDataTable.ExtName2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetExtName2Null() {
+                this[this.tablePayrollDataTable.ExtName2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsStatus2Null() {
+                return this.IsNull(this.tablePayrollDataTable.Status2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetStatus2Null() {
+                this[this.tablePayrollDataTable.Status2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsRemarks2Null() {
+                return this.IsNull(this.tablePayrollDataTable.Remarks2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetRemarks2Null() {
+                this[this.tablePayrollDataTable.Remarks2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDateDeceased2Null() {
+                return this.IsNull(this.tablePayrollDataTable.DateDeceased2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDateDeceased2Null() {
+                this[this.tablePayrollDataTable.DateDeceased2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsBarangay2Null() {
+                return this.IsNull(this.tablePayrollDataTable.Barangay2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetBarangay2Null() {
+                this[this.tablePayrollDataTable.Barangay2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsBirthDate2Null() {
+                return this.IsNull(this.tablePayrollDataTable.BirthDate2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetBirthDate2Null() {
+                this[this.tablePayrollDataTable.BirthDate2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsType2Null() {
+                return this.IsNull(this.tablePayrollDataTable.Type2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetType2Null() {
+                this[this.tablePayrollDataTable.Type2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsIDNumber2Null() {
+                return this.IsNull(this.tablePayrollDataTable.IDNumber2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetIDNumber2Null() {
+                this[this.tablePayrollDataTable.IDNumber2Column] = global::System.Convert.DBNull;
             }
         }
         

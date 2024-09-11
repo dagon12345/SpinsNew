@@ -531,6 +531,7 @@ namespace SpinsNew.Forms
             this.unclaimedToolStripMenuItem.Name = "unclaimedToolStripMenuItem";
             this.unclaimedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.unclaimedToolStripMenuItem.Text = "Unpaid";
+            this.unclaimedToolStripMenuItem.Click += new System.EventHandler(this.unclaimedToolStripMenuItem_Click);
             // 
             // uploadToolStripMenuItem
             // 

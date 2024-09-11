@@ -66,7 +66,7 @@ namespace SpinsNew.Forms
 
 
 
-        private void Payroll_Load(object sender, EventArgs e)
+        private async void Payroll_Load(object sender, EventArgs e)
         {
             _dbContext = new ApplicationDbContext(); // our dbcontext
             MunicipalityNew();
@@ -79,7 +79,8 @@ namespace SpinsNew.Forms
             searchControl1.Client = gridControl1;
 
             // Fetch claim types from the database
-            var claimTypes = _dbContext.lib_claim_type.ToList();
+            var claimTypes = await _dbContext.lib_claim_type
+                .ToListAsync();
             // Bind data to the ComboBoxEdit
             cmb_claimtype.Properties.Items.Clear();
             foreach (var claimType in claimTypes)
@@ -720,11 +721,21 @@ namespace SpinsNew.Forms
                            m.Remarks,
                            m.DateDeceased,
                            lpm.PaymentMode,
+
                            tps.Remarks AS PayrollRemarks,
+
                            tm2.LastName AS LastName2,
                            tm2.FirstName AS FirstName2,
                            tm2.MiddleName AS MiddleName2,
                            tm2.ExtName AS ExtName2,
+                           tm2.Remarks as Remarks2,
+                           tm2.DateDeceased as DateDeceased2,
+                           lstat2.Status AS Status2,
+                           lb2.BrgyName AS Barangay2,
+                           lit2.Type as Type2,
+                           tm2.IDNumber AS IDNumber2,
+                           tm2.BirthDate AS BirthDate2,
+
                            tps.DateTimeModified,
                            tps.ModifiedBy,
                            tps.DateTimeReplaced,
@@ -751,6 +762,8 @@ namespace SpinsNew.Forms
                        LEFT JOIN
                            lib_barangay lb ON tps.PSGCBrgy = lb.PSGCBrgy
                        LEFT JOIN
+                           lib_barangay lb2 ON tps.PSGCBrgy_ReplacementFor = lb2.PSGCBrgy
+                       LEFT JOIN
                            lib_sex ls ON m.SexID = ls.Id
                        LEFT JOIN
                            lib_health_status lhs ON m.HealthStatusID = lhs.ID
@@ -767,6 +780,8 @@ namespace SpinsNew.Forms
                        LEFT JOIN
                            lib_status lstat ON m.StatusID = lstat.ID
                        LEFT JOIN
+                           lib_status lstat2 ON tm2.StatusID = lstat2.ID
+                       LEFT JOIN
                            lib_payment_mode lpm ON tps.PaymentModeID = lpm.PaymentModeID
                        LEFT JOIN
                            lib_province lprov ON tps.PSGCProvince = lprov.PSGCProvince
@@ -774,6 +789,8 @@ namespace SpinsNew.Forms
                            lib_city_municipality lcm ON tps.PSGCCityMun = lcm.PSGCCityMun
                        LEFT JOIN
                            lib_id_type lit ON m.IDTypeID = lit.ID
+                      LEFT JOIN
+                           lib_id_type lit2 ON tm2.IDTypeID = lit2.ID
                        LEFT JOIN
                        /* Since Ascending order was implemented
                                the LatestPayroll.rn will show the top row with the value of number 1
@@ -1054,6 +1071,13 @@ namespace SpinsNew.Forms
             coepayrollPreview.SetPayrollData(payrollData);
            coepayrollPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
             coepayrollPreview.Show();
+        }
+        private void PrintCOEUnpaid(DataTable payrollData, DataTable signatoriesData)
+        {
+            CoeUnpaidPrintPreview coepayrollUnpaidPreview = new CoeUnpaidPrintPreview(this);
+            coepayrollUnpaidPreview.SetPayrollData(payrollData);
+            coepayrollUnpaidPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
+            coepayrollUnpaidPreview.Show();
         }
 
         //private void PrintCOERegular(DataTable payrollData, DataTable signatoriesData)
@@ -1731,6 +1755,27 @@ namespace SpinsNew.Forms
             }
             PrintCOERegular(payrollData, signatoriesData);
             //PrintCOERegular(payrollData);
+        }
+
+        private void unclaimedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("There Is Nothing To Be Printed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataTable payrollData = (DataTable)gridControl1.DataSource; // Ensure this is the correct DataTable
+            DataTable signatoriesData = GetSignatoriesData(); // Retrieve the signatories data
+            if (payrollData == null || payrollData.Rows.Count == 0)
+            {
+                MessageBox.Show("No data available to print.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+             PrintCOEUnpaid(payrollData, signatoriesData);
+            //PrintCOEUnpaid(payrollData);
         }
     }
 }

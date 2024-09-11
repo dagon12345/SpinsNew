@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>20</ApplicationRevision>
+    <ApplicationRevision>21</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -450,6 +450,12 @@
     <Compile Include="PrintPreviews\CoeRegularPrintPreview.Designer.cs">
       <DependentUpon>CoeRegularPrintPreview.cs</DependentUpon>
     </Compile>
+    <Compile Include="PrintPreviews\CoeUnpaidPrintPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrintPreviews\CoeUnpaidPrintPreview.Designer.cs">
+      <DependentUpon>CoeUnpaidPrintPreview.cs</DependentUpon>
+    </Compile>
     <Compile Include="PrintPreviews\PayrollPrintPreview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -462,6 +468,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CertificateOfEligibilityDefault.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CertificateOfEligibilityUnpaid.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CertificateOfEligibilityUnpaid.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PayrollReporting.cs">
@@ -523,6 +535,9 @@
     <EmbeddedResource Include="PrintPreviews\CoeRegularPrintPreview.resx">
       <DependentUpon>CoeRegularPrintPreview.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PrintPreviews\CoeUnpaidPrintPreview.resx">
+      <DependentUpon>CoeUnpaidPrintPreview.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PrintPreviews\PayrollPrintPreview.resx">
       <DependentUpon>PayrollPrintPreview.cs</DependentUpon>
     </EmbeddedResource>
@@ -540,6 +555,10 @@
     <EmbeddedResource Include="Reports\CertificateOfEligibilityDefault.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CertificateOfEligibilityDefault.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CertificateOfEligibilityUnpaid.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CertificateOfEligibilityUnpaid.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\PayrollReporting.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
