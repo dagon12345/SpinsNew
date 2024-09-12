@@ -37,7 +37,7 @@ namespace SpinsNew.PrintPreviews
             if (payrollForm?.rbAllStatus?.Checked ?? false)
                 return "";
             if (payrollForm?.rbUnclaimed?.Checked ?? false)
-                return "Unpaid";
+                return "Unclaimed";
 
             return ""; // Default value
         }

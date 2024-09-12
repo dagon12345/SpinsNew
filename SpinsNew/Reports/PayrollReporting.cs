@@ -186,7 +186,7 @@ namespace SpinsNew.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Regular_COE_pStatusText {
+        public CrystalDecisions.Shared.IParameterField Parameter_Suffix {
             get {
                 return this.DataDefinition.ParameterFields[8];
             }

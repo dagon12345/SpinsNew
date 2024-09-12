@@ -276,7 +276,7 @@ namespace SpinsNew.Forms
                 con.Open();
                 MySqlCommand cmd = con.CreateCommand();
                 cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PSGCBrgy, BrgyName, PSGCCityMun FROM lib_barangay WHERE PSGCCityMun = @PSGCCityMun"; // Specify the columns to retrieve
+                cmd.CommandText = "SELECT PSGCBrgy, BrgyName, PSGCCityMun FROM lib_barangay WHERE PSGCCityMun = @PSGCCityMun ORDER BY BrgyName"; // Specify the columns to retrieve
                 cmd.Parameters.AddWithValue("@PSGCCityMun", selectedCityMun);
                 cmd.ExecuteNonQuery();
                 DataTable dt = new DataTable();

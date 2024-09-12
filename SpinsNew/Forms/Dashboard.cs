@@ -61,7 +61,7 @@ namespace SpinsNew.Forms
             else
             {
                 masterlistForm = new MasterList(_username, _userRole, editapplicantForm);
-                masterlistForm.ShowDialog();
+                masterlistForm.Show();
             }
         }
 
