@@ -44,28 +44,29 @@ namespace SpinsNew
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.cmb_status = new DevExpress.XtraEditors.ComboBoxEdit();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newApplicantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attachmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.delistedAndReplacementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.payrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.payrollToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.delistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setAsApplicantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.activateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.verificationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.verifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.gbForms = new System.Windows.Forms.GroupBox();
+            this.btnPayroll = new DevExpress.XtraEditors.SimpleButton();
+            this.btnDelist = new DevExpress.XtraEditors.SimpleButton();
+            this.gbVerification = new System.Windows.Forms.GroupBox();
+            this.btnUndoVerified = new DevExpress.XtraEditors.SimpleButton();
+            this.btnVerify = new DevExpress.XtraEditors.SimpleButton();
+            this.gbActions = new System.Windows.Forms.GroupBox();
+            this.btnDelete = new DevExpress.XtraEditors.SimpleButton();
+            this.btnSetApplicant = new DevExpress.XtraEditors.SimpleButton();
+            this.btnActivate = new DevExpress.XtraEditors.SimpleButton();
+            this.btnDelistBene = new DevExpress.XtraEditors.SimpleButton();
+            this.gbPayroll = new System.Windows.Forms.GroupBox();
+            this.btnViewPayroll = new DevExpress.XtraEditors.SimpleButton();
+            this.btnCreatePayroll = new DevExpress.XtraEditors.SimpleButton();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnNew = new DevExpress.XtraEditors.SimpleButton();
+            this.btnViewAttach = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).BeginInit();
@@ -79,11 +80,16 @@ namespace SpinsNew
             this.panel_spinner.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_status.Properties)).BeginInit();
-            this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.gbForms.SuspendLayout();
+            this.gbVerification.SuspendLayout();
+            this.gbActions.SuspendLayout();
+            this.gbPayroll.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gridSplitContainer1
@@ -105,7 +111,7 @@ namespace SpinsNew
             this.gridControl1.Location = new System.Drawing.Point(5, 26);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(773, 425);
+            this.gridControl1.Size = new System.Drawing.Size(1335, 290);
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -121,8 +127,12 @@ namespace SpinsNew
             this.gridView1.Appearance.Preview.Options.UseBackColor = true;
             this.gridView1.Appearance.Preview.Options.UseBorderColor = true;
             this.gridView1.Appearance.Preview.Options.UseFont = true;
-            this.gridView1.Appearance.Row.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridView1.Appearance.Row.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gridView1.Appearance.Row.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridView1.Appearance.Row.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.ControlText;
+            this.gridView1.Appearance.Row.Options.UseBackColor = true;
             this.gridView1.Appearance.Row.Options.UseFont = true;
+            this.gridView1.Appearance.Row.Options.UseForeColor = true;
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
@@ -135,15 +145,18 @@ namespace SpinsNew
             // 
             this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl2.Appearance.BackColor = System.Drawing.Color.Transparent;
+            this.groupControl2.Appearance.Options.UseBackColor = true;
+            this.groupControl2.CaptionImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("groupControl2.CaptionImageOptions.Image")));
             this.groupControl2.Controls.Add(this.labelControl4);
             this.groupControl2.Controls.Add(this.labelControl3);
             this.groupControl2.Controls.Add(this.cmb_municipality);
             this.groupControl2.Controls.Add(this.searchControl1);
             this.groupControl2.Controls.Add(this.panel_spinner);
             this.groupControl2.Controls.Add(this.cmb_status);
-            this.groupControl2.Location = new System.Drawing.Point(10, 33);
+            this.groupControl2.Location = new System.Drawing.Point(15, 5);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(782, 99);
+            this.groupControl2.Size = new System.Drawing.Size(1344, 99);
             this.groupControl2.TabIndex = 0;
             this.groupControl2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupControl2_Paint);
             // 
@@ -176,12 +189,14 @@ namespace SpinsNew
             this.cmb_municipality.EditValue = "";
             this.cmb_municipality.Location = new System.Drawing.Point(5, 39);
             this.cmb_municipality.Name = "cmb_municipality";
+            this.cmb_municipality.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmb_municipality.Properties.Appearance.Options.UseFont = true;
             this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_municipality.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.cmb_municipality.Properties.DropDownRows = 20;
             this.cmb_municipality.Properties.IncrementalSearch = true;
-            this.cmb_municipality.Size = new System.Drawing.Size(438, 20);
+            this.cmb_municipality.Size = new System.Drawing.Size(438, 22);
             this.cmb_municipality.TabIndex = 2;
             this.cmb_municipality.EditValueChanged += new System.EventHandler(this.checkedComboBoxEdit1_EditValueChanged);
             // 
@@ -232,6 +247,8 @@ namespace SpinsNew
             this.cmb_status.EditValue = "";
             this.cmb_status.Location = new System.Drawing.Point(448, 39);
             this.cmb_status.Name = "cmb_status";
+            this.cmb_status.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmb_status.Properties.Appearance.Options.UseFont = true;
             this.cmb_status.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_status.Properties.Items.AddRange(new object[] {
@@ -241,7 +258,7 @@ namespace SpinsNew
             "Waitlisted",
             "Delisted"});
             this.cmb_status.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_status.Size = new System.Drawing.Size(209, 20);
+            this.cmb_status.Size = new System.Drawing.Size(209, 22);
             this.cmb_status.TabIndex = 3;
             this.cmb_status.SelectedIndexChanged += new System.EventHandler(this.cmb_status_SelectedIndexChanged);
             // 
@@ -249,161 +266,6 @@ namespace SpinsNew
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionToolStripMenuItem,
-            this.payrollToolStripMenuItem,
-            this.actionsToolStripMenuItem,
-            this.verificationToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(802, 28);
-            this.menuStrip1.TabIndex = 10;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // optionToolStripMenuItem
-            // 
-            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newApplicantToolStripMenuItem,
-            this.attachmentsToolStripMenuItem,
-            this.delistedAndReplacementsToolStripMenuItem});
-            this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_option_64;
-            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(83, 24);
-            this.optionToolStripMenuItem.Text = "Option";
-            // 
-            // newApplicantToolStripMenuItem
-            // 
-            this.newApplicantToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_add_48;
-            this.newApplicantToolStripMenuItem.Name = "newApplicantToolStripMenuItem";
-            this.newApplicantToolStripMenuItem.Size = new System.Drawing.Size(259, 24);
-            this.newApplicantToolStripMenuItem.Text = "New Applicant";
-            this.newApplicantToolStripMenuItem.Click += new System.EventHandler(this.newApplicantToolStripMenuItem_Click);
-            // 
-            // attachmentsToolStripMenuItem
-            // 
-            this.attachmentsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_attachment_16;
-            this.attachmentsToolStripMenuItem.Name = "attachmentsToolStripMenuItem";
-            this.attachmentsToolStripMenuItem.Size = new System.Drawing.Size(259, 24);
-            this.attachmentsToolStripMenuItem.Text = "Attachments";
-            this.attachmentsToolStripMenuItem.Click += new System.EventHandler(this.attachmentsToolStripMenuItem_Click);
-            // 
-            // delistedAndReplacementsToolStripMenuItem
-            // 
-            this.delistedAndReplacementsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_left_right_arrow_641;
-            this.delistedAndReplacementsToolStripMenuItem.Name = "delistedAndReplacementsToolStripMenuItem";
-            this.delistedAndReplacementsToolStripMenuItem.Size = new System.Drawing.Size(259, 24);
-            this.delistedAndReplacementsToolStripMenuItem.Text = "Delisted and Replacements";
-            this.delistedAndReplacementsToolStripMenuItem.Click += new System.EventHandler(this.delistedAndReplacementsToolStripMenuItem_Click);
-            // 
-            // payrollToolStripMenuItem
-            // 
-            this.payrollToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewToolStripMenuItem,
-            this.createToolStripMenuItem,
-            this.payrollToolStripMenuItem1});
-            this.payrollToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_payroll_64;
-            this.payrollToolStripMenuItem.Name = "payrollToolStripMenuItem";
-            this.payrollToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
-            this.payrollToolStripMenuItem.Text = "Payroll";
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_eye_48;
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
-            this.viewToolStripMenuItem.Text = "View (Ctrl + P)";
-            this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click_1);
-            // 
-            // createToolStripMenuItem
-            // 
-            this.createToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_add_481;
-            this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
-            this.createToolStripMenuItem.Text = "Create";
-            this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
-            // 
-            // payrollToolStripMenuItem1
-            // 
-            this.payrollToolStripMenuItem1.Image = global::SpinsNew.Properties.Resources.icons8_payroll_481;
-            this.payrollToolStripMenuItem1.Name = "payrollToolStripMenuItem1";
-            this.payrollToolStripMenuItem1.Size = new System.Drawing.Size(180, 24);
-            this.payrollToolStripMenuItem1.Text = "Payroll";
-            this.payrollToolStripMenuItem1.Click += new System.EventHandler(this.payrollToolStripMenuItem1_Click);
-            // 
-            // actionsToolStripMenuItem
-            // 
-            this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.delistToolStripMenuItem,
-            this.setAsApplicantToolStripMenuItem,
-            this.activateToolStripMenuItem,
-            this.deleteToolStripMenuItem});
-            this.actionsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_vertical_48;
-            this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(86, 24);
-            this.actionsToolStripMenuItem.Text = "Actions";
-            // 
-            // delistToolStripMenuItem
-            // 
-            this.delistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_remove_document_48;
-            this.delistToolStripMenuItem.Name = "delistToolStripMenuItem";
-            this.delistToolStripMenuItem.Size = new System.Drawing.Size(185, 24);
-            this.delistToolStripMenuItem.Text = "Delist (Del)";
-            this.delistToolStripMenuItem.Click += new System.EventHandler(this.delistToolStripMenuItem_Click);
-            // 
-            // setAsApplicantToolStripMenuItem
-            // 
-            this.setAsApplicantToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_information_16;
-            this.setAsApplicantToolStripMenuItem.Name = "setAsApplicantToolStripMenuItem";
-            this.setAsApplicantToolStripMenuItem.Size = new System.Drawing.Size(185, 24);
-            this.setAsApplicantToolStripMenuItem.Text = "Set as Applicant";
-            this.setAsApplicantToolStripMenuItem.Click += new System.EventHandler(this.setAsApplicantToolStripMenuItem_Click);
-            // 
-            // activateToolStripMenuItem
-            // 
-            this.activateToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_activate_48;
-            this.activateToolStripMenuItem.Name = "activateToolStripMenuItem";
-            this.activateToolStripMenuItem.Size = new System.Drawing.Size(185, 24);
-            this.activateToolStripMenuItem.Text = "Activate";
-            this.activateToolStripMenuItem.Click += new System.EventHandler(this.activateToolStripMenuItem_Click);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_delete_48;
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(185, 24);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click_1);
-            // 
-            // verificationToolStripMenuItem
-            // 
-            this.verificationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.verifyToolStripMenuItem,
-            this.undoToolStripMenuItem});
-            this.verificationToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_information_16;
-            this.verificationToolStripMenuItem.Name = "verificationToolStripMenuItem";
-            this.verificationToolStripMenuItem.Size = new System.Drawing.Size(112, 24);
-            this.verificationToolStripMenuItem.Text = "Verification";
-            // 
-            // verifyToolStripMenuItem
-            // 
-            this.verifyToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
-            this.verifyToolStripMenuItem.Name = "verifyToolStripMenuItem";
-            this.verifyToolStripMenuItem.Size = new System.Drawing.Size(115, 24);
-            this.verifyToolStripMenuItem.Text = "Verify";
-            this.verifyToolStripMenuItem.Click += new System.EventHandler(this.verifyToolStripMenuItem_Click);
-            // 
-            // undoToolStripMenuItem
-            // 
-            this.undoToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_undo_48;
-            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(115, 24);
-            this.undoToolStripMenuItem.Text = "Undo";
-            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
             // contextMenuStrip2
             // 
@@ -414,14 +276,14 @@ namespace SpinsNew
             // 
             this.progressBarControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarControl1.Location = new System.Drawing.Point(10, 133);
+            this.progressBarControl1.Location = new System.Drawing.Point(10, 265);
             this.progressBarControl1.Name = "progressBarControl1";
-            this.progressBarControl1.Size = new System.Drawing.Size(782, 10);
+            this.progressBarControl1.Size = new System.Drawing.Size(1344, 10);
             this.progressBarControl1.TabIndex = 7;
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(34, 151);
+            this.labelControl1.Location = new System.Drawing.Point(34, 281);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(243, 13);
             this.labelControl1.TabIndex = 14;
@@ -432,7 +294,7 @@ namespace SpinsNew
             // pictureEdit1
             // 
             this.pictureEdit1.EditValue = ((object)(resources.GetObject("pictureEdit1.EditValue")));
-            this.pictureEdit1.Location = new System.Drawing.Point(12, 149);
+            this.pictureEdit1.Location = new System.Drawing.Point(12, 280);
             this.pictureEdit1.Name = "pictureEdit1";
             this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
             this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
@@ -447,26 +309,289 @@ namespace SpinsNew
             this.groupControl1.Appearance.BackColor = System.Drawing.Color.Black;
             this.groupControl1.Appearance.Options.UseBackColor = true;
             this.groupControl1.Controls.Add(this.gridControl1);
-            this.groupControl1.Location = new System.Drawing.Point(10, 173);
+            this.groupControl1.Location = new System.Drawing.Point(10, 303);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(782, 451);
+            this.groupControl1.Size = new System.Drawing.Size(1344, 321);
             this.groupControl1.TabIndex = 18;
-            this.groupControl1.Text = "groupControl1";
+            this.groupControl1.Text = "Count";
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.Controls.Add(this.gbForms);
+            this.panel1.Controls.Add(this.gbVerification);
+            this.panel1.Controls.Add(this.gbActions);
+            this.panel1.Controls.Add(this.gbPayroll);
+            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Location = new System.Drawing.Point(15, 110);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1344, 152);
+            this.panel1.TabIndex = 19;
+            // 
+            // gbForms
+            // 
+            this.gbForms.Controls.Add(this.btnPayroll);
+            this.gbForms.Controls.Add(this.btnDelist);
+            this.gbForms.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbForms.Location = new System.Drawing.Point(937, 5);
+            this.gbForms.Name = "gbForms";
+            this.gbForms.Size = new System.Drawing.Size(228, 137);
+            this.gbForms.TabIndex = 5;
+            this.gbForms.TabStop = false;
+            this.gbForms.Text = "Forms";
+            // 
+            // btnPayroll
+            // 
+            this.btnPayroll.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnPayroll.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPayroll.Appearance.Options.UseBackColor = true;
+            this.btnPayroll.Appearance.Options.UseFont = true;
+            this.btnPayroll.AppearanceDisabled.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnPayroll.AppearanceDisabled.Options.UseBackColor = true;
+            this.btnPayroll.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPayroll.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnPayroll.ImageOptions.Image")));
+            this.btnPayroll.Location = new System.Drawing.Point(6, 20);
+            this.btnPayroll.Name = "btnPayroll";
+            this.btnPayroll.Size = new System.Drawing.Size(212, 54);
+            this.btnPayroll.TabIndex = 0;
+            this.btnPayroll.Text = "Payroll Form";
+            this.btnPayroll.Click += new System.EventHandler(this.btnPayroll_Click);
+            // 
+            // btnDelist
+            // 
+            this.btnDelist.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnDelist.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDelist.Appearance.Options.UseBackColor = true;
+            this.btnDelist.Appearance.Options.UseFont = true;
+            this.btnDelist.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDelist.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDelist.ImageOptions.Image")));
+            this.btnDelist.Location = new System.Drawing.Point(6, 77);
+            this.btnDelist.Name = "btnDelist";
+            this.btnDelist.Size = new System.Drawing.Size(212, 54);
+            this.btnDelist.TabIndex = 0;
+            this.btnDelist.Text = "Delisted And Replacements";
+            this.btnDelist.Click += new System.EventHandler(this.btnDelist_Click);
+            // 
+            // gbVerification
+            // 
+            this.gbVerification.Controls.Add(this.btnUndoVerified);
+            this.gbVerification.Controls.Add(this.btnVerify);
+            this.gbVerification.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbVerification.ForeColor = System.Drawing.Color.Black;
+            this.gbVerification.Location = new System.Drawing.Point(705, 6);
+            this.gbVerification.Name = "gbVerification";
+            this.gbVerification.Size = new System.Drawing.Size(228, 137);
+            this.gbVerification.TabIndex = 4;
+            this.gbVerification.TabStop = false;
+            this.gbVerification.Text = "Verification";
+            // 
+            // btnUndoVerified
+            // 
+            this.btnUndoVerified.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnUndoVerified.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUndoVerified.Appearance.Options.UseBackColor = true;
+            this.btnUndoVerified.Appearance.Options.UseFont = true;
+            this.btnUndoVerified.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUndoVerified.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUndoVerified.ImageOptions.Image")));
+            this.btnUndoVerified.Location = new System.Drawing.Point(6, 76);
+            this.btnUndoVerified.Name = "btnUndoVerified";
+            this.btnUndoVerified.Size = new System.Drawing.Size(212, 54);
+            this.btnUndoVerified.TabIndex = 0;
+            this.btnUndoVerified.Text = "Undo Verified";
+            this.btnUndoVerified.Click += new System.EventHandler(this.btnUndoVerified_Click);
+            // 
+            // btnVerify
+            // 
+            this.btnVerify.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnVerify.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnVerify.Appearance.Options.UseBackColor = true;
+            this.btnVerify.Appearance.Options.UseFont = true;
+            this.btnVerify.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnVerify.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnVerify.ImageOptions.Image")));
+            this.btnVerify.Location = new System.Drawing.Point(6, 19);
+            this.btnVerify.Name = "btnVerify";
+            this.btnVerify.Size = new System.Drawing.Size(212, 54);
+            this.btnVerify.TabIndex = 0;
+            this.btnVerify.Text = "Verify";
+            this.btnVerify.Click += new System.EventHandler(this.btnVerify_Click);
+            // 
+            // gbActions
+            // 
+            this.gbActions.Controls.Add(this.btnDelete);
+            this.gbActions.Controls.Add(this.btnSetApplicant);
+            this.gbActions.Controls.Add(this.btnActivate);
+            this.gbActions.Controls.Add(this.btnDelistBene);
+            this.gbActions.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbActions.ForeColor = System.Drawing.Color.Black;
+            this.gbActions.Location = new System.Drawing.Point(4, 6);
+            this.gbActions.Name = "gbActions";
+            this.gbActions.Size = new System.Drawing.Size(229, 137);
+            this.gbActions.TabIndex = 3;
+            this.gbActions.TabStop = false;
+            this.gbActions.Text = "Actions";
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Danger;
+            this.btnDelete.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDelete.Appearance.Options.UseBackColor = true;
+            this.btnDelete.Appearance.Options.UseFont = true;
+            this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDelete.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDelete.ImageOptions.Image")));
+            this.btnDelete.Location = new System.Drawing.Point(6, 103);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(212, 22);
+            this.btnDelete.TabIndex = 0;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnSetApplicant
+            // 
+            this.btnSetApplicant.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Question;
+            this.btnSetApplicant.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSetApplicant.Appearance.Options.UseBackColor = true;
+            this.btnSetApplicant.Appearance.Options.UseFont = true;
+            this.btnSetApplicant.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSetApplicant.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnSetApplicant.ImageOptions.Image")));
+            this.btnSetApplicant.Location = new System.Drawing.Point(6, 47);
+            this.btnSetApplicant.Name = "btnSetApplicant";
+            this.btnSetApplicant.Size = new System.Drawing.Size(212, 22);
+            this.btnSetApplicant.TabIndex = 0;
+            this.btnSetApplicant.Text = "Set as Applicant";
+            this.btnSetApplicant.Click += new System.EventHandler(this.btnSetApplicant_Click);
+            // 
+            // btnActivate
+            // 
+            this.btnActivate.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Success;
+            this.btnActivate.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnActivate.Appearance.Options.UseBackColor = true;
+            this.btnActivate.Appearance.Options.UseFont = true;
+            this.btnActivate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnActivate.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnActivate.ImageOptions.Image")));
+            this.btnActivate.Location = new System.Drawing.Point(6, 19);
+            this.btnActivate.Name = "btnActivate";
+            this.btnActivate.Size = new System.Drawing.Size(212, 22);
+            this.btnActivate.TabIndex = 0;
+            this.btnActivate.Text = "Activate";
+            this.btnActivate.Click += new System.EventHandler(this.btnActivate_Click);
+            // 
+            // btnDelistBene
+            // 
+            this.btnDelistBene.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Warning;
+            this.btnDelistBene.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDelistBene.Appearance.Options.UseBackColor = true;
+            this.btnDelistBene.Appearance.Options.UseFont = true;
+            this.btnDelistBene.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDelistBene.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDelistBene.ImageOptions.Image")));
+            this.btnDelistBene.Location = new System.Drawing.Point(6, 76);
+            this.btnDelistBene.Name = "btnDelistBene";
+            this.btnDelistBene.Size = new System.Drawing.Size(212, 22);
+            this.btnDelistBene.TabIndex = 0;
+            this.btnDelistBene.Text = "Delist (Del)";
+            this.btnDelistBene.Click += new System.EventHandler(this.btnDelistBene_Click);
+            // 
+            // gbPayroll
+            // 
+            this.gbPayroll.Controls.Add(this.btnViewPayroll);
+            this.gbPayroll.Controls.Add(this.btnCreatePayroll);
+            this.gbPayroll.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbPayroll.ForeColor = System.Drawing.Color.Black;
+            this.gbPayroll.Location = new System.Drawing.Point(472, 6);
+            this.gbPayroll.Name = "gbPayroll";
+            this.gbPayroll.Size = new System.Drawing.Size(228, 137);
+            this.gbPayroll.TabIndex = 2;
+            this.gbPayroll.TabStop = false;
+            this.gbPayroll.Text = "Payroll";
+            // 
+            // btnViewPayroll
+            // 
+            this.btnViewPayroll.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnViewPayroll.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViewPayroll.Appearance.Options.UseBackColor = true;
+            this.btnViewPayroll.Appearance.Options.UseFont = true;
+            this.btnViewPayroll.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnViewPayroll.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnViewPayroll.ImageOptions.Image")));
+            this.btnViewPayroll.Location = new System.Drawing.Point(6, 19);
+            this.btnViewPayroll.Name = "btnViewPayroll";
+            this.btnViewPayroll.Size = new System.Drawing.Size(212, 54);
+            this.btnViewPayroll.TabIndex = 0;
+            this.btnViewPayroll.Text = "View (Ctrl +P)";
+            this.btnViewPayroll.Click += new System.EventHandler(this.btnViewPayroll_Click);
+            // 
+            // btnCreatePayroll
+            // 
+            this.btnCreatePayroll.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnCreatePayroll.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCreatePayroll.Appearance.Options.UseBackColor = true;
+            this.btnCreatePayroll.Appearance.Options.UseFont = true;
+            this.btnCreatePayroll.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCreatePayroll.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnCreatePayroll.ImageOptions.Image")));
+            this.btnCreatePayroll.Location = new System.Drawing.Point(6, 75);
+            this.btnCreatePayroll.Name = "btnCreatePayroll";
+            this.btnCreatePayroll.Size = new System.Drawing.Size(212, 54);
+            this.btnCreatePayroll.TabIndex = 0;
+            this.btnCreatePayroll.Text = "Create";
+            this.btnCreatePayroll.Click += new System.EventHandler(this.btnCreatePayroll_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnNew);
+            this.groupBox1.Controls.Add(this.btnViewAttach);
+            this.groupBox1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.ForeColor = System.Drawing.Color.Black;
+            this.groupBox1.Location = new System.Drawing.Point(239, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(228, 137);
+            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Options";
+            // 
+            // btnNew
+            // 
+            this.btnNew.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnNew.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNew.Appearance.Options.UseBackColor = true;
+            this.btnNew.Appearance.Options.UseFont = true;
+            this.btnNew.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNew.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnNew.ImageOptions.Image")));
+            this.btnNew.Location = new System.Drawing.Point(6, 19);
+            this.btnNew.Name = "btnNew";
+            this.btnNew.Size = new System.Drawing.Size(212, 54);
+            this.btnNew.TabIndex = 0;
+            this.btnNew.Text = "New Applicant";
+            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
+            // 
+            // btnViewAttach
+            // 
+            this.btnViewAttach.Appearance.BackColor = DevExpress.LookAndFeel.DXSkinColors.FillColors.Primary;
+            this.btnViewAttach.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViewAttach.Appearance.Options.UseBackColor = true;
+            this.btnViewAttach.Appearance.Options.UseFont = true;
+            this.btnViewAttach.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnViewAttach.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnViewAttach.ImageOptions.Image")));
+            this.btnViewAttach.Location = new System.Drawing.Point(6, 75);
+            this.btnViewAttach.Name = "btnViewAttach";
+            this.btnViewAttach.Size = new System.Drawing.Size(212, 54);
+            this.btnViewAttach.TabIndex = 0;
+            this.btnViewAttach.Text = "View Attachments (Ctrl + S)";
+            this.btnViewAttach.Click += new System.EventHandler(this.btnViewAttach_Click);
             // 
             // MasterList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gainsboro;
-            this.ClientSize = new System.Drawing.Size(802, 636);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(1364, 636);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.pictureEdit1);
             this.Controls.Add(this.labelControl1);
             this.Controls.Add(this.progressBarControl1);
-            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.groupControl2);
+            this.ForeColor = System.Drawing.Color.Black;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MasterList";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Master List";
@@ -488,12 +613,16 @@ namespace SpinsNew
             this.panel_spinner.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_status.Properties)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.gbForms.ResumeLayout(false);
+            this.gbVerification.ResumeLayout(false);
+            this.gbActions.ResumeLayout(false);
+            this.gbPayroll.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -506,36 +635,37 @@ namespace SpinsNew
         private DevExpress.XtraEditors.GroupControl groupControl2;
         private DevExpress.XtraEditors.SearchControl searchControl1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private DevExpress.XtraEditors.ProgressBarControl progressBarControl1;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private System.Windows.Forms.Panel panel_spinner;
         private System.Windows.Forms.PictureBox pictureBox1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
-        private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem payrollToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem attachmentsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newApplicantToolStripMenuItem;
         private DevExpress.XtraEditors.PictureEdit pictureEdit1;
-        private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem delistToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem setAsApplicantToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem activateToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem delistedAndReplacementsToolStripMenuItem;
         public DevExpress.XtraGrid.GridControl gridControl1;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private DevExpress.XtraEditors.GroupControl groupControl1;
-        private System.Windows.Forms.ToolStripMenuItem payrollToolStripMenuItem1;
         private DevExpress.XtraEditors.CheckedComboBoxEdit cmb_municipality;
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_status;
         private DevExpress.XtraEditors.LabelControl labelControl4;
-        private System.Windows.Forms.ToolStripMenuItem verificationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem verifyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private DevExpress.XtraEditors.SimpleButton btnNew;
+        private DevExpress.XtraEditors.SimpleButton btnDelist;
+        private DevExpress.XtraEditors.SimpleButton btnViewAttach;
+        private System.Windows.Forms.GroupBox gbPayroll;
+        private DevExpress.XtraEditors.SimpleButton btnViewPayroll;
+        private DevExpress.XtraEditors.SimpleButton btnPayroll;
+        private DevExpress.XtraEditors.SimpleButton btnCreatePayroll;
+        private System.Windows.Forms.GroupBox gbActions;
+        private DevExpress.XtraEditors.SimpleButton btnDelete;
+        private DevExpress.XtraEditors.SimpleButton btnSetApplicant;
+        private DevExpress.XtraEditors.SimpleButton btnActivate;
+        private DevExpress.XtraEditors.SimpleButton btnDelistBene;
+        private System.Windows.Forms.GroupBox gbVerification;
+        private DevExpress.XtraEditors.SimpleButton btnUndoVerified;
+        private DevExpress.XtraEditors.SimpleButton btnVerify;
+        private System.Windows.Forms.GroupBox gbForms;
     }
 }
 

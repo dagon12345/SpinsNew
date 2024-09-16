@@ -223,7 +223,7 @@ namespace SpinsNew.Forms
             // btn_register
             // 
             this.btn_register.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_register.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
+            this.btn_register.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_register.ImageOptions.Image")));
             this.btn_register.Location = new System.Drawing.Point(189, 250);
             this.btn_register.Name = "btn_register";
             this.btn_register.Size = new System.Drawing.Size(126, 32);

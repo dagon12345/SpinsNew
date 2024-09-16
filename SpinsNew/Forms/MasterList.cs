@@ -33,14 +33,19 @@ namespace SpinsNew
             con = new MySqlConnection(cs.dbcon);
             gridView1.FocusedRowChanged += gridView_FocusedRowChanged;
 
+            this.KeyPreview = true;
+            this.KeyDown += btnViewAttach_KeyDown;
+            this.KeyDown += btnViewPayroll_KeyDown;
+            this.KeyDown += btnDelistBene_KeyDown;
+            //this.KeyDown += btnTransact_KeyDown;
             // masterlistForm = masterlist;// Execute the MasterListform.
             // Set the shortcut key for viewToolStripMenuItem
-            viewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
+            //viewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
             // Set the shortcut key for viewToolStripMenuItem
-            delistToolStripMenuItem.ShortcutKeys = Keys.Delete;
-            attachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+            ////delistToolStripMenuItem.ShortcutKeys = Keys.Delete;
+            //attachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
             // Optionally, handle the click event if not already handled
-            viewToolStripMenuItem.Click += viewToolStripMenuItem_Click;
+            // viewToolStripMenuItem.Click += viewToolStripMenuItem_Click;
 
             // Subscribe to the FilterExpressionChanged event
             GridView gridView = (GridView)gridControl1.MainView;
@@ -53,12 +58,50 @@ namespace SpinsNew
             
             if(userRole == "3")// Number 3 is the encoders
             {
-                payrollToolStripMenuItem.Visible = false;
-                verificationToolStripMenuItem.Visible = false;
-                actionsToolStripMenuItem.Visible = false;
+                gbActions.Visible = false;
+                gbPayroll.Visible = false;
+                gbVerification.Visible = false;
+                gbForms.Visible = false;
             }
 
 
+        }
+
+        private void btnDelistBene_KeyDown(object sender, KeyEventArgs e)
+        {
+
+
+            if ((e.KeyCode == Keys.Delete))
+            {
+                btnDelistBene.PerformClick();
+
+            }
+        }
+
+        private void btnViewPayroll_KeyDown(object sender, KeyEventArgs e)
+        {
+            // throw new NotImplementedException();
+            // Check if Ctrl+B is pressed
+            if ((e.Control && e.KeyCode == Keys.P))
+            {
+                //Focus the txtBarcode
+                //txtBarcode.Focus();
+                btnViewPayroll.PerformClick();
+
+            }
+        }
+
+        private void btnViewAttach_KeyDown(object sender, KeyEventArgs e)
+        {
+            // throw new NotImplementedException();
+            // Check if Ctrl+B is pressed
+            if ((e.Control && e.KeyCode == Keys.S))
+            {
+                //Focus the txtBarcode
+                //txtBarcode.Focus();
+                btnViewAttach.PerformClick();
+
+            }
         }
 
         private void gridView1_ColumnFilterChanged(object sender, EventArgs e)
@@ -1097,34 +1140,7 @@ namespace SpinsNew
 
         private void viewToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (Application.OpenForms.OfType<PayrollHistory>().Any())
-            {
-                payrollHistoryForm.Select();
-                payrollHistoryForm.BringToFront();
-            }
-            else
-            {
-
-
-                GridView gridView = gridControl1.MainView as GridView;
-                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                // Check if any row is selected
-                if (gridView.SelectedRowsCount == 0)
-                {
-                    MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // Exit the method without showing EditApplicantForm
-                }
-                payrollHistoryForm = new PayrollHistory(this);
-
-                // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]);
-
-                payrollHistoryForm.DisplayID(id);
-                payrollHistoryForm.ShowDialog();
-
-
-            }
+           
         }
 
         private void simpleButton1_Click_1(object sender, EventArgs e)
@@ -1134,54 +1150,12 @@ namespace SpinsNew
 
         private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Application.OpenForms.OfType<NewApplicant>().Any())
-            {
-                NewApplicantForm.Select();
-                NewApplicantForm.BringToFront();
-            }
-            else
-            {
-                NewApplicantForm = new NewApplicant(_username);
-                NewApplicantForm.ShowDialog();
-            }
+          
         }
         Delisted delistedForm;
         private void delistToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Application.OpenForms.OfType<Delisted>().Any())
-            {
-                delistedForm.Select();
-                delistedForm.BringToFront();
-            }
-            else
-            {
-                GridView gridView = gridControl1.MainView as GridView;
-
-                // Check if any row is selected
-                if (gridView.SelectedRowsCount == 0)
-                {
-                    MessageBox.Show("Please select a data row first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // Exit the method without showing EditApplicantForm
-                }
-
-                // Get the selected row
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                string status = row["StatusCurrent"].ToString();
-
-                // Check if StatusID is 1 (Active) or 99 (Applicant)
-                if (status != "Active" && status != "Applicant" && status != "Waitlisted")
-                {
-                    MessageBox.Show("Particular beneficiary was already Delisted please select an Applicant, Active, or Waitlisted beneficiary to continue.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // Exit the method without showing the form
-                }
-
-                delistedForm = new Delisted(this, _username);
-
-                // Pass the ID value to the EditApplicant form
-                int id = Convert.ToInt32(row["ID"]);
-                delistedForm.DisplayID(id);
-                delistedForm.ShowDialog();
-            }
+           
         }
         private void UndoVerification()
         {
@@ -1498,41 +1472,7 @@ namespace SpinsNew
 
         private void setAsApplicantToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GridView gridView = gridControl1.MainView as GridView;
-            if (gridView.SelectedRowsCount == 0)
-            {
-                MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method without showing EditApplicantForm
-            }
-
-            // Get the selected row
-            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-            string status = row["StatusCurrent"].ToString();
-
-            // Check if StatusID is 1 (Active) or 99 (Applicant)
-            if (status == "Applicant")
-            {
-                MessageBox.Show("Particular beneficiary is already an Applicant please select an Active or Delisted beneficiary to continue.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method without showing the form
-            }
-
-            int rowHandle = gridView.FocusedRowHandle; // Get the handle of the focused row
-            if (rowHandle >= 0) // Ensure there is a selected row
-            {
-                object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
-                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName"); // Replace "LastName" with the column name of the person's name
-                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
-                if (idValue != null && nameValue != null)
-                {
-                    int id = Convert.ToInt32(idValue);
-                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
-                    if (XtraMessageBox.Show($"Are you sure you want to set this {name} to Applicant?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        UpdateMastertoApplicant(); // Set the beneficiary to applicant.
-                        return;
-                    }
-                }
-            }
+           
 
         }
 
@@ -1677,6 +1617,379 @@ namespace SpinsNew
 
         private void activateToolStripMenuItem_Click(object sender, EventArgs e)
         {
+           
+        }
+        private void delistedAndReplacementsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void searchControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        PayrollPopup payrollpopupForm;
+        private void createToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void deleteToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+           
+        }
+        Attachments attachmentsForm;
+        private void attachmentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+
+
+        }
+        private Payroll payrollForm;
+
+        private void payrollToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void groupControl2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private async void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
+        {
+
+            // Get the current search criteria
+            string currentMunicipality = cmb_municipality.Text;
+            string currentStatus = cmb_status.Text;
+
+            // Check if the search criteria have changed
+            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
+            {
+                // Criteria haven't changed, do not trigger the search method
+                //MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Update the previous search criteria
+            previousMunicipality = currentMunicipality;
+            previousStatus = currentStatus;
+
+            // Your existing logic to handle search
+            if (cmb_municipality.Text == "" && cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_municipality.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            EnableSpinner();//Enable the spinner
+            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            return;
+        }
+
+        private void verifyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void MasterList_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //if (e.CloseReason == CloseReason.UserClosing)
+            //{
+            //    if (MessageBox.Show("Are you sure want to exit?",
+            //                   "My First Application",
+            //                    MessageBoxButtons.YesNo,
+            //                    MessageBoxIcon.Information) == DialogResult.Yes)
+            //        Environment.Exit(1);
+            //    else
+            //        e.Cancel = true; // to don't close form is user change his mind
+            //}
+         
+        }
+
+        private async void cmb_status_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            // Get the current search criteria
+            string currentMunicipality = cmb_municipality.Text;
+            string currentStatus = cmb_status.Text;
+
+            // Check if the search criteria have changed
+            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
+            {
+                // Criteria haven't changed, do not trigger the search method
+               // MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Update the previous search criteria
+            previousMunicipality = currentMunicipality;
+            previousStatus = currentStatus;
+
+            // Your existing logic to handle search
+            if (cmb_municipality.Text == "" && cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_municipality.Text == "")
+            {
+                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmb_status.Text == "")
+            {
+                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            EnableSpinner();//Enable the spinner
+            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            return;
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<NewApplicant>().Any())
+            {
+                NewApplicantForm.Select();
+                NewApplicantForm.BringToFront();
+            }
+            else
+            {
+                NewApplicantForm = new NewApplicant(_username);
+                NewApplicantForm.ShowDialog();
+            }
+        }
+
+        private void btnViewAttach_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<Attachments>().Any())
+            {
+                attachmentsForm.Select();
+                attachmentsForm.BringToFront();
+            }
+            else
+            {
+
+                GridView gridView = gridControl1.MainView as GridView;
+                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing EditApplicantForm
+                }
+
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                // Pass the ID value to the EditApplicant form
+                int id = Convert.ToInt32(row["ID"]);
+                //int id = Convert.ToInt32(txt_id.Text);
+                attachmentsForm = new Attachments(this, payrollForm, _username);
+
+                attachmentsForm.DisplayID(id);
+                attachmentsForm.ShowDialog();
+            }
+        }
+
+        private void btnDelist_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<Replacements>().Any())
+            {
+                replacementsForm.Select();
+                replacementsForm.BringToFront();
+            }
+            else
+            {
+                replacementsForm = new Replacements(_username);
+                replacementsForm.Show();
+            }
+        }
+
+        private void btnViewPayroll_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<PayrollHistory>().Any())
+            {
+                payrollHistoryForm.Select();
+                payrollHistoryForm.BringToFront();
+            }
+            else
+            {
+
+
+                GridView gridView = gridControl1.MainView as GridView;
+                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing EditApplicantForm
+                }
+                payrollHistoryForm = new PayrollHistory(this);
+
+                // Pass the ID value to the EditApplicant form
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row["ID"]);
+
+                payrollHistoryForm.DisplayID(id);
+                payrollHistoryForm.ShowDialog();
+
+
+            }
+        }
+
+        private void btnCreatePayroll_Click(object sender, EventArgs e)
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+            // Check if any row is selected
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("Please select Municipality and set status to Active before creating payroll", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Exit the method without showing EditApplicantForm
+            }
+
+            //if (ck_all.Checked == true)
+            //{
+            //    XtraMessageBox.Show("Select only One[1] Municipality when creating a payroll.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
+
+            if (cmb_status.Text != "Active")
+            {
+                XtraMessageBox.Show("Sorry you can only create a payroll for active applicants", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (cmb_municipality.Text == "")
+            {
+                XtraMessageBox.Show("Select municipality before creating payroll.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //InsertIntoPayroll();
+
+            if (Application.OpenForms.OfType<PayrollPopup>().Any())
+            {
+                payrollpopupForm.Select();
+                payrollpopupForm.BringToFront();
+            }
+            else
+            {
+                payrollpopupForm = new PayrollPopup(this, _username); //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
+                payrollpopupForm.ShowDialog();
+            }
+        }
+
+        private void btnPayroll_Click(object sender, EventArgs e)
+        {
+
+            if (Application.OpenForms.OfType<Payroll>().Any())
+            {
+                payrollForm.Select();
+                payrollForm.BringToFront();
+            }
+            else
+            {
+                payrollForm = new Payroll(_username, _userRole);
+                payrollForm.Show();
+            }
+        }
+
+        private void btnDelistBene_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<Delisted>().Any())
+            {
+                delistedForm.Select();
+                delistedForm.BringToFront();
+            }
+            else
+            {
+                GridView gridView = gridControl1.MainView as GridView;
+
+                // Check if any row is selected
+                if (gridView.SelectedRowsCount == 0)
+                {
+                    MessageBox.Show("Please select a data row first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing EditApplicantForm
+                }
+
+                // Get the selected row
+                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                string status = row["StatusCurrent"].ToString();
+
+                // Check if StatusID is 1 (Active) or 99 (Applicant)
+                if (status != "Active" && status != "Applicant" && status != "Waitlisted")
+                {
+                    MessageBox.Show("Particular beneficiary was already Delisted please select an Applicant, Active, or Waitlisted beneficiary to continue.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing the form
+                }
+
+                delistedForm = new Delisted(this, _username);
+
+                // Pass the ID value to the EditApplicant form
+                int id = Convert.ToInt32(row["ID"]);
+                delistedForm.DisplayID(id);
+                delistedForm.ShowDialog();
+            }
+        }
+
+        private void btnSetApplicant_Click(object sender, EventArgs e)
+        {
+            GridView gridView = gridControl1.MainView as GridView;
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method without showing EditApplicantForm
+            }
+
+            // Get the selected row
+            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+            string status = row["StatusCurrent"].ToString();
+
+            // Check if StatusID is 1 (Active) or 99 (Applicant)
+            if (status == "Applicant")
+            {
+                MessageBox.Show("Particular beneficiary is already an Applicant please select an Active or Delisted beneficiary to continue.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method without showing the form
+            }
+
+            int rowHandle = gridView.FocusedRowHandle; // Get the handle of the focused row
+            if (rowHandle >= 0) // Ensure there is a selected row
+            {
+                object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
+                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName"); // Replace "LastName" with the column name of the person's name
+                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
+                if (idValue != null && nameValue != null)
+                {
+                    int id = Convert.ToInt32(idValue);
+                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
+                    if (XtraMessageBox.Show($"Are you sure you want to set this {name} to Applicant?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        UpdateMastertoApplicant(); // Set the beneficiary to applicant.
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void btnActivate_Click(object sender, EventArgs e)
+        {
             GridView gridView = gridControl1.MainView as GridView;
             if (gridView.SelectedRowsCount == 0)
             {
@@ -1738,68 +2051,8 @@ namespace SpinsNew
                 }
             }
         }
-        private void delistedAndReplacementsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (Application.OpenForms.OfType<Replacements>().Any())
-            {
-                replacementsForm.Select();
-                replacementsForm.BringToFront();
-            }
-            else
-            {
-                replacementsForm = new Replacements(_username);
-                replacementsForm.Show();
-            }
-        }
 
-        private void searchControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-        PayrollPopup payrollpopupForm;
-        private void createToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            GridView gridView = gridControl1.MainView as GridView;
-            // Check if any row is selected
-            if (gridView.SelectedRowsCount == 0)
-            {
-                MessageBox.Show("Please select Municipality and set status to Active before creating payroll", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return; // Exit the method without showing EditApplicantForm
-            }
-
-            //if (ck_all.Checked == true)
-            //{
-            //    XtraMessageBox.Show("Select only One[1] Municipality when creating a payroll.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
-
-            if (cmb_status.Text != "Active")
-            {
-                XtraMessageBox.Show("Sorry you can only create a payroll for active applicants", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (cmb_municipality.Text == "")
-            {
-                XtraMessageBox.Show("Select municipality before creating payroll.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            //InsertIntoPayroll();
-
-            if (Application.OpenForms.OfType<PayrollPopup>().Any())
-            {
-                payrollpopupForm.Select();
-                payrollpopupForm.BringToFront();
-            }
-            else
-            {
-                payrollpopupForm = new PayrollPopup(this, _username); //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
-                payrollpopupForm.ShowDialog();
-            }
-        }
-
-        private void deleteToolStripMenuItem_Click_1(object sender, EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1870,101 +2123,8 @@ namespace SpinsNew
                 throw;
             }
         }
-        Attachments attachmentsForm;
-        private void attachmentsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (Application.OpenForms.OfType<Attachments>().Any())
-            {
-                attachmentsForm.Select();
-                attachmentsForm.BringToFront();
-            }
-            else
-            {
 
-                GridView gridView = gridControl1.MainView as GridView;
-                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                // Check if any row is selected
-                if (gridView.SelectedRowsCount == 0)
-                {
-                    MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // Exit the method without showing EditApplicantForm
-                }
-
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                // Pass the ID value to the EditApplicant form
-                int id = Convert.ToInt32(row["ID"]);
-                //int id = Convert.ToInt32(txt_id.Text);
-                attachmentsForm = new Attachments(this, payrollForm, _username);
-
-                attachmentsForm.DisplayID(id);
-                attachmentsForm.ShowDialog();
-            }
-
-
-        }
-        private Payroll payrollForm;
-
-        private void payrollToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            if (Application.OpenForms.OfType<Payroll>().Any())
-            {
-                payrollForm.Select();
-                payrollForm.BringToFront();
-            }
-            else
-            {
-                payrollForm = new Payroll(_username, _userRole);
-                payrollForm.Show();
-            }
-        }
-
-        private void groupControl2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private async void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
-        {
-
-            // Get the current search criteria
-            string currentMunicipality = cmb_municipality.Text;
-            string currentStatus = cmb_status.Text;
-
-            // Check if the search criteria have changed
-            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
-            {
-                // Criteria haven't changed, do not trigger the search method
-                //MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Update the previous search criteria
-            previousMunicipality = currentMunicipality;
-            previousStatus = currentStatus;
-
-            // Your existing logic to handle search
-            if (cmb_municipality.Text == "" && cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_municipality.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            EnableSpinner();//Enable the spinner
-            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-            return;
-        }
-
-        private void verifyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnVerify_Click(object sender, EventArgs e)
         {
             GridView gridView = gridControl1.MainView as GridView;
             if (gridView.SelectedRowsCount == 0)
@@ -2013,10 +2173,9 @@ namespace SpinsNew
                     MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
         }
 
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnUndoVerified_Click(object sender, EventArgs e)
         {
             GridView gridView = gridControl1.MainView as GridView;
             if (gridView.SelectedRowsCount == 0)
@@ -2065,62 +2224,6 @@ namespace SpinsNew
                     MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        private void MasterList_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //if (e.CloseReason == CloseReason.UserClosing)
-            //{
-            //    if (MessageBox.Show("Are you sure want to exit?",
-            //                   "My First Application",
-            //                    MessageBoxButtons.YesNo,
-            //                    MessageBoxIcon.Information) == DialogResult.Yes)
-            //        Environment.Exit(1);
-            //    else
-            //        e.Cancel = true; // to don't close form is user change his mind
-            //}
-         
-        }
-
-        private async void cmb_status_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            // Get the current search criteria
-            string currentMunicipality = cmb_municipality.Text;
-            string currentStatus = cmb_status.Text;
-
-            // Check if the search criteria have changed
-            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
-            {
-                // Criteria haven't changed, do not trigger the search method
-               // MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Update the previous search criteria
-            previousMunicipality = currentMunicipality;
-            previousStatus = currentStatus;
-
-            // Your existing logic to handle search
-            if (cmb_municipality.Text == "" && cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_municipality.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            EnableSpinner();//Enable the spinner
-            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-            return;
         }
     }
 }

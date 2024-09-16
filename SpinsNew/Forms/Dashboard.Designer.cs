@@ -47,13 +47,14 @@ namespace SpinsNew.Forms
             // 
             // menuStrip1
             // 
+            this.menuStrip1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionToolStripMenuItem,
             this.statisticsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(813, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(813, 33);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -117,14 +118,14 @@ namespace SpinsNew.Forms
             this.MasterlistToolStripMenuItem});
             this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(90, 29);
             this.optionToolStripMenuItem.Text = "Menu";
             // 
             // MasterlistToolStripMenuItem
             // 
             this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
             this.MasterlistToolStripMenuItem.Name = "MasterlistToolStripMenuItem";
-            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(180, 30);
             this.MasterlistToolStripMenuItem.Text = "Masterlist";
             this.MasterlistToolStripMenuItem.Click += new System.EventHandler(this.MasterlistToolStripMenuItem_Click);
             // 
@@ -134,14 +135,14 @@ namespace SpinsNew.Forms
             this.toolStripMenuItem1});
             this.statisticsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources._9004856_chart_graph_statistics_bar_icon;
             this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
-            this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(115, 29);
             this.statisticsToolStripMenuItem.Text = "Statistics";
             this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.statisticsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(200, 30);
             this.toolStripMenuItem1.Text = "Paid Statistics";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
