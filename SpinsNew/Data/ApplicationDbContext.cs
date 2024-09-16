@@ -52,6 +52,9 @@ namespace SpinsNew.Data
             modelBuilder.Entity<PayrollModel>()
                 .HasIndex(e => new { e.Year, e.ClaimTypeID, e.PeriodID });
 
+            modelBuilder.Entity<MasterListModel>()
+                .HasIndex(m => new { m.PSGCCityMun, m.StatusID });
+
 
             modelBuilder.Entity<PayrollModel>()
                 .HasIndex(e => e.Year);
@@ -91,6 +94,12 @@ namespace SpinsNew.Data
                  .WithMany(e => e.MasterListModels)
                  .HasForeignKey(e => e.IDtypeID)
                  .HasPrincipalKey(e => e.Id);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(m => m.LibraryMunicipality)
+                .WithMany(ma => ma.MasterListModels)
+                .HasForeignKey(ma => ma.PSGCCityMun)
+                .HasPrincipalKey(m => m.PSGCCityMun);
 
             modelBuilder.Entity<LibraryPeriod>()
                 .HasMany(e => e.PayrollModels)
@@ -163,23 +172,14 @@ namespace SpinsNew.Data
                 .WithOne(e => e.MasterListModel)
                 .HasForeignKey(e => e.MasterListID)
                 .HasPrincipalKey(e => e.Id);
-        
-            //Many to many
-            //modelBuilder.Entity<PayrollandGisManyToMany>()
-            //    .HasKey(pg => new { pg.PayrollModeID, pg.GisModeID });
 
-            //modelBuilder.Entity<PayrollandGisManyToMany>()
-            //    .HasOne(pg => pg.PayrollModel)
-            //    .WithMany(p => p.PayrollandGisManyToManys)
-            //    .HasForeignKey(pg => pg.PayrollModeID);
+            modelBuilder.Entity<LibraryMunicipality>()
+                .HasOne(p => p.LibraryProvince)
+                .WithMany(c => c.LibraryMunicipalities)
+                .HasForeignKey(c => c.PSGCProvince)
+                .HasPrincipalKey(p => p.PSGCProvince);
 
-            //modelBuilder.Entity<PayrollandGisManyToMany>()
-            //    .HasOne(pg => pg.GisModel)
-            //    .WithMany(p => p.PayrollandGisManyToManys)
-            //    .HasForeignKey(pg => pg.GisModeID);
-            //modelBuilder.Entity<PayrollModel>()
-            //    .HasMany(e => e.GisModels)
-            //    .WithMany(e => e.)
+
                 
 
             base.OnModelCreating(modelBuilder);

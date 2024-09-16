@@ -13,6 +13,9 @@ namespace SpinsNew.Libraries
         public int District { get; set; }
 
         public virtual ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();//Our parent is our tbl_payroll_socpen
+        public LibraryProvince LibraryProvince { get; set; } = null;
+        public virtual ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
+
 
     }
 }

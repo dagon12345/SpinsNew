@@ -62,10 +62,6 @@ namespace SpinsNew.Forms
             }
         }
 
-
-
-
-
         private async void Payroll_Load(object sender, EventArgs e)
         {
             _dbContext = new ApplicationDbContext(); // our dbcontext

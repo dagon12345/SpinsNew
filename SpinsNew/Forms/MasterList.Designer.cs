@@ -67,6 +67,7 @@ namespace SpinsNew
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.btnViewAttach = new DevExpress.XtraEditors.SimpleButton();
+            this.btnSearch = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).BeginInit();
@@ -148,6 +149,7 @@ namespace SpinsNew
             this.groupControl2.Appearance.BackColor = System.Drawing.Color.Transparent;
             this.groupControl2.Appearance.Options.UseBackColor = true;
             this.groupControl2.CaptionImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("groupControl2.CaptionImageOptions.Image")));
+            this.groupControl2.Controls.Add(this.btnSearch);
             this.groupControl2.Controls.Add(this.labelControl4);
             this.groupControl2.Controls.Add(this.labelControl3);
             this.groupControl2.Controls.Add(this.cmb_municipality);
@@ -578,6 +580,15 @@ namespace SpinsNew
             this.btnViewAttach.Text = "View Attachments (Ctrl + S)";
             this.btnViewAttach.Click += new System.EventHandler(this.btnViewAttach_Click);
             // 
+            // btnSearch
+            // 
+            this.btnSearch.Location = new System.Drawing.Point(673, 38);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(115, 23);
+            this.btnSearch.TabIndex = 21;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
             // MasterList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -597,7 +608,6 @@ namespace SpinsNew
             this.Text = "Master List";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MasterList_FormClosing);
-            this.Load += new System.EventHandler(this.MasterList_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).EndInit();
@@ -666,6 +676,7 @@ namespace SpinsNew
         private DevExpress.XtraEditors.SimpleButton btnUndoVerified;
         private DevExpress.XtraEditors.SimpleButton btnVerify;
         private System.Windows.Forms.GroupBox gbForms;
+        private DevExpress.XtraEditors.SimpleButton btnSearch;
     }
 }
 

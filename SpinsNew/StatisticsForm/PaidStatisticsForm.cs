@@ -55,37 +55,37 @@ namespace SpinsNew.StatisticsForm
 
         }
 
-        //private async void PayrollGrouping()
-        //{
+        private async void PayrollGrouping()
+        {
 
-        //    try
-        //    {
-
-
-        //        var selectedYearItem = (dynamic)cmb_year.SelectedItem;
-        //        int year = selectedYearItem.Year;
-
-        //        var selectedPeriodItem = (dynamic)cmb_period.SelectedItem;
-        //        int periodId = selectedPeriodItem.PeriodID;
+            try
+            {
 
 
-        //        // We got this logic inside our Services/TablePayroll
-        //        var payrollGroup = await _tablePayroll.GetPayrollAsync(year, periodId);
+                var selectedYearItem = (dynamic)cmb_year.SelectedItem;
+                int year = selectedYearItem.Year;
 
-        //        payrollViewModelBindingSource.DataSource = payrollGroup;
-        //        gridControl1.DataSource = payrollViewModelBindingSource;
-        //        DisableSpinner();
-
+                var selectedPeriodItem = (dynamic)cmb_period.SelectedItem;
+                int periodId = selectedPeriodItem.PeriodID;
 
 
-        //        // Assuming gridView is your GridView instance associated with gridPayroll
+                // We got this logic inside our Services/TablePayroll
+                var payrollGroup = await _tablePayroll.GetPayrollAsync(year, periodId);
 
-        //    }
-        //    catch (Exception)
-        //    {
+                //payrollViewModelBindingSource.DataSource = payrollGroup;
+                //gridControl1.DataSource = payrollViewModelBindingSource;
+                DisableSpinner();
 
-        //    }
-        //}
+
+
+                // Assuming gridView is your GridView instance associated with gridPayroll
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
 
 
         private  void PayrollGroupingADO()

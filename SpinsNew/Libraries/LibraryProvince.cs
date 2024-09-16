@@ -12,5 +12,6 @@ namespace SpinsNew.Libraries
         public int PSGCRegion { get; set; }
 
         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();// The principal entity is the payroll model
+        public virtual ICollection<LibraryMunicipality> LibraryMunicipalities { get; } = new List<LibraryMunicipality>();
     }
 }

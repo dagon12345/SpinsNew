@@ -1,16 +1,10 @@
-﻿using SpinsNew.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SpinsNew.Interfaces;
 using SpinsNew.StatisticsForm;
 using SpinsWinforms.Forms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Extensions.DependencyInjection;
 
 
 namespace SpinsNew.Forms
@@ -60,7 +54,11 @@ namespace SpinsNew.Forms
             }
             else
             {
-                masterlistForm = new MasterList(_username, _userRole, editapplicantForm);
+                // Resolve the ITablePayroll service from the Program.ServiceProvider
+                var libraryMunicipality = Program.ServiceProvider.GetRequiredService<ILibraryMunicipality>(); //We called the DI lifecycle inside our Program.cs
+                var tableMasterlist = Program.ServiceProvider.GetRequiredService<ITableMasterlist>(); //We called the DI lifecycle inside our Program.cs
+
+                masterlistForm = new MasterList(_username, _userRole, editapplicantForm, libraryMunicipality, tableMasterlist);
                 masterlistForm.Show();
             }
         }
@@ -132,6 +130,6 @@ namespace SpinsNew.Forms
                 }
             }
         }
-  
+
     }
 }

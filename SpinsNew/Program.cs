@@ -42,6 +42,13 @@ namespace SpinsNew
                         Singleton lifetime services are created the first time they are requested (or when ConfigureServices is run if you specify an instance there) and then every subsequent request will use the same instance.*/
                     services.AddSingleton<ITablePayroll, TablePayroll>();
                     services.AddSingleton<PaidStatisticsForm>();
+
+                    services.AddTransient<ILibraryMunicipality, LibraryMunicipalityService>();
+                    services.AddScoped<ITableMasterlist, TableMasterlistService>();
+
+                    services.AddTransient<MasterList>();
+
+
                 });
         }
     }

@@ -37,6 +37,7 @@ namespace SpinsNew.Models
         public LibraryIDType LibraryIDType { get; set; }
         public LibraryStatus LibraryStatus { get; set; }
         public GisModel GisModel { get; set; }
+        public LibraryMunicipality LibraryMunicipality { get; set; }
         //public ICollection<GisModel> GisModels { get; } = new List<GisModel>();
 
     }

@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>24</ApplicationRevision>
+    <ApplicationRevision>27</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -422,6 +422,9 @@
     <Compile Include="Forms\Replacements.Designer.cs">
       <DependentUpon>Replacements.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ILibraryMunicipality.cs" />
+    <Compile Include="Interfaces\ILibraryStatus.cs" />
+    <Compile Include="Interfaces\ITableMasterlist.cs" />
     <Compile Include="Interfaces\ITablePayroll.cs" />
     <Compile Include="Libraries\LibraryBarangay.cs" />
     <Compile Include="Libraries\LibraryClaimType.cs" />
@@ -484,6 +487,9 @@
       <DependentUpon>PayrollReporting.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Services\LibraryMunicipalityService.cs" />
+    <Compile Include="Services\LibraryStatusService.cs" />
+    <Compile Include="Services\TableMasterlistService.cs" />
     <Compile Include="Services\TablePayroll.cs" />
     <Compile Include="StatisticsForm\PaidStatisticsForm.cs">
       <SubType>Form</SubType>

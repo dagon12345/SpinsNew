@@ -1,14 +1,15 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
 using SpinsNew.Forms;
+using SpinsNew.Interfaces;
 using SpinsNew.Popups;
 using SpinsWinforms.Forms;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -25,11 +26,15 @@ namespace SpinsNew
         public string _userRole;
         private Replacements replacementsForm;
         private EditApplicant editApplicantForm;
-        //private ApplicationDbContext _dbContext;
-        //private MasterList masterlistForm;// Call MasterList form
-        public MasterList(string username, string userRole, EditApplicant editapplicant)
+        private readonly ILibraryMunicipality _libraryMunicipality;
+        private readonly ITableMasterlist _tableMasterlist;
+
+
+        public MasterList(string username, string userRole, EditApplicant editapplicant, ILibraryMunicipality libraryMunicipality, ITableMasterlist tableMasterlist)
         {
             InitializeComponent();
+            _libraryMunicipality = libraryMunicipality;
+            _tableMasterlist = tableMasterlist;
             con = new MySqlConnection(cs.dbcon);
             gridView1.FocusedRowChanged += gridView_FocusedRowChanged;
 
@@ -37,17 +42,7 @@ namespace SpinsNew
             this.KeyDown += btnViewAttach_KeyDown;
             this.KeyDown += btnViewPayroll_KeyDown;
             this.KeyDown += btnDelistBene_KeyDown;
-            //this.KeyDown += btnTransact_KeyDown;
-            // masterlistForm = masterlist;// Execute the MasterListform.
-            // Set the shortcut key for viewToolStripMenuItem
-            //viewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
-            // Set the shortcut key for viewToolStripMenuItem
-            ////delistToolStripMenuItem.ShortcutKeys = Keys.Delete;
-            //attachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            // Optionally, handle the click event if not already handled
-            // viewToolStripMenuItem.Click += viewToolStripMenuItem_Click;
 
-            // Subscribe to the FilterExpressionChanged event
             GridView gridView = (GridView)gridControl1.MainView;
             gridView.ColumnFilterChanged += gridView1_ColumnFilterChanged;
 
@@ -69,8 +64,6 @@ namespace SpinsNew
 
         private void btnDelistBene_KeyDown(object sender, KeyEventArgs e)
         {
-
-
             if ((e.KeyCode == Keys.Delete))
             {
                 btnDelistBene.PerformClick();
@@ -116,87 +109,60 @@ namespace SpinsNew
         }
 
 
-
-        private void MasterList_Load(object sender, EventArgs e)
+        //Load the methods.
+        protected override async void OnLoad(EventArgs e)
         {
-            //ComboboxMunicipality();
-            Municipality();
+            base.OnLoad(e);
+            await MunicipalityEf();
+
+
             groupControl1.Text = "Count of showed data: [0]";
             // Cast the MainView to GridView
             GridView gridView = gridControl1.MainView as GridView;
-
             if (gridView != null)
             {
                 gridView.RowStyle += gridView_RowStyle;
-                // Subscribe to the CustomDrawFooterCell event
                 gridView.CustomDrawFooterCell += GridView_CustomDrawFooterCell;
             }
-
-            gridView1.CustomDrawCell += gridView1_CustomDrawCell;
 
             //Integrate search control into our grid control.
             searchControl1.Client = gridControl1;
 
-
-
         }
-        private void gridView1_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+
+        //Refactored code of municipality dropdown.
+        private async Task MunicipalityEf()
         {
-            //// Set the background color to black for all cells
-            //e.Appearance.BackColor = Color.Black;
+            var municipalityLists = await _libraryMunicipality.GetMunicipalitiesAsync();
+            foreach(var municipalityList in municipalityLists)
+            {
+                cmb_municipality.Properties.Items.Add(new CheckedListBoxItem
+                ( 
+                    value: municipalityList.PSGCCityMun, //Reference the ID
+                    description: municipalityList.CityMunName + " " + municipalityList.LibraryProvince.ProvinceName, // Display the text plus the province name.
+                    checkState: CheckState.Unchecked // Initially Unchecked.
+                    
+                ));
+            }
 
-            //// Optionally, change the text color to white for visibility
-            //e.Appearance.ForeColor = Color.White;
         }
 
-
-        public void Municipality()
+        private async Task LoadMasterList()
         {
-            try
-            {
-                // Fetch data from the database and bind to CheckedComboBoxEdit
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-            SELECT 
-                m.PSGCCityMun, 
-                m.CityMunName, 
-                m.PSGCProvince, 
-                p.ProvinceName 
-            FROM 
-                lib_city_municipality m
-                INNER JOIN
-                    lib_province p ON m.PSGCProvince = p.PSGCProvince
-            ORDER BY 
-                ProvinceName,
-                m.CityMunName
-        "; // Join with lib_province to get ProvinceName
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+            // Construct a filter for selected municipalities
+            var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+            // Convert the checked items to a list of integers
+            var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                          .Select(m => int.Parse(m.Trim()))
+                                                          .ToList();
 
-                // Clear existing items in the CheckedComboBoxEdit
-                cmb_municipality.Properties.Items.Clear();
 
-                foreach (DataRow dr in dt.Rows)
-                {
-                    // Add each municipality to the CheckedComboBoxEdit with a checkbox
-                    cmb_municipality.Properties.Items.Add(new CheckedListBoxItem(
-                        value: Convert.ToInt32(dr["PSGCCityMun"]), // The value to store (usually the ID)
-                        description: dr["CityMunName"].ToString() + " " + dr["ProvinceName"].ToString(), // The display text
-                        checkState: CheckState.Unchecked // Initially unchecked
-                    ));
-                }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                con.Close();
-            }
+            var masterLists = await Task.Run(() => _tableMasterlist.GetMasterListModelsAsync(municipalitiesArray));
+            gridControl1.DataSource = masterLists;
+         
         }
+
+
 
 
         // Event handler for CustomDrawFooterCell
@@ -238,199 +204,6 @@ namespace SpinsNew
             }
         }
 
-
-        //Load masterlist below
-        private async void LoadDataAsync()
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-                SELECT 
-                m.ID,
-                m.LastName,
-                m.FirstName,
-                m.MiddleName,
-                m.ExtName,
-                tg.ReferenceCode as LatestValidation,
-                tg.SPISBatch as SpisBatch,
-                ls.Status as Status,
-                m.Citizenship,
-                m.MothersMaiden,
-                lr.Region as Region,
-                lp.ProvinceName as Province,
-                lc.CityMunName as Municipality,
-                lb.BrgyName as Barangay,
-                m.Address,
-                m.BirthDate,
-                TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE()) AS Age,
-                s.Sex as Sex,
-                ms.MaritalStatus as MaritalStatus,
-                m.Religion,
-                m.BirthPlace,
-                m.EducAttain,
-                it.Type as IDType,
-                m.IDNumber,
-                m.IDDateIssued,
-                m.Pantawid,
-                m.Indigenous,
-                m.SocialPensionID,
-                m.HouseholdID,
-                m.IndigenousID,
-                m.ContactNum,
-                lh.HealthStatus as HealthStatus,
-                m.HealthStatusRemarks,
-                m.DateTimeEntry,
-                m.EntryBy,
-                ld.DataSource as DataSource,
-                m.Remarks,
-                lrt.RegType as RegistrationType,
-                m.InclusionBatch,
-                m.InclusionDate,
-                m.ExclusionBatch,
-                m.ExclusionDate,
-                m.DateDeceased,
-                m.DateTimeModified,
-                m.ModifiedBy,
-                m.DateTimeDeleted,
-                m.DeletedBy,
-                m.WaitlistedReportID,
-                m.WithPhoto
-            FROM 
-                tbl_masterlist m
-            LEFT JOIN 
-                tbl_gis tg ON m.ID = tg.MasterlistID
-            LEFT JOIN 
-                lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-            LEFT JOIN 
-                lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-            LEFT JOIN 
-                lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-            LEFT JOIN 
-                lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-            LEFT JOIN 
-                lib_sex s ON m.SexID = s.ID
-            LEFT JOIN 
-                lib_marital_status ms ON m.MaritalStatusID = ms.ID
-            LEFT JOIN 
-                lib_id_type it ON m.IDtypeID = it.ID
-            LEFT JOIN 
-                lib_health_status lh ON m.HealthStatusID = lh.ID
-            LEFT JOIN 
-                lib_datasource ld ON m.DataSourceID = ld.ID
-            LEFT JOIN 
-                lib_status ls ON m.StatusID = ls.ID
-            LEFT JOIN 
-                lib_registration_type lrt ON m.RegtypeID = lrt.ID";
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                //Await to reduce lag while loading large amount of datas
-                await Task.Run(() => da.Fill(dt));
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the "ID" column
-                    gridView.Columns["ID"].Visible = false;
-
-                    // Freeze the columns
-                    gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-                }
-
-
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        // Fill combobox with municipality
-        public void ComboboxMunicipality()
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-            SELECT
-                lcm.PSGCCityMun,
-                lcm.CityMunName,
-                lr.ProvinceName as Province
-            FROM 
-                lib_city_municipality lcm
-            LEFT JOIN 
-                lib_province lr ON lcm.PSGCProvince = lr.PSGCProvince";
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the ComboBoxEdit
-                cmb_municipality.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
-                {
-                    // Add both ID and Name to the ComboBox
-                    cmb_municipality.Properties.Items.Add(new { PSGCCityMun = dr["PSGCCityMun"], Province = dr["Province"], Name = dr["CityMunName"] });
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        //Status if combobox is needed
-        public void ComboboxStatus()
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT * FROM lib_status";
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-                foreach (DataRow dr in dt.Rows)
-                {
-                    cmb_status.Properties.Items.Add(dr["Status"].ToString());
-
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
 
         public async Task AllMunicipalities()
         {
@@ -1693,7 +1466,8 @@ namespace SpinsNew
             }
 
             EnableSpinner();//Enable the spinner
-            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+            //await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+           
             return;
         }
 
@@ -2224,6 +1998,11 @@ namespace SpinsNew
                     MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private async void btnSearch_Click(object sender, EventArgs e)
+        {
+            await LoadMasterList();
         }
     }
 }
