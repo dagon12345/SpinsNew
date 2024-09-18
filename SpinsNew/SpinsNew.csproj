@@ -424,12 +424,16 @@
     </Compile>
     <Compile Include="Interfaces\ILibraryMunicipality.cs" />
     <Compile Include="Interfaces\ILibraryStatus.cs" />
+    <Compile Include="Interfaces\ITableLog.cs" />
     <Compile Include="Interfaces\ITableMasterlist.cs" />
     <Compile Include="Interfaces\ITablePayroll.cs" />
+    <Compile Include="Libraries\LibraryAssessment.cs" />
     <Compile Include="Libraries\LibraryBarangay.cs" />
     <Compile Include="Libraries\LibraryClaimType.cs" />
+    <Compile Include="Libraries\LibraryDataSource.cs" />
     <Compile Include="Libraries\LibraryHealthStatus.cs" />
     <Compile Include="Libraries\LibraryIDType.cs" />
+    <Compile Include="Libraries\LibraryMaritalStatus.cs" />
     <Compile Include="Libraries\LibraryMunicipality.cs" />
     <Compile Include="Libraries\LibraryPaymentMode.cs" />
     <Compile Include="Libraries\LibraryPayrollStatus.cs" />
@@ -437,12 +441,15 @@
     <Compile Include="Libraries\LibraryPayrollType.cs" />
     <Compile Include="Libraries\LibraryPeriod.cs" />
     <Compile Include="Libraries\LibraryProvince.cs" />
+    <Compile Include="Libraries\LibraryRegistrationType.cs" />
     <Compile Include="Libraries\LibrarySex.cs" />
     <Compile Include="Libraries\LibraryStatus.cs" />
     <Compile Include="Libraries\LibraryYear.cs" />
     <Compile Include="Models\GisModel.cs" />
+    <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\MasterListModel.cs" />
     <Compile Include="Models\PayrollModel.cs" />
+    <Compile Include="Models\SpbufModel.cs" />
     <Compile Include="Popups\PayrollPopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -489,6 +496,7 @@
     </Compile>
     <Compile Include="Services\LibraryMunicipalityService.cs" />
     <Compile Include="Services\LibraryStatusService.cs" />
+    <Compile Include="Services\TableLogService.cs" />
     <Compile Include="Services\TableMasterlistService.cs" />
     <Compile Include="Services\TablePayroll.cs" />
     <Compile Include="StatisticsForm\PaidStatisticsForm.cs">
@@ -497,6 +505,7 @@
     <Compile Include="StatisticsForm\PaidStatisticsForm.Designer.cs">
       <DependentUpon>PaidStatisticsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\MasterListViewModel.cs" />
     <Compile Include="ViewModel\PayrollViewModel.cs" />
     <EmbeddedResource Include="Forms\Attachments.resx">
       <DependentUpon>Attachments.cs</DependentUpon>
@@ -576,6 +585,9 @@
       <DependentUpon>PaidStatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="DataSets\PayrollDataSet.xsc">
       <DependentUpon>PayrollDataSet.xsd</DependentUpon>
     </None>
@@ -599,6 +611,7 @@
       <DependentUpon>SignatoriesDataSet.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\SpinsNew.ViewModel.MasterListViewModel.datasource" />
     <None Include="Properties\DataSources\SpinsNew.ViewModel.PayrollViewModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

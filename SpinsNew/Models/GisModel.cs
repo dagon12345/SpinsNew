@@ -1,4 +1,5 @@
-﻿using SpinsNew.ViewModel;
+﻿using SpinsNew.Libraries;
+using SpinsNew.ViewModel;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,7 @@ namespace SpinsNew.Models
 {
     public class GisModel
     {
+        //Also a parent but not in the masterlist
         [Key]
         public int Id { get; set; }
         public int ReferenceCode { get; set; }
@@ -19,7 +21,8 @@ namespace SpinsNew.Models
        //  public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
 
        // public ICollection<PayrollandGisManyToMany> PayrollandGisManyToManys { get; } = new List<PayrollandGisManyToMany>(); //Linking Entitiy many to many relationship
-         public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
-        //public MasterListModel MasterListModel { get; set; }
+       // public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
+        public LibraryAssessment LibraryAssessment { get; set; }
+        public MasterListModel MasterListModel { get; set; }
     }
 }

@@ -1,0 +1,4 @@
+Summary
+UI Layer references Business Layer.
+Business Layer references Data Access Layer.
+Data Access Layer does not reference any other layers.

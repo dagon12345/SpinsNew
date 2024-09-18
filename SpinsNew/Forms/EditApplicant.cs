@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using SpinsNew;
 using SpinsNew.Connection;
 using SpinsNew.Forms;
+using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,12 +21,13 @@ namespace SpinsWinforms.Forms
         MySqlConnection con = null;
         private MasterList masterlistForm;// Call MasterList form
         private Replacements replacementsForm;// Call MasterList form
+       // private MasterListViewModel _applicantData;
         public string _username;
         public EditApplicant(MasterList masterlist, Replacements replacements, string username)//Call the MasterList into our Edit Applicant form.
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
-
+           // _applicantData = applicantData;
             replacementsForm = replacements;// Execute the MasterListform.
             
             // Subscribe to the ValueChanged event of the DateTimePicker
@@ -39,7 +41,9 @@ namespace SpinsWinforms.Forms
 
             _username = username;
             masterlistForm = masterlist;// Execute the MasterListform.
+         
         }
+
 
         public void DisplayID(int id)
         {

@@ -57,8 +57,9 @@ namespace SpinsNew.Forms
                 // Resolve the ITablePayroll service from the Program.ServiceProvider
                 var libraryMunicipality = Program.ServiceProvider.GetRequiredService<ILibraryMunicipality>(); //We called the DI lifecycle inside our Program.cs
                 var tableMasterlist = Program.ServiceProvider.GetRequiredService<ITableMasterlist>(); //We called the DI lifecycle inside our Program.cs
+                var tableLog = Program.ServiceProvider.GetRequiredService<ITableLog>(); //We called the DI lifecycle inside our Program.cs
 
-                masterlistForm = new MasterList(_username, _userRole, editapplicantForm, libraryMunicipality, tableMasterlist);
+                masterlistForm = new MasterList(_username, _userRole, editapplicantForm, libraryMunicipality, tableMasterlist, tableLog);
                 masterlistForm.Show();
             }
         }

@@ -44,9 +44,11 @@ namespace SpinsNew
                     services.AddSingleton<PaidStatisticsForm>();
 
                     services.AddTransient<ILibraryMunicipality, LibraryMunicipalityService>();
-                    services.AddScoped<ITableMasterlist, TableMasterlistService>();
 
-                    services.AddTransient<MasterList>();
+                    services.AddScoped<ITableMasterlist, TableMasterlistService>();
+                    services.AddScoped<ITableLog, TableLogService>();
+
+                    services.AddScoped<MasterList>();
 
 
                 });

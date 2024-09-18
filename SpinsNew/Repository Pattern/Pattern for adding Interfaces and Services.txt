@@ -1,1 +1,1 @@
-Interfaces => Services => Program.cs => Forms
+Interfaces (Created methods) => Services(Business Logics) => Program.cs(Register the Interface and the Service) => Forms(Call it to the form write DataType, Variables and Values)

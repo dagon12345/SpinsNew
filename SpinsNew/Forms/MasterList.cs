@@ -1,15 +1,16 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
-using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
 using SpinsNew.Forms;
 using SpinsNew.Interfaces;
 using SpinsNew.Popups;
+using SpinsNew.ViewModel;
 using SpinsWinforms.Forms;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -26,17 +27,21 @@ namespace SpinsNew
         public string _userRole;
         private Replacements replacementsForm;
         private EditApplicant editApplicantForm;
+        private ApplicationDbContext _dbContext;
         private readonly ILibraryMunicipality _libraryMunicipality;
         private readonly ITableMasterlist _tableMasterlist;
+        private readonly ITableLog _tableLog;
 
 
-        public MasterList(string username, string userRole, EditApplicant editapplicant, ILibraryMunicipality libraryMunicipality, ITableMasterlist tableMasterlist)
+        public MasterList(string username, string userRole, EditApplicant editapplicant,
+            ILibraryMunicipality libraryMunicipality, ITableMasterlist tableMasterlist, ITableLog tableLog)
         {
             InitializeComponent();
             _libraryMunicipality = libraryMunicipality;
             _tableMasterlist = tableMasterlist;
+            _tableLog = tableLog;
+            _dbContext = new ApplicationDbContext();
             con = new MySqlConnection(cs.dbcon);
-            gridView1.FocusedRowChanged += gridView_FocusedRowChanged;
 
             this.KeyPreview = true;
             this.KeyDown += btnViewAttach_KeyDown;
@@ -49,9 +54,9 @@ namespace SpinsNew
             _username = username; // Retrieve the username
             _userRole = userRole;
             editApplicantForm = editapplicant;
-            
-            
-            if(userRole == "3")// Number 3 is the encoders
+
+
+            if (userRole == "3")// Number 3 is the encoders
             {
                 gbActions.Visible = false;
                 gbPayroll.Visible = false;
@@ -59,8 +64,22 @@ namespace SpinsNew
                 gbForms.Visible = false;
             }
 
-
+            LoadStatusItems();
         }
+
+        private void LoadStatusItems()
+        {
+            // Clear any previous items in the CheckedComboBox
+            cmb_status.Properties.Items.Clear();
+
+            // Add "Active" and "Applicant" as individual statuses
+            cmb_status.Properties.Items.Add(new CheckedListBoxItem(1, "Active"));
+            cmb_status.Properties.Items.Add(new CheckedListBoxItem(99, "Applicant"));
+
+            // Add "Delisted" as a single item representing statuses from 2 to 15
+            cmb_status.Properties.Items.Add(new CheckedListBoxItem("Delisted", "Delisted"));
+        }
+
 
         private void btnDelistBene_KeyDown(object sender, KeyEventArgs e)
         {
@@ -134,32 +153,91 @@ namespace SpinsNew
         private async Task MunicipalityEf()
         {
             var municipalityLists = await _libraryMunicipality.GetMunicipalitiesAsync();
-            foreach(var municipalityList in municipalityLists)
+            foreach (var municipalityList in municipalityLists)
             {
                 cmb_municipality.Properties.Items.Add(new CheckedListBoxItem
-                ( 
+                (
                     value: municipalityList.PSGCCityMun, //Reference the ID
                     description: municipalityList.CityMunName + " " + municipalityList.LibraryProvince.ProvinceName, // Display the text plus the province name.
                     checkState: CheckState.Unchecked // Initially Unchecked.
-                    
+
                 ));
             }
 
         }
 
+        //combine enum and delisted values intoo a list
+
         private async Task LoadMasterList()
         {
+            EnableSpinner();
+            GridView gridView = gridControl1.MainView as GridView;
             // Construct a filter for selected municipalities
             var checkedItems = cmb_municipality.Properties.GetCheckedItems();
             // Convert the checked items to a list of integers
             var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                                           .Select(m => int.Parse(m.Trim()))
                                                           .ToList();
+            // Construct a filter for selected statuses
+            var checkedStatusItems = cmb_status.Properties.GetCheckedItems();
+            var statusArray = new List<int>();
+
+            // Parse the selected statuses
+            foreach (var item in checkedStatusItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (item.Trim() == "Delisted")
+                {
+                    // Add all statuses from 2 to 15 for "Delisted"
+                    statusArray.AddRange(Enumerable.Range(2, 15)); // Range from 2 to 15 (14 total statuses)
+                }
+                else
+                {
+                    // Add the other statuses like Active (1) or Applicant (99)
+                    statusArray.Add(int.Parse(item.Trim()));
+                }
+            }
+
+            var masterLists = await Task.Run(() => _tableMasterlist.GetMasterListModelsAsync(municipalitiesArray, statusArray));
+
+            masterListViewModelBindingSource.DataSource = masterLists;
+            gridControl1.DataSource = masterListViewModelBindingSource;
 
 
-            var masterLists = await Task.Run(() => _tableMasterlist.GetMasterListModelsAsync(municipalitiesArray));
-            gridControl1.DataSource = masterLists;
-         
+            // Auto-size all columns based on their content
+            gridView.BestFitColumns();
+
+            // Ensure horizontal scrollbar is enabled
+            gridView.OptionsView.ColumnAutoWidth = false;
+
+            // Disable editing
+            gridView.OptionsBehavior.Editable = false;
+
+            //  gridView.Columns["Verification"].VisibleIndex = 0;
+
+            // Freeze the columns if they exist
+            if (gridView.Columns.ColumnByFieldName("Verification") != null)
+                gridView.Columns["Verification"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+            if (gridView.Columns.ColumnByFieldName("LastName") != null)
+                gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+            if (gridView.Columns.ColumnByFieldName("FirstName") != null)
+                gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+            if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
+                gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+            if (gridView.Columns.ColumnByFieldName("ExtName") != null)
+                gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+            // Set specific width for the AttachmentNames column
+            //gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
+            //gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
+            // Update row count display
+            UpdateRowCount(gridView);
+            //progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
+            DisableSpinner();
+
         }
 
 
@@ -336,104 +414,104 @@ namespace SpinsNew
                 /*Filter All Municipalities*/
 
 
-                    if (statusFilter == "All Statuses")
+                if (statusFilter == "All Statuses")
+                {
+                    // Construct a filter for selected municipalities
+                    // Using GetCheckedValues to get the selected items' values.
+                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+
+                    // Convert the checked items to a string array
+                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    // Check if there are any selected municipalities
+                    if (municipalitiesArray.Length > 0)
                     {
-                        // Construct a filter for selected municipalities
-                        // Using GetCheckedValues to get the selected items' values.
-                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+                        // Join the selected municipality values into a single comma-separated string
+                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
 
-                        // Convert the checked items to a string array
-                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        // Check if there are any selected municipalities
-                        if (municipalitiesArray.Length > 0)
-                        {
-                            // Join the selected municipality values into a single comma-separated string
-                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
-
-                            // Append the condition to the query
-                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                        }
-
+                        // Append the condition to the query
+                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
                     }
-                    if (statusFilter == "Active" || statusFilter == "Applicant")
+
+                }
+                if (statusFilter == "Active" || statusFilter == "Applicant")
+                {
+                    // Construct a filter for selected municipalities
+                    // Using GetCheckedValues to get the selected items' values.
+                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+
+                    // Convert the checked items to a string array
+                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    // Check if there are any selected municipalities
+                    if (municipalitiesArray.Length > 0)
                     {
-                        // Construct a filter for selected municipalities
-                        // Using GetCheckedValues to get the selected items' values.
-                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+                        // Join the selected municipality values into a single comma-separated string
+                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
 
-                        // Convert the checked items to a string array
-                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        // Check if there are any selected municipalities
-                        if (municipalitiesArray.Length > 0)
-                        {
-                            // Join the selected municipality values into a single comma-separated string
-                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
-
-                            // Append the condition to the query
-                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                        }
-                        cmd.Parameters.AddWithValue("@Status", statusFilter);
-                        if (statusFilter != "All Statuses")
-                        {
-                            query += "  AND ls.Status = @Status";
-                        }
-                 
+                        // Append the condition to the query
+                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
                     }
-                    if (statusFilter == "Waitlisted")
+                    cmd.Parameters.AddWithValue("@Status", statusFilter);
+                    if (statusFilter != "All Statuses")
                     {
-                        // Construct a filter for selected municipalities
-                        // Using GetCheckedValues to get the selected items' values.
-                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+                        query += "  AND ls.Status = @Status";
+                    }
 
-                        // Convert the checked items to a string array
-                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                }
+                if (statusFilter == "Waitlisted")
+                {
+                    // Construct a filter for selected municipalities
+                    // Using GetCheckedValues to get the selected items' values.
+                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
 
-                        // Check if there are any selected municipalities
-                        if (municipalitiesArray.Length > 0)
-                        {
-                            // Join the selected municipality values into a single comma-separated string
-                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
+                    // Convert the checked items to a string array
+                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            // Append the condition to the query
-                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                        }
+                    // Check if there are any selected municipalities
+                    if (municipalitiesArray.Length > 0)
+                    {
+                        // Join the selected municipality values into a single comma-separated string
+                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
 
-                        if (statusFilter != "All Statuses")
-                        {
-                            query += @" AND tg_max.ReferenceCode IS NOT NULL
+                        // Append the condition to the query
+                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
+                    }
+
+                    if (statusFilter != "All Statuses")
+                    {
+                        query += @" AND tg_max.ReferenceCode IS NOT NULL
                                         AND tg_max.SPISBatch IS NOT NULL
                                         AND m.StatusID = 99
                                         AND la.ID = 1";
-                        }
-
                     }
-                    if (statusFilter == "Delisted")
+
+                }
+                if (statusFilter == "Delisted")
+                {
+                    // Construct a filter for selected municipalities
+                    // Using GetCheckedValues to get the selected items' values.
+                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+
+                    // Convert the checked items to a string array
+                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    // Check if there are any selected municipalities
+                    if (municipalitiesArray.Length > 0)
                     {
-                        // Construct a filter for selected municipalities
-                        // Using GetCheckedValues to get the selected items' values.
-                        var checkedItems = cmb_municipality.Properties.GetCheckedItems();
+                        // Join the selected municipality values into a single comma-separated string
+                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
 
-                        // Convert the checked items to a string array
-                        var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        // Check if there are any selected municipalities
-                        if (municipalitiesArray.Length > 0)
-                        {
-                            // Join the selected municipality values into a single comma-separated string
-                            string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
-
-                            // Append the condition to the query
-                            query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                        }
-
-                        if (statusFilter != "All Statuses")
-                        {
-                            query += " AND m.StatusID BETWEEN 2 AND 15";
-                        }
-
+                        // Append the condition to the query
+                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
                     }
+
+                    if (statusFilter != "All Statuses")
+                    {
+                        query += " AND m.StatusID BETWEEN 2 AND 15";
+                    }
+
+                }
                 query += @"
                        GROUP BY
                            m.ID, 
@@ -513,8 +591,8 @@ namespace SpinsNew
                 }
                 // Move the new column to the 6th position
                 dt.Columns["StatusCurrent"].SetOrdinal(9);
-                                
-                        //Sample integrations
+
+                //Sample integrations
                 //We are using DevExpress datagridview
                 gridControl1.DataSource = dt;
 
@@ -560,7 +638,7 @@ namespace SpinsNew
 
                     if (gridView.Columns.ColumnByFieldName("ExtName") != null)
                         gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                  
+
 
                     // Ensure horizontal scrollbar is enabled
                     gridView.OptionsView.ColumnAutoWidth = false;
@@ -608,16 +686,16 @@ namespace SpinsNew
         //Show the spinner
         private void EnableSpinner()
         {
-           // btn_search.Enabled = false;
-           // btn_refresh.Enabled = false;
+            // btn_search.Enabled = false;
+            // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
         }
         //Hide the spinner
         private void DisableSpinner()
         {
             progressBarControl1.EditValue = 0; // Ensure the progress bar is full
-            //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
-           // btn_refresh.Enabled = true;
+                                               //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
+                                               // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
         }
         private string previousMunicipality = string.Empty;
@@ -636,20 +714,6 @@ namespace SpinsNew
             groupControl1.Text = $"Count of showed data: [{formattedRowCount}]";
         }
 
-
-        private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //ck_all.Checked = false;
-
-
-
-        }
-
-        private void gridControl1_BackColorChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void searchControl1_QueryIsSearchColumn_1(object sender, QueryIsSearchColumnEventArgs args)
         {
             //Search only specific columns example lastname.
@@ -662,137 +726,6 @@ namespace SpinsNew
         }
         //Prevent winforms in opening existing form.
         NewApplicant NewApplicantForm;
-        private void ts_newapplicant_Click(object sender, EventArgs e)
-        {
-
-        }
-       
-        private void simpleButton1_Click(object sender, EventArgs e)
-        {
-
-
-        }
-
-        private void btn_delete_Click(object sender, EventArgs e)
-        {
-            //try
-            //{
-            //    // Check if any row is selected
-            //    if (gridView1.SelectedRowsCount == 0)
-            //    {
-            //        MessageBox.Show("Please select a data to Delete", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        return; // Exit the method without showing EditApplicantForm
-            //    }
-
-            //    // Assuming gridView is your GridView instance associated with gridControl1
-            //    GridView gridView = gridControl1.MainView as GridView;
-            //    int rowHandle = gridView.FocusedRowHandle; // Get the handle of the focused row
-            //    if (rowHandle >= 0) // Ensure there is a selected row
-            //    {
-            //        object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
-            //        object nameValue = gridView.GetRowCellValue(rowHandle, "LastName"); // Replace "LastName" with the column name of the person's name
-            //        if (idValue != null && nameValue != null)
-            //        {
-            //            int id = Convert.ToInt32(idValue);
-            //            string name = nameValue.ToString();
-
-            //            if (XtraMessageBox.Show($"Are you sure you want to delete [{name}'s] data?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            //            {
-            //                con.Open();
-            //                MySqlCommand cmd = con.CreateCommand();
-            //                cmd.CommandType = CommandType.Text;
-            //                // Perform the update
-            //                cmd.CommandText = @"
-            //        UPDATE 
-            //            tbl_masterlist 
-            //        SET
-            //            DateTimeDeleted = @DateTimeDeleted,
-            //            DeletedBy = @DeletedBy
-            //        WHERE 
-            //            ID = @ID";
-
-            //                cmd.Parameters.Clear();
-            //                cmd.Parameters.AddWithValue("@ID", id);
-            //                cmd.Parameters.AddWithValue("@DateTimeDeleted", DateTime.Now);
-            //                cmd.Parameters.AddWithValue("@DeletedBy", Environment.UserName);
-            //                cmd.ExecuteNonQuery();
-            //                con.Close();
-
-
-            //                //Filter by active and applicants only. 
-            //                if (cmb_status.Text == "Active" || cmb_status.Text == "Applicant")
-            //                {
-            //                    btn_search.Enabled = false;
-            //                    ActiveandApplicantList();
-            //                }
-            //                //Filter by Reference code and SpisBatch as not null only. 
-            //                else if (cmb_status.Text == "Waitlisted")
-            //                {
-            //                    btn_search.Enabled = false;
-            //                    Waitlisted();
-            //                }
-            //                //Filter by status between 2 and 15 as as delisted list. 
-            //                else if (cmb_status.Text == "Delisted")
-            //                {
-            //                    btn_search.Enabled = false;
-            //                    Delisted();
-            //                }
-            //                //Filter by Municipality no other.
-            //                else if (cmb_status.Text == "All Statuses")
-            //                {
-            //                    btn_search.Enabled = false;
-            //                    AllStatusList();
-            //                }
-            //                // Update row count display
-            //                //UpdateRowCount(gridView);
-
-            //                XtraMessageBox.Show("Data successfully deleted", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            XtraMessageBox.Show("No valid record selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        XtraMessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Handle exceptions
-            //    MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    throw;
-            //}
-        }
-
-        private void gridView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
-        {
-            //GridView gridView = sender as GridView;
-            //DataRowView row = (DataRowView)gridView.GetRow(e.FocusedRowHandle);
-
-            //if (row != null)
-            //{
-            //    string gis = row["GIS"].ToString();
-            //    string spbuf = row["SPBUF"].ToString();
-
-            //    ts_view.Enabled = !(string.IsNullOrWhiteSpace(gis) && string.IsNullOrWhiteSpace(spbuf));
-            //}
-            //else
-            //{
-            //    ts_view.Enabled = false;
-            //}
-        }
-
-
-
-        private void viewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
         EditApplicant EditApplicantForm;
         private void gridControl1_DoubleClick(object sender, EventArgs e)
         {
@@ -804,7 +737,7 @@ namespace SpinsNew
             }
             else
             {
-             
+
                 GridView gridView = gridControl1.MainView as GridView;
 
                 // Check if any row is selected
@@ -815,20 +748,8 @@ namespace SpinsNew
                 }
 
                 // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]);
-                // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-               
-                //EditApplicantForm.DisplayID(id);
-                //EditApplicantForm.ShowDialog();
-
-
-
-
-                //Below is to get the reference code under masterlist
-                // Create a new instance of GISForm
-                // GISviewingForm = new GISForm(this);
-                // GridView gridView = gridControl1.MainView as GridView;
+                MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row.Id);
 
                 // Check if any row is selected
                 if (gridView.SelectedRowsCount == 0)
@@ -838,29 +759,22 @@ namespace SpinsNew
                 }
 
                 // Pass the ID value to the GISForm
-                //DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                string gis = row["GIS"].ToString();
-                string spbuf = row["SPBUF"].ToString();
+                int gis = Convert.ToInt32(row.ReferenceCode);
+                int spbuf = Convert.ToInt32(row.Spbuf);
 
-                if (string.IsNullOrWhiteSpace(gis))
-                {
-                    if (string.IsNullOrWhiteSpace(spbuf))
-                    {
-                        //MessageBox.Show("Both GIS and SPBUF are missing.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        // return; // Exit the method without showing GISForm
-                    }
-                    else
-                    {
-                        int spbufId = Convert.ToInt32(spbuf);
-                        EditApplicantForm.DisplaySPBUF(spbufId);
-                    }
-                }
-                else
+                if (gis != 0)
                 {
                     int gisId = Convert.ToInt32(gis);
                     EditApplicantForm.DisplayGIS(gisId);
+
                 }
-             
+                else
+                {
+                    int spbufId = Convert.ToInt32(spbuf);
+                    EditApplicantForm.DisplaySPBUF(spbufId);
+
+                }
+
 
                 EditApplicantForm.DisplayID(id);
                 EditApplicantForm.ShowDialog();
@@ -872,564 +786,24 @@ namespace SpinsNew
         {
 
 
-               // btn_search.Enabled = false;
-                Task task = AllMunicipalities();
-                return;
+            // btn_search.Enabled = false;
+            Task task = AllMunicipalities();
+            return;
 
 
 
         }
 
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private async void btn_refresh_Click(object sender, EventArgs e)
-        {
-
-
-            //// Your existing logic to handle search
-            //if (cmb_municipality.Text == "Select City/Municipality" && cmb_status.Text == "Select Status")
-            //{
-            //    MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //}
-            //else if (cmb_municipality.Text == "Select City/Municipality")
-            //{
-            //    MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //}
-            //else if (cmb_status.Text == "Select Status")
-            //{
-            //    MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //}
-
-
-            //EnableSpinner();//Enable the spinner
-            //await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-            //return;
-
-        }
         PayrollHistory payrollHistoryForm;
-
-        private void viewToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void simpleButton1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-          
-        }
         Delisted delistedForm;
-        private void delistToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
-        }
-        private void UndoVerification()
-        {
-            try
-            {
-                con.Open();
 
-                GridView gridView = gridControl1.MainView as GridView;
-                // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]);
-
-                //var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-
-                // First query to retrieve the current state
-                cmd.CommandText = @"
-        SELECT 
-            m.IsVerified
-        FROM 
-            tbl_masterlist m
-        WHERE 
-            m.ID = @IDNumber";
-                cmd.Parameters.AddWithValue("@IDNumber", id);
-
-                DataTable dtOld = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dtOld);
-
-                if (dtOld.Rows.Count > 0)
-                {
-                    DataRow oldRow = dtOld.Rows[0];
-                    bool verificationBefore = oldRow["IsVerified"] != DBNull.Value && Convert.ToBoolean(oldRow["IsVerified"]);
-                    bool verificationAfter = false; // Set the new value to true
-
-                    // Perform the update
-                    cmd.CommandText = @"
-                UPDATE 
-                    tbl_masterlist 
-                SET
-                    IsVerified = @IsVerified
-                WHERE 
-                    ID = @ID";
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@ID", id);
-                    cmd.Parameters.AddWithValue("@IsVerified", verificationAfter);
-                    cmd.ExecuteNonQuery();
-
-                    // Check for changes and log them
-                    if (verificationBefore != verificationAfter)
-                    {
-                        MySqlCommand logCmd = con.CreateCommand();
-                        logCmd.CommandType = CommandType.Text;
-                        logCmd.CommandText = @"
-                    INSERT INTO log_masterlist 
-                    (MasterListID, Log, Logtype, User, DateTimeEntry) 
-                    VALUES 
-                    (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
-                        logCmd.Parameters.AddWithValue("@MasterListID", id);
-                        logCmd.Parameters.AddWithValue("@Log", $"Verification changed from [{verificationBefore}] to [{verificationAfter}]");
-                        logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                        logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
-                        logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-                        logCmd.ExecuteNonQuery();
-                    }
-
-                    con.Close();
-                    ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
-
-
-
-                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    //this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-        }
-        private void Verify()
-        {
-            try
-            {
-                con.Open();
-
-                GridView gridView = gridControl1.MainView as GridView;
-                // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]);
-
-                //var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-
-                // First query to retrieve the current state
-                cmd.CommandText = @"
-        SELECT 
-            m.IsVerified
-        FROM 
-            tbl_masterlist m
-        WHERE 
-            m.ID = @IDNumber";
-                cmd.Parameters.AddWithValue("@IDNumber", id);
-
-                DataTable dtOld = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dtOld);
-
-                if (dtOld.Rows.Count > 0)
-                {
-                    DataRow oldRow = dtOld.Rows[0];
-                    bool verificationBefore = oldRow["IsVerified"] != DBNull.Value && Convert.ToBoolean(oldRow["IsVerified"]);
-                    bool verificationAfter = true; // Set the new value to true
-
-                    // Perform the update
-                    cmd.CommandText = @"
-                UPDATE 
-                    tbl_masterlist 
-                SET
-                    IsVerified = @IsVerified
-                WHERE 
-                    ID = @ID";
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@ID", id);
-                    cmd.Parameters.AddWithValue("@IsVerified", verificationAfter);
-                    cmd.ExecuteNonQuery();
-
-                    // Check for changes and log them
-                    if (verificationBefore != verificationAfter)
-                    {
-                        MySqlCommand logCmd = con.CreateCommand();
-                        logCmd.CommandType = CommandType.Text;
-                        logCmd.CommandText = @"
-                    INSERT INTO log_masterlist 
-                    (MasterListID, Log, Logtype, User, DateTimeEntry) 
-                    VALUES 
-                    (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
-                        logCmd.Parameters.AddWithValue("@MasterListID", id);
-                        logCmd.Parameters.AddWithValue("@Log", $"Verification changed from [{verificationBefore}] to [{verificationAfter}]");
-                        logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                        logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
-                        logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-                        logCmd.ExecuteNonQuery();
-                    }
-
-                    con.Close();
-                    ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
-
-
-
-                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    //this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-        }
-
-        private void UpdateMastertoApplicant()
-        {
-            try
-            {
-                con.Open();
-
-                GridView gridView = gridControl1.MainView as GridView;
-                // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]);
-
-                //var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-
-                // First query to retrieve the current state
-                cmd.CommandText = @"
-        SELECT 
-            m.StatusID
-        FROM 
-            tbl_masterlist m
-        WHERE 
-            m.ID = @IDNumber";
-                cmd.Parameters.AddWithValue("@IDNumber", id);
-
-                DataTable dtOld = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dtOld);
-
-                if (dtOld.Rows.Count > 0)
-                {
-                    DataRow oldRow = dtOld.Rows[0];
-
-                    // Fetch current status name
-                    string statusNameBefore = "";
-                    string statusNameAfter = "";
-
-                    if (oldRow["StatusID"] != DBNull.Value)
-                    {
-                        int statusIDBefore = Convert.ToInt32(oldRow["StatusID"]);
-                        MySqlCommand statusCmdBefore = con.CreateCommand();
-                        statusCmdBefore.CommandType = CommandType.Text;
-                        statusCmdBefore.CommandText = "SELECT Status FROM lib_status WHERE Id = @StatusID";
-                        statusCmdBefore.Parameters.AddWithValue("@StatusID", statusIDBefore);
-                        statusNameBefore = statusCmdBefore.ExecuteScalar()?.ToString() ?? "";
-                    }
-
-                    //int statusIDAfter = Convert.ToInt32(lbl_status.Text); // Assuming lbl_sex.Text contains the updated SexID
-                    int statusIDAfter = 99; // Assuming lbl_sex.Text contains the updated SexID
-
-                    MySqlCommand statusCmdAfter = con.CreateCommand();
-                    statusCmdAfter.CommandType = CommandType.Text;
-                    statusCmdAfter.CommandText = "SELECT Status FROM lib_status WHERE Id = @StatusID";
-                    statusCmdAfter.Parameters.AddWithValue("@StatusID", statusIDAfter);
-                    statusNameAfter = statusCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-                    // Perform the update
-                    cmd.CommandText = @"
-            UPDATE 
-                tbl_masterlist 
-            SET
-                StatusID = @StatusID,
-                DateDeceased = @DateDeceased,
-                Remarks = @Remarks,
-                ExclusionBatch = @ExclusionBatch,
-                ExclusionDate = @ExclusionDate,
-                InclusionDate = @InclusionDate
-            WHERE 
-                ID = @ID";
-
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@ID", id);
-                    cmd.Parameters.AddWithValue("@StatusID", 99);
-                    cmd.Parameters.AddWithValue("@DateDeceased", DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Remarks", null);
-                    cmd.Parameters.AddWithValue("@ExclusionBatch", null); // Plus the abbreviation from period
-                    cmd.Parameters.AddWithValue("@ExclusionDate", null);
-                    cmd.Parameters.AddWithValue("@InclusionDate", null);
-                    cmd.ExecuteNonQuery();
-
-                    // Check for changes and log them
-                    string[] columns = new string[]
-                    {
-            "StatusID"
-                    };
-
-                    foreach (string column in columns)
-                    {
-                        string oldValue = oldRow[column].ToString();
-                        string newValue = cmd.Parameters["@" + column].Value.ToString();
-
-                        if (oldValue != newValue)
-                        {
-                            MySqlCommand logCmd = con.CreateCommand();
-                            logCmd.CommandType = CommandType.Text;
-                            logCmd.CommandText = @"
-                    INSERT INTO log_masterlist 
-                    (MasterListID, Log, Logtype, User, DateTimeEntry) 
-                    VALUES 
-                    (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
-                            logCmd.Parameters.AddWithValue("@MasterListID", id);
-                            if (column == "StatusID")
-                            {
-                                logCmd.Parameters.AddWithValue("@Log", $"Status changed from [{statusNameBefore}] to [{statusNameAfter}]");
-                            }
-                            //else
-                            //{
-                            //    logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}]");
-                            //}
-                            logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
-                            logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-                            logCmd.ExecuteNonQuery();
-                        }
-                    }
-
-                    con.Close();
-                    ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
-
-
-
-                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    //this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-        }
-
-        private void setAsApplicantToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
-
-        }
-
-        private void UpdateMastertoActive()
-        {
-            try
-            {
-                con.Open();
-
-                GridView gridView = gridControl1.MainView as GridView;
-                // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]);
-
-                //var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-
-                // First query to retrieve the current state
-                cmd.CommandText = @"
-        SELECT 
-            m.StatusID
-        FROM 
-            tbl_masterlist m
-        WHERE 
-            m.ID = @IDNumber";
-                cmd.Parameters.AddWithValue("@IDNumber", id);
-
-                DataTable dtOld = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dtOld);
-
-                if (dtOld.Rows.Count > 0)
-                {
-                    DataRow oldRow = dtOld.Rows[0];
-
-                    // Fetch current status name
-                    string statusNameBefore = "";
-                    string statusNameAfter = "";
-
-                    if (oldRow["StatusID"] != DBNull.Value)
-                    {
-                        int statusIDBefore = Convert.ToInt32(oldRow["StatusID"]);
-                        MySqlCommand statusCmdBefore = con.CreateCommand();
-                        statusCmdBefore.CommandType = CommandType.Text;
-                        statusCmdBefore.CommandText = "SELECT Status FROM lib_status WHERE Id = @StatusID";
-                        statusCmdBefore.Parameters.AddWithValue("@StatusID", statusIDBefore);
-                        statusNameBefore = statusCmdBefore.ExecuteScalar()?.ToString() ?? "";
-                    }
-
-                    //int statusIDAfter = Convert.ToInt32(lbl_status.Text); // Assuming lbl_sex.Text contains the updated SexID
-                    int statusIDAfter = 1; // Assuming lbl_sex.Text contains the updated SexID
-
-                    MySqlCommand statusCmdAfter = con.CreateCommand();
-                    statusCmdAfter.CommandType = CommandType.Text;
-                    statusCmdAfter.CommandText = "SELECT Status FROM lib_status WHERE Id = @StatusID";
-                    statusCmdAfter.Parameters.AddWithValue("@StatusID", statusIDAfter);
-                    statusNameAfter = statusCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-                    // Perform the update
-                    cmd.CommandText = @"
-            UPDATE 
-                tbl_masterlist 
-            SET
-                StatusID = @StatusID,
-                DateDeceased = @DateDeceased,
-                Remarks = @Remarks,
-                ExclusionBatch = @ExclusionBatch,
-                ExclusionDate = @ExclusionDate,
-                InclusionDate = @InclusionDate
-            WHERE 
-                ID = @ID";
-
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@ID", id);
-                    cmd.Parameters.AddWithValue("@StatusID", 1);
-                    cmd.Parameters.AddWithValue("@DateDeceased", DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Remarks", null);
-                    cmd.Parameters.AddWithValue("@ExclusionBatch", null); // Plus the abbreviation from period
-                    cmd.Parameters.AddWithValue("@ExclusionDate", null);
-                    cmd.Parameters.AddWithValue("@InclusionDate", DateTime.Now);
-                    cmd.ExecuteNonQuery();
-
-                    // Check for changes and log them
-                    string[] columns = new string[]
-                    {
-            "StatusID"
-                    };
-
-                    foreach (string column in columns)
-                    {
-                        string oldValue = oldRow[column].ToString();
-                        string newValue = cmd.Parameters["@" + column].Value.ToString();
-
-                        if (oldValue != newValue)
-                        {
-                            MySqlCommand logCmd = con.CreateCommand();
-                            logCmd.CommandType = CommandType.Text;
-                            logCmd.CommandText = @"
-                    INSERT INTO log_masterlist 
-                    (MasterListID, Log, Logtype, User, DateTimeEntry) 
-                    VALUES 
-                    (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
-                            logCmd.Parameters.AddWithValue("@MasterListID", id);
-                            if (column == "StatusID")
-                            {
-                                logCmd.Parameters.AddWithValue("@Log", $"Status changed from [{statusNameBefore}] to [{statusNameAfter}]");
-                            }
-                            //else
-                            //{
-                            //    logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}]");
-                            //}
-                            logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
-                            logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-                            logCmd.ExecuteNonQuery();
-                        }
-                    }
-
-                    con.Close();
-                    ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
-
-
-
-                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    //this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-        }
-
-
-        private void activateToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
-        }
-        private void delistedAndReplacementsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void searchControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
         PayrollPopup payrollpopupForm;
-        private void createToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
-        }
 
-        private void deleteToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-           
-        }
         Attachments attachmentsForm;
-        private void attachmentsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
 
-
-        }
         private Payroll payrollForm;
 
-        private void payrollToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void groupControl2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private async void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
+        private void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
         {
 
             // Get the current search criteria
@@ -1466,35 +840,9 @@ namespace SpinsNew
             }
 
             EnableSpinner();//Enable the spinner
-            //await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-           
+                            //await AllMunicipalities(); // Do not repeat yourself code implemented filters.
+
             return;
-        }
-
-        private void verifyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-
-        }
-
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void MasterList_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //if (e.CloseReason == CloseReason.UserClosing)
-            //{
-            //    if (MessageBox.Show("Are you sure want to exit?",
-            //                   "My First Application",
-            //                    MessageBoxButtons.YesNo,
-            //                    MessageBoxIcon.Information) == DialogResult.Yes)
-            //        Environment.Exit(1);
-            //    else
-            //        e.Cancel = true; // to don't close form is user change his mind
-            //}
-         
         }
 
         private async void cmb_status_SelectedIndexChanged(object sender, EventArgs e)
@@ -1508,7 +856,7 @@ namespace SpinsNew
             if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
             {
                 // Criteria haven't changed, do not trigger the search method
-               // MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -1571,9 +919,9 @@ namespace SpinsNew
                     return; // Exit the method without showing EditApplicantForm
                 }
 
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+                MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
                 // Pass the ID value to the EditApplicant form
-                int id = Convert.ToInt32(row["ID"]);
+                int id = Convert.ToInt32(row.Id);
                 //int id = Convert.ToInt32(txt_id.Text);
                 attachmentsForm = new Attachments(this, payrollForm, _username);
 
@@ -1618,8 +966,8 @@ namespace SpinsNew
                 payrollHistoryForm = new PayrollHistory(this);
 
                 // Pass the ID value to the EditApplicant form
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                int id = Convert.ToInt32(row["ID"]);
+                MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
+                int id = Convert.ToInt32(row.Id);
 
                 payrollHistoryForm.DisplayID(id);
                 payrollHistoryForm.ShowDialog();
@@ -1704,8 +1052,8 @@ namespace SpinsNew
                 }
 
                 // Get the selected row
-                DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-                string status = row["StatusCurrent"].ToString();
+                MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
+                string status = row.Status;
 
                 // Check if StatusID is 1 (Active) or 99 (Applicant)
                 if (status != "Active" && status != "Applicant" && status != "Waitlisted")
@@ -1717,13 +1065,12 @@ namespace SpinsNew
                 delistedForm = new Delisted(this, _username);
 
                 // Pass the ID value to the EditApplicant form
-                int id = Convert.ToInt32(row["ID"]);
+                int id = Convert.ToInt32(row.Id);
                 delistedForm.DisplayID(id);
                 delistedForm.ShowDialog();
             }
         }
-
-        private void btnSetApplicant_Click(object sender, EventArgs e)
+        public async Task UpdateStatusMethod()
         {
             GridView gridView = gridControl1.MainView as GridView;
             if (gridView.SelectedRowsCount == 0)
@@ -1733,8 +1080,8 @@ namespace SpinsNew
             }
 
             // Get the selected row
-            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-            string status = row["StatusCurrent"].ToString();
+            MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
+            string status = row.Status;
 
             // Check if StatusID is 1 (Active) or 99 (Applicant)
             if (status == "Applicant")
@@ -1743,162 +1090,143 @@ namespace SpinsNew
                 return; // Exit the method without showing the form
             }
 
-            int rowHandle = gridView.FocusedRowHandle; // Get the handle of the focused row
-            if (rowHandle >= 0) // Ensure there is a selected row
+            if (XtraMessageBox.Show($"Are you sure you want to set lastname {row.LastName} to Applicant?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
-                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName"); // Replace "LastName" with the column name of the person's name
-                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
-                if (idValue != null && nameValue != null)
-                {
-                    int id = Convert.ToInt32(idValue);
-                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
-                    if (XtraMessageBox.Show($"Are you sure you want to set this {name} to Applicant?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        UpdateMastertoApplicant(); // Set the beneficiary to applicant.
-                        return;
-                    }
-                }
+                // UpdateMastertoApplicant(); // Set the beneficiary to applicant.
+                //return;
+                int id = Convert.ToInt32(row.Id); // used by log_masterlist and tbl_masterlist
+                string currentStatus = $"[Status] changed from '{row.Status}' to 'Applicant'.";//used by log_masterlist
+
+                int statusId = 99;//used by masterlist
+                string dateDeceased = null;//used by masterlist
+                string remarks = null;//used by masterlist
+                string exclusionBatch = null;//used by masterlist
+                DateTime? exclusionDate = null;//used by masterlist
+                DateTime? inclusionDate = null;//used by masterlist
+
+                //Update our masterlist property StatusID to 99.
+                await _tableMasterlist.UpdateAsync(id, statusId, dateDeceased, remarks, exclusionBatch,
+                    exclusionDate, inclusionDate);
+
+                //Insert into our logs once updated.
+                await _tableLog.InsertLogs(id, currentStatus, _username);
+
+                XtraMessageBox.Show("Successfully set to Applicant.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
-        private void btnActivate_Click(object sender, EventArgs e)
+        private async void btnSetApplicant_Click(object sender, EventArgs e)
         {
-            GridView gridView = gridControl1.MainView as GridView;
-            if (gridView.SelectedRowsCount == 0)
-            {
-                MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method without showing EditApplicantForm
-            }
+            await UpdateStatusMethod();
 
-
-            // Get the selected row
-            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
-            string status = row["StatusCurrent"].ToString();
-            string gis = row["GIS"].ToString();
-            string spbuf = row["SPBUF"].ToString();
-            string assessment = row["Assessment"].ToString();
-            string spisBatch = row["SpisBatch"].ToString();
-
-            // IF the status is Applicant and Assessment is not Eligible or Null and SpinsBatch is Null and GIS or SPBUF is null then data is not eligible for Activation.
-            if (status == "Active")
-            {
-                MessageBox.Show("Benficiary is already Active", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method without showing the form
-            }
-
-            // IF the status is Applicant and Assessment is not Eligible or Null and SpinsBatch is Null and GIS or SPBUF is null then data is not eligible for Activation.
-            else if (assessment != "Eligible")
-            {
-                MessageBox.Show("Benficiary is not eligible to activate because he/she is Not Eligible.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method without showing the form
-            }
-
-            // IF the status is Applicant and Assessment is Eligible and SpinsBatch is Null is not eligible for Activation.
-            else if (spisBatch == "")
-            {
-                MessageBox.Show("Benficiary is not eligible to activate because he/she have no Spins Batching.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method without showing the form
-            }
-            else if (cmb_status.Text == "Delisted")
-            {
-                MessageBox.Show("You can't Activate an delisted beneficiary. Set it as an Applicant instead.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method without showing the form
-            }
-
-
-
-            int rowHandle = gridView.FocusedRowHandle; // Get the handle of the focused row
-            if (rowHandle >= 0) // Ensure there is a selected row
-            {
-                object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
-                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName"); // Replace "LastName" with the column name of the person's name
-                if (idValue != null && nameValue != null)
-                {
-                    int id = Convert.ToInt32(idValue);
-                    string name = nameValue.ToString();
-                    if (XtraMessageBox.Show($"Are you sure you want to Activate {name} Data?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        UpdateMastertoActive();//Update beneficiary to Active.
-                        return;
-                    }
-                }
-            }
         }
-
-        private void btnDelete_Click(object sender, EventArgs e)
+        public async Task ActivateMethod()
         {
-            try
+
+            using (var context = new ApplicationDbContext())
             {
-                // Check if any row is selected
-                if (gridView1.SelectedRowsCount == 0)
+
+                GridView gridView = gridControl1.MainView as GridView;
+                // Get the selected row
+
+                MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
+                string status = row.Status;
+                string assessment = row.Assessment;
+                int? spisBatch = Convert.ToInt32(row.SpisBatch);
+
+                if (gridView.SelectedRowsCount == 0)
                 {
-                    MessageBox.Show("Please select a data to Delete", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return; // Exit the method without showing EditApplicantForm
                 }
 
-                // Assuming gridView is your GridView instance associated with gridControl1
-                GridView gridView = gridControl1.MainView as GridView;
-                int rowHandle = gridView.FocusedRowHandle; // Get the handle of the focused row
-                if (rowHandle >= 0) // Ensure there is a selected row
+
+                // IF the status is Applicant and Assessment is not Eligible or Null and SpinsBatch is Null and GIS or SPBUF is null then data is not eligible for Activation.
+                if (status == "Active")
                 {
-                    object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
-                    object nameValue = gridView.GetRowCellValue(rowHandle, "LastName"); // Replace "LastName" with the column name of the person's name
-                    if (idValue != null && nameValue != null)
-                    {
-                        int id = Convert.ToInt32(idValue);
-                        string name = nameValue.ToString();
-
-                        if (XtraMessageBox.Show($"Are you sure you want to delete [{name}'s] data?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            con.Open();
-                            MySqlCommand cmd = con.CreateCommand();
-                            cmd.CommandType = CommandType.Text;
-                            // Perform the update
-                            cmd.CommandText = @"
-                    UPDATE 
-                        tbl_masterlist 
-                    SET
-                        DateTimeDeleted = @DateTimeDeleted,
-                        DeletedBy = @DeletedBy
-                    WHERE 
-                        ID = @ID";
-
-                            cmd.Parameters.Clear();
-                            cmd.Parameters.AddWithValue("@ID", id);
-                            cmd.Parameters.AddWithValue("@DateTimeDeleted", DateTime.Now);
-                            cmd.Parameters.AddWithValue("@DeletedBy", _username);
-                            cmd.ExecuteNonQuery();
-                            con.Close();
-
-
-                            //Reload the masterlist
-                            ReloadMasterlist();
-
-                            XtraMessageBox.Show("Data successfully deleted", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                    }
-                    else
-                    {
-                        XtraMessageBox.Show("No valid record selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    MessageBox.Show("Benficiary is already Active", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing the form
                 }
-                else
+
+                // IF the status is Applicant and Assessment is not Eligible or Null and SpinsBatch is Null and GIS or SPBUF is null then data is not eligible for Activation.
+                if (assessment != "Eligible")
                 {
-                    XtraMessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Benficiary is not eligible to activate because he/she is Not Eligible.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing the form
+                }
+
+                // IF the status is Applicant and Assessment is Eligible and SpinsBatch is Null is not eligible for Activation.
+                if (spisBatch == null)
+                {
+                    MessageBox.Show("Benficiary is not eligible to activate because he/she have no Spins Batching.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing the form
+                }
+
+                if (cmb_status.Text == "Delisted")
+                {
+                    MessageBox.Show("You can't Activate an delisted beneficiary. Set it as an Applicant instead.", "Invalid Status", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method without showing the form
+                }
+
+                if (XtraMessageBox.Show($"Are you sure you want to Activate {row.LastName} Data?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+
+                    int id = Convert.ToInt32(row.Id); // used by log_masterlist and tbl_masterlist
+                    int statusId = 1;//used by masterlist
+                    string currentStatus = $"[Status] changed from '{row.Status}' to 'Active'.";//used by log_masterlist
+                    string dateDeceased = null;//used by masterlist
+                    string remarks = null;//used by masterlist
+                    string exclusionBatch = null;//used by masterlist
+                    DateTime? exclusionDate = null;//used by masterlist
+                    DateTime? inclusionDate = DateTime.Now;//used by masterlist
+
+
+                    //Update our tblMasterlist StatusID and other properties
+                    await _tableMasterlist.UpdateAsync(id, statusId, dateDeceased, remarks, exclusionBatch,
+                        exclusionDate, inclusionDate);
+                    //Insert into our logs
+                    await _tableLog.InsertLogs(id, currentStatus, _username);
+
+                    XtraMessageBox.Show("Successfully activated.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
 
 
             }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                throw;
-            }
+
         }
 
-        private void btnVerify_Click(object sender, EventArgs e)
+
+        private async void btnActivate_Click(object sender, EventArgs e)
+        {
+            await ActivateMethod();
+
+        }
+        private async Task SoftDelete()
+        {
+            // Check if any row is selected
+            if (gridView1.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("Please select a data to Delete", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method without showing EditApplicantForm
+            }
+            GridView gridView = gridControl1.MainView as GridView;
+            MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
+            int Id = Convert.ToInt32(row.Id);//Search the particular ID we want to delete.
+            DateTime? dateDeleted = DateTime.Now;// set the datetime now
+            //The _username below is from our login.
+            if (XtraMessageBox.Show($"Are you sure you want to delete {row.LastName} record?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                //Below update the masterlist not actuall deleting the object.
+                await _tableMasterlist.SoftDeleteAsync(Id, dateDeleted, _username);
+                XtraMessageBox.Show($"{row.LastName} data successfully deleted", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            }
+        }
+        private async void btnDelete_Click(object sender, EventArgs e)
+        {
+            await SoftDelete();
+        }
+        private async Task Verify()
         {
             GridView gridView = gridControl1.MainView as GridView;
             if (gridView.SelectedRowsCount == 0)
@@ -1908,14 +1236,14 @@ namespace SpinsNew
             }
 
             // Get the selected row
-            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+            MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
             if (row == null)
             {
                 MessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            bool verification = Convert.ToBoolean(row["Verified"]);
+            bool verification = Convert.ToBoolean(row.IsVerified);
 
             // Check if already verified
             if (verification)
@@ -1924,32 +1252,22 @@ namespace SpinsNew
                 return;
             }
 
-            int rowHandle = gridView.FocusedRowHandle;
-            if (rowHandle >= 0)
+            DialogResult result = XtraMessageBox.Show($"Are you sure you want to verify {row.LastName}?", "Confirm Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
             {
-                object idValue = gridView.GetRowCellValue(rowHandle, "ID");
-                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName");
-                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
+                int id = Convert.ToInt32(row.Id); // used by log_masterlist and tbl_masterlist
+                string currentStatus = $"[Verification] changed from '{row.IsVerified}' to 'True'.";//used by log_masterlist
+                bool verify = true;
+                //Update the IsVerified from MasterList into true.
+                await _tableMasterlist.VerificationUpdateAsync(id, verify);
+                //Save changes into our logs.
+                await _tableLog.InsertLogs(id, currentStatus, _username);
 
-                if (idValue != null && nameValue != null)
-                {
-                    int id = Convert.ToInt32(idValue);
-                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
-                    DialogResult result = XtraMessageBox.Show($"Are you sure you want to verify {name}?", "Confirm Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                    if (result == DialogResult.Yes)
-                    {
-                        Verify(); // Call the verification method
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                XtraMessageBox.Show("Verified successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
-        private void btnUndoVerified_Click(object sender, EventArgs e)
+        private async Task UndoVerification()
         {
             GridView gridView = gridControl1.MainView as GridView;
             if (gridView.SelectedRowsCount == 0)
@@ -1959,14 +1277,14 @@ namespace SpinsNew
             }
 
             // Get the selected row
-            DataRowView row = (DataRowView)gridView.GetRow(gridView.FocusedRowHandle);
+            MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
             if (row == null)
             {
                 MessageBox.Show("No row selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            bool verification = Convert.ToBoolean(row["Verified"]);
+            bool verification = Convert.ToBoolean(row.IsVerified);
 
             // Check if already verified
             if (!verification)
@@ -1975,29 +1293,30 @@ namespace SpinsNew
                 return;
             }
 
-            int rowHandle = gridView.FocusedRowHandle;
-            if (rowHandle >= 0)
+            DialogResult result = XtraMessageBox.Show($"Are you sure you want to undo verifcation of {row.LastName}?", "Undo Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
             {
-                object idValue = gridView.GetRowCellValue(rowHandle, "ID");
-                object nameValue = gridView.GetRowCellValue(rowHandle, "LastName");
-                object firstnameValue = gridView.GetRowCellValue(rowHandle, "FirstName");
+                int id = Convert.ToInt32(row.Id); // used by log_masterlist and tbl_masterlist
+                string currentStatus = $"[Verification] changed from '{row.IsVerified}' to 'False'.";//used by log_masterlist
+                bool verify = false;
+                //Update the IsVerified from MasterList into true.
+                await _tableMasterlist.VerificationUpdateAsync(id, verify);
+                //Save changes into our logs.
+                await _tableLog.InsertLogs(id, currentStatus, _username);
 
-                if (idValue != null && nameValue != null)
-                {
-                    int id = Convert.ToInt32(idValue);
-                    string name = $"{nameValue.ToString()}, {firstnameValue.ToString()}";
-                    DialogResult result = XtraMessageBox.Show($"Are you sure you want to undo verifcation of {name}?", "Undo Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                    if (result == DialogResult.Yes)
-                    {
-                        UndoVerification(); // Call the verification method
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Could not retrieve the selected record's details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                XtraMessageBox.Show("Verification Undo'ed", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+        private async void btnVerify_Click(object sender, EventArgs e)
+        {
+
+            await Verify();
+        }
+
+        private async void btnUndoVerified_Click(object sender, EventArgs e)
+        {
+            await UndoVerification();
         }
 
         private async void btnSearch_Click(object sender, EventArgs e)

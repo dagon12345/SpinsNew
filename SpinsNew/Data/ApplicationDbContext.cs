@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SpinsNew.Libraries;
 using SpinsNew.Models;
-using SpinsNew.ViewModel;
 using System;
 //using MySQL.EntityFrameworkCore.Extensions;
 
@@ -10,39 +10,43 @@ namespace SpinsNew.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        // Public constructor for creating instances directly
-        //public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        //    : base(options)
-        //{
-        //}
+        public DbSet<PayrollModel> tbl_payroll_socpen { get; set; }
+        public DbSet<MasterListModel> tbl_masterlist { get; set; }
+        public DbSet<SpbufModel> tbl_spbuf { get; set; }
+        public DbSet<LogModel> log_masterlist { get; set; }
 
-        //public ApplicationDbContext()
-        //{
-        //}
-        
+        //Libraries classes below
+        public DbSet<LibraryAssessment> lib_assessment { get; set; }
+        public DbSet<LibraryRegistrationType> lib_registration_type { get; set; }
+        public DbSet<LibraryDataSource> lib_datasource { get; set; }
+        public DbSet<LibraryMaritalStatus> lib_marital_status { get; set; }
+        public DbSet<LibraryBarangay> lib_barangay { get; set; }
+        public DbSet<LibrarySex> lib_sex { get; set; }
+        public DbSet<LibraryHealthStatus> lib_health_status { get; set; }
+        public DbSet<LibraryIDType> lib_id_type { get; set; }
+        public DbSet<LibraryPeriod> lib_period { get; set; }
+        public DbSet<LibraryPayrollStatus> lib_payroll_status { get; set; }
+        public DbSet<LibraryClaimType> lib_claim_type { get; set; }
+        public DbSet<LibraryPayrollType> lib_payroll_type { get; set; }
+        public DbSet<LibraryPayrollTag> lib_payroll_tag { get; set; }
+        public DbSet<LibraryStatus> lib_status { get; set; }
+        public DbSet<LibraryPaymentMode> lib_payment_mode { get; set; }
+        public DbSet<LibraryProvince> lib_province { get; set; }
+        public DbSet<LibraryMunicipality> lib_city_municipality { get; set; }
+        public DbSet<LibraryYear> lib_year { get; set; }
+        public DbSet<GisModel> tbl_gis { get; set; } //Database first so reference the name of database into our actual database.
 
-        // Override OnConfiguring to set up the connection string (if not using dependency injection)
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-          
-
-            if (!optionsBuilder.IsConfigured)
-            {
-
-                var connectionString = "Server=172.26.153.181;uid=spinsv3;Password=Pn#z800^*OsR6B0;Database=caraga-spins2;default command timeout=3600;Allow User Variables=True";
-                var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-                optionsBuilder.UseLoggerFactory(loggerFactory)
-                    //var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    //.UseLoggerFactory(loggerFactory)
-                    .UseMySQL(connectionString);
-                  //  .Options;
-                /*
-                optionsBuilder
-                .UseMySQL(connectionString);
-                //.EnableSensitiveDataLogging(Console.WriteLine, LogLevel.Information);
-                */
-            }
+            var loggerfactory = LoggerFactory.Create(builder => builder.AddConsole());
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+            optionsBuilder.UseLoggerFactory(loggerfactory)
+            .UseMySQL(configuration.GetConnectionString("DefaultConnection"));
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             /*This mapping below is for Indexing.
@@ -53,7 +57,7 @@ namespace SpinsNew.Data
                 .HasIndex(e => new { e.Year, e.ClaimTypeID, e.PeriodID });
 
             modelBuilder.Entity<MasterListModel>()
-                .HasIndex(m => new { m.PSGCCityMun, m.StatusID });
+                .HasIndex(m => new { m.PSGCCityMun, m.StatusID, m.DateTimeDeleted });
 
 
             modelBuilder.Entity<PayrollModel>()
@@ -64,6 +68,46 @@ namespace SpinsNew.Data
                 .HasIndex(e => e.PeriodID);
 
             /*Fluent API mapping below*/
+            modelBuilder.Entity<GisModel>()
+                .HasOne(la => la.LibraryAssessment)
+                .WithMany(g => g.GisModels)
+                .HasForeignKey(g => g.AssessmentID)
+                .HasPrincipalKey(la => la.Id);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasMany(sp => sp.SpbufModels)
+                .WithOne(m => m.MasterListModel)
+                .HasForeignKey(m => m.MasterListId)
+                .HasPrincipalKey(sp => sp.Id);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(rt => rt.LibraryRegistrationType)
+                .WithMany(m => m.MasterListModels)
+                .HasForeignKey(m => m.RegTypeId)
+                .HasPrincipalKey(rt => rt.Id);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(d => d.LibraryDataSource)
+                .WithMany(m => m.MasterListModels)
+                .HasForeignKey(m => m.DataSourceId)
+                .HasPrincipalKey(d => d.Id);
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(m => m.LibraryMunicipality)
+                .WithMany(ma => ma.MasterListModels)
+                .HasForeignKey(ma => ma.PSGCCityMun)
+                .HasPrincipalKey(m => m.PSGCCityMun);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(b => b.LibraryBarangay)
+                .WithMany(m => m.masterListModels)
+                .HasForeignKey(m => m.PSGCBrgy)
+                .HasPrincipalKey(b => b.PSGCBrgy);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(m => m.LibraryMaritalStatus)
+                .WithMany(ml => ml.masterListModels)
+                .HasForeignKey(ml => ml.MaritalStatusID)
+                .HasPrincipalKey(m => m.Id);
 
             modelBuilder.Entity<MasterListModel>()
                 .HasMany(e => e.PayrollModels)
@@ -95,11 +139,7 @@ namespace SpinsNew.Data
                  .HasForeignKey(e => e.IDtypeID)
                  .HasPrincipalKey(e => e.Id);
 
-            modelBuilder.Entity<MasterListModel>()
-                .HasOne(m => m.LibraryMunicipality)
-                .WithMany(ma => ma.MasterListModels)
-                .HasForeignKey(ma => ma.PSGCCityMun)
-                .HasPrincipalKey(m => m.PSGCCityMun);
+
 
             modelBuilder.Entity<LibraryPeriod>()
                 .HasMany(e => e.PayrollModels)
@@ -162,10 +202,10 @@ namespace SpinsNew.Data
             //    .HasPrincipalKey(x => x.MasterListID);
 
             modelBuilder.Entity<MasterListModel>()
-                .HasOne(g => g.GisModel)
-                .WithMany(m => m.MasterListModels)
-                .HasForeignKey(m => m.Id)
-                .HasPrincipalKey(g => g.Id);
+                .HasMany(g => g.GisModels)
+                .WithOne(m => m.MasterListModel)
+                .HasForeignKey(g => g.MasterListID)
+                .HasPrincipalKey(m => m.Id);
 
             modelBuilder.Entity<MasterListModel>()
                 .HasMany(e => e.PayrollModels)
@@ -180,30 +220,11 @@ namespace SpinsNew.Data
                 .HasPrincipalKey(p => p.PSGCProvince);
 
 
-                
+
 
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<PayrollModel> tbl_payroll_socpen { get; set; }
-        public DbSet<MasterListModel> tbl_masterlist { get; set; }
-
-        //Libraries classes below
-        public DbSet<LibraryBarangay> lib_barangay { get; set; }
-        public DbSet<LibrarySex> lib_sex { get; set; }
-        public DbSet<LibraryHealthStatus> lib_health_status { get; set; }
-        public DbSet<LibraryIDType> lib_id_type { get; set; }
-        public DbSet<LibraryPeriod> lib_period { get; set; }
-        public DbSet<LibraryPayrollStatus> lib_payroll_status { get; set; }
-        public DbSet<LibraryClaimType> lib_claim_type { get; set; }
-        public DbSet<LibraryPayrollType> lib_payroll_type { get; set; }
-        public DbSet<LibraryPayrollTag> lib_payroll_tag { get; set; }
-        public DbSet<LibraryStatus> lib_status { get; set; }
-        public DbSet<LibraryPaymentMode> lib_payment_mode { get; set; }
-        public DbSet<LibraryProvince> lib_province { get; set; }
-        public DbSet<LibraryMunicipality> lib_city_municipality { get; set; }
-        public DbSet<LibraryYear> lib_year { get; set; }
-        public DbSet<GisModel> tbl_gis { get; set; } //Database first so reference the name of database into our actual database.
 
     }
 }

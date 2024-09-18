@@ -12,6 +12,7 @@ namespace SpinsNew.Libraries
         public int PSGCCityMun { get; set; }
 
         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
+        public ICollection<MasterListModel> masterListModels { get; } = new List<MasterListModel>();
  
     }
 }
