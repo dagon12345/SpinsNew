@@ -1,22 +1,28 @@
 ﻿using DevExpress.XtraEditors;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Interfaces;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpinsNew.Forms
 {
     public partial class Delisted : Form
     {
- 
+
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
         public string _username;
-        public Delisted(MasterList masterlist, string username)
+        private ITableMasterlist _tableMasterlist;
+        private ITableLog _tableLog;
+        public Delisted(MasterList masterlist, string username, ITableMasterlist tableMasterlist, ITableLog tableLog)
         {
             InitializeComponent();
             masterlistForm = masterlist;// Execute the MasterListform.
+            _tableMasterlist = tableMasterlist;
+            _tableLog = tableLog;
             con = new MySqlConnection(cs.dbcon);
             this.KeyPreview = true; // Allows the form to receive key events before the focused control does
             // Handle the KeyDown event
@@ -269,6 +275,7 @@ namespace SpinsNew.Forms
                         m.PSGCCityMun,
                         m.PSGCBrgy,
                         m.StatusID,
+                        ls.Status,
                         lr.Region as Region,
                         lp.ProvinceName as ProvinceName,
                         lcm.CityMunName as Municipality,
@@ -283,6 +290,8 @@ namespace SpinsNew.Forms
                         lib_city_municipality lcm ON m.PSGCCityMun = lcm.PSGCCityMun
                     LEFT JOIN
                         lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
+                    LEFT JOIN
+                        lib_status ls ON m.StatusID = ls.ID
                     wHERE
                         m.ID = @ID";
 
@@ -308,6 +317,8 @@ namespace SpinsNew.Forms
                     lbl_municipality.Text = row["PSGCCityMun"].ToString();
                     lbl_barangay.Text = row["PSGCBrgy"].ToString();
                     lbl_currentstatus.Text = row["StatusID"].ToString();
+                    lblStatus.Text = row["Status"].ToString();
+
                 }
                 con.Close();
             }
@@ -457,7 +468,7 @@ namespace SpinsNew.Forms
                         {
                             // Use the formatted date string
                             string formattedDate = deceasedDate.ToString("yyyy-MM-dd"); // Must be Year-Month-Date
-                            cmd.Parameters.AddWithValue("@DateDeceased", formattedDate); 
+                            cmd.Parameters.AddWithValue("@DateDeceased", formattedDate);
                         }
                         else
                         {
@@ -508,7 +519,7 @@ namespace SpinsNew.Forms
                     }
 
                     con.Close();
-                    masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
+                    //masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
 
 
 
@@ -567,7 +578,51 @@ namespace SpinsNew.Forms
             }
 
         }
-        private void btn_confirm_Click(object sender, EventArgs e)
+        private async Task updateDelist()
+        {
+           // var existingRecord = await 
+            var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
+            int id = Convert.ToInt32(txt_id.Text);// Used by log_masterlist and tbl_masterlist
+            int statusId = Convert.ToInt32(lbl_status.Text);
+
+            // if the dt_deceased has value then save the date or else save null.
+
+            // Convert dt_deceased.EditValue to DateTime? and handle possible conversion exceptions
+            DateTime? deceasedDateFormat;
+            if (DateTime.TryParse(dt_deceased.EditValue?.ToString(), out DateTime tempDate))
+            {
+                deceasedDateFormat = tempDate;
+            }
+            else
+            {
+                deceasedDateFormat = null;
+            }
+
+            // Convert DateTime? to formatted string or handle nulls properly
+            string dateDeceased = deceasedDateFormat.HasValue
+                ? deceasedDateFormat.Value.ToString("yyyy-MM-dd")
+                : null;
+
+            string statusCombo = $"{Convert.ToString(cmb_status.EditValue)} [{dateDeceased}] "; // used by gridcontrol
+            string remarks = Convert.ToString(txt_remarks.EditValue);
+            string exclusionBatch = $"{cmb_year.EditValue}-{selectedPeriod.Abbreviation}";
+            DateTime? exclusionDate = DateTime.Now;
+            DateTime? inclusionDate = null;
+
+            string currentStatus = $"[Status] changed from '{lblStatus.Text}' to '{cmb_status.EditValue}' ";
+
+            //Update our masterlist with the new values when delisted.
+            await _tableMasterlist.UpdateAsync(id, statusId, dateDeceased, remarks, exclusionBatch, exclusionDate, inclusionDate);
+            //save to logs when delisted
+            await _tableLog.InsertLogs(id, currentStatus, _username);
+
+            //Below is to update our masterlist grid control graphics or paint.
+            masterlistForm.updateDatagrid(statusCombo, dateDeceased, remarks, exclusionBatch, exclusionDate, inclusionDate);
+            XtraMessageBox.Show("Delisted succesfully", "Delisted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
+
+        }
+        private async void btn_confirm_Click(object sender, EventArgs e)
         {
             if (cmb_status.Text == "" || cmb_source.Text == "" || cmb_year.Text == "" || cmb_period.Text == "")
             {
@@ -578,7 +633,8 @@ namespace SpinsNew.Forms
             {
                 if (XtraMessageBox.Show("Are you sure you want to delist this beneficiary?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    UpdateMaster();
+                    //UpdateMaster();
+                    await updateDelist();
                     return;
                 }
             }
@@ -588,7 +644,8 @@ namespace SpinsNew.Forms
                 if (XtraMessageBox.Show("Are you sure you want to delist this beneficiary?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     InsertintoDelist();
-                    UpdateMaster();
+                    //UpdateMaster();
+                    await updateDelist();
                     return;
                 }
 
@@ -607,6 +664,11 @@ namespace SpinsNew.Forms
         }
 
         private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txt_id_EditValueChanged(object sender, EventArgs e)
         {
 
         }

@@ -60,12 +60,8 @@ namespace SpinsNew.Data
                 .HasIndex(m => new { m.PSGCCityMun, m.StatusID, m.DateTimeDeleted });
 
 
-            modelBuilder.Entity<PayrollModel>()
-                .HasIndex(e => e.Year);
-            modelBuilder.Entity<PayrollModel>()
-                .HasIndex(e => e.ClaimTypeID);
-            modelBuilder.Entity<PayrollModel>()
-                .HasIndex(e => e.PeriodID);
+            modelBuilder.Entity<LogModel>()
+                .HasIndex(id => id.MasterListId);
 
             /*Fluent API mapping below*/
             modelBuilder.Entity<GisModel>()
@@ -75,10 +71,16 @@ namespace SpinsNew.Data
                 .HasPrincipalKey(la => la.Id);
 
             modelBuilder.Entity<MasterListModel>()
+                .HasMany(log => log.LogModels)//Logs
+                .WithOne(m => m.masterListModel)//Masterlist
+                .HasForeignKey(log => log.MasterListId)//Logs
+                .HasPrincipalKey(m => m.Id);//Masterlist
+
+            modelBuilder.Entity<MasterListModel>()
                 .HasMany(sp => sp.SpbufModels)
                 .WithOne(m => m.MasterListModel)
-                .HasForeignKey(m => m.MasterListId)
-                .HasPrincipalKey(sp => sp.Id);
+                .HasForeignKey(sp => sp.MasterListId)
+                .HasPrincipalKey(m => m.Id);
 
             modelBuilder.Entity<MasterListModel>()
                 .HasOne(rt => rt.LibraryRegistrationType)

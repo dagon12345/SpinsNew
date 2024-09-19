@@ -1,4 +1,5 @@
-﻿using SpinsNew.ViewModel;
+﻿using SpinsNew.Models;
+using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,5 +15,6 @@ namespace SpinsNew.Interfaces
             DateTime? inclusionDate);
         Task SoftDeleteAsync(int Id, DateTime? dateDeleted, string _username);
         Task VerificationUpdateAsync(int Id, bool verify);
+        Task<MasterListModel> getById(int id);
     }
 }

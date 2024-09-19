@@ -29,6 +29,7 @@ namespace SpinsWinforms.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditApplicant));
             this.txt_id = new DevExpress.XtraEditors.TextEdit();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
@@ -111,6 +112,10 @@ namespace SpinsWinforms.Forms
             this.xtraScrollableControl1 = new DevExpress.XtraEditors.XtraScrollableControl();
             this.ck_new = new System.Windows.Forms.CheckBox();
             this.btn_import = new DevExpress.XtraEditors.SimpleButton();
+            this.logModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.colLog = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colUser = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateTimeEntry = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.txt_id.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
@@ -158,6 +163,7 @@ namespace SpinsWinforms.Forms
             ((System.ComponentModel.ISupportInitialize)(this.cmb_assessment.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_householdsize.Properties)).BeginInit();
             this.xtraScrollableControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // txt_id
@@ -449,7 +455,7 @@ namespace SpinsWinforms.Forms
             this.btn_edit.Appearance.Options.UseFont = true;
             this.btn_edit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_edit.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_edit.ImageOptions.Image")));
-            this.btn_edit.Location = new System.Drawing.Point(256, 558);
+            this.btn_edit.Location = new System.Drawing.Point(128, 541);
             this.btn_edit.Name = "btn_edit";
             this.btn_edit.Size = new System.Drawing.Size(87, 22);
             this.btn_edit.TabIndex = 33;
@@ -555,9 +561,9 @@ namespace SpinsWinforms.Forms
             this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.groupControl2.Controls.Add(this.gv_logs);
-            this.groupControl2.Location = new System.Drawing.Point(15, 590);
+            this.groupControl2.Location = new System.Drawing.Point(15, 569);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(566, 134);
+            this.groupControl2.Size = new System.Drawing.Size(566, 166);
             this.groupControl2.TabIndex = 3;
             this.groupControl2.Text = "Activity Logs";
             // 
@@ -565,16 +571,21 @@ namespace SpinsWinforms.Forms
             // 
             this.gv_logs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.gv_logs.DataSource = this.logModelBindingSource;
             this.gv_logs.Location = new System.Drawing.Point(5, 23);
             this.gv_logs.MainView = this.gridView1;
             this.gv_logs.Name = "gv_logs";
-            this.gv_logs.Size = new System.Drawing.Size(556, 103);
+            this.gv_logs.Size = new System.Drawing.Size(556, 135);
             this.gv_logs.TabIndex = 24;
             this.gv_logs.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             // 
             // gridView1
             // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colLog,
+            this.colUser,
+            this.colDateTimeEntry});
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gv_logs;
             this.gridView1.Name = "gridView1";
@@ -895,9 +906,9 @@ namespace SpinsWinforms.Forms
             this.pdfViewer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pdfViewer1.Location = new System.Drawing.Point(605, 33);
+            this.pdfViewer1.Location = new System.Drawing.Point(590, 33);
             this.pdfViewer1.Name = "pdfViewer1";
-            this.pdfViewer1.Size = new System.Drawing.Size(432, 699);
+            this.pdfViewer1.Size = new System.Drawing.Size(447, 699);
             this.pdfViewer1.TabIndex = 84;
             this.pdfViewer1.ZoomMode = DevExpress.XtraPdfViewer.PdfZoomMode.FitToWidth;
             // 
@@ -1082,7 +1093,7 @@ namespace SpinsWinforms.Forms
             // 
             this.ck_new.AutoSize = true;
             this.ck_new.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.ck_new.Location = new System.Drawing.Point(257, 531);
+            this.ck_new.Location = new System.Drawing.Point(128, 523);
             this.ck_new.Name = "ck_new";
             this.ck_new.Size = new System.Drawing.Size(67, 17);
             this.ck_new.TabIndex = 72;
@@ -1103,6 +1114,31 @@ namespace SpinsWinforms.Forms
             this.btn_import.TabIndex = 87;
             this.btn_import.Text = "Import PDF";
             this.btn_import.Click += new System.EventHandler(this.btn_import_Click);
+            // 
+            // logModelBindingSource
+            // 
+            this.logModelBindingSource.DataSource = typeof(SpinsNew.Models.LogModel);
+            // 
+            // colLog
+            // 
+            this.colLog.FieldName = "Log";
+            this.colLog.Name = "colLog";
+            this.colLog.Visible = true;
+            this.colLog.VisibleIndex = 0;
+            // 
+            // colUser
+            // 
+            this.colUser.FieldName = "User";
+            this.colUser.Name = "colUser";
+            this.colUser.Visible = true;
+            this.colUser.VisibleIndex = 1;
+            // 
+            // colDateTimeEntry
+            // 
+            this.colDateTimeEntry.FieldName = "DateTimeEntry";
+            this.colDateTimeEntry.Name = "colDateTimeEntry";
+            this.colDateTimeEntry.Visible = true;
+            this.colDateTimeEntry.VisibleIndex = 2;
             // 
             // EditApplicant
             // 
@@ -1174,6 +1210,7 @@ namespace SpinsWinforms.Forms
             ((System.ComponentModel.ISupportInitialize)(this.txt_householdsize.Properties)).EndInit();
             this.xtraScrollableControl1.ResumeLayout(false);
             this.xtraScrollableControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logModelBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1261,5 +1298,9 @@ namespace SpinsWinforms.Forms
         private DevExpress.XtraEditors.SimpleButton btn_import;
         private DevExpress.XtraEditors.LabelControl lbl_reference;
         private DevExpress.XtraEditors.SimpleButton btn_authrep;
+        private System.Windows.Forms.BindingSource logModelBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colLog;
+        private DevExpress.XtraGrid.Columns.GridColumn colUser;
+        private DevExpress.XtraGrid.Columns.GridColumn colDateTimeEntry;
     }
 }

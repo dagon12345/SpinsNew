@@ -16,7 +16,7 @@ namespace SpinsNew.Models
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string ExtName { get; set; }
-        public int PSGCProvince { get; set; }
+        public int? PSGCProvince { get; set; }
         public int PSGCCityMun { get; set; }
         public int PSGCBrgy { get; set; }
         public string Address { get; set; }
@@ -33,8 +33,8 @@ namespace SpinsNew.Models
         public string IDNumber { get; set; }//OSCA id related Library ID Type
         [Display(Name = "Date Issued")]
         public DateTime? IDDateIssued { get; set; }
-        public bool Pantawid { get; set; }
-        public bool Indigenous { get; set; }
+        public bool? Pantawid { get; set; }
+        public bool? Indigenous { get; set; }
         [Display(Name ="SocPen ID")]
         public string SocialPensionId { get; set; }
         [Display(Name = "Household ID")]
@@ -67,7 +67,7 @@ namespace SpinsNew.Models
         public bool IsVerified { get; set; }
 
         /*Below our tables and libraries that is referenced for joining*/
-        public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
+        public ICollection<PayrollModel> PayrollModels { get; set; } = new List<PayrollModel>();
         public LibrarySex LibrarySex { get; set; }
         public LibraryHealthStatus LibraryHealthStatus { get; set; }
         public LibraryIDType LibraryIDType { get; set; }
@@ -78,8 +78,10 @@ namespace SpinsNew.Models
         public LibraryMaritalStatus LibraryMaritalStatus { get; set; }
         public LibraryDataSource LibraryDataSource { get; set; }
         public LibraryRegistrationType LibraryRegistrationType { get; set; }
-        public ICollection<GisModel> GisModels { get; } = new List<GisModel>();
-        public ICollection<SpbufModel> SpbufModels { get; } = new List<SpbufModel>();
+        public ICollection<GisModel> GisModels { get; set; } = new List<GisModel>();
+        public ICollection<SpbufModel> SpbufModels { get; set; } = new List<SpbufModel>();
+        //Masterlist have a lot of logs
+        public ICollection<LogModel> LogModels { get; set; } = new List<LogModel>();
 
     }
 }

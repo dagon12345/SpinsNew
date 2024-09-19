@@ -12,10 +12,29 @@ namespace SpinsNew.Services
 {
     public class TableMasterlistService : ITableMasterlist
     {
+        public async  Task<MasterListModel> getById(int id)
+        {
+           using(var context = new ApplicationDbContext())
+            {
+                var getById2 = await context.tbl_masterlist
+                    .Include(g => g.GisModels)
+                    .Include(s => s.LibrarySex)
+                    .Include(m => m.LibraryMaritalStatus)
+                    //To be continued tomorrow.
+                    .Where(i => i.Id == id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+                return getById2;
+            }
+        }
+
         public async Task<List<MasterListViewModel>> GetMasterListModelsAsync(List<int> municipalities, List<int> status)
         {
             using (var context = new ApplicationDbContext())
             {
+
+                
                 var masterList = await context.tbl_masterlist
                     .Include(m => m.LibraryMunicipality)
                     .Include(b => b.LibraryBarangay)
@@ -45,7 +64,7 @@ namespace SpinsNew.Services
                         Address = n.Address,
                         BirthDate = n.BirthDate,
 
-                        //Calculate age based on the Birthdate if has value.
+                        ////Calculate age based on the Birthdate if has value.
                         Age = DateTime.Now.Year - n.BirthDate.Value.Year
                          - (DateTime.Now.DayOfYear < n.BirthDate.Value.DayOfYear ? 1 : 0),
                         Sex = n.LibrarySex.Sex,
@@ -66,14 +85,14 @@ namespace SpinsNew.Services
                         DateTimeEntry = n.DateTimeEntry,
                         EntryBy = n.EntryBy,
                         DataSource = n.LibraryDataSource.DataSource,
-                        Status = n.LibraryStatus.Status,
+                        //If our property DateDeceased is not null then merge the Status and DateDeceased. if no only show the Status.
+                        Status = n.DateDeceased != null ? $"{n.LibraryStatus.Status} [{n.DateDeceased}]" : n.LibraryStatus.Status,
                         Remarks = n.Remarks,
                         Registration = n.LibraryRegistrationType.RegType,
                         InclusionDate = n.InclusionDate,
                         ExclusionBatch = n.ExclusionBatch,
                         DateTimeModified = n.DateTimeModified,
                         ModifiedBy = n.ModifiedBy,
-                        DateDeceased = n.DateDeceased,
                         IsVerified = n.IsVerified,
                         Assessment = n.GisModels.Select(l => l.LibraryAssessment.Assessment).FirstOrDefault(),
                         ReferenceCode = n.GisModels.Select(r => r.ReferenceCode).FirstOrDefault(),

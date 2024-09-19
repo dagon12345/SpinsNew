@@ -1,7 +1,9 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Interfaces;
 using SpinsWinforms.Forms;
 using System;
 using System.Collections.Generic;
@@ -20,9 +22,11 @@ namespace SpinsNew.Forms
         EditApplicant EditApplicantForm;
         private Replacements replacementsForm;
         private MasterList masterlistForm;
-        public Replacements(string username)
+        private ITableLog _tableLog;
+        public Replacements(string username, ITableLog tableLog)
         {
             InitializeComponent();
+            _tableLog = tableLog;
             con = new MySqlConnection(cs.dbcon);
             _username = username;
             // gridView1.FocusedRowChanged += gridView_FocusedRowChanged;
@@ -1254,7 +1258,9 @@ namespace SpinsNew.Forms
             else
             {
                 // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm, _username);
+                var tableLog = Program.ServiceProvider.GetRequiredService<ITableLog>(); //We called the DI lifecycle inside our Program.cs
+                var tableMasterList = Program.ServiceProvider.GetRequiredService<ITableMasterlist>(); //We called the DI lifecycle inside our Program.cs
+                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm, _username, tableLog, tableMasterList);
                 GridView gridView = gridWaitlisted.MainView as GridView;
 
                 // Check if any row is selected
@@ -1318,7 +1324,9 @@ namespace SpinsNew.Forms
             else
             {
                 // Create a new instance of EditApplicant form and pass the reference of Masterlist form
-                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm, _username);
+                var tableLog = Program.ServiceProvider.GetRequiredService<ITableLog>(); //We called the DI lifecycle inside our Program.cs
+                var tableMasterList = Program.ServiceProvider.GetRequiredService<ITableMasterlist>(); //We called the DI lifecycle inside our Program.cs
+                EditApplicantForm = new EditApplicant(masterlistForm, replacementsForm, _username, tableLog, tableMasterList);
                 GridView gridView = gridDelisted.MainView as GridView;
 
                 // Check if any row is selected

@@ -31,6 +31,7 @@ namespace SpinsNew.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Delisted));
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+            this.lblStatus = new DevExpress.XtraEditors.LabelControl();
             this.lbl_currentstatus = new DevExpress.XtraEditors.LabelControl();
             this.lbl_address = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
@@ -72,6 +73,7 @@ namespace SpinsNew.Forms
             // 
             // groupControl2
             // 
+            this.groupControl2.Controls.Add(this.lblStatus);
             this.groupControl2.Controls.Add(this.lbl_currentstatus);
             this.groupControl2.Controls.Add(this.lbl_address);
             this.groupControl2.Controls.Add(this.labelControl2);
@@ -88,13 +90,22 @@ namespace SpinsNew.Forms
             this.groupControl2.TabIndex = 5;
             this.groupControl2.Text = "Details [For Delisting]";
             // 
+            // lblStatus
+            // 
+            this.lblStatus.Location = new System.Drawing.Point(440, 48);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(68, 13);
+            this.lblStatus.TabIndex = 40;
+            this.lblStatus.Text = "CurrentStatus";
+            this.lblStatus.Visible = false;
+            // 
             // lbl_currentstatus
             // 
-            this.lbl_currentstatus.Location = new System.Drawing.Point(483, 65);
+            this.lbl_currentstatus.Location = new System.Drawing.Point(440, 67);
             this.lbl_currentstatus.Name = "lbl_currentstatus";
-            this.lbl_currentstatus.Size = new System.Drawing.Size(31, 13);
+            this.lbl_currentstatus.Size = new System.Drawing.Size(68, 13);
             this.lbl_currentstatus.TabIndex = 39;
-            this.lbl_currentstatus.Text = "Status";
+            this.lbl_currentstatus.Text = "CurrentStatus";
             this.lbl_currentstatus.Visible = false;
             // 
             // lbl_address
@@ -179,6 +190,7 @@ namespace SpinsNew.Forms
             this.txt_id.Size = new System.Drawing.Size(113, 20);
             this.txt_id.TabIndex = 37;
             this.txt_id.Visible = false;
+            this.txt_id.EditValueChanged += new System.EventHandler(this.txt_id_EditValueChanged);
             // 
             // groupControl1
             // 
@@ -212,6 +224,7 @@ namespace SpinsNew.Forms
             this.lbl_status.Size = new System.Drawing.Size(7, 13);
             this.lbl_status.TabIndex = 40;
             this.lbl_status.Text = "0";
+            this.lbl_status.UseWaitCursor = true;
             this.lbl_status.Visible = false;
             // 
             // btn_confirm
@@ -399,5 +412,6 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl lbl_province;
         private DevExpress.XtraEditors.LabelControl lbl_region;
         private DevExpress.XtraEditors.LabelControl lbl_currentstatus;
+        private DevExpress.XtraEditors.LabelControl lblStatus;
     }
 }

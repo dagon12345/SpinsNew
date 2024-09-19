@@ -1,9 +1,13 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew;
 using SpinsNew.Connection;
+using SpinsNew.Data;
 using SpinsNew.Forms;
+using SpinsNew.Interfaces;
+using SpinsNew.Models;
 using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -21,13 +25,17 @@ namespace SpinsWinforms.Forms
         MySqlConnection con = null;
         private MasterList masterlistForm;// Call MasterList form
         private Replacements replacementsForm;// Call MasterList form
-       // private MasterListViewModel _applicantData;
+        private ITableLog _tableLog;
+        private ITableMasterlist _tableMasterlist;
         public string _username;
-        public EditApplicant(MasterList masterlist, Replacements replacements, string username)//Call the MasterList into our Edit Applicant form.
+        public EditApplicant(MasterList masterlist, Replacements replacements, string username,
+            ITableLog tablelog, ITableMasterlist tableMasterlist)//Call the MasterList into our Edit Applicant form.
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
-           // _applicantData = applicantData;
+            // _applicantData = applicantData;
+            _tableLog = tablelog;
+            _tableMasterlist = tableMasterlist;
             replacementsForm = replacements;// Execute the MasterListform.
             
             // Subscribe to the ValueChanged event of the DateTimePicker
@@ -50,112 +58,7 @@ namespace SpinsWinforms.Forms
             // Display the ID in a label or textbox on your form
             txt_id.Text = id.ToString(); // Assuming lblID is a label on your form
         }
-        //Load the logs below method.
-        public async void LoadLogsAsync()
-        {
-            try
-            {
-                await con.OpenAsync();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        lm.Log,
-                        lt.Type as Type,
-                        lm.User,
-                        lm.DateTimeEntry
-                    FROM
-                        tbl_masterlist m
-                    LEFT JOIN
-                        log_masterlist lm ON m.ID = lm.MasterlistID
-                    LEFT JOIN 
-                        lib_log_type lt ON lm.LogType = lt.ID
-                    WHERE 
-                        m.ID = @MasterlistID
-                    ORDER BY
-                        lm.DateTimeEntry DESC";
 
-                cmd.Parameters.AddWithValue("@MasterlistID", txt_id.Text);
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                //Await to reduce lag while loading large amount of datas
-                await Task.Run(() => da.Fill(dt));
-                //We are using DevExpress datagridview
-                gv_logs.DataSource = dt;
-                // Get the GridView instance
-                GridView gridView = gv_logs.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-                    // Hide the "ID" column
-                    gridView.Columns["ID"].Visible = false;
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                    await con.CloseAsync();
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-            }
-
-        }
-        public void LoadLogs()
-        {
-            con.Open();
-            MySqlCommand cmd0 = con.CreateCommand();
-            cmd0.CommandType = CommandType.Text;
-            cmd0.CommandText = @"SELECT 
-                        m.ID,
-                        lm.Log,
-                        lt.Type as Type,
-                        lm.User,
-                        lm.DateTimeEntry
-                    FROM
-                        tbl_masterlist m
-                    LEFT JOIN
-                        log_masterlist lm ON m.ID = lm.MasterlistID
-                    LEFT JOIN 
-                        lib_log_type lt ON lm.LogType = lt.ID
-                    WHERE 
-                        m.ID = @MasterlistID
-                    ORDER BY
-                        lm.DateTimeEntry DESC";
-
-            cmd0.Parameters.AddWithValue("@MasterlistID", txt_id.Text);
-
-            DataTable dt0 = new DataTable();
-            MySqlDataAdapter da0 = new MySqlDataAdapter(cmd0);
-            //Await to reduce lag while loading large amount of datas
-            //await Task.Run(() => da0.Fill(dt0));
-            da0.Fill(dt0);
-            //We are using DevExpress datagridview
-            gv_logs.DataSource = dt0;
-            // Get the GridView instance
-            GridView gridView = gv_logs.MainView as GridView;
-            if (gridView != null)
-            {
-                // Auto-size all columns based on their content
-                gridView.BestFitColumns();
-                // Hide the "ID" column
-                gridView.Columns["ID"].Visible = false;
-                gridView.Columns["Type"].Visible = false;
-                // Ensure horizontal scrollbar is enabled
-                gridView.OptionsView.ColumnAutoWidth = false;
-                // Disable editing
-                gridView.OptionsBehavior.Editable = false;
-
-                con.Close();
-            }
-
-        }
         //Load data from tables and display into textboxes
         public void LoadDataAsync()
         {
@@ -354,13 +257,57 @@ namespace SpinsWinforms.Forms
                 }
             }
         }
+        private async Task tableLog()
+        {
+            GridView gridView = gv_logs.MainView as GridView;
 
+
+            int masterlistId = Convert.ToInt32(txt_id.Text);
+
+            var logsList = await Task.Run(() => _tableLog.GetLogsAsync(masterlistId));
+            gv_logs.DataSource = logsList;
+
+
+            // Auto-size all columns based on their content
+            gridView.BestFitColumns();
+
+            // Ensure horizontal scrollbar is enabled
+            gridView.OptionsView.ColumnAutoWidth = false;
+
+            // Disable editing
+            gridView.OptionsBehavior.Editable = false;
+
+        }
+        private async Task masterListFill()
+        {
+            int id = Convert.ToInt32(txt_id.Text);
+
+            MasterListModel masterListData = await _tableMasterlist.getById(id);
+            txt_lastname.Text = masterListData.LastName;
+            txt_firstname.Text = masterListData.FirstName;
+            txt_middlename.Text = masterListData.MiddleName;
+            txt_extname.Text = masterListData.ExtName;
+            dt_birth.EditValue = masterListData.BirthDate;
+            cmb_sex.EditValue = masterListData.LibrarySex.Sex;
+            cmb_marital.EditValue = masterListData.LibraryMaritalStatus.MaritalStatus;
+
+            //To be continued tomorrow.
+
+
+        }
+        protected override async void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            await tableLog();
+            await masterListFill();
+        }
         // Other methods and controls
         private void EditApplicant_Load(object sender, EventArgs e)
         {
             //Call the methods below to fill the comboboxes
-            LoadDataAsync();
-            LoadLogs();
+            //LoadDataAsync();
+            //LoadLogs();
             DataSource();
             Marital();
             PopulateSexComboBox();
@@ -1280,7 +1227,7 @@ namespace SpinsWinforms.Forms
                     }
 
                     con.Close();
-                    masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
+                   // masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
 
 
 
@@ -1340,7 +1287,7 @@ namespace SpinsWinforms.Forms
 
 
                 this.Close();
-                masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
+                //masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
 
                 XtraMessageBox.Show("GIS and PDF saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

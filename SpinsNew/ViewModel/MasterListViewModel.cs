@@ -1,6 +1,7 @@
 ﻿using SpinsNew.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SpinsNew.ViewModel
 {
@@ -9,7 +10,7 @@ namespace SpinsNew.ViewModel
         public string Municipality { get; set; }
         public string Barangay { get; set; }
     
-        public int Age { get; set; }//Add age property
+        public int? Age { get; set; }//Add age property
         public string Sex { get; set; }//Sex property
         [Display(Name = "Marital Status")]
         public string MaritalStatus { get; set; }//marital Status
@@ -27,6 +28,6 @@ namespace SpinsNew.ViewModel
         [Display(Name ="SPIS Batch")]
         public int? SpisBatch { get; set; }
         [Display(Name = "SPBUF")]
-        public int? Spbuf { get; set; }
+        public Int64? Spbuf { get; set; }//Int64 is a bigint can handle large amount of integers
     }
 }

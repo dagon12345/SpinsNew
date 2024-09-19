@@ -1,4 +1,5 @@
-﻿using SpinsNew.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SpinsNew.Data;
 using SpinsNew.Interfaces;
 using SpinsNew.Models;
 using System;
@@ -11,9 +12,19 @@ namespace SpinsNew.Services
 {
     public class TableLogService : ITableLog
     {
-        public Task<List<LogModel>> GetLogsAsync(int masterlistId)
+        public async Task<List<LogModel>> GetLogsAsync(int masterlistId)
         {
-            throw new NotImplementedException();
+            using(var context = new ApplicationDbContext())
+            {
+                var getLogs = await context.log_masterlist
+                    .Include(m => m.masterListModel)
+                    .Where(l => l.MasterListId == masterlistId)
+                    .OrderByDescending(i => i.Id)
+                    .AsNoTracking()
+                    .ToListAsync();
+                return getLogs;//return if it is a list.
+            }
+
         }
 
         public async Task InsertLogs(int id, string currentStatus, string _username)

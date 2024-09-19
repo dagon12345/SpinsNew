@@ -611,6 +611,7 @@
       <DependentUpon>SignatoriesDataSet.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\SpinsNew.Models.LogModel.datasource" />
     <None Include="Properties\DataSources\SpinsNew.ViewModel.MasterListViewModel.datasource" />
     <None Include="Properties\DataSources\SpinsNew.ViewModel.PayrollViewModel.datasource" />
     <None Include="Properties\Settings.settings">
@@ -677,6 +678,9 @@
   <ItemGroup>
     <Folder Include="Repository Pattern\" />
     <Folder Include="Updates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

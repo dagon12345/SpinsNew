@@ -74,7 +74,6 @@ namespace SpinsNew
             this.colInclusionDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colExclusionBatch = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colExclusionDate = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDateDeceased = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDateTimeModified = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colModifiedBy = new DevExpress.XtraGrid.Columns.GridColumn();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
@@ -82,6 +81,7 @@ namespace SpinsNew
             this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.cmb_municipality = new DevExpress.XtraEditors.CheckedComboBoxEdit();
+            this.cmb_status = new DevExpress.XtraEditors.CheckedComboBoxEdit();
             this.searchControl1 = new DevExpress.XtraEditors.SearchControl();
             this.panel_spinner = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -110,7 +110,6 @@ namespace SpinsNew
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.btnViewAttach = new DevExpress.XtraEditors.SimpleButton();
-            this.cmb_status = new DevExpress.XtraEditors.CheckedComboBoxEdit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).BeginInit();
@@ -121,6 +120,7 @@ namespace SpinsNew
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_status.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).BeginInit();
             this.panel_spinner.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -134,7 +134,6 @@ namespace SpinsNew
             this.gbActions.SuspendLayout();
             this.gbPayroll.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_status.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // gridSplitContainer1
@@ -153,11 +152,12 @@ namespace SpinsNew
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridControl1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.gridControl1.DataSource = this.masterListViewModelBindingSource;
-            this.gridControl1.Location = new System.Drawing.Point(5, 61);
+            this.gridControl1.Location = new System.Drawing.Point(5, 73);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(1335, 281);
+            this.gridControl1.Size = new System.Drawing.Size(1330, 269);
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -222,7 +222,6 @@ namespace SpinsNew
             this.colInclusionDate,
             this.colExclusionBatch,
             this.colExclusionDate,
-            this.colDateDeceased,
             this.colDateTimeModified,
             this.colModifiedBy});
             this.gridView1.DetailHeight = 303;
@@ -516,13 +515,6 @@ namespace SpinsNew
             this.colExclusionDate.Visible = true;
             this.colExclusionDate.VisibleIndex = 38;
             // 
-            // colDateDeceased
-            // 
-            this.colDateDeceased.FieldName = "DateDeceased";
-            this.colDateDeceased.Name = "colDateDeceased";
-            this.colDateDeceased.Visible = true;
-            this.colDateDeceased.VisibleIndex = 39;
-            // 
             // colDateTimeModified
             // 
             this.colDateTimeModified.DisplayFormat.FormatString = "MMM-dd-yyyy";
@@ -530,14 +522,14 @@ namespace SpinsNew
             this.colDateTimeModified.FieldName = "DateTimeModified";
             this.colDateTimeModified.Name = "colDateTimeModified";
             this.colDateTimeModified.Visible = true;
-            this.colDateTimeModified.VisibleIndex = 40;
+            this.colDateTimeModified.VisibleIndex = 39;
             // 
             // colModifiedBy
             // 
             this.colModifiedBy.FieldName = "ModifiedBy";
             this.colModifiedBy.Name = "colModifiedBy";
             this.colModifiedBy.Visible = true;
-            this.colModifiedBy.VisibleIndex = 41;
+            this.colModifiedBy.VisibleIndex = 40;
             // 
             // groupControl2
             // 
@@ -558,6 +550,8 @@ namespace SpinsNew
             // 
             // btnSearch
             // 
+            this.btnSearch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSearch.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.ImageOptions.Image")));
             this.btnSearch.Location = new System.Drawing.Point(673, 38);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(115, 23);
@@ -603,11 +597,22 @@ namespace SpinsNew
             this.cmb_municipality.Properties.IncrementalSearch = true;
             this.cmb_municipality.Size = new System.Drawing.Size(438, 22);
             this.cmb_municipality.TabIndex = 2;
-            this.cmb_municipality.EditValueChanged += new System.EventHandler(this.checkedComboBoxEdit1_EditValueChanged);
+            // 
+            // cmb_status
+            // 
+            this.cmb_status.EditValue = "";
+            this.cmb_status.Location = new System.Drawing.Point(448, 39);
+            this.cmb_status.Name = "cmb_status";
+            this.cmb_status.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmb_status.Properties.Appearance.Options.UseFont = true;
+            this.cmb_status.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmb_status.Size = new System.Drawing.Size(209, 22);
+            this.cmb_status.TabIndex = 3;
             // 
             // searchControl1
             // 
-            this.searchControl1.Location = new System.Drawing.Point(5, 32);
+            this.searchControl1.Location = new System.Drawing.Point(5, 47);
             this.searchControl1.Name = "searchControl1";
             this.searchControl1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Repository.ClearButton(),
@@ -623,9 +628,9 @@ namespace SpinsNew
             this.panel_spinner.BackColor = System.Drawing.Color.Transparent;
             this.panel_spinner.Controls.Add(this.pictureBox1);
             this.panel_spinner.Controls.Add(this.labelControl2);
-            this.panel_spinner.Location = new System.Drawing.Point(450, 32);
+            this.panel_spinner.Location = new System.Drawing.Point(15, 252);
             this.panel_spinner.Name = "panel_spinner";
-            this.panel_spinner.Size = new System.Drawing.Size(179, 19);
+            this.panel_spinner.Size = new System.Drawing.Size(195, 23);
             this.panel_spinner.TabIndex = 15;
             this.panel_spinner.Visible = false;
             // 
@@ -634,16 +639,18 @@ namespace SpinsNew
             this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
             this.pictureBox1.Location = new System.Drawing.Point(3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox1.Size = new System.Drawing.Size(20, 20);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 17;
             this.pictureBox1.TabStop = false;
             // 
             // labelControl2
             // 
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Location = new System.Drawing.Point(29, 3);
             this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(138, 13);
+            this.labelControl2.Size = new System.Drawing.Size(156, 17);
             this.labelControl2.TabIndex = 16;
             this.labelControl2.Text = "Retrieving, please wait.......";
             // 
@@ -661,14 +668,17 @@ namespace SpinsNew
             // 
             this.progressBarControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarControl1.Location = new System.Drawing.Point(17, 239);
+            this.progressBarControl1.Location = new System.Drawing.Point(15, 238);
             this.progressBarControl1.Name = "progressBarControl1";
+            this.progressBarControl1.Properties.ShowTitle = true;
+            this.progressBarControl1.Properties.StartColor = System.Drawing.Color.SeaGreen;
+            this.progressBarControl1.Properties.Step = 1;
             this.progressBarControl1.Size = new System.Drawing.Size(1344, 10);
             this.progressBarControl1.TabIndex = 7;
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(41, 255);
+            this.labelControl1.Location = new System.Drawing.Point(27, 28);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(243, 13);
             this.labelControl1.TabIndex = 14;
@@ -679,7 +689,7 @@ namespace SpinsNew
             // pictureEdit1
             // 
             this.pictureEdit1.EditValue = ((object)(resources.GetObject("pictureEdit1.EditValue")));
-            this.pictureEdit1.Location = new System.Drawing.Point(19, 254);
+            this.pictureEdit1.Location = new System.Drawing.Point(5, 26);
             this.pictureEdit1.Name = "pictureEdit1";
             this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
             this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
@@ -695,10 +705,11 @@ namespace SpinsNew
             this.groupControl1.Appearance.Options.UseBackColor = true;
             this.groupControl1.Controls.Add(this.gridControl1);
             this.groupControl1.Controls.Add(this.searchControl1);
-            this.groupControl1.Controls.Add(this.panel_spinner);
-            this.groupControl1.Location = new System.Drawing.Point(10, 277);
+            this.groupControl1.Controls.Add(this.labelControl1);
+            this.groupControl1.Controls.Add(this.pictureEdit1);
+            this.groupControl1.Location = new System.Drawing.Point(15, 277);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(1344, 347);
+            this.groupControl1.Size = new System.Drawing.Size(1339, 347);
             this.groupControl1.TabIndex = 18;
             this.groupControl1.Text = "Count";
             // 
@@ -965,29 +976,15 @@ namespace SpinsNew
             this.btnViewAttach.Text = "View Attachments (Ctrl + S)";
             this.btnViewAttach.Click += new System.EventHandler(this.btnViewAttach_Click);
             // 
-            // cmb_status
-            // 
-            this.cmb_status.EditValue = "";
-            this.cmb_status.Location = new System.Drawing.Point(448, 39);
-            this.cmb_status.Name = "cmb_status";
-            this.cmb_status.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmb_status.Properties.Appearance.Options.UseFont = true;
-            this.cmb_status.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.cmb_status.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_status.Size = new System.Drawing.Size(209, 22);
-            this.cmb_status.TabIndex = 3;
-            // 
             // MasterList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1364, 636);
+            this.Controls.Add(this.panel_spinner);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupControl1);
-            this.Controls.Add(this.pictureEdit1);
-            this.Controls.Add(this.labelControl1);
             this.Controls.Add(this.progressBarControl1);
             this.Controls.Add(this.groupControl2);
             this.ForeColor = System.Drawing.Color.Black;
@@ -1007,6 +1004,7 @@ namespace SpinsNew
             this.groupControl2.ResumeLayout(false);
             this.groupControl2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmb_status.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).EndInit();
             this.panel_spinner.ResumeLayout(false);
             this.panel_spinner.PerformLayout();
@@ -1015,15 +1013,14 @@ namespace SpinsNew
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
+            this.groupControl1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.gbForms.ResumeLayout(false);
             this.gbVerification.ResumeLayout(false);
             this.gbActions.ResumeLayout(false);
             this.gbPayroll.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.cmb_status.Properties)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -1101,7 +1098,6 @@ namespace SpinsNew
         private DevExpress.XtraGrid.Columns.GridColumn colInclusionDate;
         private DevExpress.XtraGrid.Columns.GridColumn colExclusionBatch;
         private DevExpress.XtraGrid.Columns.GridColumn colExclusionDate;
-        private DevExpress.XtraGrid.Columns.GridColumn colDateDeceased;
         private DevExpress.XtraGrid.Columns.GridColumn colDateTimeModified;
         private DevExpress.XtraGrid.Columns.GridColumn colModifiedBy;
         private DevExpress.XtraGrid.Columns.GridColumn colAssessment;

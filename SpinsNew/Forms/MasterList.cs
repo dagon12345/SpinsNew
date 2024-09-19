@@ -1,8 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
-using MySql.Data.MySqlClient;
-using SpinsNew.Connection;
+using Microsoft.Extensions.DependencyInjection;
 using SpinsNew.Data;
 using SpinsNew.Forms;
 using SpinsNew.Interfaces;
@@ -21,13 +20,11 @@ namespace SpinsNew
 {
     public partial class MasterList : Form
     {
-        ConnectionString cs = new ConnectionString();
-        MySqlConnection con = null;
+
         public string _username;
         public string _userRole;
         private Replacements replacementsForm;
         private EditApplicant editApplicantForm;
-        private ApplicationDbContext _dbContext;
         private readonly ILibraryMunicipality _libraryMunicipality;
         private readonly ITableMasterlist _tableMasterlist;
         private readonly ITableLog _tableLog;
@@ -40,8 +37,6 @@ namespace SpinsNew
             _libraryMunicipality = libraryMunicipality;
             _tableMasterlist = tableMasterlist;
             _tableLog = tableLog;
-            _dbContext = new ApplicationDbContext();
-            con = new MySqlConnection(cs.dbcon);
 
             this.KeyPreview = true;
             this.KeyDown += btnViewAttach_KeyDown;
@@ -50,12 +45,9 @@ namespace SpinsNew
 
             GridView gridView = (GridView)gridControl1.MainView;
             gridView.ColumnFilterChanged += gridView1_ColumnFilterChanged;
-
             _username = username; // Retrieve the username
             _userRole = userRole;
             editApplicantForm = editapplicant;
-
-
             if (userRole == "3")// Number 3 is the encoders
             {
                 gbActions.Visible = false;
@@ -141,7 +133,6 @@ namespace SpinsNew
             if (gridView != null)
             {
                 gridView.RowStyle += gridView_RowStyle;
-                gridView.CustomDrawFooterCell += GridView_CustomDrawFooterCell;
             }
 
             //Integrate search control into our grid control.
@@ -152,7 +143,8 @@ namespace SpinsNew
         //Refactored code of municipality dropdown.
         private async Task MunicipalityEf()
         {
-            var municipalityLists = await _libraryMunicipality.GetMunicipalitiesAsync();
+            EnableSpinner();
+            var municipalityLists = await Task.Run(() => _libraryMunicipality.GetMunicipalitiesAsync());
             foreach (var municipalityList in municipalityLists)
             {
                 cmb_municipality.Properties.Items.Add(new CheckedListBoxItem
@@ -163,14 +155,33 @@ namespace SpinsNew
 
                 ));
             }
+            DisableSpinner();
 
         }
 
-        //combine enum and delisted values intoo a list
+        // Method to update progress bar value
+        private void UpdateProgressBar(int value)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => UpdateProgressBar(value)));
+            }
+            else
+            {
+                progressBarControl1.EditValue = value;
+            }
+        }
 
         private async Task LoadMasterList()
         {
             EnableSpinner();
+            //Initialize progress bar.
+            progressBarControl1.Properties.Minimum = 0;
+            progressBarControl1.Properties.Maximum = 100;
+            progressBarControl1.Properties.Step = 10;
+            progressBarControl1.EditValue = 0;
+            progressBarControl1.Visible = true;
+
             GridView gridView = gridControl1.MainView as GridView;
             // Construct a filter for selected municipalities
             var checkedItems = cmb_municipality.Properties.GetCheckedItems();
@@ -188,7 +199,7 @@ namespace SpinsNew
                 if (item.Trim() == "Delisted")
                 {
                     // Add all statuses from 2 to 15 for "Delisted"
-                    statusArray.AddRange(Enumerable.Range(2, 15)); // Range from 2 to 15 (14 total statuses)
+                    statusArray.AddRange(Enumerable.Range(2, 14)); // Range from 2 to 15 (14 total statuses)
                 }
                 else
                 {
@@ -197,67 +208,100 @@ namespace SpinsNew
                 }
             }
 
-            var masterLists = await Task.Run(() => _tableMasterlist.GetMasterListModelsAsync(municipalitiesArray, statusArray));
-
-            masterListViewModelBindingSource.DataSource = masterLists;
-            gridControl1.DataSource = masterListViewModelBindingSource;
-
-
-            // Auto-size all columns based on their content
-            gridView.BestFitColumns();
-
-            // Ensure horizontal scrollbar is enabled
-            gridView.OptionsView.ColumnAutoWidth = false;
-
-            // Disable editing
-            gridView.OptionsBehavior.Editable = false;
-
-            //  gridView.Columns["Verification"].VisibleIndex = 0;
-
-            // Freeze the columns if they exist
-            if (gridView.Columns.ColumnByFieldName("Verification") != null)
-                gridView.Columns["Verification"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-            if (gridView.Columns.ColumnByFieldName("LastName") != null)
-                gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-            if (gridView.Columns.ColumnByFieldName("FirstName") != null)
-                gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-            if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
-                gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-            if (gridView.Columns.ColumnByFieldName("ExtName") != null)
-                gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-            // Set specific width for the AttachmentNames column
-            //gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-            //gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-            // Update row count display
-            UpdateRowCount(gridView);
-            //progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
-            DisableSpinner();
-
-        }
-
-
-
-
-        // Event handler for CustomDrawFooterCell
-        private void GridView_CustomDrawFooterCell(object sender, DevExpress.XtraGrid.Views.Grid.FooterCellCustomDrawEventArgs e)
-        {
-            // Assuming gridControl1 is your DevExpress GridControl instance
-            GridView gridView = gridControl1.MainView as GridView;
-
-            if (e.Column == null) // Assuming you want to show this in the first footer cell
+            // progressBarControl1.PerformStep();
+            await Task.Run(async () =>
             {
-                // Calculate the row count
-                int rowCount = gridView.RowCount;
+                try
+                {
+                    //Update the progress bar to idiciate loading ahs started
+                    for (int i = 0; i <= 20; i++)
+                    {
+                        // Invoke is required to update the UI from a non-UI thread
+                        progressBarControl1.Invoke((MethodInvoker)(() =>
+                        {
+                            progressBarControl1.EditValue = i;
 
-                // Format the display text
-                e.Info.DisplayText = $"Total Rows: {rowCount}";
-            }
+                        }));
+                        await Task.Delay(20);//To make the progress bar steps slowly
+                    }
+                    //Perform data loading.
+                    var masterLists = await _tableMasterlist.GetMasterListModelsAsync(municipalitiesArray, statusArray);
+
+                    //Update the progress bar to idiciate loading ahs started
+                    for (int i = 20; i <= 50; i ++)
+                    {
+                        // Invoke is required to update the UI from a non-UI thread
+                        progressBarControl1.Invoke((MethodInvoker)(() =>
+                        {
+                            progressBarControl1.EditValue = i;
+                           
+                        }));
+                        await Task.Delay(30);//To make the progress bar steps slowly
+                    }
+                    
+
+                    //Update the progress bar to indicate data has been loaded
+                    UpdateProgressBar(50);
+
+                    //Simulate pgoress update( if you have multiple stages, updated here.)
+                    // progressBarControl1.Invoke(new Action(() => progressBarControl1.EditValue = 50));
+                    gridControl1.Invoke(new Action(() =>
+                    {
+                        masterListViewModelBindingSource.DataSource = masterLists;
+                        gridControl1.DataSource = masterListViewModelBindingSource;
+
+
+                        // Auto-size all columns based on their content
+                        gridView.BestFitColumns();
+
+                        // Ensure horizontal scrollbar is enabled
+                        gridView.OptionsView.ColumnAutoWidth = false;
+
+                        // Disable editing
+                        gridView.OptionsBehavior.Editable = false;
+
+                        //  gridView.Columns["Verification"].VisibleIndex = 0;
+
+                        // Freeze the columns if they exist
+                        if (gridView.Columns.ColumnByFieldName("Verification") != null)
+                            gridView.Columns["Verification"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+                        if (gridView.Columns.ColumnByFieldName("LastName") != null)
+                            gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+                        if (gridView.Columns.ColumnByFieldName("FirstName") != null)
+                            gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+                        if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
+                            gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+                        if (gridView.Columns.ColumnByFieldName("ExtName") != null)
+                            gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+                        // Set specific width for the AttachmentNames column
+                        //gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
+                        //gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
+
+                        //Update row count display.
+                        UpdateRowCount(gridView);
+
+                        //Update progress bar to indidicate completion.
+                        UpdateProgressBar(100);
+                    }));
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+            });
+
+            //progressBarControl1.Visible = false; // Hide the progress bar and finalize.
+            DisableSpinner();
         }
+
 
         private void gridView_RowStyle(object sender, RowStyleEventArgs e)
         {
@@ -281,413 +325,12 @@ namespace SpinsNew
                 }
             }
         }
-
-
-        public async Task AllMunicipalities()
-        {
-            try
-            {
-                string statusFilter = cmb_status.Text;
-                //bool allMunicipalityChecked = ck_all.Checked; // if checked was true
-                string municipalitiesFilter = cmb_municipality.Text; // if checked was true
-
-                GridView gridView = gridControl1.MainView as GridView; // Assuming gridView is your GridView instance associated with gridControl1
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                string query = @"SELECT 
-                    m.IsVerified as Verified,
-                    m.ID,
-                    IFNULL(tat.AttachmentNames, 'None') AS AttachmentNames,
-                    m.LastName,
-                    m.FirstName,
-                    m.MiddleName,
-                    m.ExtName,
-                
-                    /*tg_max.ID as GISID,*/
-                    m.StatusID as StatusID,
-                
-                    la.Assessment as Assessment,
-                
-                    tg_max.ReferenceCode as GIS,
-                    ts_max.ReferenceCode as SPBUF,
-                    tg_max.SPISBatch as SpisBatch,
-                    tg_max.AssessmentID as AssessmentID,
-                    ls.Status as Status,
-                    m.Citizenship as Citizenship,
-                    m.MothersMaiden as MothersMaiden,
-
-                    m.PSGCRegion,
-                    m.PSGCProvince,
-                    m.PSGCCityMun,
-                    m.PSGCBrgy,
-
-                    lr.Region as Region,
-                    lp.ProvinceName as Province,
-                    lc.CityMunName as Municipality,
-                    lb.BrgyName as Barangay,
-                    m.Address as Address,
-                    m.BirthDate as BirthDate,
-                    TIMESTAMPDIFF(YEAR, m.BirthDate, CURDATE()) AS Age,
-                    s.Sex as Sex,
-                    ms.MaritalStatus as MaritalStatus,
-                    m.Religion as Religion,
-                    m.BirthPlace as BirthPlace,
-                    m.EducAttain as EducAttain,
-                    it.Type as IDType,
-                    m.IDNumber as IDNumber,
-                    m.IDDateIssued as IDDateIssued,
-                    m.Pantawid as Pantawid,
-                    m.Indigenous as Indigenous,
-                    m.SocialPensionID as SocialPensionID,
-                    m.HouseholdID as HouseholdID,
-                    m.IndigenousID as IndigenousID,
-                    m.ContactNum as ContactNum,
-                    lh.HealthStatus as HealthStatus,
-                    m.HealthStatusRemarks as HealthStatusRemarks,
-                    m.DateTimeEntry as DateTimeEntry,
-                    m.EntryBy as EntryBy,
-                    ld.DataSource as DataSource,
-                    m.Remarks as Remarks,
-                    lrt.RegType as RegistrationType,
-                    m.InclusionBatch as InclusionBatch,
-                    m.InclusionDate as InclusionDate,
-                    m.ExclusionBatch as ExclusionBatch,
-                    m.ExclusionDate as ExclusionDate,
-                    m.DateDeceased as DateDeceased,
-                    m.DateTimeModified as DateTimeModified,
-                    m.ModifiedBy as ModifiedBy,
-                    m.DateTimeDeleted as DateTimeDeleted,
-                    tg_max.ValidationDate
-
-                FROM 
-                    tbl_masterlist m
-                LEFT JOIN 
-                    (SELECT tg1.*
-                     FROM tbl_gis tg1
-                     INNER JOIN (
-                         SELECT MasterlistID, MAX(ID) as MaxGISID
-                         FROM tbl_gis
-                         GROUP BY MasterlistID
-                     ) tg2 ON tg1.MasterlistID = tg2.MasterlistID AND tg1.ID = tg2.MaxGISID
-                    ) tg_max ON m.ID = tg_max.MasterlistID
-                LEFT JOIN 
-                         (SELECT ts1.*
-                          FROM tbl_spbuf ts1
-                          INNER JOIN (
-                              SELECT MasterlistID, MAX(ID) as MaxSPBUFID
-                              FROM tbl_spbuf
-                              GROUP BY MasterlistID
-                          ) ts2 ON ts1.MasterlistID = ts2.MasterlistID AND ts1.ID = ts2.MaxSPBUFID
-                         ) ts_max ON m.ID = ts_max.MasterlistID
-                LEFT JOIN 
-                    lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                LEFT JOIN 
-                    lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                LEFT JOIN 
-                    lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                LEFT JOIN 
-                    lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                LEFT JOIN 
-                    lib_sex s ON m.SexID = s.ID
-                LEFT JOIN 
-                    lib_marital_status ms ON m.MaritalStatusID = ms.ID
-                LEFT JOIN 
-                    lib_id_type it ON m.IDtypeID = it.ID
-                LEFT JOIN 
-                    lib_health_status lh ON m.HealthStatusID = lh.ID
-                LEFT JOIN 
-                    lib_datasource ld ON m.DataSourceID = ld.ID
-                LEFT JOIN 
-                    lib_status ls ON m.StatusID = ls.ID
-                LEFT JOIN 
-                    lib_registration_type lrt ON m.RegtypeID = lrt.ID
-                LEFT JOIN 
-                    lib_assessment la ON tg_max.AssessmentID = la.ID
-                LEFT JOIN 
-                    (SELECT MasterListID, GROUP_CONCAT(AttachmentName ORDER BY AttachmentName SEPARATOR ', ') AS AttachmentNames 
-                     FROM tbl_attachments 
-                     GROUP BY MasterListID) tat ON m.ID = tat.MasterListID
-                WHERE 
-                    m.DateTimeDeleted IS NULL";
-
-                /*Filter All Municipalities*/
-
-
-                if (statusFilter == "All Statuses")
-                {
-                    // Construct a filter for selected municipalities
-                    // Using GetCheckedValues to get the selected items' values.
-                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
-
-                    // Convert the checked items to a string array
-                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    // Check if there are any selected municipalities
-                    if (municipalitiesArray.Length > 0)
-                    {
-                        // Join the selected municipality values into a single comma-separated string
-                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
-
-                        // Append the condition to the query
-                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                    }
-
-                }
-                if (statusFilter == "Active" || statusFilter == "Applicant")
-                {
-                    // Construct a filter for selected municipalities
-                    // Using GetCheckedValues to get the selected items' values.
-                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
-
-                    // Convert the checked items to a string array
-                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    // Check if there are any selected municipalities
-                    if (municipalitiesArray.Length > 0)
-                    {
-                        // Join the selected municipality values into a single comma-separated string
-                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
-
-                        // Append the condition to the query
-                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                    }
-                    cmd.Parameters.AddWithValue("@Status", statusFilter);
-                    if (statusFilter != "All Statuses")
-                    {
-                        query += "  AND ls.Status = @Status";
-                    }
-
-                }
-                if (statusFilter == "Waitlisted")
-                {
-                    // Construct a filter for selected municipalities
-                    // Using GetCheckedValues to get the selected items' values.
-                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
-
-                    // Convert the checked items to a string array
-                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    // Check if there are any selected municipalities
-                    if (municipalitiesArray.Length > 0)
-                    {
-                        // Join the selected municipality values into a single comma-separated string
-                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
-
-                        // Append the condition to the query
-                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                    }
-
-                    if (statusFilter != "All Statuses")
-                    {
-                        query += @" AND tg_max.ReferenceCode IS NOT NULL
-                                        AND tg_max.SPISBatch IS NOT NULL
-                                        AND m.StatusID = 99
-                                        AND la.ID = 1";
-                    }
-
-                }
-                if (statusFilter == "Delisted")
-                {
-                    // Construct a filter for selected municipalities
-                    // Using GetCheckedValues to get the selected items' values.
-                    var checkedItems = cmb_municipality.Properties.GetCheckedItems();
-
-                    // Convert the checked items to a string array
-                    var municipalitiesArray = checkedItems.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    // Check if there are any selected municipalities
-                    if (municipalitiesArray.Length > 0)
-                    {
-                        // Join the selected municipality values into a single comma-separated string
-                        string municipalitiesList = string.Join(",", municipalitiesArray.Select(m => $"'{m.Trim()}'"));
-
-                        // Append the condition to the query
-                        query += $" AND m.PSGCCityMun IN ({municipalitiesList})";
-                    }
-
-                    if (statusFilter != "All Statuses")
-                    {
-                        query += " AND m.StatusID BETWEEN 2 AND 15";
-                    }
-
-                }
-                query += @"
-                       GROUP BY
-                           m.ID, 
-                           m.LastName,
-                           m.FirstName,
-                           m.MiddleName,
-                           m.ExtName,
-                           tg_max.ID
-                       ORDER BY
-                            lc.CityMunName";
-
-                cmd.CommandText = query;
-
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-
-                // Configure the progress bar
-                progressBarControl1.Properties.Maximum = 100;
-                progressBarControl1.Properties.Minimum = 0;
-                progressBarControl1.EditValue = 0;
-                //Create a task to fill the DataTable and update the progress bar
-                await Task.Run(async () =>
-                {
-                    da.Fill(dt);
-                    for (int i = 0; i <= 100; i += 10)
-                    {
-                        // Simulate progress (this is just for demonstration; adjust as necessary)
-                        System.Threading.Thread.Sleep(50); // Simulate a delay
-                        this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-                    }
-                });
-                // Add a new column for concatenated Status and DateDeceased
-                dt.Columns.Add("StatusCurrent", typeof(string));
-
-                // Populate the new column with concatenated values
-                foreach (DataRow row in dt.Rows)
-                {
-                    string status = row["Status"].ToString();
-                    string dateDeceased = row["DateDeceased"]?.ToString();
-                    string remarks = row["Remarks"]?.ToString();
-                    int assessment = row["AssessmentID"] != DBNull.Value ? Convert.ToInt32(row["AssessmentID"]) : 0;
-                    int spisbatch = row["SpisBatch"] != DBNull.Value ? Convert.ToInt32(row["SpisBatch"]) : 0;
-                    int statusID = Convert.ToInt32(row["StatusID"]); // Get the StatusID
-                    string gis = row["GIS"]?.ToString();
-                    string spbuf = row["SPBUF"]?.ToString();
-                    //row["StatusCurrent"] = !string.IsNullOrEmpty(dateDeceased) ? $"{status} ({remarks}) [{dateDeceased}]" : status;
-
-                    // Check if Assessment is 1 (Eligible) and either GIS or SPBUF is not null
-                    if (assessment == 1 && statusID == 99 && spisbatch != 0 && (!string.IsNullOrEmpty(gis) || !string.IsNullOrEmpty(spbuf)))
-                    {
-                        status = "Waitlisted";
-                    }
-
-                    if (!string.IsNullOrEmpty(dateDeceased))
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks}) [{dateDeceased}]";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = $"{status} [{dateDeceased}]";
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            row["StatusCurrent"] = $"{status} ({remarks})";
-                        }
-                        else
-                        {
-                            row["StatusCurrent"] = status;
-                        }
-                    }
-                }
-                // Move the new column to the 6th position
-                dt.Columns["StatusCurrent"].SetOrdinal(9);
-
-                //Sample integrations
-                //We are using DevExpress datagridview
-                gridControl1.DataSource = dt;
-
-                // Get the GridView instance
-                // GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Move the "Verified" column to the first position
-                    gridView.Columns["Verified"].VisibleIndex = 0;
-                    // Hide the columns if they exist
-                    HideColumn(gridView, "ID");
-                    HideColumn(gridView, "DateTimeDeleted");
-                    HideColumn(gridView, "Status");
-                    HideColumn(gridView, "DateDeceased");
-                    HideColumn(gridView, "Remarks");
-                    HideColumn(gridView, "StatusID");
-                    HideColumn(gridView, "AssessmentID");
-                    //Hide Region, Province, Municipality, and Barangay
-                    HideColumn(gridView, "PSGCRegion");
-                    HideColumn(gridView, "PSGCProvince");
-                    HideColumn(gridView, "PSGCCityMun");
-                    HideColumn(gridView, "PSGCBrgy");
-                    //HideColumn(gridView, "PSGCRegion");
-                    //HideColumn(gridView, "PSGCProvince");
-                    //HideColumn(gridView, "PSGCCityMun");
-                    //HideColumn(gridView, "PSGCBrgy");
-
-                    // Freeze the columns if they exist
-                    if (gridView.Columns.ColumnByFieldName("Verified") != null)
-                        gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("LastName") != null)
-                        gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("FirstName") != null)
-                        gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("MiddleName") != null)
-                        gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    if (gridView.Columns.ColumnByFieldName("ExtName") != null)
-                        gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                    // Set specific width for the AttachmentNames column
-                    gridView.Columns["AttachmentNames"].Width = 150; // Set your desired width here
-                    gridView.Columns["StatusCurrent"].Width = 150; // Set your desired width here
-
-                    // Auto-size all columns based on their content, except AttachmentNames
-                    foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView.Columns)
-                    {
-                        if (column.FieldName != "AttachmentNames" && column.FieldName != "StatusCurrent")
-                        {
-                            column.BestFit();
-                        }
-                    }
-
-                }
-                // Update row count display
-                UpdateRowCount(gridView);
-                progressBarControl1.EditValue = 100; // Set progress bar to 100% on completion
-                DisableSpinner();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
-            }
-
-
-        }
-
-        // Method to hide columns in the GridView
-        private void HideColumn(GridView gridView, string columnName)
-        {
-            if (gridView.Columns[columnName] != null)
-            {
-                gridView.Columns[columnName].Visible = false;
-            }
-        }
         //Show the spinner
         private void EnableSpinner()
         {
             // btn_search.Enabled = false;
             // btn_refresh.Enabled = false;
+            groupControl2.Enabled = false;
             panel_spinner.Visible = true;
         }
         //Hide the spinner
@@ -697,6 +340,7 @@ namespace SpinsNew
                                                //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
                                                // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
+            groupControl2.Enabled = true;
         }
         private string previousMunicipality = string.Empty;
         private string previousStatus = string.Empty;
@@ -729,7 +373,9 @@ namespace SpinsNew
         EditApplicant EditApplicantForm;
         private void gridControl1_DoubleClick(object sender, EventArgs e)
         {
-            EditApplicantForm = new EditApplicant(this, replacementsForm, _username);
+            var tableLog = Program.ServiceProvider.GetRequiredService<ITableLog>(); //We called the DI lifecycle inside our Program.cs
+            var tableMasterlist = Program.ServiceProvider.GetRequiredService<ITableMasterlist>(); //We called the DI lifecycle inside our Program.cs
+            EditApplicantForm = new EditApplicant(this, replacementsForm, _username, tableLog, tableMasterlist);
             if (Application.OpenForms.OfType<EditApplicant>().Any())
             {
                 EditApplicantForm.Select();
@@ -777,114 +423,18 @@ namespace SpinsNew
 
 
                 EditApplicantForm.DisplayID(id);
-                EditApplicantForm.ShowDialog();
+                EditApplicantForm.Show();
 
             }
-        }
-
-        public void ReloadMasterlist()
-        {
-
-
-            // btn_search.Enabled = false;
-            Task task = AllMunicipalities();
-            return;
-
-
-
         }
 
         PayrollHistory payrollHistoryForm;
         Delisted delistedForm;
 
         PayrollPopup payrollpopupForm;
-
         Attachments attachmentsForm;
-
         private Payroll payrollForm;
 
-        private void checkedComboBoxEdit1_EditValueChanged(object sender, EventArgs e)
-        {
-
-            // Get the current search criteria
-            string currentMunicipality = cmb_municipality.Text;
-            string currentStatus = cmb_status.Text;
-
-            // Check if the search criteria have changed
-            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
-            {
-                // Criteria haven't changed, do not trigger the search method
-                //MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Update the previous search criteria
-            previousMunicipality = currentMunicipality;
-            previousStatus = currentStatus;
-
-            // Your existing logic to handle search
-            if (cmb_municipality.Text == "" && cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_municipality.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            EnableSpinner();//Enable the spinner
-                            //await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-
-            return;
-        }
-
-        private async void cmb_status_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            // Get the current search criteria
-            string currentMunicipality = cmb_municipality.Text;
-            string currentStatus = cmb_status.Text;
-
-            // Check if the search criteria have changed
-            if (currentMunicipality == previousMunicipality && currentStatus == previousStatus)
-            {
-                // Criteria haven't changed, do not trigger the search method
-                // MessageBox.Show("Search criteria have not changed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Update the previous search criteria
-            previousMunicipality = currentMunicipality;
-            previousStatus = currentStatus;
-
-            // Your existing logic to handle search
-            if (cmb_municipality.Text == "" && cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality and Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_municipality.Text == "")
-            {
-                //MessageBox.Show("Please enter City/Municipality before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (cmb_status.Text == "")
-            {
-                //MessageBox.Show("Please enter Status before searching", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            EnableSpinner();//Enable the spinner
-            await AllMunicipalities(); // Do not repeat yourself code implemented filters.
-            return;
-        }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
@@ -939,7 +489,8 @@ namespace SpinsNew
             }
             else
             {
-                replacementsForm = new Replacements(_username);
+                var tableLog = Program.ServiceProvider.GetRequiredService<ITableLog>(); //We called the DI lifecycle inside our Program.cs
+                replacementsForm = new Replacements(_username, tableLog);
                 replacementsForm.Show();
             }
         }
@@ -1062,7 +613,12 @@ namespace SpinsNew
                     return; // Exit the method without showing the form
                 }
 
-                delistedForm = new Delisted(this, _username);
+                // Resolve the ITablePayroll service from the Program.ServiceProvider
+                //var libraryMunicipality = Program.ServiceProvider.GetRequiredService<ILibraryMunicipality>(); //We called the DI lifecycle inside our Program.cs
+                var tableMasterlist = Program.ServiceProvider.GetRequiredService<ITableMasterlist>(); //We called the DI lifecycle inside our Program.cs
+                var tableLog = Program.ServiceProvider.GetRequiredService<ITableLog>(); //We called the DI lifecycle inside our Program.cs
+
+                delistedForm = new Delisted(this, _username, tableMasterlist, tableLog);
 
                 // Pass the ID value to the EditApplicant form
                 int id = Convert.ToInt32(row.Id);
@@ -1070,6 +626,20 @@ namespace SpinsNew
                 delistedForm.ShowDialog();
             }
         }
+        public void updateDatagrid(string status, string dateDeceased, string remarks, string exclusionBatch,
+   DateTime? exclusionDate, DateTime? inclusionDate)
+        {
+            //Update the binding source. to prevent loading of the table directly from database.
+            var selectedRow = masterListViewModelBindingSource.Current as MasterListViewModel;
+            selectedRow.Status = status;
+            selectedRow.DateDeceased = dateDeceased;
+            selectedRow.Remarks = remarks;
+            selectedRow.ExclusionBatch = exclusionBatch;
+            selectedRow.ExclusionDate = exclusionDate;
+            selectedRow.InclusionDate = inclusionDate;
+            masterListViewModelBindingSource.ResetCurrentItem();
+        }
+
         public async Task UpdateStatusMethod()
         {
             GridView gridView = gridControl1.MainView as GridView;
@@ -1096,7 +666,7 @@ namespace SpinsNew
                 //return;
                 int id = Convert.ToInt32(row.Id); // used by log_masterlist and tbl_masterlist
                 string currentStatus = $"[Status] changed from '{row.Status}' to 'Applicant'.";//used by log_masterlist
-
+                string statusGrid = "Applicant";
                 int statusId = 99;//used by masterlist
                 string dateDeceased = null;//used by masterlist
                 string remarks = null;//used by masterlist
@@ -1104,12 +674,16 @@ namespace SpinsNew
                 DateTime? exclusionDate = null;//used by masterlist
                 DateTime? inclusionDate = null;//used by masterlist
 
+                /*Implementation of DRY functionality below.*/
                 //Update our masterlist property StatusID to 99.
                 await _tableMasterlist.UpdateAsync(id, statusId, dateDeceased, remarks, exclusionBatch,
                     exclusionDate, inclusionDate);
-
                 //Insert into our logs once updated.
                 await _tableLog.InsertLogs(id, currentStatus, _username);
+
+                //Update gridcontrol display instead of directly going into our database.
+                updateDatagrid(statusGrid, dateDeceased, remarks, exclusionBatch, exclusionDate, inclusionDate);
+
 
                 XtraMessageBox.Show("Successfully set to Applicant.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -1170,8 +744,10 @@ namespace SpinsNew
                 if (XtraMessageBox.Show($"Are you sure you want to Activate {row.LastName} Data?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
 
+
                     int id = Convert.ToInt32(row.Id); // used by log_masterlist and tbl_masterlist
                     int statusId = 1;//used by masterlist
+                    string statusGrid = "Active";// use for updating datagrid status graphics.
                     string currentStatus = $"[Status] changed from '{row.Status}' to 'Active'.";//used by log_masterlist
                     string dateDeceased = null;//used by masterlist
                     string remarks = null;//used by masterlist
@@ -1179,12 +755,15 @@ namespace SpinsNew
                     DateTime? exclusionDate = null;//used by masterlist
                     DateTime? inclusionDate = DateTime.Now;//used by masterlist
 
-
+                    /*Below is the correct implementation of DRY functionality*/
                     //Update our tblMasterlist StatusID and other properties
                     await _tableMasterlist.UpdateAsync(id, statusId, dateDeceased, remarks, exclusionBatch,
                         exclusionDate, inclusionDate);
                     //Insert into our logs
                     await _tableLog.InsertLogs(id, currentStatus, _username);
+                    //Update gridcontrol display instead of directly going into our database.
+                    updateDatagrid(statusGrid, dateDeceased, remarks, exclusionBatch, exclusionDate, inclusionDate);
+
 
                     XtraMessageBox.Show("Successfully activated.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -1194,6 +773,7 @@ namespace SpinsNew
             }
 
         }
+
 
 
         private async void btnActivate_Click(object sender, EventArgs e)
@@ -1218,6 +798,10 @@ namespace SpinsNew
             {
                 //Below update the masterlist not actuall deleting the object.
                 await _tableMasterlist.SoftDeleteAsync(Id, dateDeleted, _username);
+                //Below remove from data from gridControl1 graphics
+                var selectedRow = masterListViewModelBindingSource.Current as MasterListViewModel;
+                masterListViewModelBindingSource.Remove(selectedRow);
+
                 XtraMessageBox.Show($"{row.LastName} data successfully deleted", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             }
@@ -1263,6 +847,8 @@ namespace SpinsNew
                 await _tableMasterlist.VerificationUpdateAsync(id, verify);
                 //Save changes into our logs.
                 await _tableLog.InsertLogs(id, currentStatus, _username);
+                //Update verify to check
+                verificationGrid(verify);
 
                 XtraMessageBox.Show("Verified successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -1304,10 +890,20 @@ namespace SpinsNew
                 await _tableMasterlist.VerificationUpdateAsync(id, verify);
                 //Save changes into our logs.
                 await _tableLog.InsertLogs(id, currentStatus, _username);
-
-                XtraMessageBox.Show("Verification Undo'ed", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //Update verify to uncheck
+                verificationGrid(verify);
+                XtraMessageBox.Show("Verification Undoed", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+        //Method to update verification from datagridview drawing.
+        private void verificationGrid(bool verify)
+        {
+            //Update the binding source. to prevent loading of the table directly from database.
+            var selectedRow = masterListViewModelBindingSource.Current as MasterListViewModel;
+            selectedRow.IsVerified = verify;
+            masterListViewModelBindingSource.ResetCurrentItem();
+        }
+
         private async void btnVerify_Click(object sender, EventArgs e)
         {
 
@@ -1323,5 +919,6 @@ namespace SpinsNew
         {
             await LoadMasterList();
         }
+
     }
 }
