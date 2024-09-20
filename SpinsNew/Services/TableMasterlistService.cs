@@ -18,8 +18,17 @@ namespace SpinsNew.Services
             {
                 var getById2 = await context.tbl_masterlist
                     .Include(g => g.GisModels)
+                        .ThenInclude(a => a.LibraryAssessment)
+                    .Include(g => g.GisModels)
+                        .ThenInclude(v => v.LibraryValidator)
                     .Include(s => s.LibrarySex)
                     .Include(m => m.LibraryMaritalStatus)
+                    .Include(s => s.LibraryHealthStatus)
+                    .Include(r => r.LibraryRegion)
+                    .Include(p => p.LibraryProvince)
+                    .Include(m => m.LibraryMunicipality)
+                    .Include(b => b.LibraryBarangay)
+                    .Include(d => d.LibraryDataSource)
                     //To be continued tomorrow.
                     .Where(i => i.Id == id)
                     .AsNoTracking()

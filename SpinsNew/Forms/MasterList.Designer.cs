@@ -76,6 +76,7 @@ namespace SpinsNew
             this.colExclusionDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDateTimeModified = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colModifiedBy = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colId = new DevExpress.XtraGrid.Columns.GridColumn();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.btnSearch = new DevExpress.XtraEditors.SimpleButton();
             this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
@@ -223,7 +224,8 @@ namespace SpinsNew
             this.colExclusionBatch,
             this.colExclusionDate,
             this.colDateTimeModified,
-            this.colModifiedBy});
+            this.colModifiedBy,
+            this.colId});
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
@@ -530,6 +532,13 @@ namespace SpinsNew
             this.colModifiedBy.Name = "colModifiedBy";
             this.colModifiedBy.Visible = true;
             this.colModifiedBy.VisibleIndex = 40;
+            // 
+            // colId
+            // 
+            this.colId.FieldName = "Id";
+            this.colId.Name = "colId";
+            this.colId.Visible = true;
+            this.colId.VisibleIndex = 41;
             // 
             // groupControl2
             // 
@@ -1105,6 +1114,7 @@ namespace SpinsNew
         private DevExpress.XtraGrid.Columns.GridColumn colSpisBatch;
         private DevExpress.XtraGrid.Columns.GridColumn colSpbuf;
         private DevExpress.XtraEditors.CheckedComboBoxEdit cmb_status;
+        private DevExpress.XtraGrid.Columns.GridColumn colId;
     }
 }
 

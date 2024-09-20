@@ -8,6 +8,11 @@ namespace SpinsNew.Libraries
         public int Id { get; set; }
         public string HealthStatus { get; set; }
 
+        public override string ToString()
+        {
+            return HealthStatus;
+        }
+
         public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
     }
 }

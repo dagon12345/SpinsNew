@@ -420,8 +420,6 @@ namespace SpinsNew
                     EditApplicantForm.DisplaySPBUF(spbufId);
 
                 }
-
-
                 EditApplicantForm.DisplayID(id);
                 EditApplicantForm.Show();
 

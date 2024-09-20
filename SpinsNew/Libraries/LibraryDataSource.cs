@@ -8,6 +8,11 @@ namespace SpinsNew.Libraries
         public int Id { get; set; }
         public string DataSource { get; set; }
 
+        public override string ToString()
+        {
+            return DataSource; // Display DataSource in the ComboBox
+        }
+
         public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
     }
 }

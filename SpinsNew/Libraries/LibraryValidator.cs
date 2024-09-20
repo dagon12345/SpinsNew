@@ -3,15 +3,16 @@ using System.Collections.Generic;
 
 namespace SpinsNew.Libraries
 {
-    public class LibraryAssessment
+    public class LibraryValidator
     {
         public int Id { get; set; }
-        public string Assessment { get; set; }
+        public string Validator { get; set; }
 
         public override string ToString()
         {
-            return Assessment;
+            return Validator;
         }
-        public ICollection<GisModel> GisModels { get; } = new List<GisModel>();
+
+        public ICollection<GisModel> gisModels { get; set; } = new List<GisModel>();
     }
 }

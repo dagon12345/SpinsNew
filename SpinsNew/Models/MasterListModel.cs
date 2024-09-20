@@ -16,6 +16,9 @@ namespace SpinsNew.Models
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string ExtName { get; set; }
+        public string Citizenship { get; set; }
+        public string MothersMaiden { get; set; }
+        public int PSGCRegion { get; set; }
         public int? PSGCProvince { get; set; }
         public int PSGCCityMun { get; set; }
         public int PSGCBrgy { get; set; }
@@ -73,6 +76,8 @@ namespace SpinsNew.Models
         public LibraryIDType LibraryIDType { get; set; }
         public LibraryStatus LibraryStatus { get; set; }
         //public GisModel GisModel { get; set; } = null;
+        public LibraryRegion LibraryRegion { get; set; }
+        public LibraryProvince LibraryProvince { get; set; }
         public LibraryMunicipality LibraryMunicipality { get; set; }
         public LibraryBarangay LibraryBarangay { get; set; }
         public LibraryMaritalStatus LibraryMaritalStatus { get; set; }

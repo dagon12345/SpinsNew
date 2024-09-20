@@ -12,6 +12,11 @@ namespace SpinsNew.Libraries
         public int Id { get; set; }
         public string MaritalStatus { get; set; }
 
+        public override string ToString()
+        {
+            return MaritalStatus;
+
+        }
         public ICollection<MasterListModel> masterListModels { get; } = new List<MasterListModel>();
     }
 }

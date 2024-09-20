@@ -16,6 +16,8 @@ namespace SpinsNew.Data
         public DbSet<LogModel> log_masterlist { get; set; }
 
         //Libraries classes below
+        public DbSet<LibraryRegion> lib_region_fortesting { get; set; }
+        public DbSet<LibraryValidator> lib_validator { get; set; }
         public DbSet<LibraryAssessment> lib_assessment { get; set; }
         public DbSet<LibraryRegistrationType> lib_registration_type { get; set; }
         public DbSet<LibraryDataSource> lib_datasource { get; set; }
@@ -70,6 +72,12 @@ namespace SpinsNew.Data
                 .HasForeignKey(g => g.AssessmentID)
                 .HasPrincipalKey(la => la.Id);
 
+            modelBuilder.Entity<GisModel>()
+                .HasOne(lv => lv.LibraryValidator)
+                .WithMany(g => g.gisModels)
+                .HasForeignKey(g => g.ValidatedByID)
+                .HasPrincipalKey(lv => lv.Id);
+
             modelBuilder.Entity<MasterListModel>()
                 .HasMany(log => log.LogModels)//Logs
                 .WithOne(m => m.masterListModel)//Masterlist
@@ -93,6 +101,19 @@ namespace SpinsNew.Data
                 .WithMany(m => m.MasterListModels)
                 .HasForeignKey(m => m.DataSourceId)
                 .HasPrincipalKey(d => d.Id);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(lr => lr.LibraryRegion)
+                .WithMany(m => m.masterListModels)
+                .HasForeignKey(m => m.PSGCRegion)
+                .HasPrincipalKey(lr => lr.PSGCRegion);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasOne(lp => lp.LibraryProvince)
+                .WithMany(m => m.MasterListModels)
+                .HasForeignKey(m => m.PSGCProvince)
+                .HasPrincipalKey(lp => lp.PSGCProvince);
+
             modelBuilder.Entity<MasterListModel>()
                 .HasOne(m => m.LibraryMunicipality)
                 .WithMany(ma => ma.MasterListModels)
@@ -215,13 +236,30 @@ namespace SpinsNew.Data
                 .HasForeignKey(e => e.MasterListID)
                 .HasPrincipalKey(e => e.Id);
 
+            //modelBuilder.Entity<LibraryMunicipality>()
+            //    .HasOne(p => p.LibraryProvince)
+            //    .WithMany(c => c.LibraryMunicipalities)
+            //    .HasForeignKey(c => c.PSGCProvince)
+            //    .HasPrincipalKey(p => p.PSGCProvince);
+
+            //Cascading the Region, Province, Municipality, Barangay below.
+            modelBuilder.Entity<LibraryRegion>()
+                .HasMany(lp => lp.LibraryProvinces)
+                .WithOne(lr => lr.LibraryRegion)
+                .HasForeignKey(lp => lp.PSGCRegion)
+                .HasPrincipalKey(lr => lr.PSGCRegion);
+
+            modelBuilder.Entity<LibraryProvince>()
+                .HasMany(lm => lm.LibraryMunicipalities)
+                .WithOne(lp => lp.LibraryProvince)
+                .HasForeignKey(lm => lm.PSGCProvince)
+                .HasPrincipalKey(lp => lp.PSGCProvince);
+
             modelBuilder.Entity<LibraryMunicipality>()
-                .HasOne(p => p.LibraryProvince)
-                .WithMany(c => c.LibraryMunicipalities)
-                .HasForeignKey(c => c.PSGCProvince)
-                .HasPrincipalKey(p => p.PSGCProvince);
-
-
+                .HasMany(lb => lb.LibraryBarangays)
+                .WithOne(lm => lm.LibraryMunicipality)
+                .HasForeignKey(lb => lb.PSGCCityMun)
+                .HasPrincipalKey(lm => lm.PSGCCityMun);
 
 
             base.OnModelCreating(modelBuilder);

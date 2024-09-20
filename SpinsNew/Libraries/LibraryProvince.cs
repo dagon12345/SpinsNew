@@ -11,7 +11,14 @@ namespace SpinsNew.Libraries
         public string ProvinceName { get; set; }
         public int PSGCRegion { get; set; }
 
+        public override string ToString()
+        {
+            return ProvinceName;
+        }
+
+        public ICollection<MasterListModel> MasterListModels { get; set; } = new List<MasterListModel>();
         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();// The principal entity is the payroll model
+        public LibraryRegion LibraryRegion { get; set; } //Foreign key to Library Region
         public virtual ICollection<LibraryMunicipality> LibraryMunicipalities { get; } = new List<LibraryMunicipality>();
     }
 }

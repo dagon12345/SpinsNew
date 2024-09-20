@@ -1,5 +1,6 @@
 ﻿using SpinsNew.Libraries;
 using SpinsNew.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,12 +18,16 @@ namespace SpinsNew.Models
         public int PSGCBrgy { get; set; }
         public int AssessmentID { get; set; }
         public int? SpisBatch { get; set; }
+        public int? HouseholdSize { get; set; }
+        public int? ValidatedByID { get; set; }
+        public DateTime? ValidationDate { get; set; }
 
-       //  public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
+        //  public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
 
-       // public ICollection<PayrollandGisManyToMany> PayrollandGisManyToManys { get; } = new List<PayrollandGisManyToMany>(); //Linking Entitiy many to many relationship
-       // public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
+        // public ICollection<PayrollandGisManyToMany> PayrollandGisManyToManys { get; } = new List<PayrollandGisManyToMany>(); //Linking Entitiy many to many relationship
+        // public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
         public LibraryAssessment LibraryAssessment { get; set; }
         public MasterListModel MasterListModel { get; set; }
+        public LibraryValidator LibraryValidator { get; set; }
     }
 }
