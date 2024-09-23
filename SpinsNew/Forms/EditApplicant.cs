@@ -81,32 +81,52 @@ namespace SpinsWinforms.Forms
         }
 
         //Updating
-        private async Task UpdateMasterListEf()
+        private async Task UpdateMaster()
         {
 
             int Id = Convert.ToInt32(txt_id.Text);
 
             using (var context = new ApplicationDbContext())
             {
-                var updateMaster = await context.tbl_masterlist.FirstOrDefaultAsync(i => i.Id == Id);
-                updateMaster.LastName = txt_lastname.Text;
-                updateMaster.FirstName = txt_firstname.Text;
-                updateMaster.MiddleName = txt_middlename.Text;
-                updateMaster.ExtName = txt_extname.Text;
-                updateMaster.BirthDate = Convert.ToDateTime(dt_birth.EditValue);
+                var updateMaster = await context.tbl_masterlist
+                    .Include(s => s.LibrarySex)
+                    .Include(m => m.LibraryMaritalStatus)
+                    .Include(h => h.LibraryHealthStatus)
+                    .FirstOrDefaultAsync(i => i.Id == Id);
+                //Default values from masterlist here.
+                string defaultLastName = updateMaster.LastName;
+                string defaultFirstName = updateMaster.FirstName;
+                string defaultMiddleName = updateMaster.MiddleName;
+                string defaultExtName = updateMaster.ExtName;
+                DateTime? defaultBirthDate = updateMaster.BirthDate;
+                string defaultSex = updateMaster.LibrarySex.Sex;
+                string defaultMarital = updateMaster.LibraryMaritalStatus.MaritalStatus;
+                string defaultHealthStatus = updateMaster.LibraryHealthStatus.HealthStatus;
+                string defaultRemarks = updateMaster.HealthStatusRemarks;
+                string defaultIdNumber = updateMaster.IDNumber;
+                DateTime? defaultIdDateissued = updateMaster.IDDateIssued;
+                string defaultCitizenship = updateMaster.Citizenship;
+                //Updating masterlist with textboxes/comboboxes
+                updateMaster.LastName = txt_lastname.Text;//Done for logging.
+                updateMaster.FirstName = txt_firstname.Text;//Done for logging.
+                updateMaster.MiddleName = txt_middlename.Text;//Done for logging.
+                updateMaster.ExtName = txt_extname.Text;//Done for logging.
+                updateMaster.BirthDate = Convert.ToDateTime(dt_birth.EditValue);//Done for logging.
 
-                updateMaster.SexID = Convert.ToInt32(lblSex.Text);
-                updateMaster.MaritalStatusID = Convert.ToInt32(lblMaritalStatus.Text);
-                updateMaster.HealthStatusID = Convert.ToInt32(lblHealthStatus.Text);
-                
-                updateMaster.IDNumber = txt_idno.Text;
-                updateMaster.IDDateIssued = Convert.ToDateTime(dt_dateissued.EditValue);
-                updateMaster.Citizenship = txt_citizenship.Text;
+                updateMaster.SexID = Convert.ToInt32(lblSex.Text);//Done for logging.
+                updateMaster.MaritalStatusID = Convert.ToInt32(lblMaritalStatus.Text);//Done for logging.
+                updateMaster.HealthStatusID = Convert.ToInt32(lblHealthStatus.Text);//Done for logging.
+                updateMaster.HealthStatusRemarks = txt_remarks.Text;//Done for logging.
+
+                updateMaster.IDNumber = txt_idno.Text;//Done for logging.
+                updateMaster.IDDateIssued = Convert.ToDateTime(dt_dateissued.EditValue);//Done for logging.
+                updateMaster.Citizenship = txt_citizenship.Text;//Done
                 updateMaster.MothersMaiden = txt_mothers.Text;
                 updateMaster.Religion = txt_religion.Text;
                 updateMaster.BirthPlace = txt_birthplace.Text;
                 updateMaster.EducAttain = txt_educ.Text;
                 updateMaster.ContactNum = txt_contact.Text;
+                updateMaster.DataSourceId = Convert.ToInt32(lblDatasource.Text);
 
                 updateMaster.PSGCRegion = Convert.ToInt32(lbl_region.Text);
                 updateMaster.PSGCProvince = Convert.ToInt32(lbl_province.Text);
@@ -115,7 +135,80 @@ namespace SpinsWinforms.Forms
 
                 await context.SaveChangesAsync();
 
-                XtraMessageBox.Show("If this message appears means it was success.");
+                DateTime birthDate = Convert.ToDateTime(dt_birth.EditValue);
+                DateTime idDateIssued = Convert.ToDateTime(dt_dateissued.EditValue);
+                //Activity logs below if fields are changed.. Saving using EF core.
+                if(defaultLastName != txt_lastname.Text)
+                {
+                    string changedLastname = $"[Last Name] changed from '{defaultLastName} to '{txt_lastname.Text}'";
+                    //From our TableLogService.
+                    await _tableLog.InsertLogs(Id, changedLastname, _username);
+                }
+                if(defaultFirstName != txt_firstname.Text)
+                {
+                    string changedFirstname = $"[First Name] changed from '{defaultFirstName}' to '{txt_firstname.Text}'";
+
+                    await _tableLog.InsertLogs(Id, changedFirstname, _username);
+                }
+                if(defaultMiddleName != txt_middlename.Text)
+                {
+                    string changeMiddlename = $"[Middle Name] changed from '{defaultMiddleName}' to '{txt_middlename.Text}'";
+
+                    await _tableLog.InsertLogs(Id, changeMiddlename, _username);
+                }
+                if(defaultExtName != txt_extname.Text)
+                {
+                    string changedExtname = $"[Extension Name] changed from '{defaultExtName}' to '{txt_extname.Text}'";
+                    await _tableLog.InsertLogs(Id, changedExtname, _username);
+                }
+                if(defaultBirthDate != birthDate.Date)
+                {
+                    string changedDate = $"[Birth Date] changed from '{defaultBirthDate: yyyy-MM-dd}' to '{birthDate: yyyy-MM-dd}'";
+                    await _tableLog.InsertLogs(Id, changedDate, _username);
+                }
+                if(defaultSex != cmb_sex.Text)
+                {
+                    string changedSex = $"[Sex] changed from '{defaultSex}' to '{cmb_sex.EditValue}'";
+                    await _tableLog.InsertLogs(Id, changedSex, _username);
+                }
+                if(defaultMarital != cmb_marital.Text)
+                {
+                    string changedMarital = $"[Marital Status] changed from '{defaultMarital}' to '{cmb_marital.EditValue}'";
+                    await _tableLog.InsertLogs(Id, changedMarital, _username);
+                }
+                //healthStatus id
+                if(defaultHealthStatus != cmb_healthstatus.Text)
+                {
+                    string changedHealthStatus = $"[Health Status] changed from '{defaultHealthStatus}' to '{cmb_healthstatus.EditValue}";
+                    await _tableLog.InsertLogs(Id, changedHealthStatus, _username);
+                }
+                //health status remarks
+                if(defaultRemarks != txt_remarks.Text)
+                {
+                    string changedHealthStatus = $"[Health Remarks] changed from '{defaultRemarks}' to '{txt_remarks.EditValue}'";
+                    await _tableLog.InsertLogs(Id, changedHealthStatus, _username);
+                }
+                //Id number
+                if(defaultIdNumber != txt_idno.Text)
+                {
+                    string changedIdNumber = $"[ID Number] changed from '{defaultIdNumber}' to '{txt_idno.Text}'";
+                    await _tableLog.InsertLogs(Id, changedIdNumber, _username);
+                }
+                // Id Date issued
+                if(defaultIdDateissued != idDateIssued.Date)
+                {
+                    string changedIdDateissued = $"[ID Date Issued] changed from '{defaultIdDateissued: yyyy-MM-dd}' to '{idDateIssued: yyyy-MM-dd}'";
+                    await _tableLog.InsertLogs(Id, changedIdDateissued, _username);
+                }
+                 //Citizenship
+                if(defaultCitizenship != txt_citizenship.Text)
+                {
+                    string changedCitizenship = $"[Citizenship] changed from '{defaultCitizenship}' to '{txt_citizenship.Text}'";
+                    await _tableLog.InsertLogs(Id, changedCitizenship, _username);
+                }
+                
+                XtraMessageBox.Show("Updated succesfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
             }
 
 
@@ -145,6 +238,8 @@ namespace SpinsWinforms.Forms
                 cmb_healthstatus.EditValue = masterListData.LibraryHealthStatus.HealthStatus;
                 lblHealthStatus.Text = masterListData.HealthStatusID.ToString();
 
+                txt_remarks.Text = masterListData.HealthStatusRemarks;
+
                 txt_idno.EditValue = masterListData.IDNumber;
                 dt_dateissued.EditValue = masterListData.IDDateIssued;
                 txt_citizenship.EditValue = masterListData.Citizenship;
@@ -169,13 +264,25 @@ namespace SpinsWinforms.Forms
 
 
                 txt_address.EditValue = masterListData.Address;
+
                 cmb_datasource.EditValue = masterListData.LibraryDataSource.DataSource;
+                lblDatasource.Text = masterListData.DataSourceId.ToString();
+
                 txt_householdsize.EditValue = masterListData.GisModels.Select(x => x.HouseholdSize)
                     .FirstOrDefault();
+
+                //Assessment retrieval
                 cmb_assessment.EditValue = masterListData.GisModels.Select(s => s.LibraryAssessment.Assessment)
                     .FirstOrDefault();
+                lbl_assessment.Text = masterListData.GisModels.Select(g => g.AssessmentID.ToString())
+                    .FirstOrDefault();
+
+                //Validator retrieval
                 cmb_validator.EditValue = masterListData.GisModels.Select(v => v.LibraryValidator.Validator)
                     .FirstOrDefault();
+                lbl_validator.Text = masterListData.GisModels.Select(v => v.ValidatedByID.ToString())
+                    .FirstOrDefault();
+
                 dt_accomplished.EditValue = masterListData.GisModels.Select(d => d.ValidationDate)
                     .FirstOrDefault();
 
@@ -490,7 +597,7 @@ namespace SpinsWinforms.Forms
             txt_lastname.Focus();
 
         }
-    
+
         //Updating the masterlist on given property.
         //private void UpdateMaster()
         //{
@@ -862,157 +969,180 @@ namespace SpinsWinforms.Forms
                 con.Close();
             }
         }
-        private void UpdateGIS()
+
+        private async Task UpdateGISEF()
         {
-            try
+            int masterlistID = Convert.ToInt32(txt_id.Text);
+
+            using (var context = new ApplicationDbContext())
             {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-
-                // First query to retrieve the current state
-                cmd.CommandText = @"
-        SELECT
-            g.MasterlistID,
-            g.HouseHoldSize,
-            g.AssessmentID,
-            g.ValidatedByID,
-            g.ValidationDate
-        FROM 
-            tbl_gis g
-        WHERE 
-            g.MasterlistID = @MasterlistID";
-                cmd.Parameters.AddWithValue("@MasterlistID", txt_id.Text);
-
-                DataTable dtOld = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dtOld);
-
-                if (dtOld.Rows.Count > 0)
+                var updateGIS = await context.tbl_gis.FirstOrDefaultAsync(x => x.MasterListID == masterlistID);
+                if (updateGIS != null)
                 {
-                    DataRow oldRow = dtOld.Rows[0];
-
-                    // Fetch current Assesment name
-                    string assessmentNameBefore = "";
-                    string assessmentNameAfter = "";
-
-                    if (oldRow["AssessmentID"] != DBNull.Value)
-                    {
-                        int assessmentIDBefore = Convert.ToInt32(oldRow["AssessmentID"]);
-                        MySqlCommand assessmentCmdBefore = con.CreateCommand();
-                        assessmentCmdBefore.CommandType = CommandType.Text;
-                        assessmentCmdBefore.CommandText = "SELECT Assessment FROM lib_assessment WHERE Id = @AssessmentID";
-                        assessmentCmdBefore.Parameters.AddWithValue("@AssessmentID", assessmentIDBefore);
-                        assessmentNameBefore = assessmentCmdBefore.ExecuteScalar()?.ToString() ?? "";
-                    }
-
-                    int assessmentIDAfter = Convert.ToInt32(lbl_assessment.Text); // Assuming lbl_sex.Text contains the updated SexID
-
-                    MySqlCommand assessmentCmdAfter = con.CreateCommand();
-                    assessmentCmdAfter.CommandType = CommandType.Text;
-                    assessmentCmdAfter.CommandText = "SELECT Assessment FROM lib_assessment WHERE Id = @AssessmentID";
-                    assessmentCmdAfter.Parameters.AddWithValue("@AssessmentID", assessmentIDAfter);
-                    assessmentNameAfter = assessmentCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-                    // Fetch current validator name
-                    string validatedNameBefore = "";
-                    string validatedNameAfter = "";
-
-                    if (oldRow["ValidatedByID"] != DBNull.Value)
-                    {
-                        int validatedIDBefore = Convert.ToInt32(oldRow["ValidatedByID"]);
-                        MySqlCommand validatedCmdBefore = con.CreateCommand();
-                        validatedCmdBefore.CommandType = CommandType.Text;
-                        validatedCmdBefore.CommandText = "SELECT Validator FROM lib_validator WHERE Id = @ValidatedByID";
-                        validatedCmdBefore.Parameters.AddWithValue("@ValidatedByID", validatedIDBefore);
-                        validatedNameBefore = validatedCmdBefore.ExecuteScalar()?.ToString() ?? "";
-                    }
-
-                    int validatedIDAfter = Convert.ToInt32(lbl_validator.Text); // Assuming lbl_martital.Text contains the updated MaritalStatusID
-
-                    MySqlCommand validatedCmdAfter = con.CreateCommand();
-                    validatedCmdAfter.CommandType = CommandType.Text;
-                    validatedCmdAfter.CommandText = "SELECT Validator FROM lib_validator WHERE Id = @ValidatedByID";
-                    validatedCmdAfter.Parameters.AddWithValue("@ValidatedByID", validatedIDAfter);
-                    validatedNameAfter = validatedCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-                    // Perform the update
-                    cmd.CommandText = @"
-            UPDATE 
-                tbl_gis 
-            SET
-                HouseHoldSize = @HouseHoldSize,
-                AssessmentID = @AssessmentID,
-                ValidatedByID = @ValidatedByID,
-                ValidationDate = @ValidationDate
-            WHERE 
-                MasterListID = @MasterListID";
-
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
-                    cmd.Parameters.AddWithValue("@HouseHoldSize", txt_householdsize.Text);
-                    cmd.Parameters.AddWithValue("@AssessmentID", lbl_assessment.Text);
-                    cmd.Parameters.AddWithValue("@ValidatedByID", lbl_validator.Text);
-                    cmd.Parameters.AddWithValue("@ValidationDate", dt_accomplished.EditValue);
-                    cmd.ExecuteNonQuery();
-
-                    // Check for changes and log them
-                    string[] columns = new string[]
-                    {
-                "HouseHoldSize", "AssessmentID", "ValidatedByID", "ValidationDate",
-                    };
-
-                    foreach (string column in columns)
-                    {
-                        string oldValue = oldRow[column].ToString();
-                        string newValue = cmd.Parameters["@" + column].Value.ToString();
-
-                        if (oldValue != newValue)
-                        {
-                            MySqlCommand logCmd = con.CreateCommand();
-                            logCmd.CommandType = CommandType.Text;
-                            logCmd.CommandText = @"
-                    INSERT INTO log_masterlist 
-                    (MasterListID, Log, Logtype, User, DateTimeEntry) 
-                    VALUES 
-                    (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
-                            logCmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
-                            if (column == "AssessmentID")
-                            {
-                                logCmd.Parameters.AddWithValue("@Log", $"Assessment changed from [{assessmentNameBefore}] to [{assessmentNameAfter}] [Source:GIS]");
-                            }
-                            else if (column == "ValidatedByID")
-                            {
-                                logCmd.Parameters.AddWithValue("@Log", $"Validator changed from [{validatedNameBefore}] to [{validatedNameAfter}] [Source:GIS]");
-                            }
-                            else
-                            {
-                                logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}] [Source:GIS]");
-                            }
-                            logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-                            logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
-                            logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-
-                            logCmd.ExecuteNonQuery();
-                        }
-                    }
-
-                    con.Close();
-
+                    updateGIS.HouseholdSize = Convert.ToInt32(txt_householdsize.EditValue);
+                    updateGIS.AssessmentID = Convert.ToInt32(lbl_assessment.Text);
+                    updateGIS.ValidatedByID = Convert.ToInt32(lbl_validator.Text);
+                    updateGIS.ValidationDate = Convert.ToDateTime(dt_accomplished.EditValue);
+                    await context.SaveChangesAsync();
                 }
                 else
                 {
-                    MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //  MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
+        //private void UpdateGIS()
+        //{
+        //    try
+        //    {
+        //        con.Open();
+        //        MySqlCommand cmd = con.CreateCommand();
+        //        cmd.CommandType = CommandType.Text;
+
+        //        // First query to retrieve the current state
+        //        cmd.CommandText = @"
+        //SELECT
+        //    g.MasterlistID,
+        //    g.HouseHoldSize,
+        //    g.AssessmentID,
+        //    g.ValidatedByID,
+        //    g.ValidationDate
+        //FROM 
+        //    tbl_gis g
+        //WHERE 
+        //    g.MasterlistID = @MasterlistID";
+        //        cmd.Parameters.AddWithValue("@MasterlistID", txt_id.Text);
+
+        //        DataTable dtOld = new DataTable();
+        //        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+        //        da.Fill(dtOld);
+
+        //        if (dtOld.Rows.Count > 0)
+        //        {
+        //            DataRow oldRow = dtOld.Rows[0];
+
+        //            // Fetch current Assesment name
+        //            string assessmentNameBefore = "";
+        //            string assessmentNameAfter = "";
+
+        //            if (oldRow["AssessmentID"] != DBNull.Value)
+        //            {
+        //                int assessmentIDBefore = Convert.ToInt32(oldRow["AssessmentID"]);
+        //                MySqlCommand assessmentCmdBefore = con.CreateCommand();
+        //                assessmentCmdBefore.CommandType = CommandType.Text;
+        //                assessmentCmdBefore.CommandText = "SELECT Assessment FROM lib_assessment WHERE Id = @AssessmentID";
+        //                assessmentCmdBefore.Parameters.AddWithValue("@AssessmentID", assessmentIDBefore);
+        //                assessmentNameBefore = assessmentCmdBefore.ExecuteScalar()?.ToString() ?? "";
+        //            }
+
+        //            int assessmentIDAfter = Convert.ToInt32(lbl_assessment.Text); // Assuming lbl_sex.Text contains the updated SexID
+
+        //            MySqlCommand assessmentCmdAfter = con.CreateCommand();
+        //            assessmentCmdAfter.CommandType = CommandType.Text;
+        //            assessmentCmdAfter.CommandText = "SELECT Assessment FROM lib_assessment WHERE Id = @AssessmentID";
+        //            assessmentCmdAfter.Parameters.AddWithValue("@AssessmentID", assessmentIDAfter);
+        //            assessmentNameAfter = assessmentCmdAfter.ExecuteScalar()?.ToString() ?? "";
+
+
+        //            // Fetch current validator name
+        //            string validatedNameBefore = "";
+        //            string validatedNameAfter = "";
+
+        //            if (oldRow["ValidatedByID"] != DBNull.Value)
+        //            {
+        //                int validatedIDBefore = Convert.ToInt32(oldRow["ValidatedByID"]);
+        //                MySqlCommand validatedCmdBefore = con.CreateCommand();
+        //                validatedCmdBefore.CommandType = CommandType.Text;
+        //                validatedCmdBefore.CommandText = "SELECT Validator FROM lib_validator WHERE Id = @ValidatedByID";
+        //                validatedCmdBefore.Parameters.AddWithValue("@ValidatedByID", validatedIDBefore);
+        //                validatedNameBefore = validatedCmdBefore.ExecuteScalar()?.ToString() ?? "";
+        //            }
+
+        //            int validatedIDAfter = Convert.ToInt32(lbl_validator.Text); // Assuming lbl_martital.Text contains the updated MaritalStatusID
+
+        //            MySqlCommand validatedCmdAfter = con.CreateCommand();
+        //            validatedCmdAfter.CommandType = CommandType.Text;
+        //            validatedCmdAfter.CommandText = "SELECT Validator FROM lib_validator WHERE Id = @ValidatedByID";
+        //            validatedCmdAfter.Parameters.AddWithValue("@ValidatedByID", validatedIDAfter);
+        //            validatedNameAfter = validatedCmdAfter.ExecuteScalar()?.ToString() ?? "";
+
+
+        //            // Perform the update
+        //            cmd.CommandText = @"
+        //    UPDATE 
+        //        tbl_gis 
+        //    SET
+        //        HouseHoldSize = @HouseHoldSize,
+        //        AssessmentID = @AssessmentID,
+        //        ValidatedByID = @ValidatedByID,
+        //        ValidationDate = @ValidationDate
+        //    WHERE 
+        //        MasterListID = @MasterListID";
+
+        //            cmd.Parameters.Clear();
+        //            cmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
+        //            cmd.Parameters.AddWithValue("@HouseHoldSize", txt_householdsize.Text);
+        //            cmd.Parameters.AddWithValue("@AssessmentID", lbl_assessment.Text);
+        //            cmd.Parameters.AddWithValue("@ValidatedByID", lbl_validator.Text);
+        //            cmd.Parameters.AddWithValue("@ValidationDate", dt_accomplished.EditValue);
+        //            cmd.ExecuteNonQuery();
+
+        //            // Check for changes and log them
+        //            string[] columns = new string[]
+        //            {
+        //        "HouseHoldSize", "AssessmentID", "ValidatedByID", "ValidationDate",
+        //            };
+
+        //            foreach (string column in columns)
+        //            {
+        //                string oldValue = oldRow[column].ToString();
+        //                string newValue = cmd.Parameters["@" + column].Value.ToString();
+
+        //                if (oldValue != newValue)
+        //                {
+        //                    MySqlCommand logCmd = con.CreateCommand();
+        //                    logCmd.CommandType = CommandType.Text;
+        //                    logCmd.CommandText = @"
+        //            INSERT INTO log_masterlist 
+        //            (MasterListID, Log, Logtype, User, DateTimeEntry) 
+        //            VALUES 
+        //            (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
+        //                    logCmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
+        //                    if (column == "AssessmentID")
+        //                    {
+        //                        logCmd.Parameters.AddWithValue("@Log", $"Assessment changed from [{assessmentNameBefore}] to [{assessmentNameAfter}] [Source:GIS]");
+        //                    }
+        //                    else if (column == "ValidatedByID")
+        //                    {
+        //                        logCmd.Parameters.AddWithValue("@Log", $"Validator changed from [{validatedNameBefore}] to [{validatedNameAfter}] [Source:GIS]");
+        //                    }
+        //                    else
+        //                    {
+        //                        logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}] [Source:GIS]");
+        //                    }
+        //                    logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
+        //                    logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
+        //                    logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
+
+        //                    logCmd.ExecuteNonQuery();
+        //                }
+        //            }
+
+        //            con.Close();
+
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions
+        //        MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
         private async void btn_edit_Click(object sender, EventArgs e)
         {
@@ -1050,12 +1180,11 @@ namespace SpinsWinforms.Forms
             if (txt_referencecode.Text == "")
             {
                 //UpdateMaster(); 
-                await UpdateMasterListEf();
+                await UpdateMaster();
                 return;
             }
-            // UpdateGIS();
-            // UpdateMaster();
-            await UpdateMasterListEf();
+            await UpdateGISEF();
+            await UpdateMaster();
 
 
         }
@@ -1068,7 +1197,7 @@ namespace SpinsWinforms.Forms
         private async void cmb_sex_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedSex = cmb_sex.Text;
-            using(var context = new ApplicationDbContext())
+            using (var context = new ApplicationDbContext())
             {
                 var sex = await context.lib_sex.FirstOrDefaultAsync(s => s.Sex == selectedSex);
                 lblSex.Text = sex.Id.ToString();
@@ -1089,7 +1218,7 @@ namespace SpinsWinforms.Forms
         private async void cmb_healthstatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedHealthStatus = cmb_healthstatus.Text;
-            using(var context = new ApplicationDbContext())
+            using (var context = new ApplicationDbContext())
             {
                 var healthStatus = await context.lib_health_status
                     .FirstOrDefaultAsync(h => h.HealthStatus == selectedHealthStatus);
@@ -1097,63 +1226,16 @@ namespace SpinsWinforms.Forms
             }
         }
 
-        private void cmb_datasource_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmb_datasource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
+            string selectedDataSource = cmb_datasource.Text;
+            using (var context = new ApplicationDbContext())
             {
-
-
-
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, DataSource FROM lib_datasource WHERE DataSource='" + cmb_datasource.EditValue + "'";
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-                foreach (DataRow dr in dt.Rows)
-                {
-
-                    lbl_datasource.Text = dr["ID"].ToString();
-                }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                throw;
+                var dataSource = await context.lib_datasource
+                    .FirstOrDefaultAsync(d => d.DataSource == selectedDataSource);
+                lblDatasource.Text = dataSource.Id.ToString();
             }
         }
-        // Municipality fill when selected indexchanged was click with concatenated province
-        private void UpdateMunicipalityLabel(string cityMunName)
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PSGCCityMun, CityMunName FROM lib_city_municipality WHERE CityMunName=@CityMunName";
-                cmd.Parameters.AddWithValue("@CityMunName", cityMunName);
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-                foreach (DataRow dr in dt.Rows)
-                {
-                    lbl_municipality.Text = dr["PSGCCityMun"].ToString();
-                }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-
 
         private async void cmb_municipality_SelectedIndexChanged_1(object sender, EventArgs e)
         {
@@ -1478,79 +1560,29 @@ namespace SpinsWinforms.Forms
             }
         }
 
-        private void cmb_assessment_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmb_assessment_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
+            string selectedAssessment = cmb_assessment.Text;
+            using (var context = new ApplicationDbContext())
             {
-                con.Open();  // Open the connection
-
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT ID, Assessment FROM lib_assessment WHERE Assessment=@Assessment";
-
-                // Use parameterized query to avoid SQL injection
-                cmd.Parameters.AddWithValue("@Assessment", cmb_assessment.EditValue);
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                foreach (DataRow dr in dt.Rows)
-                {
-                    lbl_assessment.Text = dr["ID"].ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                // Ensure the connection is always closed, even if an exception occurs
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
+                var assessment = await context.lib_assessment
+                    .FirstOrDefaultAsync(a => a.Assessment == selectedAssessment);
+                lbl_assessment.Text = assessment.Id.ToString();
             }
 
         }
 
-        private void cmb_validator_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmb_validator_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
-            {
 
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT ID, Validator FROM lib_validator WHERE Validator='" + cmb_validator.EditValue + "'";
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-                foreach (DataRow dr in dt.Rows)
-                {
-
-                    lbl_validator.Text = dr["ID"].ToString();
-                }
-                // con.Close();
-            }
-            catch (Exception ex)
+            string selectedValidator = cmb_validator.Text;
+            using (var context = new ApplicationDbContext())
             {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var validator = await context.lib_validator
+                    .FirstOrDefaultAsync(v => v.Validator == selectedValidator);
+                lbl_validator.Text = validator.Id.ToString();
+            }
 
-                throw;
-            }
-            finally
-            {
-                // Ensure the connection is always closed, even if an exception occurs
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-            }
         }
 
         private string selectedPdfPath; // Store selected PDF path for later use

@@ -14,6 +14,7 @@ namespace SpinsNew.Data
         public DbSet<MasterListModel> tbl_masterlist { get; set; }
         public DbSet<SpbufModel> tbl_spbuf { get; set; }
         public DbSet<LogModel> log_masterlist { get; set; }
+        public DbSet<GisModel> tbl_gis { get; set; } //Database first so reference the name of database into our actual database.
 
         //Libraries classes below
         public DbSet<LibraryRegion> lib_region_fortesting { get; set; }
@@ -36,7 +37,7 @@ namespace SpinsNew.Data
         public DbSet<LibraryProvince> lib_province { get; set; }
         public DbSet<LibraryMunicipality> lib_city_municipality { get; set; }
         public DbSet<LibraryYear> lib_year { get; set; }
-        public DbSet<GisModel> tbl_gis { get; set; } //Database first so reference the name of database into our actual database.
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -66,6 +67,12 @@ namespace SpinsNew.Data
                 .HasIndex(id => id.MasterListId);
 
             /*Fluent API mapping below*/
+            modelBuilder.Entity<GisModel>()
+                .HasOne(m => m.MasterListModel)
+                .WithMany(g => g.GisModels)
+                .HasForeignKey(g => g.MasterListID)
+                .HasPrincipalKey(m => m.Id);
+
             modelBuilder.Entity<GisModel>()
                 .HasOne(la => la.LibraryAssessment)
                 .WithMany(g => g.GisModels)
@@ -138,11 +145,20 @@ namespace SpinsNew.Data
                 .HasForeignKey(e => e.MasterListID)
                 .HasPrincipalKey(e => e.Id);
 
-            modelBuilder.Entity<LibraryBarangay>()
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasMany(g => g.GisModels)
+                .WithOne(m => m.MasterListModel)
+                .HasForeignKey(g => g.MasterListID)
+                .HasPrincipalKey(m => m.Id);
+
+            modelBuilder.Entity<MasterListModel>()
                 .HasMany(e => e.PayrollModels)
-                .WithOne(e => e.LibraryBarangay)
-                .HasForeignKey(e => e.PSGCBrgy)
-                .HasPrincipalKey(e => e.PSGCBrgy);
+                .WithOne(e => e.MasterListModel)
+                .HasForeignKey(e => e.MasterListID)
+                .HasPrincipalKey(e => e.Id);
+
+
 
             modelBuilder.Entity<MasterListModel>()
                  .HasOne(e => e.LibrarySex)
@@ -151,10 +167,10 @@ namespace SpinsNew.Data
                  .HasPrincipalKey(e => e.Id);
 
             modelBuilder.Entity<MasterListModel>()
-               .HasOne(e => e.LibraryHealthStatus)
-               .WithMany(e => e.MasterListModels)
-               .HasForeignKey(e => e.HealthStatusID)
-               .HasPrincipalKey(e => e.Id);
+                 .HasOne(e => e.LibraryHealthStatus)
+                 .WithMany(e => e.MasterListModels)
+                 .HasForeignKey(e => e.HealthStatusID)
+                 .HasPrincipalKey(e => e.Id);
 
             modelBuilder.Entity<MasterListModel>()
                  .HasOne(e => e.LibraryIDType)
@@ -224,17 +240,6 @@ namespace SpinsNew.Data
             //    .HasForeignKey(x => x.MasterListID)
             //    .HasPrincipalKey(x => x.MasterListID);
 
-            modelBuilder.Entity<MasterListModel>()
-                .HasMany(g => g.GisModels)
-                .WithOne(m => m.MasterListModel)
-                .HasForeignKey(g => g.MasterListID)
-                .HasPrincipalKey(m => m.Id);
-
-            modelBuilder.Entity<MasterListModel>()
-                .HasMany(e => e.PayrollModels)
-                .WithOne(e => e.MasterListModel)
-                .HasForeignKey(e => e.MasterListID)
-                .HasPrincipalKey(e => e.Id);
 
             //modelBuilder.Entity<LibraryMunicipality>()
             //    .HasOne(p => p.LibraryProvince)
@@ -261,6 +266,11 @@ namespace SpinsNew.Data
                 .HasForeignKey(lb => lb.PSGCCityMun)
                 .HasPrincipalKey(lm => lm.PSGCCityMun);
 
+            modelBuilder.Entity<LibraryBarangay>()
+                 .HasMany(e => e.PayrollModels)
+                 .WithOne(e => e.LibraryBarangay)
+                 .HasForeignKey(e => e.PSGCBrgy)
+                 .HasPrincipalKey(e => e.PSGCBrgy);
 
             base.OnModelCreating(modelBuilder);
         }

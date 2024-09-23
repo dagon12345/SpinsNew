@@ -116,6 +116,7 @@ namespace SpinsWinforms.Forms
             this.labelControl28 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl22 = new DevExpress.XtraEditors.LabelControl();
             this.xtraScrollableControl1 = new DevExpress.XtraEditors.XtraScrollableControl();
+            this.lblDatasource = new DevExpress.XtraEditors.LabelControl();
             this.ck_new = new System.Windows.Forms.CheckBox();
             this.btn_import = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.txt_id.Properties)).BeginInit();
@@ -177,7 +178,6 @@ namespace SpinsWinforms.Forms
             this.txt_id.Properties.ReadOnly = true;
             this.txt_id.Size = new System.Drawing.Size(111, 20);
             this.txt_id.TabIndex = 1;
-            this.txt_id.Visible = false;
             this.txt_id.EditValueChanged += new System.EventHandler(this.txt_id_EditValueChanged);
             // 
             // groupControl1
@@ -220,6 +220,7 @@ namespace SpinsWinforms.Forms
             this.lblHealthStatus.Size = new System.Drawing.Size(6, 15);
             this.lblHealthStatus.TabIndex = 83;
             this.lblHealthStatus.Text = "0";
+            this.lblHealthStatus.Visible = false;
             // 
             // lblMaritalStatus
             // 
@@ -230,6 +231,7 @@ namespace SpinsWinforms.Forms
             this.lblMaritalStatus.Size = new System.Drawing.Size(6, 15);
             this.lblMaritalStatus.TabIndex = 82;
             this.lblMaritalStatus.Text = "0";
+            this.lblMaritalStatus.Visible = false;
             // 
             // lblSex
             // 
@@ -240,6 +242,7 @@ namespace SpinsWinforms.Forms
             this.lblSex.Size = new System.Drawing.Size(6, 15);
             this.lblSex.TabIndex = 81;
             this.lblSex.Text = "0";
+            this.lblSex.Visible = false;
             // 
             // dt_birth
             // 
@@ -863,6 +866,7 @@ namespace SpinsWinforms.Forms
             this.lbl_barangay.Size = new System.Drawing.Size(6, 15);
             this.lbl_barangay.TabIndex = 82;
             this.lbl_barangay.Text = "0";
+            this.lbl_barangay.Visible = false;
             // 
             // lbl_municipality
             // 
@@ -873,6 +877,7 @@ namespace SpinsWinforms.Forms
             this.lbl_municipality.Size = new System.Drawing.Size(6, 15);
             this.lbl_municipality.TabIndex = 81;
             this.lbl_municipality.Text = "0";
+            this.lbl_municipality.Visible = false;
             // 
             // lbl_province
             // 
@@ -883,6 +888,7 @@ namespace SpinsWinforms.Forms
             this.lbl_province.Size = new System.Drawing.Size(6, 15);
             this.lbl_province.TabIndex = 83;
             this.lbl_province.Text = "0";
+            this.lbl_province.Visible = false;
             // 
             // cmb_barangay
             // 
@@ -906,6 +912,7 @@ namespace SpinsWinforms.Forms
             this.lbl_region.Size = new System.Drawing.Size(6, 15);
             this.lbl_region.TabIndex = 82;
             this.lbl_region.Text = "0";
+            this.lbl_region.Visible = false;
             // 
             // cmb_municipality
             // 
@@ -928,7 +935,7 @@ namespace SpinsWinforms.Forms
             this.cmb_datasource.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_datasource.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_datasource.Size = new System.Drawing.Size(566, 20);
+            this.cmb_datasource.Size = new System.Drawing.Size(543, 20);
             this.cmb_datasource.TabIndex = 23;
             this.cmb_datasource.SelectedIndexChanged += new System.EventHandler(this.cmb_datasource_SelectedIndexChanged);
             // 
@@ -961,7 +968,6 @@ namespace SpinsWinforms.Forms
             this.txt_referencecode.Properties.ReadOnly = true;
             this.txt_referencecode.Size = new System.Drawing.Size(86, 20);
             this.txt_referencecode.TabIndex = 85;
-            this.txt_referencecode.Visible = false;
             // 
             // grp_gis
             // 
@@ -1014,9 +1020,9 @@ namespace SpinsWinforms.Forms
             this.lbl_validator.Appearance.Options.UseFont = true;
             this.lbl_validator.Location = new System.Drawing.Point(272, 75);
             this.lbl_validator.Name = "lbl_validator";
-            this.lbl_validator.Size = new System.Drawing.Size(21, 15);
+            this.lbl_validator.Size = new System.Drawing.Size(6, 15);
             this.lbl_validator.TabIndex = 81;
-            this.lbl_validator.Text = "Vali";
+            this.lbl_validator.Text = "0";
             this.lbl_validator.Visible = false;
             // 
             // lbl_assessment
@@ -1025,9 +1031,9 @@ namespace SpinsWinforms.Forms
             this.lbl_assessment.Appearance.Options.UseFont = true;
             this.lbl_assessment.Location = new System.Drawing.Point(271, 52);
             this.lbl_assessment.Name = "lbl_assessment";
-            this.lbl_assessment.Size = new System.Drawing.Size(30, 15);
+            this.lbl_assessment.Size = new System.Drawing.Size(6, 15);
             this.lbl_assessment.TabIndex = 81;
-            this.lbl_assessment.Text = "Asses";
+            this.lbl_assessment.Text = "0";
             this.lbl_assessment.Visible = false;
             // 
             // dt_accomplished
@@ -1117,6 +1123,7 @@ namespace SpinsWinforms.Forms
             // 
             this.xtraScrollableControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.xtraScrollableControl1.Controls.Add(this.lblDatasource);
             this.xtraScrollableControl1.Controls.Add(this.ck_new);
             this.xtraScrollableControl1.Controls.Add(this.groupControl2);
             this.xtraScrollableControl1.Controls.Add(this.grp_gis);
@@ -1132,6 +1139,17 @@ namespace SpinsWinforms.Forms
             this.xtraScrollableControl1.Size = new System.Drawing.Size(616, 769);
             this.xtraScrollableControl1.TabIndex = 96;
             this.xtraScrollableControl1.Click += new System.EventHandler(this.xtraScrollableControl1_Click);
+            // 
+            // lblDatasource
+            // 
+            this.lblDatasource.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblDatasource.Appearance.Options.UseFont = true;
+            this.lblDatasource.Location = new System.Drawing.Point(581, 21);
+            this.lblDatasource.Name = "lblDatasource";
+            this.lblDatasource.Size = new System.Drawing.Size(6, 15);
+            this.lblDatasource.TabIndex = 87;
+            this.lblDatasource.Text = "0";
+            this.lblDatasource.Visible = false;
             // 
             // ck_new
             // 
@@ -1152,7 +1170,7 @@ namespace SpinsWinforms.Forms
             this.btn_import.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_import.Enabled = false;
             this.btn_import.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_import.ImageOptions.Image")));
-            this.btn_import.Location = new System.Drawing.Point(605, 10);
+            this.btn_import.Location = new System.Drawing.Point(625, 10);
             this.btn_import.Name = "btn_import";
             this.btn_import.Size = new System.Drawing.Size(105, 17);
             this.btn_import.TabIndex = 87;
@@ -1323,5 +1341,6 @@ namespace SpinsWinforms.Forms
         private DevExpress.XtraEditors.LabelControl lblSex;
         private DevExpress.XtraEditors.LabelControl lblMaritalStatus;
         private DevExpress.XtraEditors.LabelControl lblHealthStatus;
+        private DevExpress.XtraEditors.LabelControl lblDatasource;
     }
 }
