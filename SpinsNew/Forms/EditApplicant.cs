@@ -92,6 +92,11 @@ namespace SpinsWinforms.Forms
                     .Include(s => s.LibrarySex)
                     .Include(m => m.LibraryMaritalStatus)
                     .Include(h => h.LibraryHealthStatus)
+                    .Include(d => d.LibraryDataSource)
+                    .Include(r => r.LibraryRegion)
+                    .Include(p => p.LibraryProvince)
+                    .Include(m => m.LibraryMunicipality)
+                    .Include(b => b.LibraryBarangay)
                     .FirstOrDefaultAsync(i => i.Id == Id);
                 //Default values from masterlist here.
                 string defaultLastName = updateMaster.LastName;
@@ -106,114 +111,208 @@ namespace SpinsWinforms.Forms
                 string defaultIdNumber = updateMaster.IDNumber;
                 DateTime? defaultIdDateissued = updateMaster.IDDateIssued;
                 string defaultCitizenship = updateMaster.Citizenship;
+                string defaultMothersMaiden = updateMaster.MothersMaiden;
+                string defaultReligion = updateMaster.Religion;
+                string defaultBirthPlace = updateMaster.BirthPlace;
+                string defaultEducAttain = updateMaster.EducAttain;
+                string defaultContactNo = updateMaster.ContactNum;
+                string defaultDataSource = updateMaster.LibraryDataSource.DataSource;
+
+                string defaultRegion = updateMaster.LibraryRegion.Region;
+                string defaultProvince = updateMaster.LibraryProvince.ProvinceName;
+                string defaultMunicipality = updateMaster.LibraryMunicipality.CityMunName;
+                string defaultBarangay = updateMaster.LibraryBarangay.BrgyName;
+                string defaultAddress = updateMaster.Address;
+
+                //Boolean property below.
+                bool defaultPantawid = updateMaster.Pantawid ?? false;
+                bool defaultIndigenous = updateMaster.Indigenous ?? false;
+
                 //Updating masterlist with textboxes/comboboxes
                 updateMaster.LastName = txt_lastname.Text;//Done for logging.
                 updateMaster.FirstName = txt_firstname.Text;//Done for logging.
                 updateMaster.MiddleName = txt_middlename.Text;//Done for logging.
                 updateMaster.ExtName = txt_extname.Text;//Done for logging.
                 updateMaster.BirthDate = Convert.ToDateTime(dt_birth.EditValue);//Done for logging.
-
                 updateMaster.SexID = Convert.ToInt32(lblSex.Text);//Done for logging.
                 updateMaster.MaritalStatusID = Convert.ToInt32(lblMaritalStatus.Text);//Done for logging.
                 updateMaster.HealthStatusID = Convert.ToInt32(lblHealthStatus.Text);//Done for logging.
                 updateMaster.HealthStatusRemarks = txt_remarks.Text;//Done for logging.
-
                 updateMaster.IDNumber = txt_idno.Text;//Done for logging.
                 updateMaster.IDDateIssued = Convert.ToDateTime(dt_dateissued.EditValue);//Done for logging.
+                updateMaster.Pantawid = ck_pantawid.Checked;//Done
+                updateMaster.Indigenous = ck_indigenous.Checked;//Done
                 updateMaster.Citizenship = txt_citizenship.Text;//Done
-                updateMaster.MothersMaiden = txt_mothers.Text;
-                updateMaster.Religion = txt_religion.Text;
-                updateMaster.BirthPlace = txt_birthplace.Text;
-                updateMaster.EducAttain = txt_educ.Text;
-                updateMaster.ContactNum = txt_contact.Text;
-                updateMaster.DataSourceId = Convert.ToInt32(lblDatasource.Text);
-
-                updateMaster.PSGCRegion = Convert.ToInt32(lbl_region.Text);
-                updateMaster.PSGCProvince = Convert.ToInt32(lbl_province.Text);
-                updateMaster.PSGCCityMun = Convert.ToInt32(lbl_municipality.Text);
-                updateMaster.PSGCBrgy = Convert.ToInt32(lbl_barangay.Text);
+                updateMaster.MothersMaiden = txt_mothers.Text;//Done
+                updateMaster.Religion = txt_religion.Text;//Done
+                updateMaster.BirthPlace = txt_birthplace.Text;//Done
+                updateMaster.EducAttain = txt_educ.Text;//Done
+                updateMaster.ContactNum = txt_contact.Text;//Done
+                updateMaster.DataSourceId = Convert.ToInt32(lblDatasource.Text);//Done
+                updateMaster.PSGCRegion = Convert.ToInt32(lbl_region.Text);//Done
+                updateMaster.PSGCProvince = Convert.ToInt32(lbl_province.Text);//Done
+                updateMaster.PSGCCityMun = Convert.ToInt32(lbl_municipality.Text);//Done
+                updateMaster.PSGCBrgy = Convert.ToInt32(lbl_barangay.Text);//Done
+                updateMaster.Address = txt_address.Text;//Done
 
                 await context.SaveChangesAsync();
 
                 DateTime birthDate = Convert.ToDateTime(dt_birth.EditValue);
                 DateTime idDateIssued = Convert.ToDateTime(dt_dateissued.EditValue);
                 //Activity logs below if fields are changed.. Saving using EF core.
-                if(defaultLastName != txt_lastname.Text)
+                //If boolean was changed.
+                if(defaultPantawid != ck_pantawid.Checked)
+                {
+                    string changedPantawid = $"[Pantawid] changed from '{defaultPantawid}' to '{ck_pantawid.Checked}'";
+                    await _tableLog.InsertLogs(Id, changedPantawid, _username);
+
+                }
+                if (defaultIndigenous != ck_indigenous.Checked)
+                {
+                    string changeIndigeous = $"[Indigenous] changed from '{defaultIndigenous}' to '{ck_indigenous.Checked}'";
+                    await _tableLog.InsertLogs(Id, changeIndigeous, _username);
+                }
+
+                /*Below is the Region, Province, Municipality and Barangay*/
+                if (defaultRegion != cmb_region.Text)
+                {
+                    string changedRegion = $"[Region] transfered from '{defaultRegion}' to '{cmb_region.Text}' ";
+                    await _tableLog.InsertLogs(Id, changedRegion, _username);
+                }
+                if (defaultProvince != cmb_province.Text)
+                {
+                    string changedProvince = $"[Province] transfered from '{defaultProvince}' to '{cmb_province.Text}'";
+                    await _tableLog.InsertLogs(Id, changedProvince, _username);
+                }
+                if (defaultMunicipality != cmb_municipality.Text)
+                {
+                    string changedMunicipality = $"[Municipality] transfered from '{defaultMunicipality}' to '{cmb_municipality.Text}'";
+                    await _tableLog.InsertLogs(Id, changedMunicipality, _username);
+                }
+                if (defaultBarangay != cmb_barangay.Text)
+                {
+                    string changedBarangay = $"[Barangay] transfered from '{defaultBarangay}' to '{cmb_barangay.Text}'";
+                    await _tableLog.InsertLogs(Id, changedBarangay, _username);
+                }
+                //Address
+                if (defaultAddress != txt_address.Text)
+                {
+                    string changedAddress = $"[Address] changed from '{defaultAddress}' to '{txt_address.Text}'";
+                    await _tableLog.InsertLogs(Id, changedAddress, _username);
+                }
+                //Field continue below.
+                if (defaultLastName != txt_lastname.Text)
                 {
                     string changedLastname = $"[Last Name] changed from '{defaultLastName} to '{txt_lastname.Text}'";
                     //From our TableLogService.
                     await _tableLog.InsertLogs(Id, changedLastname, _username);
                 }
-                if(defaultFirstName != txt_firstname.Text)
+                if (defaultFirstName != txt_firstname.Text)
                 {
                     string changedFirstname = $"[First Name] changed from '{defaultFirstName}' to '{txt_firstname.Text}'";
 
                     await _tableLog.InsertLogs(Id, changedFirstname, _username);
                 }
-                if(defaultMiddleName != txt_middlename.Text)
+                if (defaultMiddleName != txt_middlename.Text)
                 {
                     string changeMiddlename = $"[Middle Name] changed from '{defaultMiddleName}' to '{txt_middlename.Text}'";
 
                     await _tableLog.InsertLogs(Id, changeMiddlename, _username);
                 }
-                if(defaultExtName != txt_extname.Text)
+                if (defaultExtName != txt_extname.Text)
                 {
                     string changedExtname = $"[Extension Name] changed from '{defaultExtName}' to '{txt_extname.Text}'";
                     await _tableLog.InsertLogs(Id, changedExtname, _username);
                 }
-                if(defaultBirthDate != birthDate.Date)
+                if (defaultBirthDate != birthDate.Date)
                 {
                     string changedDate = $"[Birth Date] changed from '{defaultBirthDate: yyyy-MM-dd}' to '{birthDate: yyyy-MM-dd}'";
                     await _tableLog.InsertLogs(Id, changedDate, _username);
                 }
-                if(defaultSex != cmb_sex.Text)
+                if (defaultSex != cmb_sex.Text)
                 {
                     string changedSex = $"[Sex] changed from '{defaultSex}' to '{cmb_sex.EditValue}'";
                     await _tableLog.InsertLogs(Id, changedSex, _username);
                 }
-                if(defaultMarital != cmb_marital.Text)
+                if (defaultMarital != cmb_marital.Text)
                 {
                     string changedMarital = $"[Marital Status] changed from '{defaultMarital}' to '{cmb_marital.EditValue}'";
                     await _tableLog.InsertLogs(Id, changedMarital, _username);
                 }
                 //healthStatus id
-                if(defaultHealthStatus != cmb_healthstatus.Text)
+                if (defaultHealthStatus != cmb_healthstatus.Text)
                 {
                     string changedHealthStatus = $"[Health Status] changed from '{defaultHealthStatus}' to '{cmb_healthstatus.EditValue}";
                     await _tableLog.InsertLogs(Id, changedHealthStatus, _username);
                 }
                 //health status remarks
-                if(defaultRemarks != txt_remarks.Text)
+                if (defaultRemarks != txt_remarks.Text)
                 {
                     string changedHealthStatus = $"[Health Remarks] changed from '{defaultRemarks}' to '{txt_remarks.EditValue}'";
                     await _tableLog.InsertLogs(Id, changedHealthStatus, _username);
                 }
                 //Id number
-                if(defaultIdNumber != txt_idno.Text)
+                if (defaultIdNumber != txt_idno.Text)
                 {
                     string changedIdNumber = $"[ID Number] changed from '{defaultIdNumber}' to '{txt_idno.Text}'";
                     await _tableLog.InsertLogs(Id, changedIdNumber, _username);
                 }
                 // Id Date issued
-                if(defaultIdDateissued != idDateIssued.Date)
+                if (defaultIdDateissued != idDateIssued.Date)
                 {
                     string changedIdDateissued = $"[ID Date Issued] changed from '{defaultIdDateissued: yyyy-MM-dd}' to '{idDateIssued: yyyy-MM-dd}'";
                     await _tableLog.InsertLogs(Id, changedIdDateissued, _username);
                 }
-                 //Citizenship
-                if(defaultCitizenship != txt_citizenship.Text)
+                //Citizenship
+                if (defaultCitizenship != txt_citizenship.Text)
                 {
                     string changedCitizenship = $"[Citizenship] changed from '{defaultCitizenship}' to '{txt_citizenship.Text}'";
                     await _tableLog.InsertLogs(Id, changedCitizenship, _username);
                 }
-                
+                //Mothers maiden
+                if (defaultMothersMaiden != txt_mothers.Text)
+                {
+                    string changedMothers = $"[Mothers Maiden] changed from '{defaultMothersMaiden}' to '{txt_mothers.Text}'";
+                    await _tableLog.InsertLogs(Id, changedMothers, _username);
+                }
+                //Religion
+                if (defaultReligion != txt_religion.Text)
+                {
+                    string changedReligion = $"[Religion] changed from '{defaultReligion}' to '{txt_religion.Text}'";
+                    await _tableLog.InsertLogs(Id, changedReligion, _username);
+                }
+                //Birth Place
+                if (defaultBirthPlace != txt_birthplace.Text)
+                {
+                    string changedBirthPlace = $"[Birth place] changed from '{defaultBirthPlace}' to '{txt_birthplace.Text}'";
+                    await _tableLog.InsertLogs(Id, changedBirthPlace, _username);
+                }
+                //Educ attain
+                if (defaultEducAttain != txt_educ.Text)
+                {
+                    string changedEducAttain = $"[Educational Attainment] changed from '{defaultEducAttain}' to '{txt_educ.Text}'";
+                    await _tableLog.InsertLogs(Id, changedEducAttain, _username);
+                }
+                //Contact number
+                if (defaultContactNo != txt_contact.Text)
+                {
+                    string changedContact = $"[Contact Number] changed from '{defaultContactNo}' to '{txt_contact.Text}'";
+                    await _tableLog.InsertLogs(Id, changedContact, _username);
+                }
+                //Datasource
+                if (defaultDataSource != cmb_datasource.Text)
+                {
+                    string changedDataSource = $"[Datasource] changed from '{defaultDataSource}' to '{cmb_datasource.Text}'";
+                    await _tableLog.InsertLogs(Id, changedDataSource, _username);
+                }
+
                 XtraMessageBox.Show("Updated succesfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }
 
-
         }
 
+        //Retrieve the masterlist and fill the toolbox like text and comboboxes.
         private async Task masterListFill()
         {
             int id = Convert.ToInt32(txt_id.Text);
@@ -225,67 +324,51 @@ namespace SpinsWinforms.Forms
                 txt_middlename.Text = masterListData.MiddleName;
                 txt_extname.Text = masterListData.ExtName;
                 dt_birth.EditValue = masterListData.BirthDate;
-
                 //Fill the sex combobox and label
                 cmb_sex.EditValue = masterListData.LibrarySex.Sex;
                 lblSex.Text = masterListData.SexID.ToString();
-
                 // Fill the marital combobox and label
                 cmb_marital.EditValue = masterListData.LibraryMaritalStatus.MaritalStatus;
                 lblMaritalStatus.Text = masterListData.MaritalStatusID.ToString();
-
                 //Fill the health status combobox and label
                 cmb_healthstatus.EditValue = masterListData.LibraryHealthStatus.HealthStatus;
                 lblHealthStatus.Text = masterListData.HealthStatusID.ToString();
-
                 txt_remarks.Text = masterListData.HealthStatusRemarks;
-
                 txt_idno.EditValue = masterListData.IDNumber;
                 dt_dateissued.EditValue = masterListData.IDDateIssued;
+                ck_pantawid.Checked = masterListData.Pantawid ?? false;
+                ck_indigenous.Checked = masterListData.Indigenous ?? false;
                 txt_citizenship.EditValue = masterListData.Citizenship;
                 txt_mothers.EditValue = masterListData.MothersMaiden;
                 txt_religion.EditValue = masterListData.Religion;
                 txt_birthplace.EditValue = masterListData.BirthPlace;
                 txt_educ.EditValue = masterListData.EducAttain;
                 txt_contact.EditValue = masterListData.ContactNum;
-
                 cmb_region.EditValue = masterListData.LibraryRegion.Region;
                 lbl_region.Text = masterListData.PSGCRegion.ToString();
-
                 cmb_province.EditValue = masterListData.LibraryProvince.ProvinceName;
                 lbl_province.Text = masterListData.PSGCProvince.ToString();
-
                 cmb_municipality.EditValue = masterListData.LibraryMunicipality.CityMunName;
                 lbl_municipality.Text = masterListData.PSGCCityMun.ToString();
-
-
                 cmb_barangay.EditValue = masterListData.LibraryBarangay.BrgyName;
                 lbl_barangay.Text = masterListData.PSGCBrgy.ToString();
-
-
                 txt_address.EditValue = masterListData.Address;
-
                 cmb_datasource.EditValue = masterListData.LibraryDataSource.DataSource;
                 lblDatasource.Text = masterListData.DataSourceId.ToString();
-
                 txt_householdsize.EditValue = masterListData.GisModels.Select(x => x.HouseholdSize)
                     .FirstOrDefault();
-
                 //Assessment retrieval
                 cmb_assessment.EditValue = masterListData.GisModels.Select(s => s.LibraryAssessment.Assessment)
                     .FirstOrDefault();
                 lbl_assessment.Text = masterListData.GisModels.Select(g => g.AssessmentID.ToString())
                     .FirstOrDefault();
-
                 //Validator retrieval
                 cmb_validator.EditValue = masterListData.GisModels.Select(v => v.LibraryValidator.Validator)
                     .FirstOrDefault();
                 lbl_validator.Text = masterListData.GisModels.Select(v => v.ValidatedByID.ToString())
                     .FirstOrDefault();
-
                 dt_accomplished.EditValue = masterListData.GisModels.Select(d => d.ValidationDate)
                     .FirstOrDefault();
-
             }
 
         }
@@ -301,15 +384,9 @@ namespace SpinsWinforms.Forms
         {
             Loading();
             base.OnLoad(e);
-
             await tableLog();// Retrieve the logs
-
-
             await AllMethods();
-
-
             DisplayAge();// to display age in a label
-
             DoneLoading();
         }
         private async Task AllMethods()
@@ -324,19 +401,7 @@ namespace SpinsWinforms.Forms
             await Provinces();
             await Municipalities();
             await Barangays();
-
         }
-        // Other methods and controls
-        private void EditApplicant_Load(object sender, EventArgs e)
-        {
-            //Call the methods below to fill the comboboxes
-
-            // InitializeComboboxes();
-            //cmb_municipality.SelectedIndexChanged += cmb_municipality_SelectedIndexChanged;
-        }
-
-
-
         public void DisplaySPBUF(int spbuf)
         {
             // Display the SPBUF value in a label or textbox on your form
@@ -350,7 +415,6 @@ namespace SpinsWinforms.Forms
             txt_referencecode.Text = gis.ToString(); // Assuming txt_referencecode is a TextBox on your form
             LoadAndDisplayPdfAsync(gis.ToString(), @"\\172.26.153.181\gis");
         }
-
 
         private void LoadAndDisplayPdfAsync(string referenceCode, string folderPath)
         {
@@ -589,386 +653,12 @@ namespace SpinsWinforms.Forms
             txt_id.Text = "";
             dt_dateissued.Text = "";
             cmb_sex.Text = "";
-            //cmb_marital.Text = "";
-            //txt_remarks.Text = "";
             ck_pantawid.Checked = false;
             ck_indigenous.Checked = false;
-            // gr_similar.DataSource = null;
             txt_lastname.Focus();
 
         }
 
-        //Updating the masterlist on given property.
-        //private void UpdateMaster()
-        //{
-        //    try
-        //    {
-        //        con.Open();
-        //        MySqlCommand cmd = con.CreateCommand();
-        //        cmd.CommandType = CommandType.Text;
-
-        //        // First query to retrieve the current state
-        //        cmd.CommandText = @"
-        //SELECT 
-        //    m.LastName,
-        //    m.FirstName,
-        //    m.MiddleName,
-        //    m.ExtName,
-        //    m.BirthDate,
-        //    m.SexID,
-        //    m.MaritalStatusID,
-        //    m.HealthStatusID,
-        //    m.HealthStatusRemarks,
-        //    m.IDNumber,
-        //    m.IDDateIssued,
-        //    m.Pantawid,
-        //    m.Indigenous,
-        //    m.Citizenship,
-        //    m.MothersMaiden,
-        //    m.Religion,
-        //    m.BirthPlace,
-        //    m.EducAttain,
-        //    m.ContactNum,
-        //    m.DataSourceID,
-        //    m.PSGCRegion,
-        //    m.PSGCProvince,
-        //    m.PSGCCityMun,
-        //    m.PSGCBrgy
-        //FROM 
-        //    tbl_masterlist m
-        //WHERE 
-        //    m.ID = @IDNumber";
-        //        cmd.Parameters.AddWithValue("@IDNumber", txt_id.Text);
-
-        //        DataTable dtOld = new DataTable();
-        //        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-        //        da.Fill(dtOld);
-
-        //        if (dtOld.Rows.Count > 0)
-        //        {
-        //            DataRow oldRow = dtOld.Rows[0];
-
-        //            // Fetch current sex name
-        //            string sexNameBefore = "";
-        //            string sexNameAfter = "";
-
-        //            if (oldRow["SexID"] != DBNull.Value)
-        //            {
-        //                int sexIDBefore = Convert.ToInt32(oldRow["SexID"]);
-        //                MySqlCommand sexCmdBefore = con.CreateCommand();
-        //                sexCmdBefore.CommandType = CommandType.Text;
-        //                sexCmdBefore.CommandText = "SELECT Sex FROM lib_sex WHERE Id = @SexID";
-        //                sexCmdBefore.Parameters.AddWithValue("@SexID", sexIDBefore);
-        //                sexNameBefore = sexCmdBefore.ExecuteScalar()?.ToString() ?? "";
-        //            }
-
-        //            int sexIDAfter = Convert.ToInt32(lbl_sex.Text); // Assuming lbl_sex.Text contains the updated SexID
-
-        //            MySqlCommand sexCmdAfter = con.CreateCommand();
-        //            sexCmdAfter.CommandType = CommandType.Text;
-        //            sexCmdAfter.CommandText = "SELECT Sex FROM lib_sex WHERE Id = @SexID";
-        //            sexCmdAfter.Parameters.AddWithValue("@SexID", sexIDAfter);
-        //            sexNameAfter = sexCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-        //            // Fetch current maritalstatus name
-        //            string maritalNameBefore = "";
-        //            string maritalNameAfter = "";
-
-        //            if (oldRow["MaritalStatusID"] != DBNull.Value)
-        //            {
-        //                int maritalIDBefore = Convert.ToInt32(oldRow["MaritalStatusID"]);
-        //                MySqlCommand maritalCmdBefore = con.CreateCommand();
-        //                maritalCmdBefore.CommandType = CommandType.Text;
-        //                maritalCmdBefore.CommandText = "SELECT MaritalStatus FROM lib_marital_status WHERE Id = @MaritalStatusID";
-        //                maritalCmdBefore.Parameters.AddWithValue("@MaritalStatusID", maritalIDBefore);
-        //                maritalNameBefore = maritalCmdBefore.ExecuteScalar()?.ToString() ?? "";
-        //            }
-
-        //            int maritalIDAfter = Convert.ToInt32(lbl_marital.Text); // Assuming lbl_martital.Text contains the updated MaritalStatusID
-
-        //            MySqlCommand maritalCmdAfter = con.CreateCommand();
-        //            maritalCmdAfter.CommandType = CommandType.Text;
-        //            maritalCmdAfter.CommandText = "SELECT MaritalStatus FROM lib_marital_status WHERE Id = @MaritalStatusID";
-        //            maritalCmdAfter.Parameters.AddWithValue("@MaritalStatusID", maritalIDAfter);
-        //            maritalNameAfter = maritalCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-        //            // Fetch current HealthStatus name
-        //            string healthStatusBefore = "";
-        //            string healthStatusAfter = "";
-
-        //            if (oldRow["HealthStatusID"] != DBNull.Value)
-        //            {
-        //                int healthstatusIDBefore = Convert.ToInt32(oldRow["HealthStatusID"]);
-        //                MySqlCommand healthstatusCmdBefore = con.CreateCommand();
-        //                healthstatusCmdBefore.CommandType = CommandType.Text;
-        //                healthstatusCmdBefore.CommandText = "SELECT HealthStatus FROM lib_health_status WHERE Id = @HealthStatusID";
-        //                healthstatusCmdBefore.Parameters.AddWithValue("@HealthStatusID", healthstatusIDBefore);
-        //                healthStatusBefore = healthstatusCmdBefore.ExecuteScalar()?.ToString() ?? "";
-        //            }
-
-        //            int healthstatusIDAfter = Convert.ToInt32(lbl_healthstatus.Text); // Assuming lbl_martital.Text contains the updated MaritalStatusID
-
-        //            MySqlCommand healthstatusCmdAfter = con.CreateCommand();
-        //            healthstatusCmdAfter.CommandType = CommandType.Text;
-        //            healthstatusCmdAfter.CommandText = "SELECT HealthStatus FROM lib_health_status WHERE Id = @HealthStatusID";
-        //            healthstatusCmdAfter.Parameters.AddWithValue("@HealthStatusID", healthstatusIDAfter);
-        //            healthStatusAfter = healthstatusCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-        //            // Fetch current Municipality name
-        //            string municipalityBefore = "";
-        //            string municipalityAfter = "";
-
-        //            if (oldRow["PSGCCityMun"] != DBNull.Value)
-        //            {
-        //                int municipalityIDBefore = Convert.ToInt32(oldRow["PSGCCityMun"]);
-
-        //                MySqlCommand municipalityCmdBefore = con.CreateCommand();
-        //                municipalityCmdBefore.CommandType = CommandType.Text;
-        //                municipalityCmdBefore.CommandText = "SELECT CityMunName FROM lib_city_municipality WHERE PSGCCityMun = @PSGCCityMun";
-        //                municipalityCmdBefore.Parameters.AddWithValue("@PSGCCityMun", municipalityIDBefore);
-        //                municipalityBefore = municipalityCmdBefore.ExecuteScalar()?.ToString() ?? "";
-        //            }
-
-        //            int municipalityIDAfter = Convert.ToInt32(lbl_municipality.Text); // Assuming lbl_martital.Text contains the updated MaritalStatusID
-
-        //            MySqlCommand municipalityCmdAfter = con.CreateCommand();
-        //            municipalityCmdAfter.CommandType = CommandType.Text;
-        //            municipalityCmdAfter.CommandText = "SELECT CityMunName FROM lib_city_municipality WHERE PSGCCityMun = @PSGCCityMun";
-        //            municipalityCmdAfter.Parameters.AddWithValue("@PSGCCityMun", municipalityIDAfter);
-        //            municipalityAfter = municipalityCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-        //            // Fetch current Datasource name
-        //            string datasourceBefore = "";
-        //            string datasourceAfter = "";
-
-        //            if (oldRow["DataSourceID"] != DBNull.Value)
-        //            {
-        //                int datasourceIDBefore = Convert.ToInt32(oldRow["DataSourceID"]);
-
-        //                MySqlCommand datasourceCmdBefore = con.CreateCommand();
-        //                datasourceCmdBefore.CommandType = CommandType.Text;
-        //                datasourceCmdBefore.CommandText = "SELECT DataSource FROM lib_datasource WHERE ID = @DataSourceID";
-        //                datasourceCmdBefore.Parameters.AddWithValue("@DataSourceID", datasourceIDBefore);
-        //                datasourceBefore = datasourceCmdBefore.ExecuteScalar()?.ToString() ?? "";
-        //            }
-
-        //            int datasourceIDAfter = Convert.ToInt32(lbl_datasource.Text); // Assuming lbl_martital.Text contains the updated MaritalStatusID
-
-        //            MySqlCommand datasourceCmdAfter = con.CreateCommand();
-        //            datasourceCmdAfter.CommandType = CommandType.Text;
-        //            datasourceCmdAfter.CommandText = "SELECT DataSource FROM lib_datasource WHERE ID = @DataSourceID";
-        //            datasourceCmdAfter.Parameters.AddWithValue("@DataSourceID", datasourceIDAfter);
-        //            datasourceAfter = datasourceCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-        //            // Perform the update
-        //            cmd.CommandText = @"
-        //    UPDATE 
-        //        tbl_masterlist 
-        //    SET
-        //        LastName = @LastName,
-        //        FirstName = @FirstName,
-        //        MiddleName = @MiddleName,
-        //        ExtName = @ExtName,
-        //        BirthDate = @BirthDate,
-        //        SexID = @SexID,
-        //        MaritalStatusID = @MaritalStatusID,
-        //        HealthStatusID = @HealthStatusID,
-        //        HealthStatusRemarks = @HealthStatusRemarks,
-        //        IDNumber = @IDNumber,
-        //        IDDateIssued = @IDDateIssued,
-        //        Pantawid = @Pantawid,
-        //        Indigenous = @Indigenous,
-        //        Citizenship = @Citizenship,
-        //        MothersMaiden = @MothersMaiden,
-        //        Religion = @Religion,
-        //        Birthplace = @BirthPlace,
-        //        EducAttain = @EducAttain,
-        //        ContactNum = @ContactNum,
-        //        DataSourceID = @DataSourceID,
-        //        PSGCRegion = @PSGCRegion,
-        //        PSGCProvince = @PSGCProvince,
-        //        PSGCCityMun = @PSGCCityMun,
-        //        PSGCBrgy = @PSGCBrgy,
-        //        DateTimeModified = @DateTimeModified,
-        //        ModifiedBy = @ModifiedBy
-        //    WHERE 
-        //        ID = @ID";
-
-        //            cmd.Parameters.Clear();
-        //            cmd.Parameters.AddWithValue("@ID", txt_id.Text);
-        //            cmd.Parameters.AddWithValue("@LastName", txt_lastname.Text);
-        //            cmd.Parameters.AddWithValue("@FirstName", txt_firstname.Text);
-        //            cmd.Parameters.AddWithValue("@MiddleName", txt_middlename.Text);
-        //            cmd.Parameters.AddWithValue("@ExtName", txt_extname.Text);
-        //            cmd.Parameters.AddWithValue("@BirthDate", dt_birth.EditValue);
-        //            cmd.Parameters.AddWithValue("@SexID", lbl_sex.Text);
-        //            cmd.Parameters.AddWithValue("@MaritalStatusID", lbl_marital.Text);
-        //            cmd.Parameters.AddWithValue("@HealthStatusID", lbl_healthstatus.Text);
-        //            cmd.Parameters.AddWithValue("@HealthStatusRemarks", txt_remarks.Text);
-        //            cmd.Parameters.AddWithValue("@IDNumber", txt_idno.Text);
-        //            //cmd.Parameters.AddWithValue("@IDDateIssued", dt_dateissued.EditValue);
-        //            // Handle null value for IDDateIssued
-        //            if (dt_dateissued.EditValue == null || dt_dateissued.Text == "")
-        //            {
-        //                cmd.Parameters.AddWithValue("@IDDateIssued", DBNull.Value);
-        //            }
-        //            else
-        //            {
-        //                cmd.Parameters.AddWithValue("@IDDateIssued", dt_dateissued.Text ?? null);
-        //            }
-        //            cmd.Parameters.AddWithValue("@Pantawid", ck_pantawid.Checked);
-        //            cmd.Parameters.AddWithValue("@Indigenous", ck_indigenous.Checked);
-        //            cmd.Parameters.AddWithValue("@Citizenship", txt_citizenship.EditValue);
-        //            cmd.Parameters.AddWithValue("@MothersMaiden", txt_mothers.EditValue);
-        //            cmd.Parameters.AddWithValue("@Religion", txt_religion.EditValue);
-        //            cmd.Parameters.AddWithValue("@BirthPlace", txt_birthplace.EditValue);
-        //            cmd.Parameters.AddWithValue("@EducAttain", txt_educ.EditValue);
-        //            cmd.Parameters.AddWithValue("@ContactNum", txt_contact.EditValue);
-        //            cmd.Parameters.AddWithValue("@DataSourceID", lbl_datasource.Text);
-        //            cmd.Parameters.AddWithValue("@PSGCRegion", lbl_region.Text);
-        //            cmd.Parameters.AddWithValue("@PSGCProvince", lbl_province.Text);
-        //            cmd.Parameters.AddWithValue("@PSGCCityMun", lbl_municipality.Text);
-        //            cmd.Parameters.AddWithValue("@PSGCBrgy", lbl_barangay.Text);
-        //            cmd.Parameters.AddWithValue("@DateTimeModified", DateTime.Now);
-        //            cmd.Parameters.AddWithValue("@ModifiedBy", _username);
-
-        //            cmd.ExecuteNonQuery();
-
-        //            // Check for changes and log them
-        //            string[] columns = new string[]
-        //            {
-        //    "LastName", "FirstName", "MiddleName", "ExtName", "BirthDate",
-        //    "SexID", "MaritalStatusID", "HealthStatusID", "HealthStatusRemarks", "IDNumber",
-        //    "IDDateIssued", "Pantawid", "Indigenous", "Citizenship", "MothersMaiden",
-        //    "Religion", "BirthPlace", "EducAttain", "ContactNum", "DataSourceID", "PSGCCityMun",
-        //            };
-
-        //            foreach (string column in columns)
-        //            {
-        //                string oldValue = oldRow[column].ToString();
-        //                string newValue = cmd.Parameters["@" + column].Value.ToString();
-
-        //                if (oldValue != newValue)
-        //                {
-        //                    MySqlCommand logCmd = con.CreateCommand();
-        //                    logCmd.CommandType = CommandType.Text;
-        //                    logCmd.CommandText = @"
-        //            INSERT INTO log_masterlist 
-        //            (MasterListID, Log, Logtype, User, DateTimeEntry) 
-        //            VALUES 
-        //            (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
-        //                    logCmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
-        //                    if (column == "SexID")
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"Sex changed from [{sexNameBefore}] to [{sexNameAfter}]");
-        //                    }
-        //                    else if (column == "MaritalStatusID")
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"Marital changed from [{maritalNameBefore}] to [{maritalNameAfter}]");
-        //                    }
-        //                    else if (column == "HealthStatusID")
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"Health Status changed from [{healthStatusBefore}] to [{healthStatusAfter}]");
-        //                    }
-        //                    else if (column == "PSGCCityMun")
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"Municipality changed from [{municipalityBefore}] to [{municipalityAfter}]");
-        //                    }
-        //                    else if (column == "DataSourceID")
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"Datasource name changed from [{datasourceBefore}] to [{datasourceAfter}]");
-        //                    }
-        //                    else
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}]");
-        //                    }
-        //                    logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-        //                    logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
-        //                    logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-
-        //                    logCmd.ExecuteNonQuery();
-        //                }
-        //            }
-
-        //            con.Close();
-        //            // masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
-
-
-
-        //            XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        //            this.Close();
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions
-        //        MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-
-
-
-
-        //}
-        private void SaveGIS()
-        {
-            if (selectedPdfPath == null)
-            {
-                XtraMessageBox.Show("Please import a PDF file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                con.Open();
-
-                // Insert GIS information into database
-                MySqlCommand insertCmd = con.CreateCommand();
-                insertCmd.CommandType = CommandType.Text;
-                insertCmd.CommandText = "INSERT INTO tbl_gis (MasterListID, HouseholdSize, AssessmentID, ValidatedByID, ValidationDate, EntryBy, EntryDateTime)" +
-                    " VALUES (@MasterlistID, @HouseholdSize, @AssessmentID, @ValidatedByID, @ValidationDate, @EntryBy, @EntryDateTime)";
-
-                insertCmd.Parameters.AddWithValue("@MasterlistID", txt_id.EditValue);
-                insertCmd.Parameters.AddWithValue("@HouseholdSize", txt_householdsize.EditValue);
-                insertCmd.Parameters.AddWithValue("@AssessmentID", lbl_assessment.Text);
-                insertCmd.Parameters.AddWithValue("@ValidatedByID", lbl_validator.Text);
-                insertCmd.Parameters.AddWithValue("@ValidationDate", dt_accomplished.EditValue);
-                insertCmd.Parameters.AddWithValue("@EntryBy", _username);
-                insertCmd.Parameters.AddWithValue("@EntryDateTime", DateTime.Now);
-                insertCmd.ExecuteNonQuery();
-                //int referenceCode = Convert.ToInt32(insertCmd.ExecuteScalar()); // Get auto-incremented ID
-
-                // Save the PDF file to network path with custom filename based on referenceCode
-                string fileName = Path.GetFileName(selectedPdfPath);
-                //string destinationPath = @"\\172.26.153.181\gis\" + referenceCode + ".pdf";
-                string destinationPath = @"\\172.26.153.181\gis\" + lbl_reference.Text + ".pdf";
-                //string destinationPath = @"E:\SPInS Documents\" + lbl_reference.Text + ".pdf";
-                File.Copy(selectedPdfPath, destinationPath, true);
-
-
-                this.Close();
-                //masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
-
-                XtraMessageBox.Show("GIS and PDF saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
 
         private async Task UpdateGISEF()
         {
@@ -992,158 +682,45 @@ namespace SpinsWinforms.Forms
 
             }
         }
-        //private void UpdateGIS()
-        //{
-        //    try
-        //    {
-        //        con.Open();
-        //        MySqlCommand cmd = con.CreateCommand();
-        //        cmd.CommandType = CommandType.Text;
+  
+        private async Task SaveGISEF()
+        {
+            if (selectedPdfPath == null)
+            {
+                XtraMessageBox.Show("Please import a PDF file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-        //        // First query to retrieve the current state
-        //        cmd.CommandText = @"
-        //SELECT
-        //    g.MasterlistID,
-        //    g.HouseHoldSize,
-        //    g.AssessmentID,
-        //    g.ValidatedByID,
-        //    g.ValidationDate
-        //FROM 
-        //    tbl_gis g
-        //WHERE 
-        //    g.MasterlistID = @MasterlistID";
-        //        cmd.Parameters.AddWithValue("@MasterlistID", txt_id.Text);
+            using(var context = new ApplicationDbContext())
+            {
+                var gis = new GisModel
+                {
+                    MasterListID = Convert.ToInt32(txt_id.Text),
+                    HouseholdSize = Convert.ToInt32(txt_householdsize.Text),
+                    AssessmentID = Convert.ToInt32(lbl_assessment.Text),
+                    ValidatedByID = Convert.ToInt32(lbl_validator.Text),
+                    ValidationDate = Convert.ToDateTime(dt_accomplished.EditValue),
+                    EntryBy = _username,
+                    EntryDateTime = DateTime.Now
+                };
+                context.tbl_gis.Add(gis);
+                await context.SaveChangesAsync();
+                
+            }
 
-        //        DataTable dtOld = new DataTable();
-        //        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-        //        da.Fill(dtOld);
-
-        //        if (dtOld.Rows.Count > 0)
-        //        {
-        //            DataRow oldRow = dtOld.Rows[0];
-
-        //            // Fetch current Assesment name
-        //            string assessmentNameBefore = "";
-        //            string assessmentNameAfter = "";
-
-        //            if (oldRow["AssessmentID"] != DBNull.Value)
-        //            {
-        //                int assessmentIDBefore = Convert.ToInt32(oldRow["AssessmentID"]);
-        //                MySqlCommand assessmentCmdBefore = con.CreateCommand();
-        //                assessmentCmdBefore.CommandType = CommandType.Text;
-        //                assessmentCmdBefore.CommandText = "SELECT Assessment FROM lib_assessment WHERE Id = @AssessmentID";
-        //                assessmentCmdBefore.Parameters.AddWithValue("@AssessmentID", assessmentIDBefore);
-        //                assessmentNameBefore = assessmentCmdBefore.ExecuteScalar()?.ToString() ?? "";
-        //            }
-
-        //            int assessmentIDAfter = Convert.ToInt32(lbl_assessment.Text); // Assuming lbl_sex.Text contains the updated SexID
-
-        //            MySqlCommand assessmentCmdAfter = con.CreateCommand();
-        //            assessmentCmdAfter.CommandType = CommandType.Text;
-        //            assessmentCmdAfter.CommandText = "SELECT Assessment FROM lib_assessment WHERE Id = @AssessmentID";
-        //            assessmentCmdAfter.Parameters.AddWithValue("@AssessmentID", assessmentIDAfter);
-        //            assessmentNameAfter = assessmentCmdAfter.ExecuteScalar()?.ToString() ?? "";
+            // Save the PDF file to network path with custom filename based on referenceCode
+            string fileName = Path.GetFileName(selectedPdfPath);
+            //string destinationPath = @"\\172.26.153.181\gis\" + referenceCode + ".pdf";
+            string destinationPath = @"\\172.26.153.181\gis\" + lbl_reference.Text + ".pdf";
+            //string destinationPath = @"E:\SPInS Documents\" + lbl_reference.Text + ".pdf";
+            File.Copy(selectedPdfPath, destinationPath, true);
 
 
-        //            // Fetch current validator name
-        //            string validatedNameBefore = "";
-        //            string validatedNameAfter = "";
+            this.Close();
+            //masterlistForm.ReloadMasterlist();//Reload the masterlist when updated except for the select all municiaplities and all statuses.
 
-        //            if (oldRow["ValidatedByID"] != DBNull.Value)
-        //            {
-        //                int validatedIDBefore = Convert.ToInt32(oldRow["ValidatedByID"]);
-        //                MySqlCommand validatedCmdBefore = con.CreateCommand();
-        //                validatedCmdBefore.CommandType = CommandType.Text;
-        //                validatedCmdBefore.CommandText = "SELECT Validator FROM lib_validator WHERE Id = @ValidatedByID";
-        //                validatedCmdBefore.Parameters.AddWithValue("@ValidatedByID", validatedIDBefore);
-        //                validatedNameBefore = validatedCmdBefore.ExecuteScalar()?.ToString() ?? "";
-        //            }
-
-        //            int validatedIDAfter = Convert.ToInt32(lbl_validator.Text); // Assuming lbl_martital.Text contains the updated MaritalStatusID
-
-        //            MySqlCommand validatedCmdAfter = con.CreateCommand();
-        //            validatedCmdAfter.CommandType = CommandType.Text;
-        //            validatedCmdAfter.CommandText = "SELECT Validator FROM lib_validator WHERE Id = @ValidatedByID";
-        //            validatedCmdAfter.Parameters.AddWithValue("@ValidatedByID", validatedIDAfter);
-        //            validatedNameAfter = validatedCmdAfter.ExecuteScalar()?.ToString() ?? "";
-
-
-        //            // Perform the update
-        //            cmd.CommandText = @"
-        //    UPDATE 
-        //        tbl_gis 
-        //    SET
-        //        HouseHoldSize = @HouseHoldSize,
-        //        AssessmentID = @AssessmentID,
-        //        ValidatedByID = @ValidatedByID,
-        //        ValidationDate = @ValidationDate
-        //    WHERE 
-        //        MasterListID = @MasterListID";
-
-        //            cmd.Parameters.Clear();
-        //            cmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
-        //            cmd.Parameters.AddWithValue("@HouseHoldSize", txt_householdsize.Text);
-        //            cmd.Parameters.AddWithValue("@AssessmentID", lbl_assessment.Text);
-        //            cmd.Parameters.AddWithValue("@ValidatedByID", lbl_validator.Text);
-        //            cmd.Parameters.AddWithValue("@ValidationDate", dt_accomplished.EditValue);
-        //            cmd.ExecuteNonQuery();
-
-        //            // Check for changes and log them
-        //            string[] columns = new string[]
-        //            {
-        //        "HouseHoldSize", "AssessmentID", "ValidatedByID", "ValidationDate",
-        //            };
-
-        //            foreach (string column in columns)
-        //            {
-        //                string oldValue = oldRow[column].ToString();
-        //                string newValue = cmd.Parameters["@" + column].Value.ToString();
-
-        //                if (oldValue != newValue)
-        //                {
-        //                    MySqlCommand logCmd = con.CreateCommand();
-        //                    logCmd.CommandType = CommandType.Text;
-        //                    logCmd.CommandText = @"
-        //            INSERT INTO log_masterlist 
-        //            (MasterListID, Log, Logtype, User, DateTimeEntry) 
-        //            VALUES 
-        //            (@MasterListID, @Log, @Logtype, @User, @DateTimeEntry)";
-        //                    logCmd.Parameters.AddWithValue("@MasterListID", txt_id.Text);
-        //                    if (column == "AssessmentID")
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"Assessment changed from [{assessmentNameBefore}] to [{assessmentNameAfter}] [Source:GIS]");
-        //                    }
-        //                    else if (column == "ValidatedByID")
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"Validator changed from [{validatedNameBefore}] to [{validatedNameAfter}] [Source:GIS]");
-        //                    }
-        //                    else
-        //                    {
-        //                        logCmd.Parameters.AddWithValue("@Log", $"{column} changed from [{oldValue}] to [{newValue}] [Source:GIS]");
-        //                    }
-        //                    logCmd.Parameters.AddWithValue("@Logtype", 1); // Assuming 1 is for update
-        //                    logCmd.Parameters.AddWithValue("@User", _username); // Replace with the actual user
-        //                    logCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-
-        //                    logCmd.ExecuteNonQuery();
-        //                }
-        //            }
-
-        //            con.Close();
-
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("No data found for the provided ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions
-        //        MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-        //}
-
+            XtraMessageBox.Show("GIS and PDF saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
         private async void btn_edit_Click(object sender, EventArgs e)
         {
             //For editing.
@@ -1174,12 +751,11 @@ namespace SpinsWinforms.Forms
                     MessageBox.Show("Please select Date Accomplished before saving", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                //SaveGIS();
+                await SaveGISEF();
                 return;
             }
             if (txt_referencecode.Text == "")
             {
-                //UpdateMaster(); 
                 await UpdateMaster();
                 return;
             }
@@ -1605,8 +1181,6 @@ namespace SpinsWinforms.Forms
 
         }
         AuthorizeRepresentative AuthorizeRepresentativeForm;
-        private MasterList masterlist;
-
         private void btn_authrep_Click(object sender, EventArgs e)
         {
             if (Application.OpenForms.OfType<AuthorizeRepresentative>().Any())
@@ -1663,8 +1237,6 @@ namespace SpinsWinforms.Forms
                     var province = await context.lib_province.FirstOrDefaultAsync(p => p.ProvinceName == fillProvince);
                     lbl_province.Text = province.PSGCProvince.ToString();
                 }
-
-
                 cmb_municipality.EditValue = "";
                 cmb_barangay.EditValue = "";
             }

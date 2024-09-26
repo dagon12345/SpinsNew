@@ -1,16 +1,13 @@
 ﻿using DevExpress.XtraEditors;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
 using System;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpinsNew.Forms
@@ -25,7 +22,7 @@ namespace SpinsNew.Forms
             con = new MySqlConnection(cs.dbcon);
 
         }
- 
+
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
@@ -47,64 +44,54 @@ namespace SpinsNew.Forms
                 registrationForm.Show();
             }
         }
-        private void Login()
+        //Login using ef core
+        private async Task LoginEF()
         {
-            try
+           
+            using (var context = new ApplicationDbContext())
             {
-                //CODE FOR LOGIN FORM
+                var loginForm = await context.tbl_registered_users.Where(l => l.Username == txt_username.Text.ToLower()
+                && l.Password == txt_password.Text)
+                    .FirstOrDefaultAsync();
 
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Lastname, Firstname, Middlename, Username, Password, UserRole, IsActive FROM tbl_registered_users WHERE Username=@Username AND Password=@Password";
-                cmd.Parameters.AddWithValue("@Username", txt_username.EditValue);
-                cmd.Parameters.AddWithValue("@Password", txt_password.EditValue);
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-                if (dt.Rows.Count > 0)
+                if (loginForm != null)
                 {
-                    DataRow row = dt.Rows[0];
-                    if(Convert.ToInt32(row["IsActive"]) == 0)
+                    if (loginForm.IsActive != true)
                     {
-                        XtraMessageBox.Show("Account not yet activated. Please contact the administrator.", "Request for Activation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        XtraMessageBox.Show("Account not yet activated. Please contact the administrator.", "Request for activation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
-                    // Retrieve user details
-                    string lastName = row["Lastname"].ToString();
-                    string firstName = row["Firstname"].ToString();
-                    string username = row["Username"].ToString();
-                    string userRole = row["UserRole"].ToString();
+                    string lastName = loginForm.Lastname;
+                    string firstName = loginForm.Firstname;
+                    string userName = loginForm.Username;
+                    string userRole = Convert.ToString(loginForm.UserRole);
 
-                    Dashboard dash = new Dashboard(lastName, firstName, username, userRole);
+                    Dashboard dash = new Dashboard(lastName, firstName, userName, userRole);
                     this.Hide();
                     dash.Show();
-                    
-                  
                 }
                 else
                 {
-                    XtraMessageBox.Show("Invalid login details", "Invalid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    btn_login.Text = "Login";
+                    btn_login.Enabled = true;
+                    XtraMessageBox.Show("Username or Password is incorrect please try again.", "Invalid Username/Password", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+               
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                con.Close();
-            }
+
         }
 
-        private void btn_login_Click(object sender, EventArgs e)
+        private async void btn_login_Click(object sender, EventArgs e)
         {
             if (txt_username.Text == "" || txt_password.Text == "")
             {
                 XtraMessageBox.Show("Please fill all the box to login", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            Login();
+
+            btn_login.Text = "Logging in...";
+            btn_login.Enabled = false;
+            await LoginEF();
         }
 
         private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)

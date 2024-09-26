@@ -638,6 +638,7 @@ namespace SpinsNew
             masterListViewModelBindingSource.ResetCurrentItem();
         }
 
+
         public async Task UpdateStatusMethod()
         {
             GridView gridView = gridControl1.MainView as GridView;

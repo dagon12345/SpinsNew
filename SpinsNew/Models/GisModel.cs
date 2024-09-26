@@ -21,6 +21,8 @@ namespace SpinsNew.Models
         public int? HouseholdSize { get; set; }
         public int? ValidatedByID { get; set; }
         public DateTime? ValidationDate { get; set; }
+        public string EntryBy { get; set; }
+        public DateTime? EntryDateTime { get; set; }
 
         //  public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
 

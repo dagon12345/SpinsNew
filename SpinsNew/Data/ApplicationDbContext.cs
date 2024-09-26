@@ -15,6 +15,7 @@ namespace SpinsNew.Data
         public DbSet<SpbufModel> tbl_spbuf { get; set; }
         public DbSet<LogModel> log_masterlist { get; set; }
         public DbSet<GisModel> tbl_gis { get; set; } //Database first so reference the name of database into our actual database.
+        public DbSet<RegisterModel> tbl_registered_users { get; set; }
 
         //Libraries classes below
         public DbSet<LibraryRegion> lib_region_fortesting { get; set; }
@@ -62,6 +63,13 @@ namespace SpinsNew.Data
             modelBuilder.Entity<MasterListModel>()
                 .HasIndex(m => new { m.PSGCCityMun, m.StatusID, m.DateTimeDeleted });
 
+            //Indexing for Register Model.
+            modelBuilder.Entity<RegisterModel>()
+                .HasIndex(u => new
+                {
+                    u.Username,
+                    u.Password
+                });
 
             modelBuilder.Entity<LogModel>()
                 .HasIndex(id => id.MasterListId);

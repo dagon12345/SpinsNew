@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>27</ApplicationRevision>
+    <ApplicationRevision>30</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -451,6 +451,7 @@
     <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\MasterListModel.cs" />
     <Compile Include="Models\PayrollModel.cs" />
+    <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\SpbufModel.cs" />
     <Compile Include="Popups\PayrollPopup.cs">
       <SubType>Form</SubType>
@@ -587,9 +588,9 @@
       <DependentUpon>PaidStatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="appsettings.json">
+    <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="DataSets\PayrollDataSet.xsc">
       <DependentUpon>PayrollDataSet.xsd</DependentUpon>
     </None>

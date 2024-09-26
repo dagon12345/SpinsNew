@@ -178,6 +178,7 @@ namespace SpinsWinforms.Forms
             this.txt_id.Properties.ReadOnly = true;
             this.txt_id.Size = new System.Drawing.Size(111, 20);
             this.txt_id.TabIndex = 1;
+            this.txt_id.Visible = false;
             this.txt_id.EditValueChanged += new System.EventHandler(this.txt_id_EditValueChanged);
             // 
             // groupControl1
@@ -457,9 +458,9 @@ namespace SpinsWinforms.Forms
             this.btn_edit.Appearance.Options.UseFont = true;
             this.btn_edit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_edit.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_edit.ImageOptions.Image")));
-            this.btn_edit.Location = new System.Drawing.Point(27, 545);
+            this.btn_edit.Location = new System.Drawing.Point(241, 547);
             this.btn_edit.Name = "btn_edit";
-            this.btn_edit.Size = new System.Drawing.Size(87, 22);
+            this.btn_edit.Size = new System.Drawing.Size(142, 22);
             this.btn_edit.TabIndex = 33;
             this.btn_edit.Text = "Save";
             this.btn_edit.Click += new System.EventHandler(this.btn_edit_Click);
@@ -530,12 +531,12 @@ namespace SpinsWinforms.Forms
             // txt_address
             // 
             this.txt_address.EditValue = "";
-            this.txt_address.Location = new System.Drawing.Point(107, 115);
+            this.txt_address.Location = new System.Drawing.Point(121, 116);
             this.txt_address.Name = "txt_address";
             this.txt_address.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_address.Properties.Appearance.Options.UseFont = true;
             this.txt_address.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_address.Size = new System.Drawing.Size(138, 20);
+            this.txt_address.Size = new System.Drawing.Size(156, 20);
             this.txt_address.TabIndex = 22;
             // 
             // labelControl6
@@ -663,7 +664,7 @@ namespace SpinsWinforms.Forms
             this.groupControl4.Controls.Add(this.txt_citizenship);
             this.groupControl4.Location = new System.Drawing.Point(311, 50);
             this.groupControl4.Name = "groupControl4";
-            this.groupControl4.Size = new System.Drawing.Size(279, 236);
+            this.groupControl4.Size = new System.Drawing.Size(305, 236);
             this.groupControl4.TabIndex = 79;
             this.groupControl4.Text = "Others";
             // 
@@ -685,7 +686,7 @@ namespace SpinsWinforms.Forms
             this.txt_contact.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_contact.Properties.Appearance.Options.UseFont = true;
             this.txt_contact.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_contact.Size = new System.Drawing.Size(138, 20);
+            this.txt_contact.Size = new System.Drawing.Size(156, 20);
             this.txt_contact.TabIndex = 19;
             // 
             // labelControl20
@@ -706,7 +707,7 @@ namespace SpinsWinforms.Forms
             this.txt_educ.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_educ.Properties.Appearance.Options.UseFont = true;
             this.txt_educ.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_educ.Size = new System.Drawing.Size(138, 20);
+            this.txt_educ.Size = new System.Drawing.Size(156, 20);
             this.txt_educ.TabIndex = 18;
             // 
             // labelControl15
@@ -727,7 +728,7 @@ namespace SpinsWinforms.Forms
             this.txt_birthplace.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_birthplace.Properties.Appearance.Options.UseFont = true;
             this.txt_birthplace.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_birthplace.Size = new System.Drawing.Size(138, 20);
+            this.txt_birthplace.Size = new System.Drawing.Size(156, 20);
             this.txt_birthplace.TabIndex = 17;
             // 
             // labelControl16
@@ -748,7 +749,7 @@ namespace SpinsWinforms.Forms
             this.txt_religion.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_religion.Properties.Appearance.Options.UseFont = true;
             this.txt_religion.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_religion.Size = new System.Drawing.Size(138, 20);
+            this.txt_religion.Size = new System.Drawing.Size(156, 20);
             this.txt_religion.TabIndex = 16;
             // 
             // labelControl17
@@ -769,7 +770,7 @@ namespace SpinsWinforms.Forms
             this.txt_mothers.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_mothers.Properties.Appearance.Options.UseFont = true;
             this.txt_mothers.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_mothers.Size = new System.Drawing.Size(138, 20);
+            this.txt_mothers.Size = new System.Drawing.Size(156, 20);
             this.txt_mothers.TabIndex = 15;
             // 
             // labelControl18
@@ -790,17 +791,17 @@ namespace SpinsWinforms.Forms
             this.txt_citizenship.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_citizenship.Properties.Appearance.Options.UseFont = true;
             this.txt_citizenship.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_citizenship.Size = new System.Drawing.Size(138, 20);
+            this.txt_citizenship.Size = new System.Drawing.Size(156, 20);
             this.txt_citizenship.TabIndex = 14;
             // 
             // cmb_region
             // 
-            this.cmb_region.Location = new System.Drawing.Point(107, 27);
+            this.cmb_region.Location = new System.Drawing.Point(121, 28);
             this.cmb_region.Name = "cmb_region";
             this.cmb_region.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_region.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_region.Size = new System.Drawing.Size(138, 20);
+            this.cmb_region.Size = new System.Drawing.Size(156, 20);
             this.cmb_region.TabIndex = 69;
             this.cmb_region.SelectedIndexChanged += new System.EventHandler(this.cmb_region_SelectedIndexChanged);
             // 
@@ -828,12 +829,12 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_province
             // 
-            this.cmb_province.Location = new System.Drawing.Point(107, 50);
+            this.cmb_province.Location = new System.Drawing.Point(121, 51);
             this.cmb_province.Name = "cmb_province";
             this.cmb_province.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_province.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_province.Size = new System.Drawing.Size(138, 20);
+            this.cmb_province.Size = new System.Drawing.Size(156, 20);
             this.cmb_province.TabIndex = 86;
             this.cmb_province.SelectedIndexChanged += new System.EventHandler(this.cmb_province_SelectedIndexChanged_2);
             // 
@@ -861,7 +862,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_barangay.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_barangay.Appearance.Options.UseFont = true;
-            this.lbl_barangay.Location = new System.Drawing.Point(250, 95);
+            this.lbl_barangay.Location = new System.Drawing.Point(289, 96);
             this.lbl_barangay.Name = "lbl_barangay";
             this.lbl_barangay.Size = new System.Drawing.Size(6, 15);
             this.lbl_barangay.TabIndex = 82;
@@ -872,7 +873,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_municipality.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_municipality.Appearance.Options.UseFont = true;
-            this.lbl_municipality.Location = new System.Drawing.Point(250, 75);
+            this.lbl_municipality.Location = new System.Drawing.Point(289, 76);
             this.lbl_municipality.Name = "lbl_municipality";
             this.lbl_municipality.Size = new System.Drawing.Size(6, 15);
             this.lbl_municipality.TabIndex = 81;
@@ -883,7 +884,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_province.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_province.Appearance.Options.UseFont = true;
-            this.lbl_province.Location = new System.Drawing.Point(250, 52);
+            this.lbl_province.Location = new System.Drawing.Point(289, 53);
             this.lbl_province.Name = "lbl_province";
             this.lbl_province.Size = new System.Drawing.Size(6, 15);
             this.lbl_province.TabIndex = 83;
@@ -892,14 +893,14 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_barangay
             // 
-            this.cmb_barangay.Location = new System.Drawing.Point(107, 94);
+            this.cmb_barangay.Location = new System.Drawing.Point(121, 95);
             this.cmb_barangay.Name = "cmb_barangay";
             this.cmb_barangay.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.cmb_barangay.Properties.Appearance.Options.UseFont = true;
             this.cmb_barangay.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_barangay.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_barangay.Size = new System.Drawing.Size(138, 20);
+            this.cmb_barangay.Size = new System.Drawing.Size(156, 20);
             this.cmb_barangay.TabIndex = 21;
             this.cmb_barangay.SelectedIndexChanged += new System.EventHandler(this.cmb_barangay_SelectedIndexChanged);
             // 
@@ -907,7 +908,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_region.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_region.Appearance.Options.UseFont = true;
-            this.lbl_region.Location = new System.Drawing.Point(250, 29);
+            this.lbl_region.Location = new System.Drawing.Point(289, 30);
             this.lbl_region.Name = "lbl_region";
             this.lbl_region.Size = new System.Drawing.Size(6, 15);
             this.lbl_region.TabIndex = 82;
@@ -916,14 +917,14 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_municipality
             // 
-            this.cmb_municipality.Location = new System.Drawing.Point(107, 73);
+            this.cmb_municipality.Location = new System.Drawing.Point(121, 74);
             this.cmb_municipality.Name = "cmb_municipality";
             this.cmb_municipality.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.cmb_municipality.Properties.Appearance.Options.UseFont = true;
             this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_municipality.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_municipality.Size = new System.Drawing.Size(138, 20);
+            this.cmb_municipality.Size = new System.Drawing.Size(156, 20);
             this.cmb_municipality.TabIndex = 20;
             this.cmb_municipality.SelectedIndexChanged += new System.EventHandler(this.cmb_municipality_SelectedIndexChanged_1);
             // 
@@ -968,6 +969,8 @@ namespace SpinsWinforms.Forms
             this.txt_referencecode.Properties.ReadOnly = true;
             this.txt_referencecode.Size = new System.Drawing.Size(86, 20);
             this.txt_referencecode.TabIndex = 85;
+            this.txt_referencecode.Visible = false;
+            //this.txt_referencecode.EditValueChanged += new System.EventHandler(this.txt_referencecode_EditValueChanged);
             // 
             // grp_gis
             // 
@@ -992,13 +995,16 @@ namespace SpinsWinforms.Forms
             // 
             // btn_authrep
             // 
+            this.btn_authrep.Appearance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_authrep.Appearance.Options.UseFont = true;
             this.btn_authrep.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_authrep.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_authrep.ImageOptions.Image")));
-            this.btn_authrep.Location = new System.Drawing.Point(300, 2);
+            this.btn_authrep.Location = new System.Drawing.Point(151, 0);
             this.btn_authrep.Name = "btn_authrep";
-            this.btn_authrep.Size = new System.Drawing.Size(20, 18);
+            this.btn_authrep.Size = new System.Drawing.Size(126, 22);
             this.btn_authrep.TabIndex = 87;
             this.btn_authrep.Tag = "";
+            this.btn_authrep.Text = "Add Auth Rep.";
             this.btn_authrep.ToolTip = "Authorize Representative";
             this.btn_authrep.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Application;
             this.btn_authrep.Click += new System.EventHandler(this.btn_authrep_Click);
@@ -1007,7 +1013,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_reference.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_reference.Appearance.Options.UseFont = true;
-            this.lbl_reference.Location = new System.Drawing.Point(139, 112);
+            this.lbl_reference.Location = new System.Drawing.Point(128, 114);
             this.lbl_reference.Name = "lbl_reference";
             this.lbl_reference.Size = new System.Drawing.Size(50, 15);
             this.lbl_reference.TabIndex = 92;
@@ -1082,11 +1088,11 @@ namespace SpinsWinforms.Forms
             // 
             // txt_householdsize
             // 
-            this.txt_householdsize.Location = new System.Drawing.Point(127, 28);
+            this.txt_householdsize.Location = new System.Drawing.Point(128, 28);
             this.txt_householdsize.Name = "txt_householdsize";
             this.txt_householdsize.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.txt_householdsize.Properties.MaskSettings.Set("mask", "d");
-            this.txt_householdsize.Size = new System.Drawing.Size(139, 20);
+            this.txt_householdsize.Size = new System.Drawing.Size(138, 20);
             this.txt_householdsize.TabIndex = 24;
             // 
             // labelControl29
@@ -1155,7 +1161,7 @@ namespace SpinsWinforms.Forms
             // 
             this.ck_new.AutoSize = true;
             this.ck_new.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.ck_new.Location = new System.Drawing.Point(27, 527);
+            this.ck_new.Location = new System.Drawing.Point(274, 528);
             this.ck_new.Name = "ck_new";
             this.ck_new.Size = new System.Drawing.Size(67, 17);
             this.ck_new.TabIndex = 72;
@@ -1193,7 +1199,7 @@ namespace SpinsWinforms.Forms
             this.Text = "Edit Applicant";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditApplicant_FormClosed);
-            this.Load += new System.EventHandler(this.EditApplicant_Load);
+           // this.Load += new System.EventHandler(this.EditApplicant_Load);
             ((System.ComponentModel.ISupportInitialize)(this.txt_id.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);

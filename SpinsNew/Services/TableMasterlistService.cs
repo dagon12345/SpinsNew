@@ -43,7 +43,7 @@ namespace SpinsNew.Services
             using (var context = new ApplicationDbContext())
             {
 
-                
+
                 var masterList = await context.tbl_masterlist
                     .Include(m => m.LibraryMunicipality)
                     .Include(b => b.LibraryBarangay)
@@ -54,7 +54,7 @@ namespace SpinsNew.Services
                     .Include(ld => ld.LibraryDataSource)
                     .Include(ls => ls.LibraryStatus)
                     .Include(rt => rt.LibraryRegistrationType)
-                    .Include(g => g.GisModels)
+                    .Include(g => g.GisModels) // Below the projected properties we can see the ordering be descending of reference code.
                         .ThenInclude(la => la.LibraryAssessment)
                     .Include(sp => sp.SpbufModels)
                     .Where(m => municipalities.Contains(m.PSGCCityMun) && m.DateTimeDeleted == null && status.Contains(m.StatusID))
@@ -104,7 +104,7 @@ namespace SpinsNew.Services
                         ModifiedBy = n.ModifiedBy,
                         IsVerified = n.IsVerified,
                         Assessment = n.GisModels.Select(l => l.LibraryAssessment.Assessment).FirstOrDefault(),
-                        ReferenceCode = n.GisModels.Select(r => r.ReferenceCode).FirstOrDefault(),
+                        ReferenceCode = n.GisModels.OrderByDescending(r => r.ReferenceCode).Select(r => r.ReferenceCode).FirstOrDefault(), // Proper way of ordering reference code descending.
                         SpisBatch = n.GisModels.Select(s => s.SpisBatch).FirstOrDefault(),
                         Spbuf = n.SpbufModels.Select(r => r.ReferenceCode).FirstOrDefault()
 
