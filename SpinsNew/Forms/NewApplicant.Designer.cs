@@ -29,6 +29,7 @@ namespace SpinsNew.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewApplicant));
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.cmb_healthstatus = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -68,7 +69,17 @@ namespace SpinsNew.Forms
             this.cmb_datasource = new DevExpress.XtraEditors.ComboBoxEdit();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.gr_similar = new DevExpress.XtraGrid.GridControl();
+            this.masterListViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colLastName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colFirstName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMiddleName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colExtName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMunicipality = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colBarangay = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAddress = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colBirthDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_healthstatus.Properties)).BeginInit();
@@ -91,6 +102,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gr_similar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.masterListViewModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -133,26 +145,26 @@ namespace SpinsNew.Forms
             this.groupControl1.Controls.Add(this.cmb_datasource);
             this.groupControl1.Location = new System.Drawing.Point(10, 10);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(439, 342);
+            this.groupControl1.Size = new System.Drawing.Size(572, 363);
             this.groupControl1.TabIndex = 0;
             this.groupControl1.Text = "Enter Details";
             // 
             // cmb_healthstatus
             // 
             this.cmb_healthstatus.EditValue = "";
-            this.cmb_healthstatus.Location = new System.Drawing.Point(310, 168);
+            this.cmb_healthstatus.Location = new System.Drawing.Point(367, 168);
             this.cmb_healthstatus.Name = "cmb_healthstatus";
             this.cmb_healthstatus.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_healthstatus.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_healthstatus.Size = new System.Drawing.Size(122, 20);
+            this.cmb_healthstatus.Size = new System.Drawing.Size(162, 20);
             this.cmb_healthstatus.TabIndex = 12;
             // 
             // lbl_region
             // 
             this.lbl_region.Appearance.Font = new System.Drawing.Font("Century Gothic", 6F);
             this.lbl_region.Appearance.Options.UseFont = true;
-            this.lbl_region.Location = new System.Drawing.Point(97, 159);
+            this.lbl_region.Location = new System.Drawing.Point(97, 169);
             this.lbl_region.Name = "lbl_region";
             this.lbl_region.Size = new System.Drawing.Size(27, 12);
             this.lbl_region.TabIndex = 43;
@@ -163,7 +175,7 @@ namespace SpinsNew.Forms
             // 
             this.lbl_province.Appearance.Font = new System.Drawing.Font("Century Gothic", 6F);
             this.lbl_province.Appearance.Options.UseFont = true;
-            this.lbl_province.Location = new System.Drawing.Point(134, 159);
+            this.lbl_province.Location = new System.Drawing.Point(134, 169);
             this.lbl_province.Name = "lbl_province";
             this.lbl_province.Size = new System.Drawing.Size(34, 12);
             this.lbl_province.TabIndex = 42;
@@ -172,7 +184,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl14
             // 
-            this.labelControl14.Location = new System.Drawing.Point(226, 196);
+            this.labelControl14.Location = new System.Drawing.Point(283, 198);
             this.labelControl14.Name = "labelControl14";
             this.labelControl14.Size = new System.Drawing.Size(75, 13);
             this.labelControl14.TabIndex = 41;
@@ -181,15 +193,15 @@ namespace SpinsNew.Forms
             // txt_remarks
             // 
             this.txt_remarks.EditValue = "HEALTHY";
-            this.txt_remarks.Location = new System.Drawing.Point(310, 195);
+            this.txt_remarks.Location = new System.Drawing.Point(367, 195);
             this.txt_remarks.Name = "txt_remarks";
             this.txt_remarks.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_remarks.Size = new System.Drawing.Size(122, 20);
+            this.txt_remarks.Size = new System.Drawing.Size(162, 20);
             this.txt_remarks.TabIndex = 13;
             // 
             // labelControl8
             // 
-            this.labelControl8.Location = new System.Drawing.Point(33, 258);
+            this.labelControl8.Location = new System.Drawing.Point(34, 278);
             this.labelControl8.Name = "labelControl8";
             this.labelControl8.Size = new System.Drawing.Size(52, 13);
             this.labelControl8.TabIndex = 39;
@@ -201,9 +213,9 @@ namespace SpinsNew.Forms
             this.btn_save.Appearance.Options.UseFont = true;
             this.btn_save.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_save.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_save.ImageOptions.Image")));
-            this.btn_save.Location = new System.Drawing.Point(177, 306);
+            this.btn_save.Location = new System.Drawing.Point(212, 309);
             this.btn_save.Name = "btn_save";
-            this.btn_save.Size = new System.Drawing.Size(105, 21);
+            this.btn_save.Size = new System.Drawing.Size(155, 32);
             this.btn_save.TabIndex = 17;
             this.btn_save.Text = "Save";
             this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
@@ -212,7 +224,7 @@ namespace SpinsNew.Forms
             // 
             this.ck_indigenous.AutoSize = true;
             this.ck_indigenous.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.ck_indigenous.Location = new System.Drawing.Point(350, 227);
+            this.ck_indigenous.Location = new System.Drawing.Point(450, 227);
             this.ck_indigenous.Name = "ck_indigenous";
             this.ck_indigenous.Size = new System.Drawing.Size(79, 17);
             this.ck_indigenous.TabIndex = 15;
@@ -223,7 +235,7 @@ namespace SpinsNew.Forms
             // 
             this.ck_pantawid.AutoSize = true;
             this.ck_pantawid.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.ck_pantawid.Location = new System.Drawing.Point(277, 227);
+            this.ck_pantawid.Location = new System.Drawing.Point(367, 227);
             this.ck_pantawid.Name = "ck_pantawid";
             this.ck_pantawid.Size = new System.Drawing.Size(70, 17);
             this.ck_pantawid.TabIndex = 14;
@@ -232,7 +244,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl13
             // 
-            this.labelControl13.Location = new System.Drawing.Point(236, 170);
+            this.labelControl13.Location = new System.Drawing.Point(293, 172);
             this.labelControl13.Name = "labelControl13";
             this.labelControl13.Size = new System.Drawing.Size(65, 13);
             this.labelControl13.TabIndex = 38;
@@ -240,17 +252,17 @@ namespace SpinsNew.Forms
             // 
             // cmb_marital
             // 
-            this.cmb_marital.Location = new System.Drawing.Point(310, 140);
+            this.cmb_marital.Location = new System.Drawing.Point(367, 140);
             this.cmb_marital.Name = "cmb_marital";
             this.cmb_marital.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_marital.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_marital.Size = new System.Drawing.Size(122, 20);
+            this.cmb_marital.Size = new System.Drawing.Size(162, 20);
             this.cmb_marital.TabIndex = 11;
             // 
             // labelControl12
             // 
-            this.labelControl12.Location = new System.Drawing.Point(235, 140);
+            this.labelControl12.Location = new System.Drawing.Point(292, 144);
             this.labelControl12.Name = "labelControl12";
             this.labelControl12.Size = new System.Drawing.Size(66, 13);
             this.labelControl12.TabIndex = 35;
@@ -258,7 +270,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl11
             // 
-            this.labelControl11.Location = new System.Drawing.Point(283, 112);
+            this.labelControl11.Location = new System.Drawing.Point(340, 116);
             this.labelControl11.Name = "labelControl11";
             this.labelControl11.Size = new System.Drawing.Size(18, 13);
             this.labelControl11.TabIndex = 34;
@@ -266,30 +278,30 @@ namespace SpinsNew.Forms
             // 
             // cmb_sex
             // 
-            this.cmb_sex.Location = new System.Drawing.Point(310, 112);
+            this.cmb_sex.Location = new System.Drawing.Point(367, 112);
             this.cmb_sex.Name = "cmb_sex";
             this.cmb_sex.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_sex.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_sex.Size = new System.Drawing.Size(122, 20);
+            this.cmb_sex.Size = new System.Drawing.Size(162, 20);
             this.cmb_sex.TabIndex = 10;
             // 
             // dt_dateissued
             // 
             this.dt_dateissued.EditValue = null;
-            this.dt_dateissued.Location = new System.Drawing.Point(310, 84);
+            this.dt_dateissued.Location = new System.Drawing.Point(367, 84);
             this.dt_dateissued.Name = "dt_dateissued";
             this.dt_dateissued.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dt_dateissued.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dt_dateissued.Properties.MaskSettings.Set("mask", "MMM-dd-yyyy");
-            this.dt_dateissued.Size = new System.Drawing.Size(122, 20);
+            this.dt_dateissued.Size = new System.Drawing.Size(162, 20);
             this.dt_dateissued.TabIndex = 9;
             // 
             // labelControl10
             // 
-            this.labelControl10.Location = new System.Drawing.Point(229, 85);
+            this.labelControl10.Location = new System.Drawing.Point(286, 89);
             this.labelControl10.Name = "labelControl10";
             this.labelControl10.Size = new System.Drawing.Size(72, 13);
             this.labelControl10.TabIndex = 31;
@@ -297,7 +309,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl9
             // 
-            this.labelControl9.Location = new System.Drawing.Point(250, 59);
+            this.labelControl9.Location = new System.Drawing.Point(307, 59);
             this.labelControl9.Name = "labelControl9";
             this.labelControl9.Size = new System.Drawing.Size(51, 13);
             this.labelControl9.TabIndex = 30;
@@ -306,48 +318,48 @@ namespace SpinsNew.Forms
             // txt_id
             // 
             this.txt_id.EditValue = "";
-            this.txt_id.Location = new System.Drawing.Point(310, 55);
+            this.txt_id.Location = new System.Drawing.Point(367, 55);
             this.txt_id.Name = "txt_id";
             this.txt_id.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_id.Size = new System.Drawing.Size(122, 20);
+            this.txt_id.Size = new System.Drawing.Size(162, 20);
             this.txt_id.TabIndex = 8;
             // 
             // cmb_barangay
             // 
-            this.cmb_barangay.Location = new System.Drawing.Point(94, 198);
+            this.cmb_barangay.Location = new System.Drawing.Point(94, 212);
             this.cmb_barangay.Name = "cmb_barangay";
             this.cmb_barangay.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_barangay.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_barangay.Size = new System.Drawing.Size(126, 20);
+            this.cmb_barangay.Size = new System.Drawing.Size(162, 20);
             this.cmb_barangay.TabIndex = 5;
             // 
             // dt_birth
             // 
             this.dt_birth.EditValue = null;
-            this.dt_birth.Location = new System.Drawing.Point(94, 256);
+            this.dt_birth.Location = new System.Drawing.Point(94, 274);
             this.dt_birth.Name = "dt_birth";
             this.dt_birth.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dt_birth.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dt_birth.Properties.MaskSettings.Set("mask", "MMM-dd-yyyy");
-            this.dt_birth.Size = new System.Drawing.Size(126, 20);
+            this.dt_birth.Size = new System.Drawing.Size(162, 20);
             this.dt_birth.TabIndex = 7;
             // 
             // lbl_age
             // 
-            this.lbl_age.Appearance.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold);
+            this.lbl_age.Appearance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_age.Appearance.Options.UseFont = true;
-            this.lbl_age.Location = new System.Drawing.Point(226, 257);
+            this.lbl_age.Location = new System.Drawing.Point(263, 277);
             this.lbl_age.Name = "lbl_age";
-            this.lbl_age.Size = new System.Drawing.Size(27, 16);
+            this.lbl_age.Size = new System.Drawing.Size(21, 13);
             this.lbl_age.TabIndex = 26;
             this.lbl_age.Text = "Age";
             // 
             // labelControl7
             // 
-            this.labelControl7.Location = new System.Drawing.Point(46, 231);
+            this.labelControl7.Location = new System.Drawing.Point(47, 247);
             this.labelControl7.Name = "labelControl7";
             this.labelControl7.Size = new System.Drawing.Size(39, 13);
             this.labelControl7.TabIndex = 25;
@@ -356,15 +368,15 @@ namespace SpinsNew.Forms
             // txt_address
             // 
             this.txt_address.EditValue = "";
-            this.txt_address.Location = new System.Drawing.Point(94, 227);
+            this.txt_address.Location = new System.Drawing.Point(94, 243);
             this.txt_address.Name = "txt_address";
             this.txt_address.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_address.Size = new System.Drawing.Size(127, 20);
+            this.txt_address.Size = new System.Drawing.Size(162, 20);
             this.txt_address.TabIndex = 6;
             // 
             // labelControl6
             // 
-            this.labelControl6.Location = new System.Drawing.Point(39, 201);
+            this.labelControl6.Location = new System.Drawing.Point(40, 217);
             this.labelControl6.Name = "labelControl6";
             this.labelControl6.Size = new System.Drawing.Size(46, 13);
             this.labelControl6.TabIndex = 23;
@@ -372,18 +384,18 @@ namespace SpinsNew.Forms
             // 
             // cmb_municipality
             // 
-            this.cmb_municipality.Location = new System.Drawing.Point(94, 170);
+            this.cmb_municipality.Location = new System.Drawing.Point(94, 181);
             this.cmb_municipality.Name = "cmb_municipality";
             this.cmb_municipality.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_municipality.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_municipality.Size = new System.Drawing.Size(126, 20);
+            this.cmb_municipality.Size = new System.Drawing.Size(162, 20);
             this.cmb_municipality.TabIndex = 4;
             this.cmb_municipality.SelectedIndexChanged += new System.EventHandler(this.cmb_municipality_SelectedIndexChanged);
             // 
             // labelControl5
             // 
-            this.labelControl5.Location = new System.Drawing.Point(7, 172);
+            this.labelControl5.Location = new System.Drawing.Point(8, 186);
             this.labelControl5.Name = "labelControl5";
             this.labelControl5.Size = new System.Drawing.Size(78, 13);
             this.labelControl5.TabIndex = 21;
@@ -391,7 +403,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl4
             // 
-            this.labelControl4.Location = new System.Drawing.Point(8, 144);
+            this.labelControl4.Location = new System.Drawing.Point(9, 150);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(77, 13);
             this.labelControl4.TabIndex = 8;
@@ -400,16 +412,16 @@ namespace SpinsNew.Forms
             // txt_extname
             // 
             this.txt_extname.EditValue = "";
-            this.txt_extname.Location = new System.Drawing.Point(95, 141);
+            this.txt_extname.Location = new System.Drawing.Point(95, 147);
             this.txt_extname.Name = "txt_extname";
             this.txt_extname.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_extname.Size = new System.Drawing.Size(125, 20);
+            this.txt_extname.Size = new System.Drawing.Size(162, 20);
             this.txt_extname.TabIndex = 3;
             this.txt_extname.Leave += new System.EventHandler(this.txt_extname_Leave);
             // 
             // labelControl3
             // 
-            this.labelControl3.Location = new System.Drawing.Point(25, 115);
+            this.labelControl3.Location = new System.Drawing.Point(26, 123);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(60, 13);
             this.labelControl3.TabIndex = 6;
@@ -418,15 +430,15 @@ namespace SpinsNew.Forms
             // txt_middlename
             // 
             this.txt_middlename.EditValue = "";
-            this.txt_middlename.Location = new System.Drawing.Point(95, 113);
+            this.txt_middlename.Location = new System.Drawing.Point(95, 119);
             this.txt_middlename.Name = "txt_middlename";
             this.txt_middlename.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_middlename.Size = new System.Drawing.Size(126, 20);
+            this.txt_middlename.Size = new System.Drawing.Size(162, 20);
             this.txt_middlename.TabIndex = 2;
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(34, 88);
+            this.labelControl2.Location = new System.Drawing.Point(35, 93);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(51, 13);
             this.labelControl2.TabIndex = 4;
@@ -435,15 +447,15 @@ namespace SpinsNew.Forms
             // txt_firstname
             // 
             this.txt_firstname.EditValue = "";
-            this.txt_firstname.Location = new System.Drawing.Point(95, 84);
+            this.txt_firstname.Location = new System.Drawing.Point(95, 88);
             this.txt_firstname.Name = "txt_firstname";
             this.txt_firstname.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_firstname.Size = new System.Drawing.Size(126, 20);
+            this.txt_firstname.Size = new System.Drawing.Size(162, 20);
             this.txt_firstname.TabIndex = 1;
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(35, 58);
+            this.labelControl1.Location = new System.Drawing.Point(36, 62);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(50, 13);
             this.labelControl1.TabIndex = 2;
@@ -452,10 +464,10 @@ namespace SpinsNew.Forms
             // txt_lastname
             // 
             this.txt_lastname.EditValue = "";
-            this.txt_lastname.Location = new System.Drawing.Point(95, 55);
+            this.txt_lastname.Location = new System.Drawing.Point(95, 57);
             this.txt_lastname.Name = "txt_lastname";
             this.txt_lastname.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txt_lastname.Size = new System.Drawing.Size(126, 20);
+            this.txt_lastname.Size = new System.Drawing.Size(162, 20);
             this.txt_lastname.TabIndex = 0;
             // 
             // cmb_datasource
@@ -466,51 +478,128 @@ namespace SpinsNew.Forms
             this.cmb_datasource.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_datasource.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cmb_datasource.Size = new System.Drawing.Size(429, 20);
+            this.cmb_datasource.Size = new System.Drawing.Size(563, 20);
             this.cmb_datasource.TabIndex = 16;
             // 
             // groupControl2
             // 
             this.groupControl2.Controls.Add(this.gr_similar);
-            this.groupControl2.Location = new System.Drawing.Point(10, 358);
+            this.groupControl2.Location = new System.Drawing.Point(10, 379);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(439, 284);
+            this.groupControl2.Size = new System.Drawing.Size(578, 409);
             this.groupControl2.TabIndex = 1;
             this.groupControl2.Text = "Similar Details entered";
             // 
             // gr_similar
             // 
+            this.gr_similar.DataSource = this.masterListViewModelBindingSource;
             this.gr_similar.Location = new System.Drawing.Point(3, 23);
             this.gr_similar.MainView = this.gridView1;
             this.gr_similar.Name = "gr_similar";
-            this.gr_similar.Size = new System.Drawing.Size(432, 257);
+            this.gr_similar.Size = new System.Drawing.Size(569, 381);
             this.gr_similar.TabIndex = 0;
             this.gr_similar.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             // 
+            // masterListViewModelBindingSource
+            // 
+            this.masterListViewModelBindingSource.DataSource = typeof(SpinsNew.ViewModel.MasterListViewModel);
+            // 
             // gridView1
             // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colLastName,
+            this.colFirstName,
+            this.colMiddleName,
+            this.colExtName,
+            this.colMunicipality,
+            this.colBarangay,
+            this.colAddress,
+            this.colBirthDate,
+            this.colStatus});
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gr_similar;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsView.ShowGroupPanel = false;
+            // 
+            // colLastName
+            // 
+            this.colLastName.FieldName = "LastName";
+            this.colLastName.Name = "colLastName";
+            this.colLastName.Visible = true;
+            this.colLastName.VisibleIndex = 0;
+            // 
+            // colFirstName
+            // 
+            this.colFirstName.FieldName = "FirstName";
+            this.colFirstName.Name = "colFirstName";
+            this.colFirstName.Visible = true;
+            this.colFirstName.VisibleIndex = 1;
+            // 
+            // colMiddleName
+            // 
+            this.colMiddleName.FieldName = "MiddleName";
+            this.colMiddleName.Name = "colMiddleName";
+            this.colMiddleName.Visible = true;
+            this.colMiddleName.VisibleIndex = 2;
+            // 
+            // colExtName
+            // 
+            this.colExtName.FieldName = "ExtName";
+            this.colExtName.Name = "colExtName";
+            this.colExtName.Visible = true;
+            this.colExtName.VisibleIndex = 3;
+            // 
+            // colMunicipality
+            // 
+            this.colMunicipality.FieldName = "Municipality";
+            this.colMunicipality.Name = "colMunicipality";
+            this.colMunicipality.Visible = true;
+            this.colMunicipality.VisibleIndex = 4;
+            // 
+            // colBarangay
+            // 
+            this.colBarangay.FieldName = "Barangay";
+            this.colBarangay.Name = "colBarangay";
+            this.colBarangay.Visible = true;
+            this.colBarangay.VisibleIndex = 5;
+            // 
+            // colAddress
+            // 
+            this.colAddress.FieldName = "Address";
+            this.colAddress.Name = "colAddress";
+            this.colAddress.Visible = true;
+            this.colAddress.VisibleIndex = 6;
+            // 
+            // colBirthDate
+            // 
+            this.colBirthDate.FieldName = "BirthDate";
+            this.colBirthDate.Name = "colBirthDate";
+            this.colBirthDate.Visible = true;
+            this.colBirthDate.VisibleIndex = 7;
+            // 
+            // colStatus
+            // 
+            this.colStatus.FieldName = "Status";
+            this.colStatus.Name = "colStatus";
+            this.colStatus.Visible = true;
+            this.colStatus.VisibleIndex = 8;
             // 
             // NewApplicant
             // 
             this.AcceptButton = this.btn_save;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 653);
+            this.ClientSize = new System.Drawing.Size(594, 800);
             this.Controls.Add(this.groupControl2);
             this.Controls.Add(this.groupControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(470, 692);
-            this.MinimumSize = new System.Drawing.Size(470, 692);
+            this.MaximumSize = new System.Drawing.Size(610, 839);
+            this.MinimumSize = new System.Drawing.Size(610, 839);
             this.Name = "NewApplicant";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NewApplicant";
-            this.Load += new System.EventHandler(this.NewApplicant_Load);
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
@@ -534,6 +623,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gr_similar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.masterListViewModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.ResumeLayout(false);
 
@@ -580,5 +670,15 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl lbl_province;
         private DevExpress.XtraEditors.LabelControl lbl_region;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_healthstatus;
+        private System.Windows.Forms.BindingSource masterListViewModelBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colLastName;
+        private DevExpress.XtraGrid.Columns.GridColumn colFirstName;
+        private DevExpress.XtraGrid.Columns.GridColumn colMiddleName;
+        private DevExpress.XtraGrid.Columns.GridColumn colExtName;
+        private DevExpress.XtraGrid.Columns.GridColumn colMunicipality;
+        private DevExpress.XtraGrid.Columns.GridColumn colBarangay;
+        private DevExpress.XtraGrid.Columns.GridColumn colAddress;
+        private DevExpress.XtraGrid.Columns.GridColumn colBirthDate;
+        private DevExpress.XtraGrid.Columns.GridColumn colStatus;
     }
 }

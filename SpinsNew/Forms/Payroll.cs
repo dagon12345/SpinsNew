@@ -23,9 +23,6 @@ namespace SpinsNew.Forms
         public string _username;
         public string _userRole;
         private ApplicationDbContext _dbContext;
-        //private PayrollModel _payrollModel;
-        //private List<LibraryClaimType> _libraryClaimType;
-        //private int targetRowHandle = -1; // Store the row handle that needs to be colored
         public Payroll(string username, string userRole)
         {
             InitializeComponent();
@@ -630,14 +627,10 @@ namespace SpinsNew.Forms
             //}
 
         }
-
         private async void btn_sample_Click(object sender, EventArgs e)
         {
             //await PayrollsEntity();
         }
-
-
-
         public async Task Payrolls() //The query is all about delisted with payroll unclaimed filtered by year and the latest ID inputed into tbl_payroll_socpen
         {
 
@@ -670,7 +663,6 @@ namespace SpinsNew.Forms
                            
                            tps.Year = @Year
                            AND tps.PeriodID != @PeriodID
-                           
                        
                         )                   
                        SELECT
@@ -1710,9 +1702,6 @@ namespace SpinsNew.Forms
                     XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ArchivingUpdatingSingle();
 
-                    // Refresh the data in the GridControl
-                    //Search();
-                    // gridPayroll.Refresh();
                 }
             }
         }

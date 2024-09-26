@@ -58,10 +58,27 @@ namespace SpinsNew.Data
             search the data that is given instead, it will cut the time searching
             instead of scanning all the row into database.*/
             modelBuilder.Entity<PayrollModel>()
-                .HasIndex(e => new { e.Year, e.ClaimTypeID, e.PeriodID });
+                .HasIndex(e => new 
+                { 
+                    e.Year, 
+                    e.ClaimTypeID,
+                    e.PeriodID,
+                    e.PayrollStatusID,
+                    
+                });
 
             modelBuilder.Entity<MasterListModel>()
-                .HasIndex(m => new { m.PSGCCityMun, m.StatusID, m.DateTimeDeleted });
+                .HasIndex(m => new 
+                {
+                    m.LastName,
+                    m.FirstName,
+                    m.MiddleName,
+                    m.ExtName,
+                    m.PSGCCityMun, 
+                    m.StatusID, 
+                    m.DateTimeDeleted,
+                    m.RegTypeId
+                });
 
             //Indexing for Register Model.
             modelBuilder.Entity<RegisterModel>()

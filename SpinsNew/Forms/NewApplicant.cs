@@ -1,9 +1,15 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
+using SpinsNew.Libraries;
+using SpinsNew.Models;
+using SpinsNew.ViewModel;
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -100,31 +106,14 @@ namespace SpinsNew.Forms
                 lbl_age.Text = "0";
             }
         }
-
-        private void NewApplicant_Load(object sender, EventArgs e)
+        protected override async void OnLoad(EventArgs e)
         {
-            //Call the methods below to fill the comboboxes
-            DataSource();
-            Sex();
-            Marital();
-            HealthStatus();
+            await DataSourceEF();
+            await SexEf();
+            await MaritalEf();
+            await HealthStatusEf();
             InitializeComboboxes();
             DisplayAge();
-        
-        }
-
-
-        // Custom class to store Id and DataSource
-        public class DataSourceItem
-        {
-            public int Id { get; set; }
-            public string DataSource { get; set; }
-
-
-            public override string ToString()
-            {
-                return DataSource; // Display DataSource in the ComboBox
-            }
         }
 
         public class MunicipalityItem
@@ -139,21 +128,6 @@ namespace SpinsNew.Forms
                 return $"{CityMunName} | {ProvinceName} "; // Display both the municipality and province in the ComboBox
             }
         }
-        // For municipality combobox
-        //public class MunicipalityItem
-        //{
-        //    public int PSGCCityMun { get; set; }
-        //    public string CityMunName { get; set; }
-        //    public int PSGCProvince { get; set; } // Add this property
-
-        //    public override string ToString()
-        //    {
-        //        return CityMunName; // Display DataSource in the ComboBox
-        //    }
-        //}
-
-
-        // Custom class for barangay combobox cascaded into municipality
         public class BarangayItem
         {
             public int PSGCBrgy { get; set; }
@@ -166,192 +140,84 @@ namespace SpinsNew.Forms
             }
         }
 
-
-        // Custom class to store Id and Sex
-        public class SexItem
+        private async Task DataSourceEF()
         {
-            public int Id { get; set; }
-            public string Sex { get; set; }
-
-            public override string ToString()
+            using (var context = new ApplicationDbContext())
             {
-                return Sex; // Display DataSource in the ComboBox
-            }
-        }
-
-        // Custom class to store Id and Sex
-        public class MaritalItem
-        {
-            public int Id { get; set; }
-            public string MaritalStatus { get; set; }
-
-            public override string ToString()
-            {
-                return MaritalStatus; // Display DataSource in the ComboBox
-            }
-        }
-
-        // Custom class to store Id and Sex
-        public class HealthStatusItem
-        {
-            public int Id { get; set; }
-            public string HealthStatus { get; set; }
-
-            public override string ToString()
-            {
-                return HealthStatus; // Display DataSource in the ComboBox
-            }
-        }
-
-
-        //Fill combobox datasource
-        public void DataSource()
-        {
-            try
-            {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, DataSource FROM lib_datasource"; // Specify the columns to retrieve
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the ComboBoxEdit
+                var libDatasources = await context.lib_datasource
+                     .AsNoTracking()
+                     .ToListAsync();
                 cmb_datasource.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach (var libDataSource in libDatasources)
                 {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_datasource.Properties.Items.Add(new DataSourceItem
+                    cmb_datasource.Properties.Items.Add(new LibraryDataSource
                     {
-                        Id = Convert.ToInt32(dr["Id"]),
-                        DataSource = dr["DataSource"].ToString()
+                        Id = libDataSource.Id,
+                        DataSource = libDataSource.DataSource
                     });
+
                 }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
 
-                MessageBox.Show(ex.Message);
             }
-
         }
 
-
-
-
-        //Fill combobox datasource
-        public void Sex()
+        public async Task SexEf()
         {
-            try
+            using (var context = new ApplicationDbContext())
             {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, Sex FROM lib_sex"; // Specify the columns to retrieve
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+                var librarySexs = await context.lib_sex
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                // Clear existing items in the ComboBoxEdit
                 cmb_sex.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach (var librarySex in librarySexs)
                 {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_sex.Properties.Items.Add(new SexItem
+                    cmb_sex.Properties.Items.Add(new LibrarySex
                     {
-                        Id = Convert.ToInt32(dr["Id"]),
-                        Sex = dr["Sex"].ToString()
+                        Id = librarySex.Id,
+                        Sex = librarySex.Sex
                     });
                 }
-                con.Close();
             }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-
         }
 
-        //Fill combobox Marital
-        public void Marital()
+        public async Task MaritalEf()
         {
-            try
+            using (var context = new ApplicationDbContext())
             {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, MaritalStatus FROM lib_marital_status"; // Specify the columns to retrieve
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+                var libraryMaritals = await context.lib_marital_status
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                // Clear existing items in the ComboBoxEdit
                 cmb_marital.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach (var libraryMarital in libraryMaritals)
                 {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_marital.Properties.Items.Add(new MaritalItem
+                    cmb_marital.Properties.Items.Add(new LibraryMaritalStatus
                     {
-                        Id = Convert.ToInt32(dr["Id"]),
-                        MaritalStatus = dr["MaritalStatus"].ToString()
+                        Id = libraryMarital.Id,
+                        MaritalStatus = libraryMarital.MaritalStatus
                     });
                 }
-                con.Close();
             }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-
         }
-        //Fill combobox HealthStatus
-        public void HealthStatus()
+        public async Task HealthStatusEf()
         {
-            try
+            using (var context = new ApplicationDbContext())
             {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, HealthStatus FROM lib_health_status"; // Specify the columns to retrieve
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+                var libraryHealthStatuses = await context.lib_health_status
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                // Clear existing items in the ComboBoxEdit
                 cmb_healthstatus.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach (var libraryHealthStatus in libraryHealthStatuses)
                 {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_healthstatus.Properties.Items.Add(new HealthStatusItem
+                    cmb_healthstatus.Properties.Items.Add(new LibraryHealthStatus
                     {
-                        Id = Convert.ToInt32(dr["Id"]),
-                        HealthStatus = dr["HealthStatus"].ToString()
+                        Id = libraryHealthStatus.Id,
+                        HealthStatus = libraryHealthStatus.HealthStatus
                     });
                 }
-                con.Close();
             }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-
         }
         //Get RegionName
         public string GetRegionName(int psgcRegion)
@@ -405,45 +271,6 @@ namespace SpinsNew.Forms
             }
         }
 
-
-        //Fill combobox Municipality
-        //public void Municipality()
-        //{
-        //    try
-        //    {
-        //        // Fetch data from the database and bind to ComboBox
-        //        con.Open();
-        //        MySqlCommand cmd = con.CreateCommand();
-        //        cmd.CommandType = CommandType.Text;
-        //        cmd.CommandText = "SELECT PSGCCityMun, CityMunName, PSGCProvince FROM lib_city_municipality"; // Specify the columns to retrieve
-        //        cmd.ExecuteNonQuery();
-        //        DataTable dt = new DataTable();
-        //        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-        //        da.Fill(dt);
-
-        //        // Clear existing items in the ComboBoxEdit
-        //        cmb_municipality.Properties.Items.Clear();
-
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            // Add DataSourceItem to the ComboBox
-        //            cmb_municipality.Properties.Items.Add(new MunicipalityItem
-        //            {
-        //                PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"]),
-        //                CityMunName = dr["CityMunName"].ToString(),
-        //                PSGCProvince = Convert.ToInt32(dr["PSGCProvince"]) // Populate the new property
-        //            });
-        //        }
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        MessageBox.Show(ex.Message);
-        //    }
-
-        //}
-        //Fill combobox Municipality
         public void Municipality()
         {
             try
@@ -586,224 +413,148 @@ namespace SpinsNew.Forms
         }
 
         private int psgcRegion; // Field to store PSGCRegion
-
-        private void SaveMasterlistEntry()
+        private async Task SaveEF()
         {
-            try
+
+     
+            var selectedSex = (LibrarySex)cmb_sex.SelectedItem;
+            var selectedMarital = (LibraryMaritalStatus)cmb_marital.SelectedItem;
+            var selectedHealthStatus = (LibraryHealthStatus)cmb_healthstatus.SelectedItem;
+            var selectedDataSource = (LibraryDataSource)cmb_datasource.SelectedItem;
+
+            // var selectedProvince = (Province)cmb_barangay.SelectedItem;
+            var selectedMunicipality = (MunicipalityItem)cmb_municipality.SelectedItem;
+            var selectedBarangay = (BarangayItem)cmb_barangay.SelectedItem;
+
+            using (var context = new ApplicationDbContext())
             {
-                if (string.IsNullOrWhiteSpace(txt_lastname.Text) || string.IsNullOrWhiteSpace(txt_firstname.Text) || string.IsNullOrWhiteSpace(txt_middlename.Text))
+                var masterlist = new MasterListModel
                 {
-                    XtraMessageBox.Show("Please fill the names before saving.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+                    LastName = txt_lastname.Text,
+                    FirstName = txt_firstname.Text,
+                    MiddleName = txt_middlename.Text,
+                    ExtName = txt_extname.Text,
+                    PSGCRegion = psgcRegion,
+                    PSGCProvince = selectedMunicipality.PSGCProvince,
+                    PSGCCityMun = selectedMunicipality.PSGCCityMun,
+                    PSGCBrgy = selectedBarangay.PSGCBrgy,
+                    Address = txt_address.Text,
+                    BirthDate = Convert.ToDateTime(dt_birth.EditValue),
+                    IDNumber = txt_id.Text,
+                    IDDateIssued = Convert.ToDateTime(dt_dateissued.EditValue),
+                    SexID = selectedSex.Id,
+                    MaritalStatusID = selectedMarital.Id,
+                    HealthStatusID = selectedHealthStatus.Id,
+                    HealthStatusRemarks = txt_remarks.Text,
+                    Pantawid = ck_pantawid.Checked,
+                    Indigenous = ck_indigenous.Checked,
+                    DataSourceId = selectedDataSource.Id,
+                    DateTimeEntry = DateTime.Now,
+                    EntryBy = _username,
+                    StatusID = 99,
+                    RegTypeId = 1
+                    
+                };
+                context.tbl_masterlist.Add(masterlist);
+                await context.SaveChangesAsync();
 
-                if (string.IsNullOrWhiteSpace(cmb_municipality.Text) || string.IsNullOrWhiteSpace(cmb_barangay.Text))
-                {
-                    XtraMessageBox.Show("Please select a municipality and barangay before proceeding.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(dt_birth.Text))
-                {
-                    XtraMessageBox.Show("Please enter birth date before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(cmb_sex.Text))
-                {
-                    XtraMessageBox.Show("Select sex before proceeding.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (cmb_datasource.Text == "Select Data Source")
-                {
-                    XtraMessageBox.Show("Select datasource before proceeding.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-
-                con.Open();
-
-                var selectedSex = (SexItem)cmb_sex.SelectedItem;
-                var selectedMarital = (MaritalItem)cmb_marital.SelectedItem;
-                var selectedHealthStatus = (HealthStatusItem)cmb_healthstatus.SelectedItem;
-                var selectedDataSource = (DataSourceItem)cmb_datasource.SelectedItem;
-
-                // var selectedProvince = (Province)cmb_barangay.SelectedItem;
-                var selectedMunicipality = (MunicipalityItem)cmb_municipality.SelectedItem;
-                var selectedBarangay = (BarangayItem)cmb_barangay.SelectedItem;
-
-                if (selectedMunicipality == null || selectedBarangay == null)
-                {
-                    XtraMessageBox.Show("Invalid municipality or barangay selection.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    con.Close();
-                    return;
-                }
-
-                // int psgcRegion = selectedMunicipality.PSGCProvince;
-                string provinceName = lbl_province.Text;
-                string regionName = lbl_region.Text;
-
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "INSERT INTO tbl_masterlist (LastName, FirstName, MiddleName, ExtName, PSGCRegion, PSGCProvince, PSGCCityMun, PSGCBrgy, Address, " +
-                                  "BirthDate, SexID, MaritalStatusID, IDTypeID, IDNumber, IDDateIssued, Pantawid, Indigenous, HealthStatusID, HealthStatusRemarks, DateTimeEntry, EntryBy, " +
-                                  "DataSourceID, StatusID) " +
-                                  "VALUES (@LastName, @FirstName, @MiddleName, @ExtName, @PSGCRegion, @PSGCProvince, @PSGCCityMun, @PSGCBrgy, @Address, " +
-                                  "@BirthDate, @SexID, @MaritalStatusID, @IDTypeID, @IDNumber, @IDDateIssued, @Pantawid, @Indigenous, @HealthStatusID, @HealthStatusRemarks, @DateTimeEntry, @EntryBy, " +
-                                  "@DataSourceID, @StatusID)";
-
-                cmd.Parameters.AddWithValue("@LastName", txt_lastname.Text);
-                cmd.Parameters.AddWithValue("@FirstName", txt_firstname.Text);
-                cmd.Parameters.AddWithValue("@MiddleName", txt_middlename.Text);
-                cmd.Parameters.AddWithValue("@ExtName", txt_extname.Text);
-                cmd.Parameters.AddWithValue("@PSGCRegion", psgcRegion);
-                cmd.Parameters.AddWithValue("@PSGCProvince", selectedMunicipality.PSGCProvince);
-                cmd.Parameters.AddWithValue("@PSGCCityMun", selectedMunicipality.PSGCCityMun);
-                cmd.Parameters.AddWithValue("@PSGCBrgy", selectedBarangay.PSGCBrgy);
-                cmd.Parameters.AddWithValue("@Address", txt_address.Text);
-                cmd.Parameters.AddWithValue("@BirthDate", dt_birth.EditValue);
-                cmd.Parameters.AddWithValue("@SexID", selectedSex.Id); // Assuming you have a value member set for cmb_sex
-                cmd.Parameters.AddWithValue("@MaritalStatusID", selectedMarital.Id); // Assuming you have a value member set for cmb_maritalstatus
-                cmd.Parameters.AddWithValue("@IDTypeID", 1); // Assuming you have a value member set for cmb_idtype
-                cmd.Parameters.AddWithValue("@IDNumber", txt_id.Text);
-                cmd.Parameters.AddWithValue("@IDDateIssued", dt_dateissued.EditValue);
-                cmd.Parameters.AddWithValue("@Pantawid", ck_pantawid.Checked);
-                cmd.Parameters.AddWithValue("@Indigenous", ck_indigenous.Checked);
-                cmd.Parameters.AddWithValue("@HealthStatusID", selectedHealthStatus.Id); // Assuming you have a value member set for cmb_healthstatus
-                cmd.Parameters.AddWithValue("@HealthStatusRemarks", txt_remarks.Text);
-                cmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-                cmd.Parameters.AddWithValue("@EntryBy", _username); // Assuming you want to track the user who made the entry
-                cmd.Parameters.AddWithValue("@DataSourceID", selectedDataSource.Id); // Assuming you have a value member set for cmb_datasource
-                cmd.Parameters.AddWithValue("@StatusID", 99); // Assuming you have a value member set for cmb_status
-
-                cmd.ExecuteNonQuery();
-                con.Close();
                 Clear();
                 XtraMessageBox.Show("Inserted Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Clear the form and refresh the display
-                // clear();
-                // display();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-                con.Close();
             }
         }
 
-
-        private void btn_save_Click(object sender, EventArgs e)
+        private async void btn_save_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txt_lastname.Text) || string.IsNullOrWhiteSpace(txt_firstname.Text) || string.IsNullOrWhiteSpace(txt_middlename.Text))
+            {
+                XtraMessageBox.Show("Please fill the names before saving.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(cmb_municipality.Text) || string.IsNullOrWhiteSpace(cmb_barangay.Text))
+            {
+                XtraMessageBox.Show("Please select a municipality and barangay before proceeding.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(dt_birth.Text))
+            {
+                XtraMessageBox.Show("Please enter birth date before proceeding", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(cmb_sex.Text))
+            {
+                XtraMessageBox.Show("Select sex before proceeding.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (cmb_datasource.Text == "Select Data Source")
+            {
+                XtraMessageBox.Show("Select datasource before proceeding.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
             var gridView = gr_similar.MainView as GridView;
             if (gridView.RowCount > 0)
             {
                 if (MessageBox.Show("There are similar data's related, are you sure you want to continue?", "Related Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    SaveMasterlistEntry();
+                   await SaveEF();
                 }
                 return;
             }
-            SaveMasterlistEntry();
+            await SaveEF();
         }
 
-        //Load masterlist below
         private async Task LoadDataAsync()
         {
-            try
+            GridView gridView = gr_similar.MainView as GridView;
+            // XtraMessageBox.Show("Hello");
+            using (var context = new ApplicationDbContext())
             {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"SELECT 
-                        m.ID,
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName,
-                        MAX(m.Citizenship) as Citizenship,
-                        MAX(m.MothersMaiden) as MothersMaiden,
-                        MAX(lr.Region) as Region,
-                        MAX(lp.ProvinceName) as Province,
-                        MAX(lc.CityMunName) as Municipality,
-                        MAX(lb.BrgyName) as Barangay,
-                        MAX(m.Address) as Address,
-                        MAX(m.BirthDate) as BirthDate,
-                        MAX(ls.Status) as Status
-                    FROM 
-                        tbl_masterlist m
-                    LEFT JOIN 
-                        lib_region lr ON m.PSGCRegion = lr.PSGCRegion
-                    LEFT JOIN 
-                        lib_province lp ON m.PSGCProvince = lp.PSGCProvince
-                    LEFT JOIN 
-                        lib_city_municipality lc ON m.PSGCCityMun = lc.PSGCCityMun
-                    LEFT JOIN 
-                        lib_barangay lb ON m.PSGCBrgy = lb.PSGCBrgy
-                    LEFT JOIN 
-                        lib_status ls ON m.StatusID = ls.ID
-                    WHERE 
+                var searchMasterlist = await context.tbl_masterlist
+                    .Include(r => r.LibraryRegion)
+                    .Include(p => p.LibraryProvince)
+                    .Include(m => m.LibraryMunicipality)
+                    .Include(b => b.LibraryBarangay)
+                    .Include(s => s.LibraryStatus)
+                    .Where(l => l.LastName.StartsWith(txt_lastname.Text.ToUpper())
+                    && l.FirstName.StartsWith(txt_firstname.Text.ToUpper())
+                    && l.MiddleName.StartsWith(txt_middlename.Text.ToUpper())
+                    && l.ExtName.StartsWith(txt_extname.Text.ToUpper())
+                    && l.DateTimeDeleted == null)
+                    .Select(n => new MasterListViewModel 
+                    { 
+                        LastName = n.LastName,
+                        FirstName = n.FirstName,
+                        MiddleName = n.MiddleName,
+                        ExtName = n.ExtName,
+                        Municipality = n.LibraryMunicipality.CityMunName,
+                        Barangay = n.LibraryBarangay.BrgyName,
+                        Address = n.Address,
+                        BirthDate = n.BirthDate,
+                        Status = n.LibraryStatus.Status
+                    })
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                m.DateTimeDeleted IS NULL
-                AND (@LastName IS NULL OR m.LastName LIKE @LastName)
-                AND (@FirstName IS NULL OR m.FirstName LIKE @FirstName)
-                AND (@MiddleName IS NULL OR m.MiddleName LIKE @MiddleName)
-                AND (@ExtName IS NULL OR m.ExtName LIKE @ExtName)
-                        
-                    GROUP BY
-                        m.LastName,
-                        m.FirstName,
-                        m.MiddleName,
-                        m.ExtName";
+                masterListViewModelBindingSource.DataSource = searchMasterlist;
+                gr_similar.DataSource = masterListViewModelBindingSource;
 
-                //cmd.CommandText = sqlQuery;
-                // Add parameters for search filters
-                cmd.Parameters.AddWithValue("@LastName", string.IsNullOrEmpty(txt_lastname.Text) ? (object)DBNull.Value : "%" + txt_lastname.Text + "%");
-                cmd.Parameters.AddWithValue("@FirstName", string.IsNullOrEmpty(txt_firstname.Text) ? (object)DBNull.Value : "%" + txt_firstname.Text + "%");
-                cmd.Parameters.AddWithValue("@MiddleName", string.IsNullOrEmpty(txt_middlename.Text) ? (object)DBNull.Value : "%" + txt_middlename.Text + "%");
-                cmd.Parameters.AddWithValue("@ExtName", string.IsNullOrEmpty(txt_extname.Text) ? (object)DBNull.Value : "%" + txt_extname.Text + "%");
+                // Auto-size all columns based on their content
+                gridView.BestFitColumns();
 
+                // Ensure horizontal scrollbar is enabled
+                gridView.OptionsView.ColumnAutoWidth = false;
 
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                //Await to reduce lag while loading large amount of datas
-                await Task.Run(() => da.Fill(dt));
-                //We are using DevExpress datagridview
-                gr_similar.DataSource = dt;
+                // Disable editing
+                gridView.OptionsBehavior.Editable = false;
 
-                // Get the GridView instance
-                GridView gridView = gr_similar.MainView as GridView;
-                if (gridView != null)
-                {
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-
-                    // Hide the "ID" column
-                    gridView.Columns["ID"].Visible = false;
-
-                    // Freeze the columns
-                    gridView.Columns["LastName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["FirstName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["MiddleName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-                    gridView.Columns["ExtName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-                }
-
-
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
             }
         }
-
         private void txt_extname_Leave(object sender, EventArgs e)
         {
 

@@ -694,11 +694,18 @@ namespace SpinsNew
         }
         public async Task ActivateMethod()
         {
+            GridView gridView = gridControl1.MainView as GridView;
+
+            if (gridView.SelectedRowsCount == 0)
+            {
+                MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method without showing EditApplicantForm
+            }
 
             using (var context = new ApplicationDbContext())
             {
 
-                GridView gridView = gridControl1.MainView as GridView;
+              
                 // Get the selected row
 
                 MasterListViewModel row = (MasterListViewModel)gridView.GetRow(gridView.FocusedRowHandle);
@@ -706,11 +713,7 @@ namespace SpinsNew
                 string assessment = row.Assessment;
                 int? spisBatch = Convert.ToInt32(row.SpisBatch);
 
-                if (gridView.SelectedRowsCount == 0)
-                {
-                    MessageBox.Show("Please select a data to first", "Select", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // Exit the method without showing EditApplicantForm
-                }
+            
 
 
                 // IF the status is Applicant and Assessment is not Eligible or Null and SpinsBatch is Null and GIS or SPBUF is null then data is not eligible for Activation.
@@ -777,6 +780,7 @@ namespace SpinsNew
 
         private async void btnActivate_Click(object sender, EventArgs e)
         {
+            
             await ActivateMethod();
 
         }

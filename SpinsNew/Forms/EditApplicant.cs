@@ -555,60 +555,6 @@ namespace SpinsWinforms.Forms
                 }
             }
         }
-
-        //Get RegionName
-        public string GetRegionName(int psgcRegion)
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Region FROM lib_region WHERE PSGCRegion = @PSGCRegion";
-                cmd.Parameters.AddWithValue("@PSGCRegion", psgcRegion);
-                string regionName = cmd.ExecuteScalar()?.ToString();
-                con.Close();
-                return regionName;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
-        }
-
-        //get province cascading
-        public (string provinceName, int psgcRegion) GetProvinceNameAndRegion(int psgcProvince)
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT ProvinceName, PSGCRegion FROM lib_province WHERE PSGCProvince = @PSGCProvince";
-                cmd.Parameters.AddWithValue("@PSGCProvince", psgcProvince);
-                MySqlDataReader reader = cmd.ExecuteReader();
-                string provinceName = null;
-                int psgcRegion = 0;
-
-                if (reader.Read())
-                {
-                    provinceName = reader["ProvinceName"].ToString();
-                    psgcRegion = Convert.ToInt32(reader["PSGCRegion"]);
-                }
-
-                reader.Close();
-                con.Close();
-                return (provinceName, psgcRegion);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return (null, 0);
-            }
-        }
-
-
         private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
         {
 
