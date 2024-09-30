@@ -1,6 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraPrinting;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
@@ -967,7 +968,7 @@ namespace SpinsNew.Forms
                     gridView.OptionsView.ColumnAutoWidth = false;
                 }
 
-                gridView.OptionsCustomization.AllowFilter = false;
+                gridView.OptionsCustomization.AllowFilter = true;
                 // Update row count display
                 UpdateRowCount(gridView);
                 this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
@@ -1761,6 +1762,48 @@ namespace SpinsNew.Forms
             }
              PrintCOEUnpaid(payrollData, signatoriesData);
             //PrintCOEUnpaid(payrollData);
+        }
+
+        private void ExportToExcel(string filePath)
+        {
+            try
+            {
+
+                var exportOptions = new XlsxExportOptions
+                {
+                    ExportMode = XlsxExportMode.SingleFile,
+                    // IncludeSummary = true, // This may not exist; verify in documentation
+                    // Set other options as needed
+                };
+
+                // Perform the export from your grid control
+                gridControl1.ExportToXlsx(filePath, exportOptions);
+
+                // Notify the user that the export was successful
+                XtraMessageBox.Show("Data exported successfully to " + filePath, "Export Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that may occur
+                XtraMessageBox.Show("Error exporting data: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            // Create a SaveFileDialog
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*";
+            saveFileDialog.Title = "Save an Excel File";
+            saveFileDialog.FileName = $"Payroll exporting.xlsx";
+
+            // Show the dialog and check if the user clicked Save
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Call the export function
+                ExportToExcel(saveFileDialog.FileName);
+            }
         }
     }
 }

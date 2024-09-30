@@ -74,6 +74,7 @@ namespace SpinsNew.Forms
             this.uploadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ts_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
+            this.btnExport = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             this.gb_details.SuspendLayout();
@@ -521,7 +522,7 @@ namespace SpinsNew.Forms
             // 
             this.claimedToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
             this.claimedToolStripMenuItem.Name = "claimedToolStripMenuItem";
-            this.claimedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.claimedToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.claimedToolStripMenuItem.Text = "Regular";
             this.claimedToolStripMenuItem.Click += new System.EventHandler(this.claimedToolStripMenuItem_Click);
             // 
@@ -529,7 +530,7 @@ namespace SpinsNew.Forms
             // 
             this.unclaimedToolStripMenuItem.Image = global::SpinsNew.Properties.Resources._299112_warning_shield_icon;
             this.unclaimedToolStripMenuItem.Name = "unclaimedToolStripMenuItem";
-            this.unclaimedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unclaimedToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.unclaimedToolStripMenuItem.Text = "Unpaid";
             this.unclaimedToolStripMenuItem.Click += new System.EventHandler(this.unclaimedToolStripMenuItem_Click);
             // 
@@ -558,11 +559,24 @@ namespace SpinsNew.Forms
             this.progressBarControl1.Size = new System.Drawing.Size(838, 10);
             this.progressBarControl1.TabIndex = 12;
             // 
+            // btnExport
+            // 
+            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExport.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnExport.ImageOptions.Image")));
+            this.btnExport.Location = new System.Drawing.Point(733, 280);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(115, 23);
+            this.btnExport.TabIndex = 23;
+            this.btnExport.Text = "Export to excel";
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
             // Payroll
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(859, 612);
+            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.progressBarControl1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.groupControlPayroll);
@@ -654,5 +668,6 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.ToolStripMenuItem printCertificateOfToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem claimedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unclaimedToolStripMenuItem;
+        private DevExpress.XtraEditors.SimpleButton btnExport;
     }
 }

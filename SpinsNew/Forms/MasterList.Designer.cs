@@ -111,6 +111,7 @@ namespace SpinsNew
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.btnViewAttach = new DevExpress.XtraEditors.SimpleButton();
+            this.btnExport = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).BeginInit();
@@ -985,12 +986,25 @@ namespace SpinsNew
             this.btnViewAttach.Text = "View Attachments (Ctrl + S)";
             this.btnViewAttach.Click += new System.EventHandler(this.btnViewAttach_Click);
             // 
+            // btnExport
+            // 
+            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExport.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnExport.ImageOptions.Image")));
+            this.btnExport.Location = new System.Drawing.Point(1239, 251);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(115, 23);
+            this.btnExport.TabIndex = 22;
+            this.btnExport.Text = "Export to excel";
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
             // MasterList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1364, 636);
+            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.panel_spinner);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupControl1);
@@ -1002,6 +1016,7 @@ namespace SpinsNew
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Master List";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.MasterList_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).EndInit();
@@ -1115,6 +1130,7 @@ namespace SpinsNew
         private DevExpress.XtraGrid.Columns.GridColumn colSpbuf;
         private DevExpress.XtraEditors.CheckedComboBoxEdit cmb_status;
         private DevExpress.XtraGrid.Columns.GridColumn colId;
+        private DevExpress.XtraEditors.SimpleButton btnExport;
     }
 }
 
