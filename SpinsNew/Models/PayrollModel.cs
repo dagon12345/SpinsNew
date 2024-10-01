@@ -42,10 +42,12 @@ namespace SpinsNew.Models
         public DateTime? DateTimeModified { get; set; }
         public string ModifiedBy { get; set; }
 
+        public int? ReplacementForId { get; set; }
 
         //public int LatestPayroll { get; set; }//experiment
         /* Required reference navigation to principal*/
         public MasterListModel MasterListModel { get; set; } = null;
+        public MasterListModel ReplacementFor { get; set; } = null; // get the replacementsID
         public LibraryBarangay LibraryBarangay { get; set; } = null;
         public LibraryPeriod LibraryPeriod { get; set; }
         public LibraryPayrollStatus LibraryPayrollStatus  { get; set; }

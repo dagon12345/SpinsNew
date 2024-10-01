@@ -1187,5 +1187,10 @@ namespace SpinsWinforms.Forms
                 cmb_barangay.EditValue = "";
             }
         }
+
+        private void EditApplicant_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

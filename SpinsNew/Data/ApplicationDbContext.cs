@@ -64,6 +64,7 @@ namespace SpinsNew.Data
                     e.ClaimTypeID,
                     e.PeriodID,
                     e.PayrollStatusID,
+                    e.MasterListID
                     
                 });
 
@@ -92,6 +93,12 @@ namespace SpinsNew.Data
                 .HasIndex(id => id.MasterListId);
 
             /*Fluent API mapping below*/
+            //modelBuilder.Entity<PayrollModel>()
+            //    .HasOne(m => m.ReplacementFor)
+            //    .WithMany(p => p.PayrollModels)
+            //    .HasForeignKey(p => p.ReplacementForId)
+            //    .HasPrincipalKey(m => m.Id);
+
             modelBuilder.Entity<GisModel>()
                 .HasOne(m => m.MasterListModel)
                 .WithMany(g => g.GisModels)

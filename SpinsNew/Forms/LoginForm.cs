@@ -50,8 +50,8 @@ namespace SpinsNew.Forms
            
             using (var context = new ApplicationDbContext())
             {
-                var loginForm = await context.tbl_registered_users.Where(l => l.Username == txt_username.Text.ToLower()
-                && l.Password == txt_password.Text)
+                var loginForm = await context.tbl_registered_users.Where(l => l.Username.StartsWith(txt_username.Text.ToLower())
+                && l.Password.StartsWith(txt_password.Text))
                     .FirstOrDefaultAsync();
 
                 if (loginForm != null)

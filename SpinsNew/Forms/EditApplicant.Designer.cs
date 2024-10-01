@@ -970,7 +970,6 @@ namespace SpinsWinforms.Forms
             this.txt_referencecode.Size = new System.Drawing.Size(86, 20);
             this.txt_referencecode.TabIndex = 85;
             this.txt_referencecode.Visible = false;
-            //this.txt_referencecode.EditValueChanged += new System.EventHandler(this.txt_referencecode_EditValueChanged);
             // 
             // grp_gis
             // 
@@ -1199,7 +1198,7 @@ namespace SpinsWinforms.Forms
             this.Text = "Edit Applicant";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditApplicant_FormClosed);
-           // this.Load += new System.EventHandler(this.EditApplicant_Load);
+            this.Load += new System.EventHandler(this.EditApplicant_Load);
             ((System.ComponentModel.ISupportInitialize)(this.txt_id.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);

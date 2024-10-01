@@ -38,6 +38,9 @@ namespace SpinsNew.ViewModel
         public int Female { get; set; }//Count of females
         public double Amount { get; set; }
         public int TotalAmount3000 { get; set; }
+        public string ClaimType { get; set; }
+        public string PayrollType { get; set; }
+        public string ReplacementOf { get; set; }
 
         //public int LatestPayroll { get; set; }
     }

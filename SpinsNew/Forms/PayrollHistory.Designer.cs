@@ -29,10 +29,20 @@ namespace SpinsNew.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PayrollHistory));
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+            this.payrollViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colYear = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAddress = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPeriod = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPaymentMode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAmount = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateClaimedFrom = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colReplacementOf = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colRemarks = new DevExpress.XtraGrid.Columns.GridColumn();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.lbl_address = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
@@ -44,6 +54,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
@@ -66,6 +77,7 @@ namespace SpinsNew.Forms
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridControl1.DataSource = this.payrollViewModelBindingSource;
             this.gridControl1.Location = new System.Drawing.Point(4, 23);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
@@ -75,8 +87,21 @@ namespace SpinsNew.Forms
             this.gridView1});
             this.gridControl1.DoubleClick += new System.EventHandler(this.gridControl1_DoubleClick);
             // 
+            // payrollViewModelBindingSource
+            // 
+            this.payrollViewModelBindingSource.DataSource = typeof(SpinsNew.ViewModel.PayrollViewModel);
+            // 
             // gridView1
             // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colYear,
+            this.colAddress,
+            this.colPeriod,
+            this.colPaymentMode,
+            this.colAmount,
+            this.colDateClaimedFrom,
+            this.colReplacementOf,
+            this.colRemarks});
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
@@ -84,6 +109,62 @@ namespace SpinsNew.Forms
             this.gridView1.OptionsFind.FindFilterColumns = "LastName;FirstName;MiddleName";
             this.gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.gridView1.OptionsView.ShowGroupPanel = false;
+            // 
+            // colYear
+            // 
+            this.colYear.FieldName = "Year";
+            this.colYear.Name = "colYear";
+            this.colYear.Visible = true;
+            this.colYear.VisibleIndex = 0;
+            // 
+            // colAddress
+            // 
+            this.colAddress.FieldName = "Address";
+            this.colAddress.Name = "colAddress";
+            this.colAddress.Visible = true;
+            this.colAddress.VisibleIndex = 1;
+            // 
+            // colPeriod
+            // 
+            this.colPeriod.FieldName = "Period";
+            this.colPeriod.Name = "colPeriod";
+            this.colPeriod.Visible = true;
+            this.colPeriod.VisibleIndex = 2;
+            // 
+            // colPaymentMode
+            // 
+            this.colPaymentMode.FieldName = "PaymentMode";
+            this.colPaymentMode.Name = "colPaymentMode";
+            this.colPaymentMode.Visible = true;
+            this.colPaymentMode.VisibleIndex = 3;
+            // 
+            // colAmount
+            // 
+            this.colAmount.FieldName = "Amount";
+            this.colAmount.Name = "colAmount";
+            this.colAmount.Visible = true;
+            this.colAmount.VisibleIndex = 4;
+            // 
+            // colDateClaimedFrom
+            // 
+            this.colDateClaimedFrom.FieldName = "DateClaimedFrom";
+            this.colDateClaimedFrom.Name = "colDateClaimedFrom";
+            this.colDateClaimedFrom.Visible = true;
+            this.colDateClaimedFrom.VisibleIndex = 5;
+            // 
+            // colReplacementOf
+            // 
+            this.colReplacementOf.FieldName = "ReplacementOf";
+            this.colReplacementOf.Name = "colReplacementOf";
+            this.colReplacementOf.Visible = true;
+            this.colReplacementOf.VisibleIndex = 6;
+            // 
+            // colRemarks
+            // 
+            this.colRemarks.FieldName = "Remarks";
+            this.colRemarks.Name = "colRemarks";
+            this.colRemarks.Visible = true;
+            this.colRemarks.VisibleIndex = 7;
             // 
             // groupControl2
             // 
@@ -185,6 +266,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.payrollViewModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
@@ -209,5 +291,14 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraEditors.PictureEdit pictureEdit1;
         private DevExpress.XtraEditors.LabelControl labelControl3;
+        private System.Windows.Forms.BindingSource payrollViewModelBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colPeriod;
+        private DevExpress.XtraGrid.Columns.GridColumn colYear;
+        private DevExpress.XtraGrid.Columns.GridColumn colAddress;
+        private DevExpress.XtraGrid.Columns.GridColumn colPaymentMode;
+        private DevExpress.XtraGrid.Columns.GridColumn colAmount;
+        private DevExpress.XtraGrid.Columns.GridColumn colDateClaimedFrom;
+        private DevExpress.XtraGrid.Columns.GridColumn colReplacementOf;
+        private DevExpress.XtraGrid.Columns.GridColumn colRemarks;
     }
 }
