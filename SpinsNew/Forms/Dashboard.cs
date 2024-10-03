@@ -261,5 +261,10 @@ namespace SpinsNew.Forms
         {
             await DisplayAsyncEF();
         }
+
+        private void Dashboard_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

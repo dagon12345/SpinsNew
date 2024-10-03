@@ -383,6 +383,7 @@ namespace SpinsNew.Forms
                 lb.BrgyName as Barangay,
                 tm.BirthDate,
                 ls.Status as Reason,
+                tm.DateDeceased,
                 d.StatusRemarks,
                 tm2.ID as MasterListIDReplacement,
                 tm2.LastName as LastName2,
@@ -576,10 +577,11 @@ namespace SpinsNew.Forms
                 dt.Columns["BirthDate"].SetOrdinal(2);
                 dt.Columns["Barangay"].SetOrdinal(3);
                 dt.Columns["Reason"].SetOrdinal(4);
-                dt.Columns["StatusRemarks"].SetOrdinal(5);
-                dt.Columns["Name of Replacement"].SetOrdinal(6);
-                dt.Columns["FromBarangay"].SetOrdinal(7);
-                dt.Columns["DateTimeReplaced"].SetOrdinal(8);
+                dt.Columns["DateDeceased"].SetOrdinal(5);
+                dt.Columns["StatusRemarks"].SetOrdinal(6);
+                dt.Columns["Name of Replacement"].SetOrdinal(7);
+                dt.Columns["FromBarangay"].SetOrdinal(8);
+                dt.Columns["DateTimeReplaced"].SetOrdinal(9);
 
 
 
