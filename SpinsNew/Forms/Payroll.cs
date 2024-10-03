@@ -1,5 +1,6 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraPrinting;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +67,8 @@ namespace SpinsNew.Forms
             MunicipalityNew();
             Year();
             Signatories();
+            GridView gridView = (GridView)gridControl1.MainView;
+            gridView.ColumnFilterChanged += gridView1_ColumnFilterChanged;
             groupControlPayroll.Text = "Count of showed data: [0]";
             // Cast the MainView to GridView
             //GridView gridView = gridPayroll.MainView as GridView;
@@ -89,6 +92,18 @@ namespace SpinsNew.Forms
 
 
         }
+
+        private void gridView1_ColumnFilterChanged(object sender, EventArgs e)
+        {
+            GridView gridView = (GridView)sender;
+
+            // Get the count of rows that match the current filter
+            int rowCount = gridView.DataRowCount;
+
+            // Update your control with the row count
+            UpdateRowCount(gridView);
+        }
+
 
         // Custom class to store Id and DataSource
         public class YearItem
@@ -473,7 +488,7 @@ namespace SpinsNew.Forms
             // Search();
         }
 
-        // Method to update the row count display
+        // Method to update the row count display and calculate total amount
         public void UpdateRowCount(GridView gridView)
         {
             // Calculate the row count
@@ -482,9 +497,28 @@ namespace SpinsNew.Forms
             // Format the row count with thousands separator
             string formattedRowCount = rowCount.ToString("N0");
 
-            // Assign formatted row count to txt_total (or any other control)
-            groupControlPayroll.Text = $"Payroll List: {formattedRowCount}";
+            // Check if the GridView contains the "Amounts" column
+            GridColumn amountsColumn = gridView.Columns["Amounts"];
+            if (amountsColumn != null)
+            {
+                // Set up the summary item for the "Amounts" column in the footer
+                amountsColumn.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+
+                // Optionally, force an update of the summaries to ensure they are up-to-date
+                gridView.UpdateSummary();
+
+                // Retrieve the total sum of the "Amounts" column
+                object totalAmount = gridView.Columns["Amounts"].SummaryItem.SummaryValue;
+
+                // Format the total amount with two decimal places
+                string formattedTotalAmount = totalAmount != null ? Convert.ToDecimal(totalAmount).ToString("N2") : "0.00";
+
+                // Assign formatted row count and total amount to txt_total (or any other control)
+                groupControlPayroll.Text = $"Payroll List: {formattedRowCount} | Total Amount: {formattedTotalAmount}";
+            }
         }
+
+
 
         public async Task PayrollsEntity()
         {

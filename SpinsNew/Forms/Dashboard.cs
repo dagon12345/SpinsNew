@@ -90,7 +90,7 @@ namespace SpinsNew.Forms
                 // Fetch the data for targets from EF Core
                 var targetData = await context.tbl_payroll_socpen
                     .Include(x => x.LibraryProvince)
-                    .Where(x => x.Year == DateTime.Now.Year && x.ClaimTypeID.HasValue && x.PeriodID == 9)
+                    .Where(x => x.Year == DateTime.Now.Year && x.ClaimTypeID.HasValue && x.PeriodID == 9 && x.PayrollStatusID != 3)
                     .GroupBy(x => x.LibraryProvince.ProvinceName)
                     .Select(g => new
                     {
@@ -104,8 +104,8 @@ namespace SpinsNew.Forms
                 var servedData = await context.tbl_payroll_socpen
                     .Include(x => x.LibraryProvince)
                     .Include(x => x.MasterListModel)
-                    .Where(x => x.Year == DateTime.Now.Year && x.PayrollStatusID >= 1 && x.PayrollStatusID <= 3 && x.PeriodID == 9
-                                || (x.MasterListModel.RegTypeId == 2 && x.PeriodID >= 1 && x.PeriodID <= 10 && x.PayrollStatusID == 1))
+                    .Where(x => x.Year == DateTime.Now.Year && x.PayrollStatusID >= 1 && x.PayrollStatusID <= 3 && (x.PeriodID == 9
+                                || x.MasterListModel.RegTypeId == 2 && x.PeriodID >= 1 && x.PeriodID <= 10 && x.PayrollStatusID == 1))
                     .GroupBy(x => x.LibraryProvince.ProvinceName)
                     .Select(g => new
                     {
