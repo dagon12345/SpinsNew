@@ -54,9 +54,6 @@ namespace SpinsNew.Forms
             this.btn_claimed = new DevExpress.XtraEditors.SimpleButton();
             this.dt_to = new DevExpress.XtraEditors.DateEdit();
             this.dt_from = new DevExpress.XtraEditors.DateEdit();
-            this.panel_spinner = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.groupControlPayroll = new DevExpress.XtraEditors.GroupControl();
             this.btnArchive = new DevExpress.XtraEditors.SimpleButton();
             this.searchControl1 = new DevExpress.XtraEditors.SearchControl();
@@ -75,6 +72,9 @@ namespace SpinsNew.Forms
             this.ts_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
             this.btnExport = new DevExpress.XtraEditors.SimpleButton();
+            this.panel_spinner = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             this.gb_details.SuspendLayout();
@@ -91,8 +91,6 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dt_to.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties)).BeginInit();
-            this.panel_spinner.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControlPayroll)).BeginInit();
             this.groupControlPayroll.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).BeginInit();
@@ -102,6 +100,8 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.tbl_payroll_socpenBindingSource)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).BeginInit();
+            this.panel_spinner.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl1
@@ -370,34 +370,6 @@ namespace SpinsNew.Forms
             this.dt_from.TabIndex = 0;
             this.dt_from.EditValueChanged += new System.EventHandler(this.dt_from_EditValueChanged);
             // 
-            // panel_spinner
-            // 
-            this.panel_spinner.Controls.Add(this.pictureBox1);
-            this.panel_spinner.Controls.Add(this.labelControl2);
-            this.panel_spinner.Location = new System.Drawing.Point(9, 284);
-            this.panel_spinner.Name = "panel_spinner";
-            this.panel_spinner.Size = new System.Drawing.Size(177, 19);
-            this.panel_spinner.TabIndex = 17;
-            this.panel_spinner.Visible = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
-            this.pictureBox1.Location = new System.Drawing.Point(3, 2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 17;
-            this.pictureBox1.TabStop = false;
-            // 
-            // labelControl2
-            // 
-            this.labelControl2.Location = new System.Drawing.Point(29, 3);
-            this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(138, 13);
-            this.labelControl2.TabIndex = 16;
-            this.labelControl2.Text = "Retrieving, please wait.......";
-            // 
             // groupControlPayroll
             // 
             this.groupControlPayroll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -571,16 +543,48 @@ namespace SpinsNew.Forms
             this.btnExport.Text = "Export to excel";
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
+            // panel_spinner
+            // 
+            this.panel_spinner.BackColor = System.Drawing.Color.Transparent;
+            this.panel_spinner.Controls.Add(this.pictureBox1);
+            this.panel_spinner.Controls.Add(this.labelControl2);
+            this.panel_spinner.Location = new System.Drawing.Point(10, 283);
+            this.panel_spinner.Name = "panel_spinner";
+            this.panel_spinner.Size = new System.Drawing.Size(212, 22);
+            this.panel_spinner.TabIndex = 24;
+            this.panel_spinner.Visible = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.triangle_spinner;
+            this.pictureBox1.Location = new System.Drawing.Point(-5, -11);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(49, 45);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 17;
+            this.pictureBox1.TabStop = false;
+            // 
+            // labelControl2
+            // 
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Options.UseFont = true;
+            this.labelControl2.Location = new System.Drawing.Point(44, 2);
+            this.labelControl2.Name = "labelControl2";
+            this.labelControl2.Size = new System.Drawing.Size(156, 17);
+            this.labelControl2.TabIndex = 16;
+            this.labelControl2.Text = "Retrieving, please wait.......";
+            // 
             // Payroll
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(859, 612);
+            this.Controls.Add(this.panel_spinner);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.progressBarControl1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.groupControlPayroll);
-            this.Controls.Add(this.panel_spinner);
             this.Controls.Add(this.groupControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Payroll";
@@ -605,9 +609,6 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dt_to.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_from.Properties)).EndInit();
-            this.panel_spinner.ResumeLayout(false);
-            this.panel_spinner.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControlPayroll)).EndInit();
             this.groupControlPayroll.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).EndInit();
@@ -618,6 +619,9 @@ namespace SpinsNew.Forms
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).EndInit();
+            this.panel_spinner.ResumeLayout(false);
+            this.panel_spinner.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -626,9 +630,6 @@ namespace SpinsNew.Forms
         #endregion
 
         private DevExpress.XtraEditors.GroupControl groupControl1;
-        private System.Windows.Forms.Panel panel_spinner;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.GroupControl groupControlPayroll;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_period;
         private DevExpress.XtraEditors.ComboBoxEdit cmb_year;
@@ -669,5 +670,8 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.ToolStripMenuItem claimedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unclaimedToolStripMenuItem;
         private DevExpress.XtraEditors.SimpleButton btnExport;
+        private System.Windows.Forms.Panel panel_spinner;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private DevExpress.XtraEditors.LabelControl labelControl2;
     }
 }

@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>35</ApplicationRevision>
+    <ApplicationRevision>37</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -512,6 +512,7 @@
     </Compile>
     <Compile Include="ViewModel\MasterListViewModel.cs" />
     <Compile Include="ViewModel\PayrollViewModel.cs" />
+    <None Include="Resources\triangle-spinner.gif" />
     <EmbeddedResource Include="Forms\Attachments.resx">
       <DependentUpon>Attachments.cs</DependentUpon>
     </EmbeddedResource>

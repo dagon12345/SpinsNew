@@ -638,18 +638,18 @@ namespace SpinsNew
             this.panel_spinner.BackColor = System.Drawing.Color.Transparent;
             this.panel_spinner.Controls.Add(this.pictureBox1);
             this.panel_spinner.Controls.Add(this.labelControl2);
-            this.panel_spinner.Location = new System.Drawing.Point(15, 252);
+            this.panel_spinner.Location = new System.Drawing.Point(25, 252);
             this.panel_spinner.Name = "panel_spinner";
-            this.panel_spinner.Size = new System.Drawing.Size(195, 23);
+            this.panel_spinner.Size = new System.Drawing.Size(212, 22);
             this.panel_spinner.TabIndex = 15;
             this.panel_spinner.Visible = false;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
-            this.pictureBox1.Location = new System.Drawing.Point(3, 2);
+            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.triangle_spinner;
+            this.pictureBox1.Location = new System.Drawing.Point(-5, -11);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(20, 20);
+            this.pictureBox1.Size = new System.Drawing.Size(49, 45);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 17;
             this.pictureBox1.TabStop = false;
@@ -658,7 +658,7 @@ namespace SpinsNew
             // 
             this.labelControl2.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl2.Appearance.Options.UseFont = true;
-            this.labelControl2.Location = new System.Drawing.Point(29, 3);
+            this.labelControl2.Location = new System.Drawing.Point(44, 2);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(156, 17);
             this.labelControl2.TabIndex = 16;

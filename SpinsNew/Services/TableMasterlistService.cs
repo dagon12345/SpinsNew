@@ -95,7 +95,7 @@ namespace SpinsNew.Services
                         EntryBy = n.EntryBy,
                         DataSource = n.LibraryDataSource.DataSource,
                         //If our property DateDeceased is not null then merge the Status and DateDeceased. if no only show the Status.
-                        Status = n.DateDeceased != null ? $"{n.LibraryStatus.Status} [{n.DateDeceased}]" : n.LibraryStatus.Status,
+                        Status = n.DateDeceased != null ? $"{n.LibraryStatus.Status} {n.DateDeceased}" : n.LibraryStatus.Status,
                         Remarks = n.Remarks,
                         Registration = n.LibraryRegistrationType.RegType,
                         InclusionDate = n.InclusionDate,

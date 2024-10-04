@@ -34,9 +34,6 @@ namespace SpinsNew.Forms
             this.cmb_period = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
             this.cmb_municipality = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.panel_spinner = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.searchControl1 = new DevExpress.XtraEditors.SearchControl();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.gridDelisted = new DevExpress.XtraGrid.GridControl();
@@ -64,13 +61,14 @@ namespace SpinsNew.Forms
             this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
+            this.panel_spinner = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).BeginInit();
-            this.panel_spinner.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
@@ -96,6 +94,8 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl5)).BeginInit();
             this.groupControl5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
+            this.panel_spinner.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl1
@@ -147,34 +147,6 @@ namespace SpinsNew.Forms
             this.cmb_municipality.Size = new System.Drawing.Size(279, 20);
             this.cmb_municipality.TabIndex = 0;
             this.cmb_municipality.SelectedIndexChanged += new System.EventHandler(this.cmb_municipality_SelectedIndexChanged);
-            // 
-            // panel_spinner
-            // 
-            this.panel_spinner.Controls.Add(this.pictureBox1);
-            this.panel_spinner.Controls.Add(this.labelControl2);
-            this.panel_spinner.Location = new System.Drawing.Point(10, 70);
-            this.panel_spinner.Name = "panel_spinner";
-            this.panel_spinner.Size = new System.Drawing.Size(187, 19);
-            this.panel_spinner.TabIndex = 17;
-            this.panel_spinner.Visible = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
-            this.pictureBox1.Location = new System.Drawing.Point(3, 2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 17;
-            this.pictureBox1.TabStop = false;
-            // 
-            // labelControl2
-            // 
-            this.labelControl2.Location = new System.Drawing.Point(29, 3);
-            this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(138, 13);
-            this.labelControl2.TabIndex = 16;
-            this.labelControl2.Text = "Retrieving, please wait.......";
             // 
             // searchControl1
             // 
@@ -481,10 +453,42 @@ namespace SpinsNew.Forms
             this.labelControl6.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information;
             this.labelControl6.ToolTipTitle = "Infor";
             // 
+            // panel_spinner
+            // 
+            this.panel_spinner.BackColor = System.Drawing.Color.Transparent;
+            this.panel_spinner.Controls.Add(this.pictureBox1);
+            this.panel_spinner.Controls.Add(this.labelControl2);
+            this.panel_spinner.Location = new System.Drawing.Point(10, 68);
+            this.panel_spinner.Name = "panel_spinner";
+            this.panel_spinner.Size = new System.Drawing.Size(212, 22);
+            this.panel_spinner.TabIndex = 20;
+            this.panel_spinner.Visible = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.triangle_spinner;
+            this.pictureBox1.Location = new System.Drawing.Point(-5, -11);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(49, 45);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 17;
+            this.pictureBox1.TabStop = false;
+            // 
+            // labelControl2
+            // 
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Options.UseFont = true;
+            this.labelControl2.Location = new System.Drawing.Point(44, 2);
+            this.labelControl2.Name = "labelControl2";
+            this.labelControl2.Size = new System.Drawing.Size(156, 17);
+            this.labelControl2.TabIndex = 16;
+            this.labelControl2.Text = "Retrieving, please wait.......";
+            // 
             // Replacements
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1127, 678);
             this.Controls.Add(this.panel_spinner);
             this.Controls.Add(this.pictureEdit1);
@@ -504,9 +508,6 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_municipality.Properties)).EndInit();
-            this.panel_spinner.ResumeLayout(false);
-            this.panel_spinner.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
@@ -534,6 +535,9 @@ namespace SpinsNew.Forms
             this.groupControl5.ResumeLayout(false);
             this.groupControl5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
+            this.panel_spinner.ResumeLayout(false);
+            this.panel_spinner.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -552,9 +556,6 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.GroupControl groupControl3;
         private DevExpress.XtraGrid.GridControl gridWaitlisted;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
-        private System.Windows.Forms.Panel panel_spinner;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.ProgressBarControl progressBarControl1;
         private DevExpress.XtraEditors.SplitContainerControl splitContainerControl1;
         private DevExpress.XtraEditors.GroupControl groupControl4;
@@ -575,5 +576,8 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.PictureEdit pictureEdit1;
         private DevExpress.XtraEditors.LabelControl labelControl6;
         public DevExpress.XtraEditors.SimpleButton btn_Undo;
+        private System.Windows.Forms.Panel panel_spinner;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private DevExpress.XtraEditors.LabelControl labelControl2;
     }
 }
