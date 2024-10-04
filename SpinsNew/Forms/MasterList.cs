@@ -146,6 +146,7 @@ namespace SpinsNew
         {
             EnableSpinner();
             var municipalityLists = await Task.Run(() => _libraryMunicipality.GetMunicipalitiesAsync());
+
             foreach (var municipalityList in municipalityLists)
             {
                 cmb_municipality.Properties.Items.Add(new CheckedListBoxItem
@@ -571,6 +572,7 @@ namespace SpinsNew
         private void btnPayroll_Click(object sender, EventArgs e)
         {
 
+            var libraryMunicipality = Program.ServiceProvider.GetRequiredService<ILibraryMunicipality>(); //We called the DI lifecycle inside our Program.cs
             if (Application.OpenForms.OfType<Payroll>().Any())
             {
                 payrollForm.Select();
@@ -578,7 +580,7 @@ namespace SpinsNew
             }
             else
             {
-                payrollForm = new Payroll(_username, _userRole);
+                payrollForm = new Payroll(_username, _userRole, libraryMunicipality);
                 payrollForm.Show();
             }
         }
@@ -776,8 +778,6 @@ namespace SpinsNew
             }
 
         }
-
-
 
         private async void btnActivate_Click(object sender, EventArgs e)
         {

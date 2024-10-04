@@ -559,5 +559,10 @@ namespace SpinsNew.Forms
         {
 
         }
+
+        private void NewApplicant_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

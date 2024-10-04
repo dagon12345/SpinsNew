@@ -4,11 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
-using SpinsNew.Models;
 using SpinsNew.ViewModel;
 using System;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,54 +30,66 @@ namespace SpinsNew.Forms
 
         private async Task LoadHistoryEF()
         {
-            using (var context = new ApplicationDbContext())
+            string idSearched = txt_id.Text;
+            try
             {
-                var payrollHistory = await context.tbl_payroll_socpen
-                    .Include(x => x.MasterListModel)
-                    .Include(x => x.LibraryPeriod)
-                    .Include(x => x.LibraryClaimType)
-                    .Include(x => x.LibraryPayrollType)
-                    .Include(x => x.ReplacementFor)
-                    .Where(x => x.MasterListID == Convert.ToInt32(txt_id.Text))
-                    .Select(x => new PayrollViewModel
+                using (var context = new ApplicationDbContext())
+                {
+                    var payrollHistory = await context.tbl_payroll_socpen
+                        .Include(x => x.MasterListModel)
+                        .Include(x => x.LibraryPeriod)
+                        .Include(x => x.LibraryClaimType)
+                        .Include(x => x.LibraryPayrollType)
+                        .Include(x => x.ReplacementFor)
+                        .Where(x => x.MasterListID == Convert.ToInt32(idSearched))
+                        .Select(x => new PayrollViewModel
+                        {
+                            ID = x.ID,
+                            FullName = $"{x.MasterListModel.LastName}, {x.MasterListModel.FirstName} {x.MasterListModel.MiddleName} {x.MasterListModel.ExtName}",
+                            MasterListID = x.MasterListID,
+                            PSGCCityMun = x.PSGCCityMun,
+                            PeriodID = x.PeriodID,
+                            Year = x.Year,
+                            Period = x.LibraryPeriod.Period,
+                            Address = $"{x.LibraryProvince.ProvinceName}, {x.LibraryMunicipality.CityMunName} {x.LibraryBarangay.BrgyName}",
+                            Amount = x.Amount,
+                            ClaimType = $"{x.LibraryPayrollStatus.PayrollStatus} - {x.LibraryClaimType.ClaimType}",
+                            DateClaimedFrom = x.DateClaimedFrom,
+                            PaymentMode = $"{x.LibraryPayrollType.PayrollType} - {x.LibraryPaymentMode.PaymentMode}",
+                            Remarks = x.Remarks,
+                            ReplacementOf = x.ReplacementFor != null ? $"{x.ReplacementFor.LastName}, {x.ReplacementFor.FirstName} {x.ReplacementFor.MiddleName} {x.ReplacementFor.ExtName}" : ""
+
+                        })
+                        .OrderByDescending(x => x.ID)
+                        .ToListAsync();
+
+                    if (payrollHistory != null)
                     {
-                        ID = x.ID,
-                        FullName = $"{x.MasterListModel.LastName}, {x.MasterListModel.FirstName} {x.MasterListModel.MiddleName} {x.MasterListModel.ExtName}",
-                        MasterListID = x.MasterListID,
-                        PSGCCityMun = x.PSGCCityMun,
-                        PeriodID = x.PeriodID,
-                        Year = x.Year,
-                        Period = x.LibraryPeriod.Period,
-                        Address = $"{x.LibraryProvince.ProvinceName}, {x.LibraryMunicipality.CityMunName} {x.LibraryBarangay.BrgyName}",
-                        Amount = x.Amount,
-                        ClaimType = $"{x.LibraryPayrollStatus.PayrollStatus} - {x.LibraryClaimType.ClaimType}",
-                        DateClaimedFrom = x.DateClaimedFrom,
-                        PaymentMode = $"{x.LibraryPayrollType.PayrollType} - {x.LibraryPaymentMode.PaymentMode}",
-                        Remarks = x.Remarks,
-                        ReplacementOf = x.ReplacementFor != null ? $"{x.ReplacementFor.LastName}, {x.ReplacementFor.FirstName} {x.ReplacementFor.MiddleName} {x.ReplacementFor.ExtName}" : ""
+                        lbl_address.Text = payrollHistory.First().Address;//Address through label.
+                        lbl_fullname.Text = payrollHistory.First().FullName;//Fullname through label
+                        payrollViewModelBindingSource.DataSource = payrollHistory;
+                        gridControl1.DataSource = payrollViewModelBindingSource;
 
-                    })
-                    .OrderByDescending(x => x.ID)
-                    .ToListAsync();
+                        GridView gridView = gridControl1.MainView as GridView;
 
-                lbl_address.Text = payrollHistory.First().Address;//Address through label.
-                lbl_fullname.Text = payrollHistory.First().FullName;//Fullname through label
-                payrollViewModelBindingSource.DataSource = payrollHistory;
-                gridControl1.DataSource = payrollViewModelBindingSource;
-
-                GridView gridView = gridControl1.MainView as GridView;
-
-                gridView.BestFitColumns();
-                gridView.OptionsView.ColumnAutoWidth = false;
-                gridView.OptionsBehavior.Editable = false;
+                        gridView.BestFitColumns();
+                        gridView.OptionsView.ColumnAutoWidth = false;
+                        gridView.OptionsBehavior.Editable = false;
+                    }
+                }
             }
-  
+            catch (Exception ex)
+            {
+
+                XtraMessageBox.Show($"An error occured: {ex.Message} ");
+            }
+
         }
         protected async override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             await LoadHistoryEF();
-        
+
         }
         private void PayrollHistory_Load(object sender, EventArgs e)
         {

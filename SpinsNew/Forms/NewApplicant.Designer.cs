@@ -600,6 +600,7 @@ namespace SpinsNew.Forms
             this.Name = "NewApplicant";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NewApplicant";
+            this.Load += new System.EventHandler(this.NewApplicant_Load);
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();

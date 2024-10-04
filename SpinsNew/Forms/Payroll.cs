@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
+using SpinsNew.Interfaces;
+using SpinsNew.Libraries;
 using SpinsNew.PrintPreviews;
 using SpinsNew.ViewModel;
 using System;
@@ -25,7 +27,8 @@ namespace SpinsNew.Forms
         public string _username;
         public string _userRole;
         private ApplicationDbContext _dbContext;
-        public Payroll(string username, string userRole)
+        private readonly ILibraryMunicipality _libraryMunicipality;
+        public Payroll(string username, string userRole, ILibraryMunicipality libraryMunicipality)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
@@ -34,6 +37,7 @@ namespace SpinsNew.Forms
             newApplicantToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
             viewAttachmentsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
 
+            _libraryMunicipality = libraryMunicipality;
             _username = username;
             _userRole = userRole;
 
@@ -49,47 +53,22 @@ namespace SpinsNew.Forms
 
         }
 
-        // Custom class to hold items
-        private class ComboBoxItem
-        {
-            public int ClaimTypeID { get; set; }
-            public string ClaimType { get; set; }
-
-            public override string ToString()
-            {
-                return ClaimType;
-            }
-        }
 
         private async void Payroll_Load(object sender, EventArgs e)
         {
             _dbContext = new ApplicationDbContext(); // our dbcontext
-            MunicipalityNew();
-            Year();
+                                                     // MunicipalityNew();
+            await MunicipalityEf();
+            await ClaimTypeEf();
+            await YearEf();
+
             Signatories();
             GridView gridView = (GridView)gridControl1.MainView;
             gridView.ColumnFilterChanged += gridView1_ColumnFilterChanged;
             groupControlPayroll.Text = "Count of showed data: [0]";
-            // Cast the MainView to GridView
-            //GridView gridView = gridPayroll.MainView as GridView;
 
+            //Search using devexpress searchcontrol.
             searchControl1.Client = gridControl1;
-
-            // Fetch claim types from the database
-            var claimTypes = await _dbContext.lib_claim_type
-                .ToListAsync();
-            // Bind data to the ComboBoxEdit
-            cmb_claimtype.Properties.Items.Clear();
-            foreach (var claimType in claimTypes)
-            {
-                cmb_claimtype.Properties.Items.Add(new ComboBoxItem
-                {
-                    ClaimTypeID = claimType.ClaimTypeID,
-                    ClaimType = claimType.ClaimType
-                });
-            }
-
-
 
         }
 
@@ -105,110 +84,79 @@ namespace SpinsNew.Forms
         }
 
 
-        // Custom class to store Id and DataSource
-        public class YearItem
+
+        //Refactored code for year to display.
+        public async Task YearEf()
         {
-            public int Id { get; set; }
-            public int Year { get; set; }
-            public double MonthlyStipened { get; set; }
-
-
-            public override string ToString()
+            using(var context = new ApplicationDbContext())
             {
-                return Year.ToString();
-            }
+                var year = await context.lib_year
+                    .AsNoTracking()
+                    .OrderByDescending(x => x.Id)
+                    .ToListAsync();
 
-        }
-        //Fill combobox reportsource
-        public void Year()
-        {
-            try
-            {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, Year FROM lib_year ORDER BY Id DESC"; // Specify the columns to retrieve
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the ComboBoxEdit
                 cmb_year.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach(var years in year)
                 {
-
-                    // Add DataSourceItem to the ComboBox
-                    cmb_year.Properties.Items.Add(new YearItem
+                    cmb_year.Properties.Items.Add(new LibraryYear
                     {
-                        Id = Convert.ToInt32(dr["Id"]),
-                        Year = Convert.ToInt32(dr["Year"])
+                        Id = years.Id,
+                        Year = years.Year
                     });
-                }
-                con.Close();
 
+                }
                 // Add the event handler for the SelectedIndexChanged event
                 cmb_year.SelectedIndexChanged -= cmb_year_SelectedIndexChanged; // Ensure it's not added multiple times
                 cmb_year.SelectedIndexChanged += cmb_year_SelectedIndexChanged;
-            }
-            catch (Exception ex)
-            {
 
-                MessageBox.Show(ex.Message);
-            }
-
-        }
-        public class PeriodItem
-        {
-            public int PeriodID { get; set; }
-            public string Period { get; set; }
-            public string Abbreviation { get; set; }
-            public string Months { get; set; }
-
-            public override string ToString()
-            {
-                return $"{Period} ({Abbreviation}) {Months}"; // Display Period and Abbreviation in the ComboBox
             }
         }
-        // Load periods for the selected year
-        private void LoadPeriodsForYear(int year)
+        //When year was selected then fill the period that contains the year selected.
+        private async Task LoadPeriodsForYearEf(int year)
         {
             try
             {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PeriodID, Period, Abbreviation, Months FROM lib_period WHERE FIND_IN_SET(@Year, REPLACE(YearsUsed, ' ', ''))"; // Use parameterized query and remove spaces
-                cmd.Parameters.AddWithValue("@Year", year.ToString());
-                //MessageBox.Show($"Executing query with year: {year}");
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the ComboBoxEdit
-                cmb_period.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                using (var context = new ApplicationDbContext())
                 {
-                    // Add PeriodItem to the ComboBox
-                    cmb_period.Properties.Items.Add(new PeriodItem
+                    // Fetch the data first, and then filter it in memory
+                    var periods = await context.lib_period
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    // Perform client-side filtering for the specified year
+                    var filteredPeriods = periods
+                        .Where(p => p.YearsUsed.Replace(" ", "").Split(',').Contains(year.ToString()))
+                        .Select(p => new
+                        {
+                            p.PeriodID,
+                            p.Period,
+                            p.Abbreviation,
+                            p.Months
+                        })
+                        .ToList();
+
+                    // Clear existing items in the ComboBoxEdit
+                    cmb_period.Properties.Items.Clear();
+
+                    // Populate the ComboBoxEdit with the filtered periods
+                    foreach (var period in filteredPeriods)
                     {
-                        PeriodID = Convert.ToInt32(dr["PeriodID"]),
-                        Period = dr["Period"].ToString(),
-                        Abbreviation = dr["Abbreviation"].ToString(),
-                        Months = dr["Months"].ToString()
-                    });
+                        cmb_period.Properties.Items.Add(new LibraryPeriod
+                        {
+                            PeriodID = period.PeriodID,
+                            Period = period.Period,
+                            Abbreviation = period.Abbreviation,
+                            Months = period.Months
+                        });
+                    }
                 }
-                con.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+
 
         // For municipality combobox properties
         public class MunicipalityItem
@@ -224,268 +172,102 @@ namespace SpinsNew.Forms
             }
         }
 
-        // Municipality fill when selected indexchanged was click with concatenated province
-        private void UpdateMunicipalityLabel(string cityMunName)
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PSGCCityMun, CityMunName FROM lib_city_municipality WHERE CityMunName=@CityMunName";
-                cmd.Parameters.AddWithValue("@CityMunName", cityMunName);
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-                //foreach (DataRow dr in dt.Rows)
-                //{
-                //    lbl_municipality.Text = dr["PSGCCityMun"].ToString();
-                //}
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void FillBarangay()
+        private async void FillBarangay()
         {
             //Municipality
-            if (cmb_municipality.SelectedItem is MunicipalityItem selectedMunicipality)
+            if (cmb_municipality.SelectedItem is LibraryMunicipality selectedMunicipality)
             {
-
                 cmb_barangay.Text = "";
-                Barangay(selectedMunicipality.PSGCCityMun);
+                await BarangayEf(selectedMunicipality.PSGCCityMun);
                 //Search();
-
             }
         }
-
-        // Custom class for barangay combobox cascaded into municipality
-        public class BarangayItem
+        //Refactored claim type
+        public async Task ClaimTypeEf()
         {
-            public int PSGCBrgy { get; set; }
-            public string BrgyName { get; set; }
-            public int PSGCCityMun { get; set; }
-
-            public override string ToString()
+            using (var context = new ApplicationDbContext())
             {
-                return BrgyName; // Display DataSource in the ComboBox
+                // Fetch claim types from the database
+                var claimTypes = await context.lib_claim_type
+                    .AsNoTracking()
+                    .ToListAsync();
+                // Bind data to the ComboBoxEdit
+                cmb_claimtype.Properties.Items.Clear();
+                foreach (var claimType in claimTypes)
+                {
+                    cmb_claimtype.Properties.Items.Add(new LibraryClaimType
+                    {
+                        ClaimTypeID = claimType.ClaimTypeID,
+                        ClaimType = claimType.ClaimType
+                    });
+                }
             }
+
         }
-
-
-        //Fill combobox barangay
-        public void Barangay(int selectedCityMun)
+        //Refactored barangay cascading.
+        public async Task BarangayEf(int selectedCityMun)
         {
-            try
+            using (var context = new ApplicationDbContext())
             {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PSGCBrgy, BrgyName, PSGCCityMun FROM lib_barangay WHERE PSGCCityMun = @PSGCCityMun ORDER BY BrgyName"; // Specify the columns to retrieve
-                cmd.Parameters.AddWithValue("@PSGCCityMun", selectedCityMun);
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+                var barangays = await context.lib_barangay.Where(x => x.PSGCCityMun == selectedCityMun)
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                // Clear existing items in the ComboBoxEdit
-                cmb_barangay.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach(var barangay in barangays)
                 {
                     // Add DataSourceItem to the ComboBox
                     cmb_barangay.Properties.Items.Add(new CheckedListBoxItem(
-
-                        //PSGCBrgy = Convert.ToInt32(dr["PSGCBrgy"]),
-                        //BrgyName = dr["BrgyName"].ToString(),
-                        //PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"])
-
-                        value: Convert.ToInt32(dr["PSGCBrgy"]), // The value to store (usually the ID)
-                        description: dr["BrgyName"].ToString(), // The display text
+                        value: barangay.PSGCBrgy, // The value to store (usually the ID)
+                        description: barangay.BrgyName, // The display text
                         checkState: CheckState.Checked // Initially checked all
-
                     ));
                 }
-                con.Close();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                // Ensure connection is closed in the finally block
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-            }
-
         }
 
-        public void BarangayFilter(int selectedCityMun)
+        //Refactored code of municipality dropdown.
+        private async Task MunicipalityEf()
         {
-            try
+            EnableSpinner();
+            //this business logic is what we used inside our services LibraryMunicipalityService.
+            var municipalityLists = await Task.Run(() => _libraryMunicipality.GetMunicipalitiesAsync());
+           
+            cmb_municipality.Properties.Items.Clear();
+            foreach (var municipalityList in municipalityLists)
             {
-                // Fetch data from the database and bind to CheckedComboBoxEdit
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-            SELECT 
-               lb.PSGCBrgy, 
-               lb.BrgyName, 
-               lb.PSGCCityMun
-            FROM 
-                lib_barangay lb
-                INNER JOIN
-                    lib_city_municipality lcm ON lb.PSGCCityMun = lcm.PSGCCityMun
-            ORDER BY 
-                lcm.CityMunName"; // Join with lib_province to get ProvinceName
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the CheckedComboBoxEdit
-                cmb_barangay.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                cmb_municipality.Properties.Items.Add(new LibraryMunicipality
                 {
-                    // Add each municipality to the CheckedComboBoxEdit with a checkbox
-                    cmb_barangay.Properties.Items.Add(new CheckedListBoxItem(
-                        value: Convert.ToInt32(dr["PSGCBrgy"]), // The value to store (usually the ID)
-                        description: dr["BrgyName"].ToString(), // The display text
-                        checkState: CheckState.Unchecked // Initially unchecked
-                    ));
-                }
-                con.Close();
+                    PSGCCityMun = municipalityList.PSGCCityMun,
+                    CityMunName = municipalityList.CityMunName + " - " + municipalityList.LibraryProvince.ProvinceName
+                });
+                    
+                    //value: municipalityList.PSGCCityMun, //Reference the ID
+                    //description: municipalityList.CityMunName + " " + municipalityList.LibraryProvince.ProvinceName // Display the text plus the province name.
+                   // checkState: CheckState.Unchecked // Initially Unchecked.
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                con.Close();
-            }
+            DisableSpinner();
 
-        }
 
-        //Fill combobox Municipality
-        public void MunicipalityNew()
-        {
-            try
-            {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-            SELECT 
-                m.PSGCCityMun, 
-                m.CityMunName, 
-                m.PSGCProvince, 
-                p.ProvinceName 
-            FROM 
-                lib_city_municipality m
-                INNER JOIN lib_province p ON m.PSGCProvince = p.PSGCProvince
-                ORDER BY ProvinceName"; // Join with lib_province to get ProvinceName
-                MySqlDataReader reader = cmd.ExecuteReader();
-
-                List<MunicipalityItem> municipalityItems = new List<MunicipalityItem>();
-
-                while (reader.Read())
-                {
-                    municipalityItems.Add(new MunicipalityItem
-                    {
-                        PSGCCityMun = reader.GetInt32("PSGCCityMun"),
-                        CityMunName = reader.GetString("CityMunName"),
-                        PSGCProvince = reader.GetInt32("PSGCProvince"),
-                        ProvinceName = reader.GetString("ProvinceName")
-                    });
-                }
-
-                cmb_municipality.Properties.Items.Clear();
-                cmb_municipality.Properties.Items.AddRange(municipalityItems);
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-        }
-        //Fill the combobox
-        public void Municipality()
-        {
-            try
-            {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-            SELECT 
-                m.PSGCCityMun, 
-                m.CityMunName, 
-                m.PSGCProvince, 
-                p.ProvinceName 
-            FROM 
-                lib_city_municipality m
-                INNER JOIN lib_province p ON m.PSGCProvince = p.PSGCProvince
-                ORDER BY 
-                ProvinceName,
-                m.CityMunName"; // Join with lib_province to get ProvinceName
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the ComboBoxEdit
-                cmb_municipality.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
-                {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_municipality.Properties.Items.Add(new MunicipalityItem
-                    {
-                        PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"]),
-                        CityMunName = dr["CityMunName"].ToString(),
-                        PSGCProvince = Convert.ToInt32(dr["PSGCProvince"]),
-                        ProvinceName = dr["ProvinceName"].ToString() // Populate the new property
-                    });
-                }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
         //Show the spinner
         private void EnableSpinner()
         {
-            //btn_search.Enabled = false;
-            // btn_refresh.Enabled = false;
             panel_spinner.Visible = true;
             gb_details.Enabled = false;
             gb_Update.Enabled = false;
             btn_refresh.Enabled = false;
             btnSearch.Enabled = false;
 
-
         }
-        private void cmb_year_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmb_year_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmb_year.SelectedItem is YearItem selectedYear)
+            if (cmb_year.SelectedItem is LibraryYear selectedYear)
             {
-                // MessageBox.Show($"Selected Year: {selectedYear.Year}");
-                LoadPeriodsForYear(selectedYear.Year);
+                // Clear period once the user changed the year selected.
+                cmb_period.Text = "Select Period";
+                await LoadPeriodsForYearEf(selectedYear.Year);
             }
-            //await PayrollsEntity();
-            // Search();
+
         }
 
         // Method to update the row count display and calculate total amount
@@ -518,154 +300,7 @@ namespace SpinsNew.Forms
             }
         }
 
-
-
-        public async Task PayrollsEntity()
-        {
-            //try
-            //{
-            EnableSpinner();
-            progressBarControl1.Properties.Maximum = 100;
-            progressBarControl1.Properties.Minimum = 0;
-            progressBarControl1.EditValue = 0;
-            var selectedItem = (dynamic)cmb_municipality.SelectedItem;
-            int psgccitymun = selectedItem.PSGCCityMun;
-
-            var selectedPeriod = (dynamic)cmb_period.SelectedItem;
-            int periodID = selectedPeriod.PeriodID;
-
-            var selectedYear = (dynamic)cmb_year.SelectedItem;
-            int Year = selectedYear.Year;
-
-            bool includePayrollStatusID = rbUnclaimed.Checked;// if checked unclaimed
-                                                              // Fetch the opposite PeriodID
-
-            _dbContext = new ApplicationDbContext();
-
-            var payrollsQuery = await _dbContext.tbl_payroll_socpen
-            .Include(p => p.MasterListModel)// Include our MasterList
-              .ThenInclude(p => p.LibrarySex)//then include our sex library
-            .Include(p => p.MasterListModel) // Include our MasterList
-             .ThenInclude(p => p.LibraryHealthStatus) //then include our Health status library
-            .Include(p => p.MasterListModel) // Include our MasterList
-             .ThenInclude(p => p.LibraryIDType) //then include our Id type library
-            .Include(p => p.LibraryBarangay)
-            .Include(p => p.LibraryPeriod)
-            .Include(p => p.LibraryPayrollStatus)
-            .Include(p => p.LibraryClaimType)
-            .Include(p => p.LibraryPayrollType)
-            .Include(p => p.LibraryPayrollTag)
-            .Include(p => p.LibraryPaymentMode)
-            .Include(p => p.MasterListModel) // Include our masterList
-             .ThenInclude(p => p.LibraryStatus)//Then include our LibraryStatus
-            .Where(x => x.PSGCCityMun == psgccitymun && x.PeriodID == periodID && x.Year == Year)
-            .AsNoTracking()
-            .ToListAsync();
-
-            if (includePayrollStatusID)
-            {
-                payrollsQuery = payrollsQuery
-                      .Where(x => x.PayrollStatusID == 2)
-                      .ToList();
-            }
-            //var filterUnclaimed = payrollsQuery
-            //    .Where(x => x.Year == Year && x.PayrollStatusID == 2 && x.PeriodID != periodID)
-            //    .OrderByDescending(x => x.ID)
-            //    .FirstOrDefault(); 
-
-            var payrollViewModel = payrollsQuery.Select(p => new PayrollViewModel
-            {
-                ID = p.ID,
-                Verified = p.MasterListModel.IsVerified,
-
-                FullName = $"{p.MasterListModel.LastName}, {p.MasterListModel.FirstName} {p.MasterListModel.MiddleName} {p.MasterListModel.ExtName}", //+
-                                                                                                                                                      // (filterUnclaimed?.LibraryPeriod?.Abbreviation != null ? $" {filterUnclaimed.LibraryPeriod.Abbreviation}" : ""), // Include the latest period abbreviation if it exists
-
-                MasterListID = p.MasterListID,
-                PSGCRegion = p.PSGCRegion,
-                PSGCCityMun = p.PSGCCityMun,
-                PSGCProvince = p.PSGCProvince,
-                PSGCBrgy = p.PSGCBrgy,
-                Address = p.Address,
-                Barangay = p.LibraryBarangay.BrgyName, // Joined library barangay
-                BirthDate = p.MasterListModel.BirthDate, // Joined from masterlist
-                Sex = p.MasterListModel.LibrarySex.Sex, // Joined from masterlist SexID then library sex
-                HealthStatus = p.MasterListModel.LibraryHealthStatus.HealthStatus, // Joined from masterlist HealthStatusID then Library HealthStatus
-                HealthStatusRemarks = p.MasterListModel.HealthStatusRemarks, // Joined from masterlist
-
-                /*Conditional below, remove the dash sign if the p.MasterListModel.IDNumber does not exist
-                 .This table was Joined into our library idtype*/
-                IdType = p.MasterListModel.IDNumber != null
-                   ? $"{p.MasterListModel.LibraryIDType.Type} - {p.MasterListModel.IDNumber}"
-                   : p.MasterListModel.LibraryIDType.Type,
-
-                Amount = p.Amount,
-                Year = p.Year,
-
-                PeriodID = p.PeriodID,
-                Period = p.LibraryPeriod.Period,//Joined from library period
-
-                PayrollStatusID = p.PayrollStatusID,
-                ClaimTypeID = p.ClaimTypeID,
-                PayrollStatus = p.LibraryClaimType != null ? $"{p.LibraryPayrollStatus.PayrollStatus} - {p.LibraryClaimType.ClaimType}" : $"{p.LibraryPayrollStatus.PayrollStatus}", // Joined from libraries payrollstatus and claimtype
-
-                DateClaimedFrom = p.DateClaimedFrom,
-                DateClaimedTo = p.DateClaimedTo,
-
-                PayrollTypeID = p.PayrollTypeID,
-                Type = p.LibraryPayrollType.PayrollType, // Joined from our librarypayrollType
-                PayrollTagID = p.PayrollTagID,
-                Tag = p.LibraryPayrollTag.PayrollTag,// Joined from our libraryPayrollTag
-
-                Status = p.MasterListModel.Remarks != null || p.MasterListModel.DateDeceased != null
-                  ? $"{p.MasterListModel.LibraryStatus.Status} ({p.MasterListModel.Remarks} {p.MasterListModel.DateDeceased})"
-                  : $"{p.MasterListModel.LibraryStatus.Status} ",
-
-                PaymentModeID = p.PaymentModeID,
-                PaymentMode = p.LibraryPaymentMode.PaymentMode,// Joined from libraryPaymentMode.
-                Remarks = p.Remarks,
-
-                Modified = p.DateTimeModified != null
-                  ? $"{p.DateTimeModified}, {p.ModifiedBy}"
-                  : " ",
-
-                Created = p.DateTimeEntry != null
-                  ? $"{p.DateTimeEntry}, {p.EntryBy}"
-                  : " "
-
-            }).ToList();
-
-            for (int i = 0; i <= 100; i += 10)
-            {
-                await Task.Delay(50); // Simulate a delay
-                this.Invoke(new Action(() => progressBarControl1.EditValue = i));
-            }
-
-            // Bind data to the control
-            payrollViewModelBindingSource.DataSource = payrollViewModel;
-            //gridPayroll.DataSource = payrollViewModelBindingSource;
-
-            //GridView gridView = gridPayroll.MainView as GridView;
-            //gridView.BestFitColumns();
-            // gridView.Columns["Verified"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-            // gridView.Columns["FullName"].Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-            // UpdateRowCount(gridView);
-            this.Invoke(new Action(() => progressBarControl1.EditValue = 100));
-            DisableSpinner();
-
-            //}
-            //catch (Exception ex)
-            //{
-
-            //    MessageBox.Show($"Error encountered: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-
-        }
-        private async void btn_sample_Click(object sender, EventArgs e)
-        {
-            //await PayrollsEntity();
-        }
+        //Raw sql query because it is very complex if we used the EF core ORM.
         public async Task Payrolls() //The query is all about delisted with payroll unclaimed filtered by year and the latest ID inputed into tbl_payroll_socpen
         {
 
@@ -1026,8 +661,6 @@ namespace SpinsNew.Forms
         private void DisableSpinner()
         {
             progressBarControl1.EditValue = 0; // Ensure the progress bar is full
-                                               //btn_search.Enabled = true; //Enable textbox once gridview was loaded successfully
-                                               // btn_refresh.Enabled = true;
             panel_spinner.Visible = false; // Hide spinner when data was retrieved.
             gb_details.Enabled = true;
             gb_Update.Enabled = true;
@@ -1103,14 +736,6 @@ namespace SpinsNew.Forms
             coepayrollUnpaidPreview.Show();
         }
 
-        //private void PrintCOERegular(DataTable payrollData, DataTable signatoriesData)
-        //{
-        //    CoeRegularPrintPreview coepayrollPreview = new CoeRegularPrintPreview(this);
-        //    coepayrollPreview.SetPayrollData(payrollData);
-        //    coepayrollPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
-        //    coepayrollPreview.Show();
-        //}
-
         private void newApplicantToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GridView gridView = gridControl1.MainView as GridView;
@@ -1131,70 +756,22 @@ namespace SpinsNew.Forms
             PrintReport(payrollData, signatoriesData);
 
         }
-        private void radioButton()
-        {
-            // Check if the 'All Status' radio button is checked
-            //if (rbAllStatus.Checked)
-            //{
-            //    lblValue.Text = "All";
-
-            //    // Clear the GridView data source
-            //    GridView gridView = gridPayroll.MainView as GridView;
-            //    if (gridView != null)
-            //    {
-            //        gridPayroll.DataSource = null;
-            //        // Update row count display
-            //        UpdateRowCount(gridView);
-            //    }
-            //    // Search();
-            //    // Return early to avoid further processing
-            //    return;
-            //}
-
-            //// Check if the 'Unclaimed' radio button is checked
-            //if (rbUnclaimed.Checked)
-            //{
-            //    lblValue.Text = "2";
-            //    // Clear the GridView data source
-            //    GridView gridView = gridPayroll.MainView as GridView;
-            //    if (gridView != null)
-            //    {
-            //        gridPayroll.DataSource = null;
-            //        // Update row count display
-            //        UpdateRowCount(gridView);
-            //    }
-
-            //    //Search();
-
-            //    return;
-            //}
-
-
-            // Optionally, you might want to handle the case where no radio button is checked
-            // e.g., lblValue.Text = "Default Value";
-
-        }
 
         private void rbAllStatus_CheckedChangedAsync(object sender, EventArgs e)
         {
-            radioButton();// Change value once triggered
         }
 
         private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
         {
             FillBarangay();
-            //Search();
-            // await PayrollsEntity();
         }
 
         private void rbClaimed_CheckedChanged(object sender, EventArgs e)
         {
-            radioButton();// Change value once triggered.
         }
 
         private void rbUnclaimed_CheckedChanged(object sender, EventArgs e)
         {
-            radioButton();// Change value once triggered
         }
 
         private void groupControl2_Paint(object sender, PaintEventArgs e)
@@ -1233,25 +810,20 @@ namespace SpinsNew.Forms
 
         private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //await PayrollsEntity();
-            //Search();
         }
 
         private void cmb_period_Click(object sender, EventArgs e)
         {
-            //Search();
         }
 
         private void cmb_period_MouseClick(object sender, MouseEventArgs e)
         {
-            //Search();
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }
-
         private void dt_from_EditValueChanged(object sender, EventArgs e)
         {
             // Ensure dt_to is not null and is enabled before setting its value
@@ -1261,8 +833,6 @@ namespace SpinsNew.Forms
             }
 
         }
-
-
 
         private void AlternativeUpdatingSingle()
         {
@@ -1707,8 +1277,6 @@ namespace SpinsNew.Forms
             GridView gridView = gridControl1.MainView as GridView;
             // Get the row data
             DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
-
-
             if (gridView.RowCount == 0)
             {
                 XtraMessageBox.Show("Search a payroll first before archiving", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1716,8 +1284,6 @@ namespace SpinsNew.Forms
             }
             if (MessageBox.Show("Are you sure you want to archive this data?", "Archive", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-
-
                 // Handle the case where 'ck_all' is not checked (updating a single record)
                 int id = Convert.ToInt32(row["ID"]);
 
@@ -1736,7 +1302,6 @@ namespace SpinsNew.Forms
 
                     XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ArchivingUpdatingSingle();
-
                 }
             }
         }

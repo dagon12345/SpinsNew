@@ -417,9 +417,9 @@ namespace SpinsNew.Forms
             this.btnArchive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnArchive.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnArchive.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnArchive.ImageOptions.Image")));
-            this.btnArchive.Location = new System.Drawing.Point(732, 26);
+            this.btnArchive.Location = new System.Drawing.Point(723, 26);
             this.btnArchive.Name = "btnArchive";
-            this.btnArchive.Size = new System.Drawing.Size(101, 34);
+            this.btnArchive.Size = new System.Drawing.Size(115, 23);
             this.btnArchive.TabIndex = 9;
             this.btnArchive.Text = "Archive";
             this.btnArchive.Click += new System.EventHandler(this.btnArchive_Click);
