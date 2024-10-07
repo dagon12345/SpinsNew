@@ -29,5 +29,8 @@ namespace SpinsNew.ViewModel
         public int? SpisBatch { get; set; }
         [Display(Name = "SPBUF")]
         public Int64? Spbuf { get; set; }//Int64 is a bigint can handle large amount of integers
+
+        //[Display(Name = "Attachments")]
+        public string Attachments { get; set; }
     }
 }

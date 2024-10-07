@@ -1,9 +1,12 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
 using SpinsNew.Interfaces;
+using SpinsNew.Libraries;
 using SpinsWinforms.Forms;
 using System;
 using System.Collections.Generic;
@@ -23,10 +26,12 @@ namespace SpinsNew.Forms
         private Replacements replacementsForm;
         private MasterList masterlistForm;
         private ITableLog _tableLog;
-        public Replacements(string username, ITableLog tableLog)
+        private ILibraryMunicipality _libraryMunicipality;
+        public Replacements(string username, ITableLog tableLog, ILibraryMunicipality libraryMunicipality)
         {
             InitializeComponent();
             _tableLog = tableLog;
+            _libraryMunicipality = libraryMunicipality;
             con = new MySqlConnection(cs.dbcon);
             _username = username;
             // gridView1.FocusedRowChanged += gridView_FocusedRowChanged;
@@ -34,158 +39,109 @@ namespace SpinsNew.Forms
 
         private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Search();
+          
         }
 
 
-        private void Replacements_Load(object sender, EventArgs e)
+        private async void Replacements_Load(object sender, EventArgs e)
         {
-            Municipality();
-            Year();
-
+            await MunicipalityEF();
+            await YearEF();
 
             // Cast the MainView to GridView
             GridView gridView = gridDelisted.MainView as GridView;
-
-            //if (gridView != null)
-            //{
-            //    gridView.RowStyle += gridView_RowStyle;
-            //    // Subscribe to the CustomDrawFooterCell event
-            //    gridView.CustomDrawFooterCell += GridView_CustomDrawFooterCell;
-            //}
-
             //Integrate search control into our grid control.
             searchControl1.Client = gridDelisted;
             searchControl2.Client = gridWaitlisted;
         }
-        // Custom class to store Id and DataSource
-        public class YearItem
+
+        //This populates our municipality combobox inside our Delisted form.
+        public async Task MunicipalityEF()
         {
-            public int Id { get; set; }
-            public int Year { get; set; }
-            public double MonthlyStipened { get; set; }
-
-
-            public override string ToString()
+            var municipalities = await _libraryMunicipality.GetMunicipalitiesAsync();
+            cmb_municipality.Properties.Items.Clear();
+            foreach (var municpality in municipalities)
             {
-                return Year.ToString();
+                cmb_municipality.Properties.Items.Add(new LibraryMunicipality
+                {
+                    CityMunName = municpality.CityMunName + " " + municpality.LibraryProvince.ProvinceName,
+                    PSGCCityMun = municpality.PSGCCityMun
+
+                });
+
             }
 
         }
-        //Fill combobox reportsource
-        public void Year()
+
+        private async Task YearEF()
         {
-            try
+            using(var context = new ApplicationDbContext())
             {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, Year FROM lib_year WHERE Active = 1"; // Specify the columns to retrieve
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+                var years = await context.lib_year.Where(x => x.Active == 1)
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                // Clear existing items in the ComboBoxEdit
                 cmb_year.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach(var year in years)
                 {
-
-                    // Add DataSourceItem to the ComboBox
-                    cmb_year.Properties.Items.Add(new YearItem
-                    {
-                        Id = Convert.ToInt32(dr["Id"]),
-                        Year = Convert.ToInt32(dr["Year"])
+                    cmb_year.Properties.Items.Add(new LibraryYear { 
+                        Id = year.Id,
+                        Year = year.Year
                     });
                 }
-                con.Close();
 
                 // Add the event handler for the SelectedIndexChanged event
                 cmb_year.SelectedIndexChanged -= cmb_year_SelectedIndexChanged; // Ensure it's not added multiple times
                 cmb_year.SelectedIndexChanged += cmb_year_SelectedIndexChanged;
-            }
-            catch (Exception ex)
-            {
 
-                MessageBox.Show(ex.Message);
-            }
-
-        }
-        public class PeriodItem
-        {
-            public int PeriodID { get; set; }
-            public string Period { get; set; }
-            public string Abbreviation { get; set; }
-            public string Months { get; set; }
-
-            public override string ToString()
-            {
-                return $"{Period} ({Abbreviation}) {Months}"; // Display Period and Abbreviation in the ComboBox
             }
         }
-        // Load periods for the selected year
-        private void LoadPeriodsForYear(int year)
+        //When year was selected then fill the period that contains the year selected.
+        private async Task LoadPeriodsForYearEf(int year)
         {
             try
             {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PeriodID, Period, Abbreviation, Months FROM lib_period WHERE FIND_IN_SET(@Year, REPLACE(YearsUsed, ' ', ''))"; // Use parameterized query and remove spaces
-                cmd.Parameters.AddWithValue("@Year", year.ToString());
-                //MessageBox.Show($"Executing query with year: {year}");
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the ComboBoxEdit
-                cmb_period.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                using (var context = new ApplicationDbContext())
                 {
-                    // Add PeriodItem to the ComboBox
-                    cmb_period.Properties.Items.Add(new PeriodItem
+                    // Fetch the data first, and then filter it in memory
+                    var periods = await context.lib_period
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    // Perform client-side filtering for the specified year
+                    var filteredPeriods = periods
+                        .Where(p => p.YearsUsed.Replace(" ", "").Split(',').Contains(year.ToString()))
+                        .Select(p => new
+                        {
+                            p.PeriodID,
+                            p.Period,
+                            p.Abbreviation,
+                            p.Months
+                        })
+                        .ToList();
+
+                    // Clear existing items in the ComboBoxEdit
+                    cmb_period.Properties.Items.Clear();
+
+                    // Populate the ComboBoxEdit with the filtered periods
+                    foreach (var period in filteredPeriods)
                     {
-                        PeriodID = Convert.ToInt32(dr["PeriodID"]),
-                        Period = dr["Period"].ToString(),
-                        Abbreviation = dr["Abbreviation"].ToString(),
-                        Months = dr["Months"].ToString()
-                    });
+                        cmb_period.Properties.Items.Add(new LibraryPeriod
+                        {
+                            PeriodID = period.PeriodID,
+                            Period = period.Period,
+                            Abbreviation = period.Abbreviation,
+                            Months = period.Months
+                        });
+                    }
                 }
-                con.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-        //private void gridView_RowStyle(object sender, RowStyleEventArgs e)
-        //{
-        //    //Color the row red if the age is 59 and under.
-        //    GridView view = sender as GridView;
-        //    if (e.RowHandle >= 0)
-        //    {
-        //        // Get the value of the "Age" column
-        //        object ageValue = view.GetRowCellValue(e.RowHandle, view.Columns["Age"]);
 
-        //        // Check for DBNull and convert to int if not null
-        //        if (ageValue != DBNull.Value)
-        //        {
-        //            int age = Convert.ToInt32(ageValue);
-
-        //            if (age < 60)
-        //            {
-        //                // Use ColorTranslator to convert hex color code to Color object
-        //                e.Appearance.BackColor = ColorTranslator.FromHtml("#FA7070");
-        //            }
-        //        }
-        //    }
-        //}
-
-        // Event handler for CustomDrawFooterCell
         private void GridView_CustomDrawFooterCell(object sender, DevExpress.XtraGrid.Views.Grid.FooterCellCustomDrawEventArgs e)
         {
             // Assuming gridControl1 is your DevExpress GridControl instance
@@ -200,64 +156,8 @@ namespace SpinsNew.Forms
                 e.Info.DisplayText = $"Total Rows: {rowCount}";
             }
         }
-        // For municipality combobox properties
-        public class MunicipalityItem
-        {
-            public int PSGCCityMun { get; set; }
-            public string CityMunName { get; set; }
-            public int PSGCProvince { get; set; }
-            public string ProvinceName { get; set; } // Add this property
 
-            public override string ToString()
-            {
-                return $"{CityMunName} - {ProvinceName}"; // Display both the municipality and province in the ComboBox
-            }
-        }
-        //Fill the combobox
-        public void Municipality()
-        {
-            try
-            {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = @"
-            SELECT 
-                m.PSGCCityMun, 
-                m.CityMunName, 
-                m.PSGCProvince, 
-                p.ProvinceName 
-            FROM 
-                lib_city_municipality m
-                INNER JOIN lib_province p ON m.PSGCProvince = p.PSGCProvince
-                ORDER BY ProvinceName"; // Join with lib_province to get ProvinceName
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
 
-                // Clear existing items in the ComboBoxEdit
-                cmb_municipality.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
-                {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_municipality.Properties.Items.Add(new MunicipalityItem
-                    {
-                        PSGCCityMun = Convert.ToInt32(dr["PSGCCityMun"]),
-                        CityMunName = dr["CityMunName"].ToString(),
-                        PSGCProvince = Convert.ToInt32(dr["PSGCProvince"]),
-                        ProvinceName = dr["ProvinceName"].ToString() // Populate the new property
-                    });
-                }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
         // Method to update the row count display
         public void UpdateRowCount(GridView gridView)
         {
@@ -857,14 +757,14 @@ namespace SpinsNew.Forms
             }
         }
 
-        private void cmb_year_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmb_year_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmb_year.SelectedItem is YearItem selectedYear)
+            if (cmb_year.SelectedItem is LibraryYear selectedYear)
             {
                 // MessageBox.Show($"Selected Year: {selectedYear.Year}");
-                LoadPeriodsForYear(selectedYear.Year);
+                await LoadPeriodsForYearEf(selectedYear.Year);
             }
-            Search();
+         
 
         }
         private async void Search()
@@ -880,7 +780,7 @@ namespace SpinsNew.Forms
         }
         private void cmb_municipality_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Search();
+        
         }
 
         private void btn_search_Click(object sender, EventArgs e)
@@ -1278,8 +1178,6 @@ namespace SpinsNew.Forms
 
                 //EditApplicantForm.DisplayID(id);
                 //EditApplicantForm.Show();
-
-
                 // Check if any row is selected
                 if (gridView.SelectedRowsCount == 0)
                 {
@@ -1565,6 +1463,16 @@ namespace SpinsNew.Forms
             }
 
 
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if(cmb_municipality.Text == "Select City/Municipality" || cmb_year.Text == "Select Year" || cmb_period.Text == "Select Period")
+            {
+                XtraMessageBox.Show("Please fill all the fields before searching.","Fill",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
+            Search();
         }
     }
 }

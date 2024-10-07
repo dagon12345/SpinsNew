@@ -64,6 +64,7 @@ namespace SpinsNew.Forms
             this.panel_spinner = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
+            this.btnSearch = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_period.Properties)).BeginInit();
@@ -102,6 +103,7 @@ namespace SpinsNew.Forms
             // 
             this.groupControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl1.Controls.Add(this.btnSearch);
             this.groupControl1.Controls.Add(this.cmb_period);
             this.groupControl1.Controls.Add(this.cmb_year);
             this.groupControl1.Controls.Add(this.cmb_municipality);
@@ -484,6 +486,17 @@ namespace SpinsNew.Forms
             this.labelControl2.TabIndex = 16;
             this.labelControl2.Text = "Retrieving, please wait.......";
             // 
+            // btnSearch
+            // 
+            this.btnSearch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSearch.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.ImageOptions.Image")));
+            this.btnSearch.Location = new System.Drawing.Point(581, 27);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(115, 23);
+            this.btnSearch.TabIndex = 22;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
             // Replacements
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -579,5 +592,6 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.Panel panel_spinner;
         private System.Windows.Forms.PictureBox pictureBox1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
+        private DevExpress.XtraEditors.SimpleButton btnSearch;
     }
 }

@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>37</ApplicationRevision>
+    <ApplicationRevision>39</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -449,6 +449,7 @@
     <Compile Include="Libraries\LibraryStatus.cs" />
     <Compile Include="Libraries\LibraryValidator.cs" />
     <Compile Include="Libraries\LibraryYear.cs" />
+    <Compile Include="Models\AttachmentModel.cs" />
     <Compile Include="Models\GisModel.cs" />
     <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\MasterListModel.cs" />

@@ -19,7 +19,7 @@ namespace SpinsNew.Models
         public string Citizenship { get; set; }
         public string MothersMaiden { get; set; }
         public int PSGCRegion { get; set; }
-        public int? PSGCProvince { get; set; }
+        public int PSGCProvince { get; set; }
         public int PSGCCityMun { get; set; }
         public int PSGCBrgy { get; set; }
         public string Address { get; set; }
@@ -87,6 +87,7 @@ namespace SpinsNew.Models
         public ICollection<SpbufModel> SpbufModels { get; set; } = new List<SpbufModel>();
         //Masterlist have a lot of logs
         public ICollection<LogModel> LogModels { get; set; } = new List<LogModel>();
+        public ICollection<AttachmentModel> AttachmentModels { get; set; } = new List<AttachmentModel>();
 
     }
 }

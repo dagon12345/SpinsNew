@@ -2,6 +2,7 @@
 using DevExpress.XtraGrid.Views.Grid;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
 using System;
 using System.Data;
 using System.Drawing;
@@ -38,7 +39,7 @@ namespace SpinsNew.Forms
 
         private MasterList masterlistForm;// Call MasterList form
         private Payroll payrollForm; // Assuming you may use this later or remove if unnecessary
-        private void Attachments_Load(object sender, EventArgs e)
+        private async void Attachments_Load(object sender, EventArgs e)
         {
             //GenerateReferenceCode();
             LoadDetails(); // Load details into the details tab above.
@@ -47,6 +48,14 @@ namespace SpinsNew.Forms
             ClickedData();
 
         }
+
+        //private async Task LoadLogsEF()
+        //{
+        //    using(var context = new ApplicationDbContext())
+        //    {
+        //        var logs = await context.log_masterlist.Where()
+        //    }
+        //}
 
         public void LoadLogs()
         {
@@ -424,74 +433,6 @@ namespace SpinsNew.Forms
         }
 
 
-        //public void InsertImage()
-        //{
-        //    // For image saving below.
-        //    try
-        //    {
-        //        if (selectedFilePath == null)
-        //        {
-        //            XtraMessageBox.Show("Please upload an image before saving.", "Image", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            return;
-        //        }
-        //        if (string.IsNullOrWhiteSpace(txt_attachmentname.Text) || pictureEdit1.Image == null)
-        //        {
-        //            XtraMessageBox.Show("Please enter the attachment name ", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            return;
-        //        }
-
-        //        byte[] imgByte = GetImage();
-        //        if (imgByte == null || imgByte.Length == 0)
-        //        {
-        //            XtraMessageBox.Show("Failed to convert the image to a byte array.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            return;
-        //        }
-
-        //        using (MySqlConnection con = new MySqlConnection("Server=172.26.153.181;uid=spinsv3;Password=Pn#z800^*OsR6B0;Database=caraga-spins2;default command timeout=3600;Allow User Variables=True;"))
-        //        {
-        //            con.Open();
-        //            using (MySqlCommand cmd = new MySqlCommand("INSERT INTO tbl_attachments (AttachmentName, MasterlistId, AttachmentUrl) VALUES (@AttachmentName, @MasterlistId, @AttachmentUrl)", con))
-        //            {
-        //                cmd.CommandType = CommandType.Text;
-        //                cmd.Parameters.AddWithValue("@AttachmentName", txt_attachmentname.Text);
-        //                cmd.Parameters.AddWithValue("@MasterlistId", txt_id.Text);
-        //                cmd.Parameters.AddWithValue("@AttachmentUrl", imgByte);
-        //                cmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //        InsertLogs();//Insert logs from attachments to log_masterlist.
-
-        //        XtraMessageBox.Show("Image uploaded successfully!", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        //        // Dispose of the image to release the file
-        //        if (pictureEdit1.Image != null)
-        //        {
-        //            pictureEdit1.Image.Dispose();
-        //            pictureEdit1.Image = null;
-        //        }
-
-        //        // Schedule file deletion if necessary
-        //        if (File.Exists(selectedFilePath))
-        //        {
-        //            ScheduleFileDeletion(selectedFilePath);
-        //        }
-
-        //        // Clear fields
-        //        txt_attachmentname.EditValue = "";
-
-        //        selectedFilePath = null; // Clear the stored file path
-
-
-
-        //        LoadImage();//Load image into gridcontrol once the data was deleted
-        //        LoadLogs(); //Refresh the logs
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        XtraMessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-        //}
-     
 
         public void InsertAttachment()
         {

@@ -16,6 +16,7 @@ namespace SpinsNew.Data
         public DbSet<LogModel> log_masterlist { get; set; }
         public DbSet<GisModel> tbl_gis { get; set; } //Database first so reference the name of database into our actual database.
         public DbSet<RegisterModel> tbl_registered_users { get; set; }
+        public DbSet<AttachmentModel> tbl_attachments { get; set; }
 
         //Libraries classes below
         public DbSet<LibraryRegion> lib_region_fortesting { get; set; }
@@ -116,6 +117,12 @@ namespace SpinsNew.Data
                 .WithMany(g => g.gisModels)
                 .HasForeignKey(g => g.ValidatedByID)
                 .HasPrincipalKey(lv => lv.Id);
+
+            modelBuilder.Entity<MasterListModel>()
+                .HasMany(a => a.AttachmentModels)
+                .WithOne(m => m.MasterListModel)
+                .HasForeignKey(a => a.MasterListId)
+                .HasPrincipalKey(m => m.Id);
 
             modelBuilder.Entity<MasterListModel>()
                 .HasMany(log => log.LogModels)//Logs

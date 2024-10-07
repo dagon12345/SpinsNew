@@ -112,6 +112,7 @@ namespace SpinsNew
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.btnViewAttach = new DevExpress.XtraEditors.SimpleButton();
             this.btnExport = new DevExpress.XtraEditors.SimpleButton();
+            this.colAttachments = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).BeginInit();
@@ -226,7 +227,8 @@ namespace SpinsNew
             this.colExclusionDate,
             this.colDateTimeModified,
             this.colModifiedBy,
-            this.colId});
+            this.colId,
+            this.colAttachments});
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
@@ -833,7 +835,7 @@ namespace SpinsNew
             this.gbActions.Controls.Add(this.btnDelistBene);
             this.gbActions.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbActions.ForeColor = System.Drawing.Color.Black;
-            this.gbActions.Location = new System.Drawing.Point(4, 6);
+            this.gbActions.Location = new System.Drawing.Point(237, 5);
             this.gbActions.Name = "gbActions";
             this.gbActions.Size = new System.Drawing.Size(229, 137);
             this.gbActions.TabIndex = 3;
@@ -949,7 +951,7 @@ namespace SpinsNew
             this.groupBox1.Controls.Add(this.btnViewAttach);
             this.groupBox1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.ForeColor = System.Drawing.Color.Black;
-            this.groupBox1.Location = new System.Drawing.Point(239, 6);
+            this.groupBox1.Location = new System.Drawing.Point(5, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(228, 137);
             this.groupBox1.TabIndex = 1;
@@ -997,6 +999,13 @@ namespace SpinsNew
             this.btnExport.TabIndex = 22;
             this.btnExport.Text = "Export to excel";
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // colAttachments
+            // 
+            this.colAttachments.FieldName = "Attachments";
+            this.colAttachments.Name = "colAttachments";
+            this.colAttachments.Visible = true;
+            this.colAttachments.VisibleIndex = 42;
             // 
             // MasterList
             // 
@@ -1131,6 +1140,7 @@ namespace SpinsNew
         private DevExpress.XtraEditors.CheckedComboBoxEdit cmb_status;
         private DevExpress.XtraGrid.Columns.GridColumn colId;
         private DevExpress.XtraEditors.SimpleButton btnExport;
+        private DevExpress.XtraGrid.Columns.GridColumn colAttachments;
     }
 }
 

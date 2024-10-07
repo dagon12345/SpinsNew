@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
 using SpinsNew.Models;
+using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -354,25 +355,36 @@ namespace SpinsNew.Popups
 
                     for (int i = 0; i < gridView.RowCount; i++)
                     {
-                        DataRowView row = (DataRowView)gridView.GetRow(i);
+                        MasterListViewModel row = (MasterListViewModel)gridView.GetRow(i);
                         if (row != null)
                         {
 
-                            int id = Convert.ToInt32(row["ID"]);
-                            int region = Convert.ToInt32(row["PSGCRegion"]);
-                            int province = Convert.ToInt32(row["PSGCProvince"]);
-                            int municipality = Convert.ToInt32(row["PSGCCityMun"]);
-                            int barangay = Convert.ToInt32(row["PSGCBrgy"]);
-                            string address = row["Address"].ToString();
+                            //int id = Convert.ToInt32(row["ID"]);
+                            //int region = Convert.ToInt32(row["PSGCRegion"]);
+                            //int province = Convert.ToInt32(row["PSGCProvince"]);
+                            //int municipality = Convert.ToInt32(row["PSGCCityMun"]);
+                            //int barangay = Convert.ToInt32(row["PSGCBrgy"]);
+                            //string address = row["Address"].ToString();
+
+                            int id = row.Id;
+
+                            int region = row.PSGCRegion;
+                            int province = row.PSGCProvince;
+                            int municipality = row.PSGCCityMun;
+                            int barangay = row.PSGCBrgy;
+
+                            string address = row.Address;
 
                             _payroll = new PayrollModel
                             {
 
                                 MasterListID = id,
+
                                 PSGCRegion = region,
                                 PSGCProvince = province,
                                 PSGCCityMun = municipality,
                                 PSGCBrgy = barangay,
+
                                 Address = address,
                                 Amount = amount,
                                 Year = selectedYear.Year,

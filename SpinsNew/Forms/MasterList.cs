@@ -489,8 +489,9 @@ namespace SpinsNew
             }
             else
             {
+                var libraryMunicipality = Program.ServiceProvider.GetRequiredService<ILibraryMunicipality>(); //We called the DI lifecycle inside our Program.cs
                 var tableLog = Program.ServiceProvider.GetRequiredService<ITableLog>(); //We called the DI lifecycle inside our Program.cs
-                replacementsForm = new Replacements(_username, tableLog);
+                replacementsForm = new Replacements(_username, tableLog, libraryMunicipality);
                 replacementsForm.Show();
             }
         }

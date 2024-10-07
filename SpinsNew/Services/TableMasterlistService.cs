@@ -57,6 +57,7 @@ namespace SpinsNew.Services
                     .Include(g => g.GisModels) // Below the projected properties we can see the ordering be descending of reference code.
                         .ThenInclude(la => la.LibraryAssessment)
                     .Include(sp => sp.SpbufModels)
+                    .Include(a => a.AttachmentModels)
                     .Where(m => municipalities.Contains(m.PSGCCityMun) && m.DateTimeDeleted == null && status.Contains(m.StatusID))
                     .Select(n => new MasterListViewModel
                     {
@@ -65,6 +66,12 @@ namespace SpinsNew.Services
                         FirstName = n.FirstName,
                         MiddleName = n.MiddleName,
                         ExtName = n.ExtName,
+
+                        //We've include this to work with creating payroll into our from PayrollPopups
+                        PSGCRegion = n.PSGCRegion,
+                        PSGCProvince = n.PSGCProvince,
+                        PSGCCityMun = n.PSGCCityMun,
+                        PSGCBrgy = n.PSGCBrgy,
 
                         Municipality = n.LibraryMunicipality.CityMunName,
                         Barangay = n.LibraryBarangay.BrgyName,
@@ -76,6 +83,7 @@ namespace SpinsNew.Services
                         ////Calculate age based on the Birthdate if has value.
                         Age = DateTime.Now.Year - n.BirthDate.Value.Year
                          - (DateTime.Now.DayOfYear < n.BirthDate.Value.DayOfYear ? 1 : 0),
+
                         Sex = n.LibrarySex.Sex,
                         MaritalStatus = n.LibraryMaritalStatus.MaritalStatus,
                         Religion = n.Religion,
@@ -106,7 +114,10 @@ namespace SpinsNew.Services
                         Assessment = n.GisModels.Select(l => l.LibraryAssessment.Assessment).FirstOrDefault(),
                         ReferenceCode = n.GisModels.OrderByDescending(r => r.ReferenceCode).Select(r => r.ReferenceCode).FirstOrDefault(), // Proper way of ordering reference code descending.
                         SpisBatch = n.GisModels.Select(s => s.SpisBatch).FirstOrDefault(),
-                        Spbuf = n.SpbufModels.Select(r => r.ReferenceCode).FirstOrDefault()
+                        Spbuf = n.SpbufModels.Select(r => r.ReferenceCode).FirstOrDefault(),
+                        Attachments = n.AttachmentModels.Select(m => m.AttachmentName).FirstOrDefault()
+
+
 
                     })
                     .ToListAsync();
