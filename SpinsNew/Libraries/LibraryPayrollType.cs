@@ -11,6 +11,11 @@ namespace SpinsNew.Libraries
         public string PayrollType { get; set; }
         public DateTime? DateTimeEntry { get; set; }
 
+        public override string ToString()
+        {
+            return PayrollType;
+        }
+
         public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();//Reference from our payroll model
     }
 }

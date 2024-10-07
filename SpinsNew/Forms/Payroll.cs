@@ -1177,7 +1177,6 @@ namespace SpinsNew.Forms
         private async void ts_delete_Click(object sender, EventArgs e)
         {
             if (gridControl1.DataSource == null)
-
             {
                 MessageBox.Show("Search data you want to delete", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -1199,6 +1198,7 @@ namespace SpinsNew.Forms
                     //searchControl
                     _dbContext.Remove(_dbContext.tbl_payroll_socpen.Single(x => x.ID == idGrid));
                 }
+
                 EnableSpinner();
                 await _dbContext.SaveChangesAsync();
                 Search();

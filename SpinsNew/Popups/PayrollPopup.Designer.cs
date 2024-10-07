@@ -31,6 +31,9 @@ namespace SpinsNew.Popups
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PayrollPopup));
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+            this.panel_spinner = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
             this.txt_amount = new DevExpress.XtraEditors.TextEdit();
             this.txt_multiplier = new DevExpress.XtraEditors.TextEdit();
             this.txt_monthlystipend = new DevExpress.XtraEditors.TextEdit();
@@ -45,11 +48,10 @@ namespace SpinsNew.Popups
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.cmb_year = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.panel_spinner = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
+            this.panel_spinner.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_amount.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_multiplier.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_monthlystipend.Properties)).BeginInit();
@@ -58,8 +60,6 @@ namespace SpinsNew.Popups
             ((System.ComponentModel.ISupportInitialize)(this.cmb_tag.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_type.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).BeginInit();
-            this.panel_spinner.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl1
@@ -85,23 +85,53 @@ namespace SpinsNew.Popups
             this.groupControl1.TabIndex = 0;
             this.groupControl1.Text = "Fill for payroll";
             // 
+            // panel_spinner
+            // 
+            this.panel_spinner.Controls.Add(this.pictureBox1);
+            this.panel_spinner.Controls.Add(this.labelControl5);
+            this.panel_spinner.Location = new System.Drawing.Point(87, 173);
+            this.panel_spinner.Name = "panel_spinner";
+            this.panel_spinner.Size = new System.Drawing.Size(201, 19);
+            this.panel_spinner.TabIndex = 16;
+            this.panel_spinner.Visible = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 2);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 17;
+            this.pictureBox1.TabStop = false;
+            // 
+            // labelControl5
+            // 
+            this.labelControl5.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl5.Appearance.Options.UseFont = true;
+            this.labelControl5.Location = new System.Drawing.Point(29, 3);
+            this.labelControl5.Name = "labelControl5";
+            this.labelControl5.Size = new System.Drawing.Size(127, 13);
+            this.labelControl5.TabIndex = 16;
+            this.labelControl5.Text = "Creating, please wait.......";
+            // 
             // txt_amount
             // 
             this.txt_amount.EditValue = "0";
-            this.txt_amount.Location = new System.Drawing.Point(309, 82);
+            this.txt_amount.Location = new System.Drawing.Point(294, 82);
             this.txt_amount.Name = "txt_amount";
             this.txt_amount.Properties.ReadOnly = true;
-            this.txt_amount.Size = new System.Drawing.Size(31, 20);
+            this.txt_amount.Size = new System.Drawing.Size(46, 20);
             this.txt_amount.TabIndex = 9;
             this.txt_amount.Visible = false;
             // 
             // txt_multiplier
             // 
             this.txt_multiplier.EditValue = "0";
-            this.txt_multiplier.Location = new System.Drawing.Point(309, 57);
+            this.txt_multiplier.Location = new System.Drawing.Point(294, 57);
             this.txt_multiplier.Name = "txt_multiplier";
             this.txt_multiplier.Properties.ReadOnly = true;
-            this.txt_multiplier.Size = new System.Drawing.Size(31, 20);
+            this.txt_multiplier.Size = new System.Drawing.Size(46, 20);
             this.txt_multiplier.TabIndex = 9;
             this.txt_multiplier.Visible = false;
             this.txt_multiplier.EditValueChanged += new System.EventHandler(this.txt_multiplier_EditValueChanged);
@@ -109,10 +139,10 @@ namespace SpinsNew.Popups
             // txt_monthlystipend
             // 
             this.txt_monthlystipend.EditValue = "0";
-            this.txt_monthlystipend.Location = new System.Drawing.Point(309, 35);
+            this.txt_monthlystipend.Location = new System.Drawing.Point(294, 35);
             this.txt_monthlystipend.Name = "txt_monthlystipend";
             this.txt_monthlystipend.Properties.ReadOnly = true;
-            this.txt_monthlystipend.Size = new System.Drawing.Size(31, 20);
+            this.txt_monthlystipend.Size = new System.Drawing.Size(46, 20);
             this.txt_monthlystipend.TabIndex = 8;
             this.txt_monthlystipend.Visible = false;
             this.txt_monthlystipend.EditValueChanged += new System.EventHandler(this.txt_monthlystipend_EditValueChanged);
@@ -121,9 +151,9 @@ namespace SpinsNew.Popups
             // 
             this.btn_create.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_create.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_create.ImageOptions.Image")));
-            this.btn_create.Location = new System.Drawing.Point(142, 153);
+            this.btn_create.Location = new System.Drawing.Point(142, 152);
             this.btn_create.Name = "btn_create";
-            this.btn_create.Size = new System.Drawing.Size(90, 20);
+            this.btn_create.Size = new System.Drawing.Size(90, 24);
             this.btn_create.TabIndex = 7;
             this.btn_create.Text = "Create";
             this.btn_create.Click += new System.EventHandler(this.btn_create_Click);
@@ -230,34 +260,6 @@ namespace SpinsNew.Popups
             this.cmb_year.TabIndex = 0;
             this.cmb_year.SelectedIndexChanged += new System.EventHandler(this.cmb_year_SelectedIndexChanged);
             // 
-            // panel_spinner
-            // 
-            this.panel_spinner.Controls.Add(this.pictureBox1);
-            this.panel_spinner.Controls.Add(this.labelControl5);
-            this.panel_spinner.Location = new System.Drawing.Point(87, 173);
-            this.panel_spinner.Name = "panel_spinner";
-            this.panel_spinner.Size = new System.Drawing.Size(179, 19);
-            this.panel_spinner.TabIndex = 16;
-            this.panel_spinner.Visible = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::SpinsNew.Properties.Resources.spinner;
-            this.pictureBox1.Location = new System.Drawing.Point(3, 2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 17;
-            this.pictureBox1.TabStop = false;
-            // 
-            // labelControl5
-            // 
-            this.labelControl5.Location = new System.Drawing.Point(29, 3);
-            this.labelControl5.Name = "labelControl5";
-            this.labelControl5.Size = new System.Drawing.Size(130, 13);
-            this.labelControl5.TabIndex = 16;
-            this.labelControl5.Text = "Creating, please wait.......";
-            // 
             // PayrollPopup
             // 
             this.AcceptButton = this.btn_create;
@@ -277,6 +279,9 @@ namespace SpinsNew.Popups
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
+            this.panel_spinner.ResumeLayout(false);
+            this.panel_spinner.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_amount.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_multiplier.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_monthlystipend.Properties)).EndInit();
@@ -285,9 +290,6 @@ namespace SpinsNew.Popups
             ((System.ComponentModel.ISupportInitialize)(this.cmb_tag.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_type.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_year.Properties)).EndInit();
-            this.panel_spinner.ResumeLayout(false);
-            this.panel_spinner.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }

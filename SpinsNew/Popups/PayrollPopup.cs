@@ -1,328 +1,183 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
-using MySql.Data.MySqlClient;
-using SpinsNew.Connection;
+using Microsoft.EntityFrameworkCore;
 using SpinsNew.Data;
+using SpinsNew.Libraries;
 using SpinsNew.Models;
 using SpinsNew.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpinsNew.Popups
 {
     public partial class PayrollPopup : Form
     {
-        ConnectionString cs = new ConnectionString();
-        MySqlConnection con = null;
         private PayrollModel _payroll;
-        private ApplicationDbContext _dbContext;
         public string _username;
         private MasterList masterlistForm;
-
         public PayrollPopup(MasterList masterListForm, string username) //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
         {
             InitializeComponent();
             this.masterlistForm = masterListForm; //Instantiate to make the gridcontrol from form masterlist work into the payrollpopup form.
-            // masterlistForm = masterlist;// Execute the MasterListform.
-            con = new MySqlConnection(cs.dbcon);
             _username = username;
         }
 
-
-        private void PayrollPopup_Load(object sender, EventArgs e)
+        private async void PayrollPopup_Load(object sender, EventArgs e)
         {
-            PopulateYear();
-            PayrollTypeMethod();
-            PayrollTagMethod();
-            PaymentModeMethod();
-            _dbContext = new ApplicationDbContext();
+            await YearEf();
+            await PayrollTypeMethodEf();
+            await PayrollTagEf();
+            await PaymentModeEf();
         }
-        // Custom class to store Id and Sex
-        public class YearItem
+
+        //Refactored code for year to display.
+        public async Task YearEf()
         {
-            public int Id { get; set; }
-            public int Year { get; set; }
-            public double MonthlyStipend { get; set; }
 
-            public override string ToString()
+            using (var context = new ApplicationDbContext())
             {
-                return Year.ToString();
-            }
-        }
-        // Fill combobox datasource
-        public void PopulateYear()
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, Year, MonthlyStipend FROM lib_year WHERE Active = 1"; // Specify the columns to retrieve
-                MySqlDataReader reader = cmd.ExecuteReader();
+                int yearConvertion = Convert.ToInt32(txt_monthlystipend.Text);
+                var year = await context.lib_year
+                    .AsNoTracking()
+                    .OrderByDescending(x => x.Id)
+                    .ToListAsync();
 
-                List<YearItem> yearItems = new List<YearItem>();
-
-                while (reader.Read())
-                {
-                    yearItems.Add(new YearItem
-                    {
-                        Id = reader.GetInt32("Id"),
-                        Year = reader.GetInt32("Year"),
-                        MonthlyStipend = reader.GetInt32("MonthlyStipend")
-                    });
-                }
-
-
-                reader.Close();
-                con.Close();
                 cmb_year.Properties.Items.Clear();
-                cmb_year.Properties.Items.AddRange(yearItems);
+                foreach (var years in year)
+                {
+                    cmb_year.Properties.Items.Add(new LibraryYear
+                    {
+                        Id = years.Id,
+                        Year = years.Year,
+                        MonthlyStipend = years.MonthlyStipend
+                    });
+
+                }
                 // Add the event handler for the SelectedIndexChanged event
                 cmb_year.SelectedIndexChanged -= cmb_year_SelectedIndexChanged; // Ensure it's not added multiple times
                 cmb_year.SelectedIndexChanged += cmb_year_SelectedIndexChanged;
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
             }
         }
-        // Custom class to store Id and Sex
-        public class PayrollTypeItem
+
+        private async Task PayrollTypeMethodEf()
         {
-            public int PayrollTypeID { get; set; }
-            public string PayrollType { get; set; }
-
-            public override string ToString()
+            using (var context = new ApplicationDbContext())
             {
-                return PayrollType;
-            }
-        }
-        // Fill combobox datasource
-        public void PayrollTypeMethod()
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PayrollTypeID, PayrollType FROM lib_payroll_type"; // Specify the columns to retrieve
-                MySqlDataReader reader = cmd.ExecuteReader();
+                var payrollTypes = await context.lib_payroll_type
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                List<PayrollTypeItem> typeItems = new List<PayrollTypeItem>();
-
-                while (reader.Read())
-                {
-                    typeItems.Add(new PayrollTypeItem
-                    {
-                        PayrollTypeID = reader.GetInt32("PayrollTypeID"),
-                        PayrollType = reader.GetString("PayrollType")
-                        //MonthlyStipend = reader.GetInt32("MonthlyStipend")
-                    });
-                }
-
-
-                reader.Close();
-                con.Close();
                 cmb_type.Properties.Items.Clear();
-                cmb_type.Properties.Items.AddRange(typeItems);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        // Custom class to store Id and Sex
-        public class PayrollTagItem
-        {
-            public int PayrollTagID { get; set; }
-            public string PayrollTag { get; set; }
-
-            public override string ToString()
-            {
-                return PayrollTag;
-            }
-        }
-        // Fill combobox datasource
-        public void PayrollTagMethod()
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PayrollTagID, PayrollTag FROM lib_payroll_tag"; // Specify the columns to retrieve
-                MySqlDataReader reader = cmd.ExecuteReader();
-
-                List<PayrollTagItem> tagItems = new List<PayrollTagItem>();
-
-                while (reader.Read())
+                foreach (var payrollType in payrollTypes)
                 {
-                    tagItems.Add(new PayrollTagItem
+                    cmb_type.Properties.Items.Add(new LibraryPayrollType
                     {
-                        PayrollTagID = reader.GetInt32("PayrollTagID"),
-                        PayrollTag = reader.GetString("PayrollTag")
-                        //MonthlyStipend = reader.GetInt32("MonthlyStipend")
+                        PayrollTypeID = payrollType.PayrollTypeID,
+                        PayrollType = payrollType.PayrollType
                     });
                 }
+            }
+        }
+        private async Task PayrollTagEf()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var payrollTags = await context.lib_payroll_tag
+                    .AsNoTracking()
+                    .ToListAsync();
 
-
-                reader.Close();
-                con.Close();
                 cmb_tag.Properties.Items.Clear();
-                cmb_tag.Properties.Items.AddRange(tagItems);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        public class PeriodItem
-        {
-            public int PeriodID { get; set; }
-            public string Period { get; set; }
-            public string Abbreviation { get; set; }
-            public string Months { get; set; }
-
-            public override string ToString()
-            {
-                return $"{Period} ({Abbreviation}) {Months}"; // Display Period and Abbreviation in the ComboBox
-                //return Period;
+                foreach (var payrollTag in payrollTags)
+                {
+                    cmb_tag.Properties.Items.Add(new LibraryPayrollTag
+                    {
+                        PayrollTagID = payrollTag.PayrollTagID,
+                        PayrollTag = payrollTag.PayrollTag
+                    });
+                }
             }
         }
 
-        // Load periods for the selected year
-        private void LoadPeriodsForYear(int year)
+        //When year was selected then fill the period that contains the year selected.
+        private async Task LoadPeriodsForYearEf(int year)
         {
             try
             {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PeriodID, Period, Abbreviation, Months FROM lib_period WHERE FIND_IN_SET(@Year, REPLACE(YearsUsed, ' ', ''))"; // Use parameterized query and remove spaces
-                cmd.Parameters.AddWithValue("@Year", year.ToString());
-                //MessageBox.Show($"Executing query with year: {year}");
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                // Clear existing items in the ComboBoxEdit
-                cmb_period.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                using (var context = new ApplicationDbContext())
                 {
-                    // Add PeriodItem to the ComboBox
-                    cmb_period.Properties.Items.Add(new PeriodItem
+                    // Fetch the data first, and then filter it in memory
+                    var periods = await context.lib_period
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    // Perform client-side filtering for the specified year
+                    var filteredPeriods = periods
+                        .Where(p => p.YearsUsed.Replace(" ", "").Split(',').Contains(year.ToString()))
+                        .Select(p => new
+                        {
+                            p.PeriodID,
+                            p.Period,
+                            p.Abbreviation,
+                            p.Months
+                        })
+                        .ToList();
+
+                    // Clear existing items in the ComboBoxEdit
+                    cmb_period.Properties.Items.Clear();
+
+                    // Populate the ComboBoxEdit with the filtered periods
+                    foreach (var period in filteredPeriods)
                     {
-                        PeriodID = Convert.ToInt32(dr["PeriodID"]),
-                        Period = dr["Period"].ToString(),
-                        Abbreviation = dr["Abbreviation"].ToString(),
-                        Months = dr["Months"].ToString()
-                    });
+                        cmb_period.Properties.Items.Add(new LibraryPeriod
+                        {
+                            PeriodID = period.PeriodID,
+                            Period = period.Period,
+                            Abbreviation = period.Abbreviation,
+                            Months = period.Months
+                        });
+                    }
                 }
-                con.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
-
         }
 
-        private void cmb_year_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmb_year_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            if (cmb_year.SelectedItem is YearItem selectedYear)
+            if (cmb_year.SelectedItem is LibraryYear selectedYear)
             {
                 // MessageBox.Show($"Selected Year: {selectedYear.Year}");
-                LoadPeriodsForYear(selectedYear.Year);
-            }
 
+                //When particular year was selected fill the monthly stipend value.
+                txt_monthlystipend.Text = selectedYear.MonthlyStipend.ToString();
 
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Year, MonthlyStipend FROM lib_year WHERE Year=@Year";
-                cmd.Parameters.AddWithValue("@Year", cmb_year.EditValue);
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                if (dt.Rows.Count > 0)
-                {
-                    DataRow dr = dt.Rows[0];
-                    txt_monthlystipend.Text = dr["MonthlyStipend"].ToString();
-                    cmb_period.EditValue = null; // Null the period if the year was changed.
-                    txt_multiplier.EditValue = 0;
-                }
-
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
-
-        }
-
-        // Custom class to store Id and Sex
-        public class PaymentModeItem
-        {
-            public int PaymentModeID { get; set; }
-            public string PaymentMode { get; set; }
-
-            public override string ToString()
-            {
-                return PaymentMode;
+                await LoadPeriodsForYearEf(selectedYear.Year);
             }
         }
-        // Fill combobox datasource
-        public void PaymentModeMethod()
+
+        private async Task PaymentModeEf()
         {
-            try
+            using (var context = new ApplicationDbContext())
             {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT PaymentModeID, PaymentMode FROM lib_payment_mode"; // Specify the columns to retrieve
-                MySqlDataReader reader = cmd.ExecuteReader();
+                var paymentModes = await context.lib_payment_mode
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                List<PaymentModeItem> paymentItems = new List<PaymentModeItem>();
-
-                while (reader.Read())
+                cmb_payment.Properties.Items.Clear();
+                foreach (var paymentMode in paymentModes)
                 {
-                    paymentItems.Add(new PaymentModeItem
+                    cmb_payment.Properties.Items.Add(new LibraryPaymentMode
                     {
-                        PaymentModeID = reader.GetInt32("PaymentModeID"),
-                        PaymentMode = reader.GetString("PaymentMode")
-                        //MonthlyStipend = reader.GetInt32("MonthlyStipend")
+                        PaymentModeID = paymentMode.PaymentModeID,
+                        PaymentMode = paymentMode.PaymentMode
                     });
                 }
-
-
-                reader.Close();
-                con.Close();
-                cmb_payment.Properties.Items.Clear();
-                cmb_payment.Properties.Items.AddRange(paymentItems);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
             }
         }
 
@@ -339,87 +194,85 @@ namespace SpinsNew.Popups
                 {
                     //Insertion of payroll code below.
 
-                    //try
-                    //{
-                    GridView gridView = masterlistForm.gridControl1.MainView as GridView;
-                    var selectedYear = (YearItem)cmb_year.SelectedItem;
-                    var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                    var selectedType = (PayrollTypeItem)cmb_type.SelectedItem;
-                    var selectedTag = (PayrollTagItem)cmb_tag.SelectedItem;
-                    var selectedMode = (PaymentModeItem)cmb_payment.SelectedItem;
-                    double amount = 0;
-                    if (!string.IsNullOrEmpty(txt_amount.Text))
+                    try
                     {
-                        amount = Convert.ToDouble(txt_amount.Text);
-                    }
-
-                    for (int i = 0; i < gridView.RowCount; i++)
-                    {
-                        MasterListViewModel row = (MasterListViewModel)gridView.GetRow(i);
-                        if (row != null)
+                        GridView gridView = masterlistForm.gridControl1.MainView as GridView;
+                        var selectedYear = (LibraryYear)cmb_year.SelectedItem;
+                        var selectedPeriod = (LibraryPeriod)cmb_period.SelectedItem;
+                        var selectedType = (LibraryPayrollType)cmb_type.SelectedItem;
+                        var selectedTag = (LibraryPayrollTag)cmb_tag.SelectedItem;
+                        var selectedMode = (LibraryPaymentMode)cmb_payment.SelectedItem;
+                        double amount = 0;
+                        if (!string.IsNullOrEmpty(txt_amount.Text))
                         {
-
-                            //int id = Convert.ToInt32(row["ID"]);
-                            //int region = Convert.ToInt32(row["PSGCRegion"]);
-                            //int province = Convert.ToInt32(row["PSGCProvince"]);
-                            //int municipality = Convert.ToInt32(row["PSGCCityMun"]);
-                            //int barangay = Convert.ToInt32(row["PSGCBrgy"]);
-                            //string address = row["Address"].ToString();
-
-                            int id = row.Id;
-
-                            int region = row.PSGCRegion;
-                            int province = row.PSGCProvince;
-                            int municipality = row.PSGCCityMun;
-                            int barangay = row.PSGCBrgy;
-
-                            string address = row.Address;
-
-                            _payroll = new PayrollModel
-                            {
-
-                                MasterListID = id,
-
-                                PSGCRegion = region,
-                                PSGCProvince = province,
-                                PSGCCityMun = municipality,
-                                PSGCBrgy = barangay,
-
-                                Address = address,
-                                Amount = amount,
-                                Year = selectedYear.Year,
-                                PeriodID = selectedPeriod.PeriodID,
-                                PayrollStatusID = 2,
-                                ClaimTypeID = null,
-                                PayrollTypeID = selectedType.PayrollTypeID,
-                                PayrollTagID = selectedTag.PayrollTagID,
-                                PaymentModeID = selectedMode.PaymentModeID,
-                                DateTimeEntry = DateTime.Now,
-                                EntryBy = _username
-                            };
-                            _dbContext.tbl_payroll_socpen.Add(_payroll);
-
-
+                            amount = Convert.ToDouble(txt_amount.Text);
                         }
 
-                       
-                     
+                        using (var context = new ApplicationDbContext())
+                        {
+
+
+                            for (int i = 0; i < gridView.RowCount; i++)
+                            {
+                                MasterListViewModel row = (MasterListViewModel)gridView.GetRow(i);
+                                if (row != null)
+                                {
+
+
+                                    int id = row.Id;
+
+                                    int region = row.PSGCRegion;
+                                    int province = row.PSGCProvince;
+                                    int municipality = row.PSGCCityMun;
+                                    int barangay = row.PSGCBrgy;
+
+                                    string address = row.Address;
+
+                                    _payroll = new PayrollModel
+                                    {
+
+                                        MasterListID = id,
+
+                                        PSGCRegion = region,
+                                        PSGCProvince = province,
+                                        PSGCCityMun = municipality,
+                                        PSGCBrgy = barangay,
+
+                                        Address = address,
+                                        Amount = amount,
+                                        Year = selectedYear.Year,
+                                        PeriodID = selectedPeriod.PeriodID,
+                                        PayrollStatusID = 2,
+                                        ClaimTypeID = null,
+                                        PayrollTypeID = selectedType.PayrollTypeID,
+                                        PayrollTagID = selectedTag.PayrollTagID,
+                                        PaymentModeID = selectedMode.PaymentModeID,
+                                        DateTimeEntry = DateTime.Now,
+                                        EntryBy = _username
+                                    };
+
+                                    context.tbl_payroll_socpen.Add(_payroll);
+
+
+                                }
+
+                            }
+                            panel_spinner.Visible = true;
+                            btn_create.Enabled = false;
+                            await context.SaveChangesAsync();
+                        }
+
+                        panel_spinner.Visible = false;
+                        XtraMessageBox.Show("Payroll created successfully. Please proceed to the payroll form to generate reports", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Close();
+
+
                     }
-                    panel_spinner.Visible = true;
-                    btn_create.Enabled = false;
-                    await _dbContext.SaveChangesAsync();
+                    catch (Exception ex)
+                    {
 
-                    panel_spinner.Visible = false;
-                    XtraMessageBox.Show("Payroll created successfully. Please proceed to the payroll form to generate reports", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.Close();
-
-
-                    //}
-                    //catch (Exception ex)
-                    //{
-
-                    //    XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //}
+                        XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
             else
@@ -428,45 +281,38 @@ namespace SpinsNew.Popups
             }
         }
 
-        private void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
+        private async Task PeriodEf(LibraryPeriod selectedLibraryPeriod)
         {
-            try
+            using (var context = new ApplicationDbContext())
             {
-                if (cmb_period.EditValue == null)
+
+                //Retrieve the period details based on the selected period's name
+                var period = await context.lib_period
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Period == selectedLibraryPeriod.Period);
+
+                //If the period is found, set the muliplier value to txt_muliplier
+                if (period != null)
                 {
-                    MessageBox.Show("Please select a period.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    txt_multiplier.Text = period.StipendMultiplier.ToString();
                 }
-
-                con.Open();
-                var selectedPeriod = (PeriodItem)cmb_period.SelectedItem;
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Period, StipendMultiplier FROM lib_period WHERE Period=@Period";
-                cmd.Parameters.AddWithValue("@Period", selectedPeriod.Period);
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                if (dt.Rows.Count > 0)
-                {
-                    DataRow dr = dt.Rows[0];
-                    txt_multiplier.Text = dr["StipendMultiplier"].ToString();
-                }
-                else
-                {
-                    MessageBox.Show("No matching period found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    txt_multiplier.Text = string.Empty;
-                }
-
-                con.Close();
             }
-            catch (Exception ex)
+        }
+        private async void cmb_period_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (cmb_period.EditValue == null)
             {
-                // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a period.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            if (cmb_period.SelectedItem is LibraryPeriod selectedLibraryPeriod)
+            {
+                //When particular period was selected fill the monthly stipend mulitiplier value.
+                await PeriodEf(selectedLibraryPeriod);
+            }
+
         }
         private void UpdateAmount()
         {
