@@ -213,6 +213,7 @@ namespace SpinsNew.Forms
                     .AsNoTracking()
                     .ToListAsync();
 
+                cmb_barangay.Properties.Items.Clear();
                 foreach(var barangay in barangays)
                 {
                     // Add DataSourceItem to the ComboBox
