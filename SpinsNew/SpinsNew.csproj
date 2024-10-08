@@ -445,10 +445,12 @@
     <Compile Include="Libraries\LibraryProvince.cs" />
     <Compile Include="Libraries\LibraryRegion.cs" />
     <Compile Include="Libraries\LibraryRegistrationType.cs" />
+    <Compile Include="Libraries\LibraryRelationship.cs" />
     <Compile Include="Libraries\LibrarySex.cs" />
     <Compile Include="Libraries\LibraryStatus.cs" />
     <Compile Include="Libraries\LibraryValidator.cs" />
     <Compile Include="Libraries\LibraryYear.cs" />
+    <Compile Include="Models\TableAuthRepresentative.cs" />
     <Compile Include="Models\AttachmentModel.cs" />
     <Compile Include="Models\GisModel.cs" />
     <Compile Include="Models\LogModel.cs" />
@@ -511,8 +513,10 @@
     <Compile Include="StatisticsForm\PaidStatisticsForm.Designer.cs">
       <DependentUpon>PaidStatisticsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\AuthorizeRepViewModel.cs" />
     <Compile Include="ViewModel\MasterListViewModel.cs" />
     <Compile Include="ViewModel\PayrollViewModel.cs" />
+    <None Include="Properties\DataSources\SpinsNew.ViewModel.AuthorizeRepViewModel.datasource" />
     <None Include="Resources\triangle-spinner.gif" />
     <EmbeddedResource Include="Forms\Attachments.resx">
       <DependentUpon>Attachments.cs</DependentUpon>

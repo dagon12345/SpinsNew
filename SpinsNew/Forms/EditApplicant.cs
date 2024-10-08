@@ -380,15 +380,11 @@ namespace SpinsWinforms.Forms
         {
             xtraScrollableControl1.Enabled = true;
         }
-        protected override async void OnLoad(EventArgs e)
-        {
-            Loading();
-            base.OnLoad(e);
-            await tableLog();// Retrieve the logs
-            await AllMethods();
-            DisplayAge();// to display age in a label
-            DoneLoading();
-        }
+        //Below is the alternative way to load methods inside our winforms
+        //protected override async void OnLoad(EventArgs e)
+        //{
+            
+        //}
         private async Task AllMethods()
         {
             await DataSourceEF();
@@ -1188,9 +1184,14 @@ namespace SpinsWinforms.Forms
             }
         }
 
-        private void EditApplicant_Load(object sender, EventArgs e)
+        private async void EditApplicant_Load(object sender, EventArgs e)
         {
-
+            Loading();
+            //base.OnLoad(e);
+            await tableLog();// Retrieve the logs
+            await AllMethods();
+            DisplayAge();// to display age in a label
+            DoneLoading();
         }
     }
 }

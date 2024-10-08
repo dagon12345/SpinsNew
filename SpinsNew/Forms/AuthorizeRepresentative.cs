@@ -1,7 +1,12 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
+using SpinsNew.Data;
+using SpinsNew.Libraries;
+using SpinsNew.Models;
+using SpinsNew.ViewModel;
 using SpinsWinforms.Forms;
 using System;
 using System.Collections.Generic;
@@ -17,19 +22,17 @@ namespace SpinsNew.Forms
 {
     public partial class AuthorizeRepresentative : Form
     {
-        ConnectionString cs = new ConnectionString();
-        MySqlConnection con = null;
+
         MasterList masterlistForm;
         public AuthorizeRepresentative(EditApplicant editApplicant)
         {
             InitializeComponent();
-            con = new MySqlConnection(cs.dbcon);
         }
 
-        private void AuthorizeRepresentative_Load(object sender, EventArgs e)
+        private async void AuthorizeRepresentative_Load(object sender, EventArgs e)
         {
-            LoadDataAsync();// Load the table
-            Relationship();//Load the relationship
+            await LoadDataEF();// Load the table
+            await RelationshipEF();//Load the relationship
         }
 
         public void DisplayReference(int reference)
@@ -42,89 +45,90 @@ namespace SpinsNew.Forms
             // Display the ID in a label or textbox on your form
             txt_id.Text = id.ToString(); // Assuming lblID is a label on your form
         }
-        // Custom class to store Id and English
-        public class RelationshipItem
-        {
-            public int Id { get; set; }
-            public string English { get; set; }
 
-            public override string ToString()
+        public async Task LoadDataEF()
+        {
+            using (var context = new ApplicationDbContext())
             {
-                return English; // Display DataSource in the ComboBox
+                int referenceCode = Convert.ToInt32(txt_reference.Text);
+                var representative = await context.tbl_auth_representative
+                    .Include(x => x.LibraryRelationships)
+                    .Where(x => x.ReferenceCode == referenceCode)
+                    .Select(x => new AuthorizeRepViewModel
+                    {
+                        Id  = x.Id,
+                        LastName = x.LastName,
+                        FirstName = x.FirstName,
+                        MiddleName = x.MiddleName,
+                        ExtName = x.ExtName,
+                        English = x.LibraryRelationships.Select(l => l.English).FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+                authorizeRepViewModelBindingSource.DataSource = representative;
+                gridControl1.DataSource = authorizeRepViewModelBindingSource;
+
+                if (representative != null)
+                {
+                    GridView gridView = gridControl1.MainView as GridView;
+                    // Auto-size all columns based on their content
+                    gridView.BestFitColumns();
+                    // Ensure horizontal scrollbar is enabled
+                   // gridView.OptionsView.ColumnAutoWidth = false;
+                    // Disable editing
+                    gridView.OptionsBehavior.Editable = false;
+
+                    // masterlistForm.UpdateRowCount(gridView);
+                    UpdateRowCount(gridView);
+
+                }
+
             }
         }
-        //Fill combobox relationship
-        public void Relationship()
+
+        public async Task RelationshipEF()
         {
-            try
+            using(var context = new ApplicationDbContext())
             {
-                // Fetch data from the database and bind to ComboBox
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Id, English FROM lib_relationship"; // Specify the columns to retrieve
-                cmd.ExecuteNonQuery();
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
+                var relationship = await context.lib_relationship
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                // Clear existing items in the ComboBoxEdit
                 cmb_relationship.Properties.Items.Clear();
-
-                foreach (DataRow dr in dt.Rows)
+                foreach(var relationships in relationship)
                 {
-                    // Add DataSourceItem to the ComboBox
-                    cmb_relationship.Properties.Items.Add(new RelationshipItem
+                    cmb_relationship.Properties.Items.Add(new LibraryRelationship
                     {
-                        Id = Convert.ToInt32(dr["Id"]),
-                        English = dr["English"].ToString()
+                        Id = relationships.Id,
+                        English = relationships.English
                     });
                 }
-                con.Close();
             }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-
         }
-        private void DeleteRepresentative()
+        private async Task DeleteEF()
         {
-            //DELETE USERS FROM DATABASE.
-            try
+            using(var context = new ApplicationDbContext())
             {
                 GridView gridView = gridControl1.MainView as GridView;
-                int rowHandle = gridView.FocusedRowHandle; // Get the handle of the focused row
-                object idValue = gridView.GetRowCellValue(rowHandle, "ID"); // Replace "ID" with the name of your ID column
-                if (idValue != null)
+                int rowHandle = gridView.FocusedRowHandle;
+                object idValue = gridView.GetRowCellValue(rowHandle, "Id");
+                if(idValue != null)
                 {
                     int id = Convert.ToInt32(idValue);
-                    con.Open();
-                    MySqlCommand cmd = con.CreateCommand();
-                    cmd.CommandText = "DELETE FROM tbl_auth_representative WHERE id=" + id + "";
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@ID", id);
-                    cmd.ExecuteNonQuery();
+                    context.Remove(context.tbl_auth_representative.Single(x => x.Id == id));
+                    await context.SaveChangesAsync();
 
+                    Clear();
                     XtraMessageBox.Show("Data successfully deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    /*Clearing the form*/
-
-                    con.Close();
-                    LoadDataAsync();
                 }
                 else
                 {
                     XtraMessageBox.Show("No row is selected for deletion.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
+            
             }
         }
+
         // Method to get the current row count from the GridView
         private int GetRowCount(GridView gridView)
         {
@@ -154,100 +158,43 @@ namespace SpinsNew.Forms
             }
         }
 
-        private void SaveRepresentative()
+        private async Task SaveEF()
         {
-          
-            try
+            using(var context = new ApplicationDbContext())
             {
-                con.Open();
+                int masterListid = Convert.ToInt32(txt_id.Text);
+                int referenceCode = Convert.ToInt32(txt_reference.Text);
+                string lastName = txt_lastname.Text;
+                string firstName = txt_firstname.Text;
+                string middleName = txt_middlename.Text;
+                string extName = txt_extname.Text;
 
-                // Insert GIS information into database
-                MySqlCommand insertCmd = con.CreateCommand();
-                insertCmd.CommandType = CommandType.Text;
-                insertCmd.CommandText = "INSERT INTO tbl_auth_representative (MasterListID, ReferenceCode, LastName, FirstName, MiddleName, ExtName, RelationshipID, DateTimeEntry, ValidationTypeID)" +
-                    " VALUES (@MasterlistID, @ReferenceCode, @LastName, @FirstName, @MiddleName, @ExtName, @RelationshipID, @DateTimeEntry, @ValidationTypeID)";
+                var selectedRelationship = (LibraryRelationship)cmb_relationship.SelectedItem;
 
-                // Retrieve the selected item and get the PSGCCityMun Code.
-                var selectedItem = (dynamic)cmb_relationship.SelectedItem;
-                int relationshipId = selectedItem.Id;
-                insertCmd.Parameters.AddWithValue("@MasterlistID", txt_id.EditValue);
-                insertCmd.Parameters.AddWithValue("@ReferenceCode", txt_reference.EditValue);
-                insertCmd.Parameters.AddWithValue("@LastName", txt_lastname.EditValue);
-                insertCmd.Parameters.AddWithValue("@FirstName", txt_firstname.EditValue);
-                insertCmd.Parameters.AddWithValue("@MiddleName", txt_middlename.EditValue);
-                insertCmd.Parameters.AddWithValue("@ExtName", txt_extname.EditValue);
-                insertCmd.Parameters.AddWithValue("@RelationshipID", relationshipId);
-                insertCmd.Parameters.AddWithValue("@DateTimeEntry", DateTime.Now);
-                insertCmd.Parameters.AddWithValue("@ValidationTypeID", 0);
-                insertCmd.ExecuteNonQuery();
-                //this.Close();
-                con.Close();
-                LoadDataAsync();
+                var representative = new TableAuthRepresentative
+                {
+                    MasterListId = masterListid,
+                    ReferenceCode = referenceCode,
+                    LastName = lastName,
+                    FirstName = firstName,
+                    MiddleName = middleName,
+                    ExtName = extName,
+                    RelationshipId = selectedRelationship.Id,
+                    DateTimeEntry = DateTime.Now,
+                    ValidationTypeId = 3
+                };
+
+                context.tbl_auth_representative.Add(representative);
+                await context.SaveChangesAsync();
+
                 Clear();
 
                 XtraMessageBox.Show("Added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
 
-        public void LoadDataAsync()
-        {
-            try
-            {
-                con.Open();
-                MySqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                // Modified SQL query with JOIN to get the relationship name
-                cmd.CommandText = @"
-        SELECT
-            r.ID,
-            r.LastName, 
-            r.FirstName, 
-            r.MiddleName, 
-            r.ExtName, 
-            lr.English AS RelationshipName
-        FROM 
-            tbl_auth_representative r
-        INNER JOIN 
-            lib_relationship lr ON r.RelationshipID = lr.Id
-        WHERE 
-            r.ReferenceCode = @ReferenceCode";
 
-                // Use parameterized query to prevent SQL injection
-                cmd.Parameters.AddWithValue("@ReferenceCode", txt_reference.Text);
-
-                DataTable dt = new DataTable();
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-                gridControl1.DataSource = dt;
-                //await Task.Run(() => da.Fill(dt));
-                GridView gridView = gridControl1.MainView as GridView;
-                if (gridView != null)
-                {
-                    gridView.Columns["ID"].Visible = false;
-                    // Auto-size all columns based on their content
-                    gridView.BestFitColumns();
-                    // Hide the "ID" column
-                    // Ensure horizontal scrollbar is enabled
-                    gridView.OptionsView.ColumnAutoWidth = false;
-                    // Disable editing
-                    gridView.OptionsBehavior.Editable = false;
-
-                     con.Close();
-                }
-                // masterlistForm.UpdateRowCount(gridView);
-                UpdateRowCount(gridView);
-               // con.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message);
-            }
-
-        }
         private void Clear()
         {
             txt_lastname.Text = "";
@@ -258,7 +205,7 @@ namespace SpinsNew.Forms
             txt_lastname.Focus();
         }
 
-        private void btn_edit_Click(object sender, EventArgs e)
+        private async void btn_edit_Click(object sender, EventArgs e)
         {
 
             // Check if adding another row exceeds the limit
@@ -276,13 +223,15 @@ namespace SpinsNew.Forms
             }
 
             // Proceed with saving the representative if the limit is not reached
-            SaveRepresentative();
+            await SaveEF();
+            await LoadDataEF();
         }
 
-        private void simpleButton1_Click(object sender, EventArgs e)
+        private async void simpleButton1_Click(object sender, EventArgs e)
         {
-
-            DeleteRepresentative();
+            //Deleting and refreshing once deleted.
+            await DeleteEF();
+            await LoadDataEF();
         }
     }
 }

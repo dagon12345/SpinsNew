@@ -17,6 +17,7 @@ namespace SpinsNew.Data
         public DbSet<GisModel> tbl_gis { get; set; } //Database first so reference the name of database into our actual database.
         public DbSet<RegisterModel> tbl_registered_users { get; set; }
         public DbSet<AttachmentModel> tbl_attachments { get; set; }
+        public DbSet<TableAuthRepresentative> tbl_auth_representative { get; set; }
 
         //Libraries classes below
         public DbSet<LibraryRegion> lib_region_fortesting { get; set; }
@@ -39,7 +40,7 @@ namespace SpinsNew.Data
         public DbSet<LibraryProvince> lib_province { get; set; }
         public DbSet<LibraryMunicipality> lib_city_municipality { get; set; }
         public DbSet<LibraryYear> lib_year { get; set; }
-
+        public DbSet<LibraryRelationship> lib_relationship { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -72,6 +73,7 @@ namespace SpinsNew.Data
             modelBuilder.Entity<MasterListModel>()
                 .HasIndex(m => new 
                 {
+                    m.Id,
                     m.LastName,
                     m.FirstName,
                     m.MiddleName,
@@ -94,11 +96,18 @@ namespace SpinsNew.Data
                 .HasIndex(id => id.MasterListId);
 
             /*Fluent API mapping below*/
-            //modelBuilder.Entity<PayrollModel>()
-            //    .HasOne(m => m.ReplacementFor)
-            //    .WithMany(p => p.PayrollModels)
-            //    .HasForeignKey(p => p.ReplacementForId)
-            //    .HasPrincipalKey(m => m.Id);
+
+            modelBuilder.Entity<TableAuthRepresentative>()
+                .HasOne(m => m.GisModel)
+                .WithMany(t => t.TableAuthRepresentatives)
+                .HasForeignKey(t => t.ReferenceCode)
+                .HasPrincipalKey(m => m.ReferenceCode);
+
+            modelBuilder.Entity<TableAuthRepresentative>()
+                .HasMany(r => r.LibraryRelationships)
+                .WithOne(a => a.TableAuthRepresentative)
+                .HasForeignKey(r => r.Id)
+                .HasPrincipalKey(a => a.RelationshipId);
 
             modelBuilder.Entity<GisModel>()
                 .HasOne(m => m.MasterListModel)

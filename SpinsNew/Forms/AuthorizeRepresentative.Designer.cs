@@ -29,12 +29,19 @@ namespace SpinsNew.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeRepresentative));
             this.txt_reference = new DevExpress.XtraEditors.TextEdit();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+            this.authorizeRepViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colLastName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colFirstName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMiddleName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colExtName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colEnglish = new DevExpress.XtraGrid.Columns.GridColumn();
             this.txt_lastname = new DevExpress.XtraEditors.TextEdit();
             this.txt_firstname = new DevExpress.XtraEditors.TextEdit();
             this.txt_middlename = new DevExpress.XtraEditors.TextEdit();
@@ -52,6 +59,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.authorizeRepViewModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_lastname.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_firstname.Properties)).BeginInit();
@@ -77,9 +85,9 @@ namespace SpinsNew.Forms
             // 
             this.groupControl1.Controls.Add(this.simpleButton1);
             this.groupControl1.Controls.Add(this.gridControl1);
-            this.groupControl1.Location = new System.Drawing.Point(11, 136);
+            this.groupControl1.Location = new System.Drawing.Point(11, 160);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(573, 224);
+            this.groupControl1.Size = new System.Drawing.Size(573, 200);
             this.groupControl1.TabIndex = 2;
             this.groupControl1.Text = "Authorize Representatives";
             // 
@@ -102,16 +110,27 @@ namespace SpinsNew.Forms
             this.gridControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridControl1.DataSource = this.authorizeRepViewModelBindingSource;
             this.gridControl1.Location = new System.Drawing.Point(4, 23);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(565, 197);
+            this.gridControl1.Size = new System.Drawing.Size(565, 173);
             this.gridControl1.TabIndex = 1;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             // 
+            // authorizeRepViewModelBindingSource
+            // 
+            this.authorizeRepViewModelBindingSource.DataSource = typeof(SpinsNew.ViewModel.AuthorizeRepViewModel);
+            // 
             // gridView1
             // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colLastName,
+            this.colFirstName,
+            this.colMiddleName,
+            this.colExtName,
+            this.colEnglish});
             this.gridView1.DetailHeight = 303;
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
@@ -119,6 +138,41 @@ namespace SpinsNew.Forms
             this.gridView1.OptionsFind.FindFilterColumns = "LastName;FirstName;MiddleName";
             this.gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.gridView1.OptionsView.ShowGroupPanel = false;
+            // 
+            // colLastName
+            // 
+            this.colLastName.FieldName = "LastName";
+            this.colLastName.Name = "colLastName";
+            this.colLastName.Visible = true;
+            this.colLastName.VisibleIndex = 0;
+            // 
+            // colFirstName
+            // 
+            this.colFirstName.FieldName = "FirstName";
+            this.colFirstName.Name = "colFirstName";
+            this.colFirstName.Visible = true;
+            this.colFirstName.VisibleIndex = 1;
+            // 
+            // colMiddleName
+            // 
+            this.colMiddleName.FieldName = "MiddleName";
+            this.colMiddleName.Name = "colMiddleName";
+            this.colMiddleName.Visible = true;
+            this.colMiddleName.VisibleIndex = 2;
+            // 
+            // colExtName
+            // 
+            this.colExtName.FieldName = "ExtName";
+            this.colExtName.Name = "colExtName";
+            this.colExtName.Visible = true;
+            this.colExtName.VisibleIndex = 3;
+            // 
+            // colEnglish
+            // 
+            this.colEnglish.FieldName = "English";
+            this.colEnglish.Name = "colEnglish";
+            this.colEnglish.Visible = true;
+            this.colEnglish.VisibleIndex = 4;
             // 
             // txt_lastname
             // 
@@ -166,11 +220,11 @@ namespace SpinsNew.Forms
             // 
             this.groupControl2.Controls.Add(this.txt_id);
             this.groupControl2.Controls.Add(this.labelControl5);
+            this.groupControl2.Controls.Add(this.btn_edit);
             this.groupControl2.Controls.Add(this.labelControl4);
             this.groupControl2.Controls.Add(this.labelControl3);
             this.groupControl2.Controls.Add(this.labelControl2);
             this.groupControl2.Controls.Add(this.labelControl1);
-            this.groupControl2.Controls.Add(this.btn_edit);
             this.groupControl2.Controls.Add(this.txt_lastname);
             this.groupControl2.Controls.Add(this.cmb_relationship);
             this.groupControl2.Controls.Add(this.txt_reference);
@@ -179,7 +233,7 @@ namespace SpinsNew.Forms
             this.groupControl2.Controls.Add(this.txt_middlename);
             this.groupControl2.Location = new System.Drawing.Point(11, 2);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(573, 129);
+            this.groupControl2.Size = new System.Drawing.Size(573, 152);
             this.groupControl2.TabIndex = 1;
             this.groupControl2.Text = "Details";
             // 
@@ -203,7 +257,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl4
             // 
-            this.labelControl4.Location = new System.Drawing.Point(237, 29);
+            this.labelControl4.Location = new System.Drawing.Point(235, 29);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(77, 13);
             this.labelControl4.TabIndex = 35;
@@ -219,7 +273,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(21, 58);
+            this.labelControl2.Location = new System.Drawing.Point(22, 58);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(51, 13);
             this.labelControl2.TabIndex = 35;
@@ -227,7 +281,7 @@ namespace SpinsNew.Forms
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(21, 29);
+            this.labelControl1.Location = new System.Drawing.Point(23, 29);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(50, 13);
             this.labelControl1.TabIndex = 35;
@@ -239,9 +293,9 @@ namespace SpinsNew.Forms
             this.btn_edit.Appearance.Options.UseFont = true;
             this.btn_edit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_edit.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_edit.ImageOptions.Image")));
-            this.btn_edit.Location = new System.Drawing.Point(321, 87);
+            this.btn_edit.Location = new System.Drawing.Point(223, 123);
             this.btn_edit.Name = "btn_edit";
-            this.btn_edit.Size = new System.Drawing.Size(113, 18);
+            this.btn_edit.Size = new System.Drawing.Size(148, 24);
             this.btn_edit.TabIndex = 5;
             this.btn_edit.Text = "Save";
             this.btn_edit.Click += new System.EventHandler(this.btn_edit_Click);
@@ -266,6 +320,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.authorizeRepViewModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_lastname.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_firstname.Properties)).EndInit();
@@ -300,5 +355,11 @@ namespace SpinsNew.Forms
         private DevExpress.XtraGrid.GridControl gridControl1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         public DevExpress.XtraEditors.TextEdit txt_id;
+        private System.Windows.Forms.BindingSource authorizeRepViewModelBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colLastName;
+        private DevExpress.XtraGrid.Columns.GridColumn colFirstName;
+        private DevExpress.XtraGrid.Columns.GridColumn colMiddleName;
+        private DevExpress.XtraGrid.Columns.GridColumn colExtName;
+        private DevExpress.XtraGrid.Columns.GridColumn colEnglish;
     }
 }

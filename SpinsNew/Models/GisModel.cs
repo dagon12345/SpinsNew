@@ -31,5 +31,7 @@ namespace SpinsNew.Models
         public LibraryAssessment LibraryAssessment { get; set; }
         public MasterListModel MasterListModel { get; set; } = null;
         public LibraryValidator LibraryValidator { get; set; }
+        //GIS model reference code has many TableAuthorizeRepresentatives
+        public ICollection<TableAuthRepresentative> TableAuthRepresentatives { get; set; } = new List<TableAuthRepresentative>();
     }
 }
