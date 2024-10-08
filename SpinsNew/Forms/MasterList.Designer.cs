@@ -77,6 +77,7 @@ namespace SpinsNew
             this.colDateTimeModified = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colModifiedBy = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colId = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAttachments = new DevExpress.XtraGrid.Columns.GridColumn();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.btnSearch = new DevExpress.XtraEditors.SimpleButton();
             this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
@@ -112,7 +113,6 @@ namespace SpinsNew
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.btnViewAttach = new DevExpress.XtraEditors.SimpleButton();
             this.btnExport = new DevExpress.XtraEditors.SimpleButton();
-            this.colAttachments = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSplitContainer1.Panel2)).BeginInit();
@@ -543,6 +543,13 @@ namespace SpinsNew
             this.colId.Visible = true;
             this.colId.VisibleIndex = 41;
             // 
+            // colAttachments
+            // 
+            this.colAttachments.FieldName = "Attachments";
+            this.colAttachments.Name = "colAttachments";
+            this.colAttachments.Visible = true;
+            this.colAttachments.VisibleIndex = 42;
+            // 
             // groupControl2
             // 
             this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -835,7 +842,7 @@ namespace SpinsNew
             this.gbActions.Controls.Add(this.btnDelistBene);
             this.gbActions.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbActions.ForeColor = System.Drawing.Color.Black;
-            this.gbActions.Location = new System.Drawing.Point(237, 5);
+            this.gbActions.Location = new System.Drawing.Point(471, 6);
             this.gbActions.Name = "gbActions";
             this.gbActions.Size = new System.Drawing.Size(229, 137);
             this.gbActions.TabIndex = 3;
@@ -908,7 +915,7 @@ namespace SpinsNew
             this.gbPayroll.Controls.Add(this.btnCreatePayroll);
             this.gbPayroll.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbPayroll.ForeColor = System.Drawing.Color.Black;
-            this.gbPayroll.Location = new System.Drawing.Point(472, 6);
+            this.gbPayroll.Location = new System.Drawing.Point(239, 4);
             this.gbPayroll.Name = "gbPayroll";
             this.gbPayroll.Size = new System.Drawing.Size(228, 137);
             this.gbPayroll.TabIndex = 2;
@@ -1000,13 +1007,6 @@ namespace SpinsNew
             this.btnExport.Text = "Export to excel";
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // colAttachments
-            // 
-            this.colAttachments.FieldName = "Attachments";
-            this.colAttachments.Name = "colAttachments";
-            this.colAttachments.Visible = true;
-            this.colAttachments.VisibleIndex = 42;
-            // 
             // MasterList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1084,7 +1084,6 @@ namespace SpinsNew
         private System.Windows.Forms.GroupBox gbPayroll;
         private DevExpress.XtraEditors.SimpleButton btnViewPayroll;
         private DevExpress.XtraEditors.SimpleButton btnPayroll;
-        private DevExpress.XtraEditors.SimpleButton btnCreatePayroll;
         private System.Windows.Forms.GroupBox gbActions;
         private DevExpress.XtraEditors.SimpleButton btnDelete;
         private DevExpress.XtraEditors.SimpleButton btnSetApplicant;
@@ -1141,6 +1140,7 @@ namespace SpinsNew
         private DevExpress.XtraGrid.Columns.GridColumn colId;
         private DevExpress.XtraEditors.SimpleButton btnExport;
         private DevExpress.XtraGrid.Columns.GridColumn colAttachments;
+        public DevExpress.XtraEditors.SimpleButton btnCreatePayroll;
     }
 }
 

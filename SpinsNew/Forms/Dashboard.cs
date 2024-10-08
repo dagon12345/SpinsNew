@@ -1,12 +1,10 @@
 ﻿using DevExpress.XtraCharts;
-using DevExpress.XtraEditors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
 using SpinsNew.Interfaces;
-using SpinsNew.Models;
 using SpinsNew.StatisticsForm;
 using SpinsWinforms.Forms;
 using System;
@@ -81,116 +79,126 @@ namespace SpinsNew.Forms
         }
         public async Task DisplayAsyncEF()
         {
-            // Bind the merged DataTable to the chart
-            btnRefreshNew.Enabled = false;
-            btnRefreshNew.Text = "Please wait...";
-
-            using (var context = new ApplicationDbContext())
+            try
             {
-                // Fetch the data for targets from EF Core
-                var targetData = await context.tbl_payroll_socpen
-                    .Include(x => x.LibraryProvince)
-                    .Where(x => x.Year == DateTime.Now.Year && x.ClaimTypeID.HasValue && x.PeriodID == 9 && x.PayrollStatusID != 3)
-                    .GroupBy(x => x.LibraryProvince.ProvinceName)
-                    .Select(g => new
-                    {
-                        ProvinceName = g.Key,
-                        TotalBeneficiaries = g.Count()
-                    })
-                    .AsNoTracking()
-                    .ToListAsync();
 
-                // Fetch the data for served from EF Core
-                var servedData = await context.tbl_payroll_socpen
-                    .Include(x => x.LibraryProvince)
-                    .Include(x => x.MasterListModel)
-                    .Where(x => x.Year == DateTime.Now.Year && x.PayrollStatusID >= 1 && x.PayrollStatusID <= 3 && (x.PeriodID == 9
-                                || x.MasterListModel.RegTypeId == 2 && x.PeriodID >= 1 && x.PeriodID <= 10 && x.PayrollStatusID == 1))
-                    .GroupBy(x => x.LibraryProvince.ProvinceName)
-                    .Select(g => new
-                    {
-                        ProvinceName = g.Key,
-                        TotalBeneficiariesServed = g.Count()
-                    })
-                    .AsNoTracking()
-                    .ToListAsync();
+                // Bind the merged DataTable to the chart
+                btnRefreshNew.Enabled = false;
+                btnRefreshNew.Text = "Please wait...";
 
-                // Merge the two results into a DataTable
-                DataTable dt = new DataTable();
-                dt.Columns.Add("ProvinceName", typeof(string));
-                dt.Columns.Add("TotalBeneficiaries", typeof(int));
-                dt.Columns.Add("TotalBeneficiariesServed", typeof(int));
-
-                // Add target data to the DataTable
-                foreach (var target in targetData)
+                using (var context = new ApplicationDbContext())
                 {
-                    DataRow newRow = dt.NewRow();
-                    newRow["ProvinceName"] = target.ProvinceName;
-                    newRow["TotalBeneficiaries"] = target.TotalBeneficiaries;
-                    newRow["TotalBeneficiariesServed"] = 0; // Default value
-                    dt.Rows.Add(newRow);
-                }
+                    // Fetch the data for targets from EF Core
+                    var targetData = await context.tbl_payroll_socpen
+                        .Include(x => x.LibraryProvince)
+                        .Where(x => x.Year == DateTime.Now.Year && x.ClaimTypeID.HasValue && x.PeriodID == 9 && x.PayrollStatusID != 3)
+                        .GroupBy(x => x.LibraryProvince.ProvinceName)
+                        .Select(g => new
+                        {
+                            ProvinceName = g.Key,
+                            TotalBeneficiaries = g.Count()
+                        })
+                        .AsNoTracking()
+                        .ToListAsync();
 
-                // Merge served data into the existing rows in the DataTable
-                foreach (var served in servedData)
-                {
-                    DataRow existingRow = dt.Select($"ProvinceName = '{served.ProvinceName}'").FirstOrDefault();
-                    if (existingRow != null)
-                    {
-                        existingRow["TotalBeneficiariesServed"] = served.TotalBeneficiariesServed;
-                    }
-                    else
+                    // Fetch the data for served from EF Core
+                    var servedData = await context.tbl_payroll_socpen
+                        .Include(x => x.LibraryProvince)
+                        .Include(x => x.MasterListModel)
+                        .Where(x => x.Year == DateTime.Now.Year && x.PayrollStatusID >= 1 && x.PayrollStatusID <= 3 && (x.PeriodID == 9
+                                    || x.MasterListModel.RegTypeId == 2 && x.PeriodID >= 1 && x.PeriodID <= 10 && x.PayrollStatusID == 1))
+                        .GroupBy(x => x.LibraryProvince.ProvinceName)
+                        .Select(g => new
+                        {
+                            ProvinceName = g.Key,
+                            TotalBeneficiariesServed = g.Count()
+                        })
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    // Merge the two results into a DataTable
+                    DataTable dt = new DataTable();
+                    dt.Columns.Add("ProvinceName", typeof(string));
+                    dt.Columns.Add("TotalBeneficiaries", typeof(int));
+                    dt.Columns.Add("TotalBeneficiariesServed", typeof(int));
+
+                    // Add target data to the DataTable
+                    foreach (var target in targetData)
                     {
                         DataRow newRow = dt.NewRow();
-                        newRow["ProvinceName"] = served.ProvinceName;
-                        newRow["TotalBeneficiaries"] = 0; // Default value
-                        newRow["TotalBeneficiariesServed"] = served.TotalBeneficiariesServed;
+                        newRow["ProvinceName"] = target.ProvinceName;
+                        newRow["TotalBeneficiaries"] = target.TotalBeneficiaries;
+                        newRow["TotalBeneficiariesServed"] = 0; // Default value
                         dt.Rows.Add(newRow);
                     }
+
+                    // Merge served data into the existing rows in the DataTable
+                    foreach (var served in servedData)
+                    {
+                        DataRow existingRow = dt.Select($"ProvinceName = '{served.ProvinceName}'").FirstOrDefault();
+                        if (existingRow != null)
+                        {
+                            existingRow["TotalBeneficiariesServed"] = served.TotalBeneficiariesServed;
+                        }
+                        else
+                        {
+                            DataRow newRow = dt.NewRow();
+                            newRow["ProvinceName"] = served.ProvinceName;
+                            newRow["TotalBeneficiaries"] = 0; // Default value
+                            newRow["TotalBeneficiariesServed"] = served.TotalBeneficiariesServed;
+                            dt.Rows.Add(newRow);
+                        }
+                    }
+                    // Calculate the total sum and utilization percentage
+                    int totalBeneficiaries = dt.AsEnumerable().Sum(row => row.Field<int>("TotalBeneficiaries"));
+                    string formattedTotalBeneficiaries = totalBeneficiaries.ToString("#,##0");
+
+                    int totalBeneficiariesServed = dt.AsEnumerable().Sum(row => row.Field<int>("TotalBeneficiariesServed"));
+                    string formattedTotalBeneficiariesServed = totalBeneficiariesServed.ToString("#,##0");
+
+                    double utilizationPercentage = totalBeneficiaries > 0 ? (double)totalBeneficiariesServed / totalBeneficiaries * 100 : 0;
+                    string formattedUtilizationPercentage = utilizationPercentage.ToString("0.00");
+
+                    // UI Updates (e.g., chart and text boxes)
+                    Invoke((MethodInvoker)delegate
+                    {
+                        // Bind the merged DataTable to the chart
+                        btnRefreshNew.Enabled = true;
+                        btnRefreshNew.Text = "Refresh";
+                        chartControl1.DataSource = dt;
+                        // Configure the series for the chart
+                        Series seriesTarget = new Series("Target", ViewType.Bar);
+                        seriesTarget.ArgumentDataMember = "ProvinceName";
+                        seriesTarget.ValueDataMembers.AddRange(new string[] { "TotalBeneficiaries" });
+                        seriesTarget.LabelsVisibility = DevExpress.Utils.DefaultBoolean.True;
+                        seriesTarget.View.Color = System.Drawing.Color.Violet;
+
+                        Series seriesServed = new Series("Served", ViewType.Bar);
+                        seriesServed.ArgumentDataMember = "ProvinceName";
+                        seriesServed.ValueDataMembers.AddRange(new string[] { "TotalBeneficiariesServed" });
+                        seriesServed.LabelsVisibility = DevExpress.Utils.DefaultBoolean.True;
+                        seriesServed.View.Color = System.Drawing.Color.Gray;
+
+                        chartControl1.Series.Clear();
+                        chartControl1.Series.AddRange(new Series[] { seriesTarget, seriesServed });
+
+                        // Customize chart appearance
+                        chartControl1.Titles.Clear();
+                        chartControl1.Titles.Add(new ChartTitle { Text = $"Accomplishment Year {DateTime.Now.Year} (Physical)" });
+
+                        // Display the calculated values in text boxes
+                        textTarget.Text = formattedTotalBeneficiaries;
+                        textActual.Text = formattedTotalBeneficiariesServed;
+                        utilizationTextBox.Text = $"{formattedUtilizationPercentage}%";
+                    });
                 }
-                // Calculate the total sum and utilization percentage
-                int totalBeneficiaries = dt.AsEnumerable().Sum(row => row.Field<int>("TotalBeneficiaries"));
-                string formattedTotalBeneficiaries = totalBeneficiaries.ToString("#,##0");
-
-                int totalBeneficiariesServed = dt.AsEnumerable().Sum(row => row.Field<int>("TotalBeneficiariesServed"));
-                string formattedTotalBeneficiariesServed = totalBeneficiariesServed.ToString("#,##0");
-
-                double utilizationPercentage = totalBeneficiaries > 0 ? (double)totalBeneficiariesServed / totalBeneficiaries * 100 : 0;
-                string formattedUtilizationPercentage = utilizationPercentage.ToString("0.00");
-
-                // UI Updates (e.g., chart and text boxes)
-                Invoke((MethodInvoker)delegate
-                {
-                    // Bind the merged DataTable to the chart
-                    btnRefreshNew.Enabled = true;
-                    btnRefreshNew.Text = "Refresh";
-                    chartControl1.DataSource = dt;
-                    // Configure the series for the chart
-                    Series seriesTarget = new Series("Target", ViewType.Bar);
-                    seriesTarget.ArgumentDataMember = "ProvinceName";
-                    seriesTarget.ValueDataMembers.AddRange(new string[] { "TotalBeneficiaries" });
-                    seriesTarget.LabelsVisibility = DevExpress.Utils.DefaultBoolean.True;
-                    seriesTarget.View.Color = System.Drawing.Color.Violet;
-
-                    Series seriesServed = new Series("Served", ViewType.Bar);
-                    seriesServed.ArgumentDataMember = "ProvinceName";
-                    seriesServed.ValueDataMembers.AddRange(new string[] { "TotalBeneficiariesServed" });
-                    seriesServed.LabelsVisibility = DevExpress.Utils.DefaultBoolean.True;
-                    seriesServed.View.Color = System.Drawing.Color.Gray;
-
-                    chartControl1.Series.Clear();
-                    chartControl1.Series.AddRange(new Series[] { seriesTarget, seriesServed });
-
-                    // Customize chart appearance
-                    chartControl1.Titles.Clear();
-                    chartControl1.Titles.Add(new ChartTitle { Text = $"Accomplishment Year {DateTime.Now.Year} (Physical)" });
-
-                    // Display the calculated values in text boxes
-                    textTarget.Text = formattedTotalBeneficiaries;
-                    textActual.Text = formattedTotalBeneficiariesServed;
-                    utilizationTextBox.Text = $"{formattedUtilizationPercentage}%";
-                });
             }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+
         }
 
 

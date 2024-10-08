@@ -28,7 +28,7 @@ namespace SpinsNew.Forms
 
         private void AuthorizeRepresentative_Load(object sender, EventArgs e)
         {
-           LoadDataAsync();// Load the table
+            LoadDataAsync();// Load the table
             Relationship();//Load the relationship
         }
 
@@ -92,7 +92,6 @@ namespace SpinsNew.Forms
         private void DeleteRepresentative()
         {
             //DELETE USERS FROM DATABASE.
-
             try
             {
                 GridView gridView = gridControl1.MainView as GridView;

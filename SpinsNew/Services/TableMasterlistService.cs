@@ -42,8 +42,6 @@ namespace SpinsNew.Services
         {
             using (var context = new ApplicationDbContext())
             {
-
-
                 var masterList = await context.tbl_masterlist
                     .Include(m => m.LibraryMunicipality)
                     .Include(b => b.LibraryBarangay)
@@ -116,8 +114,6 @@ namespace SpinsNew.Services
                         SpisBatch = n.GisModels.Select(s => s.SpisBatch).FirstOrDefault(),
                         Spbuf = n.SpbufModels.Select(r => r.ReferenceCode).FirstOrDefault(),
                         Attachments = n.AttachmentModels.Select(m => m.AttachmentName).FirstOrDefault()
-
-
 
                     })
                     .ToListAsync();

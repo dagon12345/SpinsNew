@@ -10,7 +10,6 @@ using SpinsNew.Data;
 using SpinsNew.Interfaces;
 using SpinsNew.Libraries;
 using SpinsNew.PrintPreviews;
-using SpinsNew.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,7 +25,6 @@ namespace SpinsNew.Forms
         MySqlConnection con = null;
         public string _username;
         public string _userRole;
-        private ApplicationDbContext _dbContext;
         private readonly ILibraryMunicipality _libraryMunicipality;
         public Payroll(string username, string userRole, ILibraryMunicipality libraryMunicipality)
         {
@@ -56,8 +54,7 @@ namespace SpinsNew.Forms
 
         private async void Payroll_Load(object sender, EventArgs e)
         {
-            _dbContext = new ApplicationDbContext(); // our dbcontext
-                                                     // MunicipalityNew();
+
             await MunicipalityEf();
             await ClaimTypeEf();
             await YearEf();
@@ -88,7 +85,7 @@ namespace SpinsNew.Forms
         //Refactored code for year to display.
         public async Task YearEf()
         {
-            using(var context = new ApplicationDbContext())
+            using (var context = new ApplicationDbContext())
             {
                 var year = await context.lib_year
                     .AsNoTracking()
@@ -96,7 +93,7 @@ namespace SpinsNew.Forms
                     .ToListAsync();
 
                 cmb_year.Properties.Items.Clear();
-                foreach(var years in year)
+                foreach (var years in year)
                 {
                     cmb_year.Properties.Items.Add(new LibraryYear
                     {
@@ -214,7 +211,7 @@ namespace SpinsNew.Forms
                     .ToListAsync();
 
                 cmb_barangay.Properties.Items.Clear();
-                foreach(var barangay in barangays)
+                foreach (var barangay in barangays)
                 {
                     // Add DataSourceItem to the ComboBox
                     cmb_barangay.Properties.Items.Add(new CheckedListBoxItem(
@@ -232,7 +229,7 @@ namespace SpinsNew.Forms
             EnableSpinner();
             //this business logic is what we used inside our services LibraryMunicipalityService.
             var municipalityLists = await Task.Run(() => _libraryMunicipality.GetMunicipalitiesAsync());
-           
+
             cmb_municipality.Properties.Items.Clear();
             foreach (var municipalityList in municipalityLists)
             {
@@ -241,10 +238,10 @@ namespace SpinsNew.Forms
                     PSGCCityMun = municipalityList.PSGCCityMun,
                     CityMunName = municipalityList.CityMunName + " - " + municipalityList.LibraryProvince.ProvinceName
                 });
-                    
-                    //value: municipalityList.PSGCCityMun, //Reference the ID
-                    //description: municipalityList.CityMunName + " " + municipalityList.LibraryProvince.ProvinceName // Display the text plus the province name.
-                   // checkState: CheckState.Unchecked // Initially Unchecked.
+
+                //value: municipalityList.PSGCCityMun, //Reference the ID
+                //description: municipalityList.CityMunName + " " + municipalityList.LibraryProvince.ProvinceName // Display the text plus the province name.
+                // checkState: CheckState.Unchecked // Initially Unchecked.
             }
             DisableSpinner();
 
@@ -726,7 +723,7 @@ namespace SpinsNew.Forms
         {
             CoeRegularPrintPreview coepayrollPreview = new CoeRegularPrintPreview(this);
             coepayrollPreview.SetPayrollData(payrollData);
-           coepayrollPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
+            coepayrollPreview.SetSignatoriesData(signatoriesData); // Pass signatories data
             coepayrollPreview.Show();
         }
         private void PrintCOEUnpaid(DataTable payrollData, DataTable signatoriesData)
@@ -941,101 +938,105 @@ namespace SpinsNew.Forms
                 int claimTypeID = selectedClaimType.ClaimTypeID;
 
 
-
-                if (gridView != null)
+                using (var context = new ApplicationDbContext())
                 {
-                    // Get the row data
-                    DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
 
-                    if (row != null && row["ID"] != DBNull.Value)
+
+                    if (gridView != null)
                     {
-                        int id = Convert.ToInt32(row["ID"]);
+                        // Get the row data
+                        DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
 
-                        // Check if 'ck_all' is checked
-                        if (ck_all.Checked)
+                        if (row != null && row["ID"] != DBNull.Value)
                         {
-                            if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                            int id = Convert.ToInt32(row["ID"]);
+
+                            // Check if 'ck_all' is checked
+                            if (ck_all.Checked)
                             {
-                                // Iterate over all visible rows in the GridControl
-                                for (int i = 0; i < gridView1.RowCount; i++)
+                                if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                                 {
-                                    // Retrieve the visible row handle
-                                    int rowHandle = gridView1.GetVisibleRowHandle(i);
-
-                                    // Get the ID of the current row (adjust to match your column name)
-                                    int idGrid = Convert.ToInt32(gridView1.GetRowCellValue(rowHandle, "ID"));
-                                    var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == idGrid);
-
-                                    if (payroll != null)
+                                    // Iterate over all visible rows in the GridControl
+                                    for (int i = 0; i < gridView1.RowCount; i++)
                                     {
-                                        // Update payroll details
-                                        payroll.DateClaimedFrom = Convert.ToDateTime(dt_from.EditValue);
-                                        payroll.DateClaimedTo = Convert.ToDateTime(dt_to.EditValue);
-                                        payroll.ClaimTypeID = claimTypeID;
-                                        payroll.Remarks = txt_remarks.Text;
-                                        payroll.PayrollStatusID = 1;
-                                        payroll.DateTimeModified = DateTime.Now;
-                                        payroll.ModifiedBy = _username;
+                                        // Retrieve the visible row handle
+                                        int rowHandle = gridView1.GetVisibleRowHandle(i);
 
-                                        // Update the payroll record in the database context
-                                        _dbContext.tbl_payroll_socpen.Update(payroll);
-                                        AlternativeUpdatingAllRows();
-                                        // AlternativeUpdating();
+                                        // Get the ID of the current row (adjust to match your column name)
+                                        int idGrid = Convert.ToInt32(gridView1.GetRowCellValue(rowHandle, "ID"));
+                                        var payroll = context.tbl_payroll_socpen.FirstOrDefault(x => x.ID == idGrid);
+
+                                        if (payroll != null)
+                                        {
+                                            // Update payroll details
+                                            payroll.DateClaimedFrom = Convert.ToDateTime(dt_from.EditValue);
+                                            payroll.DateClaimedTo = Convert.ToDateTime(dt_to.EditValue);
+                                            payroll.ClaimTypeID = claimTypeID;
+                                            payroll.Remarks = txt_remarks.Text;
+                                            payroll.PayrollStatusID = 1;
+                                            payroll.DateTimeModified = DateTime.Now;
+                                            payroll.ModifiedBy = _username;
+
+                                            // Update the payroll record in the database context
+                                            context.tbl_payroll_socpen.Update(payroll);
+                                            AlternativeUpdatingAllRows();
+                                            // AlternativeUpdating();
+                                        }
+
+
+
                                     }
 
+                                    // Save all changes to the database after updating all records
+                                    await context.SaveChangesAsync();
+
+                                    XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 
+                                    // Refresh the data in the GridControl
+                                    //gridPayroll.Refresh();
+                                    //Search();
                                 }
-
-                                // Save all changes to the database after updating all records
-                                await _dbContext.SaveChangesAsync();
-
-                                XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
-                                // Refresh the data in the GridControl
-                                //gridPayroll.Refresh();
-                                //Search();
                             }
+                            else
+                            {
+                                // Handle the case where 'ck_all' is not checked (updating a single record)
+                                var payroll = context.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
+
+                                if (payroll != null)
+                                {
+                                    // Update payroll details for the single record
+                                    payroll.DateClaimedFrom = Convert.ToDateTime(dt_from.EditValue);
+                                    payroll.DateClaimedTo = Convert.ToDateTime(dt_to.EditValue);
+                                    payroll.ClaimTypeID = claimTypeID;
+                                    payroll.Remarks = txt_remarks.Text;
+                                    payroll.PayrollStatusID = 1;
+                                    payroll.DateTimeModified = DateTime.Now;
+                                    payroll.ModifiedBy = _username;
+
+                                    // Save changes to the database
+                                    context.tbl_payroll_socpen.Update(payroll);
+                                    await context.SaveChangesAsync();
+
+                                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    AlternativeUpdatingSingle();
+
+                                    // Refresh the data in the GridControl
+                                    //Search();
+                                    // gridPayroll.Refresh();
+                                }
+                            }
+
                         }
                         else
                         {
-                            // Handle the case where 'ck_all' is not checked (updating a single record)
-                            var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
-
-                            if (payroll != null)
-                            {
-                                // Update payroll details for the single record
-                                payroll.DateClaimedFrom = Convert.ToDateTime(dt_from.EditValue);
-                                payroll.DateClaimedTo = Convert.ToDateTime(dt_to.EditValue);
-                                payroll.ClaimTypeID = claimTypeID;
-                                payroll.Remarks = txt_remarks.Text;
-                                payroll.PayrollStatusID = 1;
-                                payroll.DateTimeModified = DateTime.Now;
-                                payroll.ModifiedBy = _username;
-
-                                // Save changes to the database
-                                _dbContext.tbl_payroll_socpen.Update(payroll);
-                                await _dbContext.SaveChangesAsync();
-
-                                XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                AlternativeUpdatingSingle();
-
-                                // Refresh the data in the GridControl
-                                //Search();
-                                // gridPayroll.Refresh();
-                            }
+                            XtraMessageBox.Show("Invalid or missing ID value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-
                     }
                     else
                     {
-                        XtraMessageBox.Show("Invalid or missing ID value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        XtraMessageBox.Show("GridView or row handle is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                }
-                else
-                {
-                    XtraMessageBox.Show("GridView or row handle is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
@@ -1060,96 +1061,100 @@ namespace SpinsNew.Forms
             try
             {
 
-
-                if (gridView != null)
+                using (var context = new ApplicationDbContext())
                 {
-                    // Get the row data
-                    DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
 
-                    if (row != null && row["ID"] != DBNull.Value)
+
+                    if (gridView != null)
                     {
-                        int id = Convert.ToInt32(row["ID"]);
+                        // Get the row data
+                        DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
 
-                        // Check if 'ck_all' is checked
-                        if (ck_all.Checked)//Update all 
+                        if (row != null && row["ID"] != DBNull.Value)
                         {
-                            if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                            int id = Convert.ToInt32(row["ID"]);
+
+                            // Check if 'ck_all' is checked
+                            if (ck_all.Checked)//Update all 
                             {
-                                // Iterate over all visible rows in the GridControl
-                                for (int i = 0; i < gridView1.RowCount; i++)
+                                if (MessageBox.Show("Are you sure you want to select all?", "Update All", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                                 {
-                                    // Retrieve the visible row handle
-                                    int rowHandle = gridView1.GetVisibleRowHandle(i);
-                                    int idGrid = Convert.ToInt32(gridView1.GetRowCellValue(rowHandle, "ID"));
-
-                                    var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == idGrid);
-                                    if (payroll != null)
+                                    // Iterate over all visible rows in the GridControl
+                                    for (int i = 0; i < gridView1.RowCount; i++)
                                     {
-                                        // Update payroll details
-                                        payroll.DateClaimedFrom = null;
-                                        payroll.DateClaimedTo = null;
-                                        payroll.ClaimTypeID = null;
-                                        payroll.Remarks = txt_remarks.Text;
-                                        payroll.PayrollStatusID = 2; // Unclaimed
-                                        payroll.DateTimeModified = DateTime.Now;
-                                        payroll.ModifiedBy = _username;
+                                        // Retrieve the visible row handle
+                                        int rowHandle = gridView1.GetVisibleRowHandle(i);
+                                        int idGrid = Convert.ToInt32(gridView1.GetRowCellValue(rowHandle, "ID"));
 
-                                        // Update the payroll record in the database context
-                                        _dbContext.tbl_payroll_socpen.Update(payroll);
-                                        AlternativeUnclaimingAllRows();
-                                        // AlternativeUpdating();
-                                        //await _dbContext.SaveChangesAsync();
+                                        var payroll = context.tbl_payroll_socpen.FirstOrDefault(x => x.ID == idGrid);
+                                        if (payroll != null)
+                                        {
+                                            // Update payroll details
+                                            payroll.DateClaimedFrom = null;
+                                            payroll.DateClaimedTo = null;
+                                            payroll.ClaimTypeID = null;
+                                            payroll.Remarks = txt_remarks.Text;
+                                            payroll.PayrollStatusID = 2; // Unclaimed
+                                            payroll.DateTimeModified = DateTime.Now;
+                                            payroll.ModifiedBy = _username;
+
+                                            // Update the payroll record in the database context
+                                            context.tbl_payroll_socpen.Update(payroll);
+                                            AlternativeUnclaimingAllRows();
+                                            // AlternativeUpdating();
+                                            //await _dbContext.SaveChangesAsync();
+                                        }
                                     }
+                                    // Save all changes to the database after updating all records
+                                    await context.SaveChangesAsync();
+
+                                    XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                    // Refresh the data in the GridControl
+                                    // Search();
+
                                 }
-                                // Save all changes to the database after updating all records
-                                await _dbContext.SaveChangesAsync();
-
-                                XtraMessageBox.Show("All visible data updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                                // Refresh the data in the GridControl
-                                // Search();
-
                             }
+                            else //Update Individually 
+                            {
+                                // Retrieve the payroll record
+                                var payroll = context.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
+
+                                if (payroll != null)
+                                {
+                                    // Update payroll details
+                                    payroll.DateClaimedFrom = null;
+                                    payroll.DateClaimedTo = null;
+                                    payroll.ClaimTypeID = null;
+                                    payroll.Remarks = txt_remarks.Text;
+                                    payroll.PayrollStatusID = 2; // Unclaimed
+                                    payroll.DateTimeModified = DateTime.Now;
+                                    payroll.ModifiedBy = _username;
+
+                                    // Save changes to the database
+                                    context.tbl_payroll_socpen.Update(payroll);
+                                    await context.SaveChangesAsync();
+
+                                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    unclaimedUpdatingSingle();
+                                    //Search();
+                                }
+                                else
+                                {
+                                    XtraMessageBox.Show("Payroll record not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
+
                         }
-                        else //Update Individually 
+                        else
                         {
-                            // Retrieve the payroll record
-                            var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
-
-                            if (payroll != null)
-                            {
-                                // Update payroll details
-                                payroll.DateClaimedFrom = null;
-                                payroll.DateClaimedTo = null;
-                                payroll.ClaimTypeID = null;
-                                payroll.Remarks = txt_remarks.Text;
-                                payroll.PayrollStatusID = 2; // Unclaimed
-                                payroll.DateTimeModified = DateTime.Now;
-                                payroll.ModifiedBy = _username;
-
-                                // Save changes to the database
-                                _dbContext.tbl_payroll_socpen.Update(payroll);
-                                await _dbContext.SaveChangesAsync();
-
-                                XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                unclaimedUpdatingSingle();
-                                //Search();
-                            }
-                            else
-                            {
-                                XtraMessageBox.Show("Payroll record not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            XtraMessageBox.Show("Invalid or missing ID value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-
                     }
                     else
                     {
-                        XtraMessageBox.Show("Invalid or missing ID value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        XtraMessageBox.Show("GridView or row handle is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                }
-                else
-                {
-                    XtraMessageBox.Show("GridView or row handle is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
             }
@@ -1190,20 +1195,23 @@ namespace SpinsNew.Forms
                 // Get the row data
                 DataRowView row = gridView.GetRow(gridView.FocusedRowHandle) as DataRowView;
                 // Retrieve the visible row handle
-
-                for (int i = 0; i < gridView1.RowCount; i++)
+                using (var context = new ApplicationDbContext())
                 {
-                    int rowHandle = gridView1.GetVisibleRowHandle(i);
-                    int idGrid = Convert.ToInt32(gridView1.GetRowCellValue(rowHandle, "ID"));
 
-                    //searchControl
-                    _dbContext.Remove(_dbContext.tbl_payroll_socpen.Single(x => x.ID == idGrid));
+                    for (int i = 0; i < gridView1.RowCount; i++)
+                    {
+                        int rowHandle = gridView1.GetVisibleRowHandle(i);
+                        int idGrid = Convert.ToInt32(gridView1.GetRowCellValue(rowHandle, "ID"));
+
+                        //searchControl
+                        context.Remove(context.tbl_payroll_socpen.Single(x => x.ID == idGrid));
+                    }
+
+                    EnableSpinner();
+                    await context.SaveChangesAsync();
+                    Search();
+                    MessageBox.Show("Data displayed all deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-                EnableSpinner();
-                await _dbContext.SaveChangesAsync();
-                Search();
-                MessageBox.Show("Data displayed all deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         private PayrollFiles payrollFilesForm;
@@ -1285,24 +1293,29 @@ namespace SpinsNew.Forms
             }
             if (MessageBox.Show("Are you sure you want to archive this data?", "Archive", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                // Handle the case where 'ck_all' is not checked (updating a single record)
-                int id = Convert.ToInt32(row["ID"]);
-
-                var payroll = _dbContext.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
-
-                if (payroll != null)
+                using (var context = new ApplicationDbContext())
                 {
 
-                    payroll.PayrollStatusID = 3;
-                    payroll.DateTimeModified = DateTime.Now;
-                    payroll.ModifiedBy = _username;
 
-                    // Save changes to the database
-                    _dbContext.tbl_payroll_socpen.Update(payroll);
-                    await _dbContext.SaveChangesAsync();
+                    // Handle the case where 'ck_all' is not checked (updating a single record)
+                    int id = Convert.ToInt32(row["ID"]);
 
-                    XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    ArchivingUpdatingSingle();
+                    var payroll = context.tbl_payroll_socpen.FirstOrDefault(x => x.ID == id);
+
+                    if (payroll != null)
+                    {
+
+                        payroll.PayrollStatusID = 3;
+                        payroll.DateTimeModified = DateTime.Now;
+                        payroll.ModifiedBy = _username;
+
+                        // Save changes to the database
+                        context.tbl_payroll_socpen.Update(payroll);
+                        await context.SaveChangesAsync();
+
+                        XtraMessageBox.Show("Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ArchivingUpdatingSingle();
+                    }
                 }
             }
         }
@@ -1360,7 +1373,7 @@ namespace SpinsNew.Forms
                 MessageBox.Show("No data available to print.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-             PrintCOEUnpaid(payrollData, signatoriesData);
+            PrintCOEUnpaid(payrollData, signatoriesData);
             //PrintCOEUnpaid(payrollData);
         }
 

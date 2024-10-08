@@ -28,7 +28,7 @@ namespace SpinsNew.Forms
         {
 
         }
-
+        
 
         RegistrationForm registrationForm;
         private void hyper_register_Click(object sender, EventArgs e)
@@ -89,9 +89,24 @@ namespace SpinsNew.Forms
                 return;
             }
 
-            btn_login.Text = "Logging in...";
-            btn_login.Enabled = false;
-            await LoginEF();
+            try
+            {
+                btn_login.Text = "Logging in...";
+                btn_login.Enabled = false;
+                await LoginEF();
+
+            }
+            catch (Exception ex)
+            {
+
+                XtraMessageBox.Show($"Error message: {ex.Message}");
+            }
+            finally
+            {
+                btn_login.Text = "Login";
+                btn_login.Enabled = true;
+            }
+           
         }
 
         private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)

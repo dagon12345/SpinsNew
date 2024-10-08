@@ -52,7 +52,8 @@ namespace SpinsNew
             if (userRole == "3")// Number 3 is the encoders
             {
                 gbActions.Visible = false;
-                gbPayroll.Visible = false;
+                //gbPayroll.Visible = false;
+                btnCreatePayroll.Visible = false;
                 gbVerification.Visible = false;
                 gbForms.Visible = false;
             }
