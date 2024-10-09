@@ -30,9 +30,9 @@ namespace SpinsNew.Forms
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Dashboard));
-            DevExpress.XtraCharts.XYDiagram xyDiagram1 = new DevExpress.XtraCharts.XYDiagram();
-            DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.Series series2 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.XYDiagram xyDiagram2 = new DevExpress.XtraCharts.XYDiagram();
+            DevExpress.XtraCharts.Series series3 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.Series series4 = new DevExpress.XtraCharts.Series();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MasterlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,12 +50,13 @@ namespace SpinsNew.Forms
             this.label1 = new System.Windows.Forms.Label();
             this.textTarget = new DevExpress.XtraEditors.TextEdit();
             this.textActual = new DevExpress.XtraEditors.TextEdit();
+            this.authorizeUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(xyDiagram2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.utilizationTextBox.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textTarget.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textActual.Properties)).BeginInit();
@@ -65,7 +66,8 @@ namespace SpinsNew.Forms
             // 
             this.menuStrip1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionToolStripMenuItem});
+            this.optionToolStripMenuItem,
+            this.authorizeUserToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -149,16 +151,16 @@ namespace SpinsNew.Forms
             this.chartControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            xyDiagram1.AxisX.VisibleInPanesSerializable = "-1";
-            xyDiagram1.AxisY.VisibleInPanesSerializable = "-1";
-            this.chartControl1.Diagram = xyDiagram1;
+            xyDiagram2.AxisX.VisibleInPanesSerializable = "-1";
+            xyDiagram2.AxisY.VisibleInPanesSerializable = "-1";
+            this.chartControl1.Diagram = xyDiagram2;
             this.chartControl1.Location = new System.Drawing.Point(7, 159);
             this.chartControl1.Name = "chartControl1";
-            series1.Name = "Target";
-            series2.Name = "Served";
+            series3.Name = "Target";
+            series4.Name = "Served";
             this.chartControl1.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series1,
-        series2};
+        series3,
+        series4};
             this.chartControl1.Size = new System.Drawing.Size(1365, 577);
             this.chartControl1.TabIndex = 13;
             // 
@@ -251,6 +253,14 @@ namespace SpinsNew.Forms
             this.textActual.Size = new System.Drawing.Size(271, 34);
             this.textActual.TabIndex = 17;
             // 
+            // authorizeUserToolStripMenuItem
+            // 
+            this.authorizeUserToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
+            this.authorizeUserToolStripMenuItem.Name = "authorizeUserToolStripMenuItem";
+            this.authorizeUserToolStripMenuItem.Size = new System.Drawing.Size(167, 29);
+            this.authorizeUserToolStripMenuItem.Text = "Authorize User";
+            this.authorizeUserToolStripMenuItem.Click += new System.EventHandler(this.authorizeUserToolStripMenuItem_Click);
+            // 
             // Dashboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,9 +288,9 @@ namespace SpinsNew.Forms
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(xyDiagram1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(xyDiagram2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.utilizationTextBox.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.textTarget.Properties)).EndInit();
@@ -309,5 +319,6 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.Label label1;
         private DevExpress.XtraEditors.TextEdit textTarget;
         private DevExpress.XtraEditors.TextEdit textActual;
+        private System.Windows.Forms.ToolStripMenuItem authorizeUserToolStripMenuItem;
     }
 }

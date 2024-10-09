@@ -47,6 +47,7 @@ namespace SpinsNew
 
                     services.AddScoped<ITableMasterlist, TableMasterlistService>();
                     services.AddScoped<ITableLog, TableLogService>();
+                    services.AddScoped<ITableRegisterUser, TableRegisterUserService>();
 
                     services.AddScoped<MasterList>();
 

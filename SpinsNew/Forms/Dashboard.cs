@@ -42,6 +42,12 @@ namespace SpinsNew.Forms
             lblUserrole.Text = $"Role: {_userRole}";
             // Other details can also be displayed as needed
 
+            //If the userRole is not equal to 1 which is the admin means hide the authorization of users form.
+            if(userRole != "1")
+            {
+                authorizeUserToolStripMenuItem.Visible = false;
+            }
+
 
         }
         //public void ToggleControls(object o, EventArgs e)
@@ -508,6 +514,21 @@ namespace SpinsNew.Forms
         private void Dashboard_Load(object sender, EventArgs e)
         {
 
+        }
+        AuthorizationForm authorizationForm;
+        private void authorizeUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var tableRegister = Program.ServiceProvider.GetRequiredService<ITableRegisterUser>(); //We called the DI lifecycle inside our Program.cs
+                                                                                                  // Ensure the service is resolved correctly
+            if (tableRegister != null)
+            {
+                authorizationForm = new AuthorizationForm(tableRegister);
+                authorizationForm.Show(); // Or ShowDialog() for modal display
+            }
+            else
+            {
+                MessageBox.Show("Failed to resolve ITablePayroll service.");
+            }
         }
     }
 }

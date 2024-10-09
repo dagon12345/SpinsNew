@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>43</ApplicationRevision>
+    <ApplicationRevision>44</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -352,6 +352,12 @@
     <Compile Include="Forms\Attachments.Designer.cs">
       <DependentUpon>Attachments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\AuthorizationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AuthorizationForm.Designer.cs">
+      <DependentUpon>AuthorizationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AuthorizeRepresentative.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -429,6 +435,7 @@
     <Compile Include="Interfaces\ITableLog.cs" />
     <Compile Include="Interfaces\ITableMasterlist.cs" />
     <Compile Include="Interfaces\ITablePayroll.cs" />
+    <Compile Include="Interfaces\ITableRegisterUser.cs" />
     <Compile Include="Libraries\LibraryAssessment.cs" />
     <Compile Include="Libraries\LibraryBarangay.cs" />
     <Compile Include="Libraries\LibraryClaimType.cs" />
@@ -507,6 +514,7 @@
     <Compile Include="Services\TableLogService.cs" />
     <Compile Include="Services\TableMasterlistService.cs" />
     <Compile Include="Services\TablePayroll.cs" />
+    <Compile Include="Services\TableRegisterUserService.cs" />
     <Compile Include="StatisticsForm\PaidStatisticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -516,10 +524,14 @@
     <Compile Include="ViewModel\AuthorizeRepViewModel.cs" />
     <Compile Include="ViewModel\MasterListViewModel.cs" />
     <Compile Include="ViewModel\PayrollViewModel.cs" />
+    <None Include="Properties\DataSources\SpinsNew.Models.RegisterModel.datasource" />
     <None Include="Properties\DataSources\SpinsNew.ViewModel.AuthorizeRepViewModel.datasource" />
     <None Include="Resources\triangle-spinner.gif" />
     <EmbeddedResource Include="Forms\Attachments.resx">
       <DependentUpon>Attachments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AuthorizationForm.resx">
+      <DependentUpon>AuthorizationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AuthorizeRepresentative.resx">
       <DependentUpon>AuthorizeRepresentative.cs</DependentUpon>

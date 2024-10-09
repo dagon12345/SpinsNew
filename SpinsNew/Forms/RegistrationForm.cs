@@ -31,11 +31,11 @@ namespace SpinsNew.Forms
                 {
                     var registration = new RegisterModel
                     {
-                        Lastname = txt_lastname.Text,
-                        Firstname = txt_firstname.Text,
-                        Middlename = txt_middlename.Text,
+                        Lastname = txt_lastname.Text.ToUpper(),
+                        Firstname = txt_firstname.Text.ToUpper(),
+                        Middlename = txt_middlename.Text.ToUpper(),
                         Birthdate = Convert.ToDateTime(dt_birth.EditValue),
-                        Username = txt_username.Text,
+                        Username = txt_username.Text.ToLower(),
                         Password = txt_password.Text,
                         UserRole = 3,
                         DateRegistered = DateTime.Now,
@@ -65,7 +65,7 @@ namespace SpinsNew.Forms
                 {
                     //Search the existing username type inside textbox if it existed.
                     var validation = await context.tbl_registered_users
-                        .Where(x => x.Username.StartsWith(username))
+                        .Where(x => x.Username.StartsWith(username.ToLower()))
                         .FirstOrDefaultAsync();
 
                     //If the username is detected then tell user already exist else save.
