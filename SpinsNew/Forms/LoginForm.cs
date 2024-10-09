@@ -14,22 +14,14 @@ namespace SpinsNew.Forms
 {
     public partial class LoginForm : Form
     {
-        ConnectionString cs = new ConnectionString();
-        MySqlConnection con = null;
+
         public LoginForm()
         {
             InitializeComponent();
-            con = new MySqlConnection(cs.dbcon);
 
         }
 
-
-        private void LoginForm_Load(object sender, EventArgs e)
-        {
-
-        }
         
-
         RegistrationForm registrationForm;
         private void hyper_register_Click(object sender, EventArgs e)
         {

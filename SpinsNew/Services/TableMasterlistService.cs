@@ -74,7 +74,6 @@ namespace SpinsNew.Services
                         Municipality = n.LibraryMunicipality.CityMunName,
                         Barangay = n.LibraryBarangay.BrgyName,
 
-
                         Address = n.Address,
                         BirthDate = n.BirthDate,
 

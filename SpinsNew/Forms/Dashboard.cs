@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraCharts;
+using DevExpress.XtraEditors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
@@ -75,8 +76,241 @@ namespace SpinsNew.Forms
         protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            await DisplayAsyncEF();
+            //await DisplayAsyncEF();
+            await display();
         }
+
+        public async Task display()
+        {
+
+            try
+            {
+                // Bind the merged DataTable to the chart
+                btnRefreshNew.Enabled = false;
+                btnRefreshNew.Text = "Please wait...";
+
+                int currentYear = DateTime.Now.Year;
+
+
+                con.Open();
+
+                // Query for Target
+                MySqlCommand targetCmd = con.CreateCommand();
+                targetCmd.CommandType = CommandType.Text;
+                targetCmd.CommandText = @"
+                SELECT 
+                    p.ProvinceName, 
+                    COUNT(t.Year) AS TotalBeneficiaries,
+                    t.ClaimTypeID
+                FROM 
+                    tbl_payroll_socpen t
+                INNER JOIN 
+                    lib_city_municipality l 
+                ON 
+                    t.PSGCCityMun = l.PSGCCityMun 
+                INNER JOIN 
+                    lib_province p
+                ON 
+                    l.PSGCProvince = p.PSGCProvince
+                WHERE 
+                    t.YEAR = @Year
+                    AND t.ClaimTypeID IS NOT NULL
+                    AND t.PeriodID = 9
+                    AND t.PayrollStatusID != 3
+                GROUP BY 
+                    p.ProvinceName
+                LIMIT 
+                    @Limit";
+                targetCmd.Parameters.AddWithValue("@Year", currentYear);
+                targetCmd.Parameters.AddWithValue("@Limit", 5);
+                DataTable targetDt = new DataTable();
+                MySqlDataAdapter targetDa = new MySqlDataAdapter(targetCmd);
+                await Task.Run(() => targetDa.Fill(targetDt));
+
+                // Query for Served
+                MySqlCommand servedCmd = con.CreateCommand();
+                servedCmd.CommandType = CommandType.Text;
+                servedCmd.CommandText = @"
+                         WITH Beneficiaries AS (
+                             SELECT 
+                                 p.ProvinceName, 
+                                 COUNT(ps.ClaimTypeID) AS TotalBeneficiariesServed
+                             FROM 
+                                 tbl_payroll_socpen ps
+                             INNER JOIN 
+                                 lib_city_municipality l ON ps.PSGCCityMun = l.PSGCCityMun 
+                             INNER JOIN 
+                                 lib_province p ON l.PSGCProvince = p.PSGCProvince
+                             LEFT JOIN 
+                                 tbl_masterlist m ON ps.MasterListID = m.ID
+                             WHERE 
+                                 ps.YEAR = @Year
+                                 AND ps.PayrollStatusID = 1
+                                 AND ps.PeriodID = 9
+                             GROUP BY 
+                                 p.ProvinceName
+                         ), Replacements AS (
+                             SELECT 
+                                 p.ProvinceName, 
+                                 COUNT(CASE 
+                                         WHEN (
+                                             SELECT 
+                                                 ps2.ID 
+                                             FROM 
+                                                 tbl_payroll_socpen ps2 
+                                             WHERE 
+                                                 ps2.Year = ps.Year 
+                                                 AND ps2.PeriodID = 9 
+                                                 AND ps2.MasterListID = ps.MasterListID 
+                                                 AND ps2.PayrollStatusID = 1 
+                                                 LIMIT 1
+                                         ) IS NOT NULL 
+                                         THEN 1 
+                                         ELSE NULL 
+                                      END) AS TotalBeneficiariesServed,  
+                                 COUNT(CASE 
+                                         WHEN (
+                                             SELECT 
+                                                 ps2.ID 
+                                             FROM 
+                                                 tbl_payroll_socpen ps2 
+                                             WHERE 
+                                                 ps2.Year = ps.Year 
+                                                 AND ps2.PeriodID = 9 
+                                                 AND ps2.MasterListID = ps.MasterListID 
+                                                 AND ps2.PayrollStatusID = 1 
+                                                 LIMIT 1
+                                         ) IS NULL 
+                                         THEN 1 
+                                         ELSE NULL 
+                                      END) AS TotalBeneficiariesAndReplacements  
+                             FROM 
+                                 tbl_payroll_socpen ps
+                             INNER JOIN 
+                                 lib_city_municipality l ON ps.PSGCCityMun = l.PSGCCityMun 
+                             INNER JOIN 
+                                 lib_province p ON l.PSGCProvince = p.PSGCProvince
+                             LEFT JOIN 
+                                 tbl_masterlist m ON ps.MasterListID = m.ID
+                             WHERE 
+                                 ps.Year = @Year
+                                 AND ps.PayrollStatusID = 1
+                                 AND ps.PeriodID = 3
+                             GROUP BY 
+                                 p.ProvinceName
+                             LIMIT 
+                                 @Limit
+                         )
+                         SELECT 
+                             b.ProvinceName,
+                             b.TotalBeneficiariesServed,
+                             r.TotalBeneficiariesServed AS OriginalBeneficiariesCount,
+                             r.TotalBeneficiariesAndReplacements,
+                             (b.TotalBeneficiariesServed + r.TotalBeneficiariesAndReplacements) AS TotalBeneficiariesAndReplacementsOverallTotal
+                         FROM 
+                             Beneficiaries b
+                         LEFT JOIN 
+                             Replacements r ON b.ProvinceName = r.ProvinceName
+                         ";
+
+                servedCmd.Parameters.AddWithValue("@Year", currentYear);
+                servedCmd.Parameters.AddWithValue("@Limit", 5);
+                DataTable servedDt = new DataTable();
+                MySqlDataAdapter servedDa = new MySqlDataAdapter(servedCmd);
+                await Task.Run(() => servedDa.Fill(servedDt));
+
+                con.Close();
+
+                // Merge the two DataTables
+                DataTable dt = new DataTable();
+                dt.Columns.Add("ProvinceName", typeof(string));
+                dt.Columns.Add("TotalBeneficiaries", typeof(int));
+                dt.Columns.Add("TotalBeneficiariesAndReplacementsOverallTotal", typeof(int));
+
+                foreach (DataRow targetRow in targetDt.Rows)
+                {
+                    DataRow newRow = dt.NewRow();
+                    newRow["ProvinceName"] = targetRow["ProvinceName"];
+                    newRow["TotalBeneficiaries"] = targetRow["TotalBeneficiaries"];
+                    newRow["TotalBeneficiariesAndReplacementsOverallTotal"] = 0; // Default value
+                    dt.Rows.Add(newRow);
+                }
+
+                foreach (DataRow servedRow in servedDt.Rows)
+                {
+                    DataRow existingRow = dt.Select($"ProvinceName = '{servedRow["ProvinceName"]}'").FirstOrDefault();
+                    if (existingRow != null)
+                    {
+                        existingRow["TotalBeneficiariesAndReplacementsOverallTotal"] = servedRow["TotalBeneficiariesAndReplacementsOverallTotal"];
+                    }
+                    else
+                    {
+                        DataRow newRow = dt.NewRow();
+                        newRow["ProvinceName"] = servedRow["ProvinceName"];
+                        newRow["TotalBeneficiariesAndReplacementsOverallTotal"] = servedRow["TotalBeneficiariesAndReplacementsOverallTotal"];
+                        newRow["TotalBeneficiaries"] = 0; // Default value
+                        dt.Rows.Add(newRow);
+                    }
+                }
+
+                // Calculate the total sum and utilization percentage
+                int totalBeneficiaries = dt.AsEnumerable().Sum(row => row.Field<int>("TotalBeneficiaries"));
+                string formattedTotalBeneficiaries = totalBeneficiaries.ToString("#,##0");
+
+                int totalBeneficiariesServed = dt.AsEnumerable().Sum(row => row.Field<int>("TotalBeneficiariesAndReplacementsOverallTotal"));
+                string formattedTotalBeneficiariesServed = totalBeneficiariesServed.ToString("#,##0");
+
+                double utilizationPercentage = totalBeneficiaries > 0 ? (double)totalBeneficiariesServed / totalBeneficiaries * 100 : 0;
+                string formattedUtilizationPercentage = utilizationPercentage.ToString("0.00");
+
+                Invoke((MethodInvoker)delegate {
+                    // Bind the merged DataTable to the chart
+                    btnRefreshNew.Enabled = true;
+                    btnRefreshNew.Text = "Refresh";
+                    //btnRefreshNew.Image = null; // Hide the icon by setting the Image property to null
+                    chartControl1.DataSource = dt;
+
+                    // Configure the series for the chart
+                    Series seriesTarget = new Series("Target", ViewType.Bar);
+                    seriesTarget.ArgumentDataMember = "ProvinceName";
+                    seriesTarget.ValueDataMembers.AddRange(new string[] { "TotalBeneficiaries" });
+                    seriesTarget.LabelsVisibility = DevExpress.Utils.DefaultBoolean.True;
+                    seriesTarget.View.Color = System.Drawing.Color.Violet; // Change the color here
+
+                    Series seriesServed = new Series("Served", ViewType.Bar);
+                    seriesServed.ArgumentDataMember = "ProvinceName";
+                    seriesServed.ValueDataMembers.AddRange(new string[] { "TotalBeneficiariesAndReplacementsOverallTotal" });
+                    seriesServed.LabelsVisibility = DevExpress.Utils.DefaultBoolean.True;
+                    seriesServed.View.Color = System.Drawing.Color.Gray; // Change the color here
+
+                    chartControl1.Series.Clear();
+                    chartControl1.Series.AddRange(new Series[] { seriesTarget, seriesServed });
+
+                    // Customize chart appearance
+                    chartControl1.Titles.Clear();
+                    chartControl1.Titles.Add(new ChartTitle { Text = $"Accomplishment Year {currentYear} (Physical)" });
+                    //  chartControl2.BackColor = System.Drawing.Color.Black;
+                    //  chartControl2.ForeColor = System.Drawing.Color.White;
+
+                    // Display the calculated values in text boxes
+                    textTarget.Text = formattedTotalBeneficiaries;
+                    textActual.Text = formattedTotalBeneficiariesServed;
+                    utilizationTextBox.Text = $"{formattedUtilizationPercentage}%";
+                });
+
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+              //  Invoke((MethodInvoker)delegate {
+              //      XtraMessageBox.Show(ex.Message);
+              //  });
+            }
+
+
+        }
+
+
         public async Task DisplayAsyncEF()
         {
             try
@@ -267,7 +501,8 @@ namespace SpinsNew.Forms
 
         private async void btnRefreshNew_Click(object sender, EventArgs e)
         {
-            await DisplayAsyncEF();
+            //await DisplayAsyncEF();
+           await  display();
         }
 
         private void Dashboard_Load(object sender, EventArgs e)

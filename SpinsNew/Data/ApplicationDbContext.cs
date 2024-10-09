@@ -59,6 +59,12 @@ namespace SpinsNew.Data
              Instead of searching the whole table from tbl_payroll_socpen
             search the data that is given instead, it will cut the time searching
             instead of scanning all the row into database.*/
+            modelBuilder.Entity<RegisterModel>()
+                .HasIndex(e => new
+                {
+                    e.Username
+                });
+
             modelBuilder.Entity<PayrollModel>()
                 .HasIndex(e => new 
                 { 

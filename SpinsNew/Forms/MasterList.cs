@@ -923,6 +923,12 @@ namespace SpinsNew
 
         private async void btnSearch_Click(object sender, EventArgs e)
         {
+            if(cmb_municipality.Text == "" || cmb_status.Text == "")
+            {
+                XtraMessageBox.Show("Please fill all the fields before searching.","Message",MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            //Load masterlist
             await LoadMasterList();
         }
 

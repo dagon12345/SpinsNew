@@ -93,6 +93,7 @@ namespace SpinsNew.Forms
             // btn_login
             // 
             this.btn_login.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_login.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_login.ImageOptions.Image")));
             this.btn_login.Location = new System.Drawing.Point(196, 159);
             this.btn_login.Name = "btn_login";
             this.btn_login.Size = new System.Drawing.Size(103, 23);
@@ -150,7 +151,6 @@ namespace SpinsNew.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoginForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoginForm_FormClosed);
-            this.Load += new System.EventHandler(this.LoginForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
             this.groupControl2.PerformLayout();
