@@ -1,16 +1,12 @@
 ﻿using DevExpress.XtraEditors;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
-using SpinsNew.Connection;
 using SpinsNew.Data;
+using SpinsNew.Interfaces;
+using SpinsNew.Libraries;
 using SpinsNew.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,16 +14,19 @@ namespace SpinsNew.Forms
 {
     public partial class RegistrationForm : Form
     {
-        public RegistrationForm()
+        private ITableRegisterUser _tableRegisterUser;
+        public RegistrationForm(ITableRegisterUser tableRegisterUser)
         {
             InitializeComponent();
+            _tableRegisterUser = tableRegisterUser;
 
         }
         private async Task RegisterEF()
         {
             try
             {
-                using(var context = new ApplicationDbContext())
+                var selectedRole = (LibraryRole)cmbUserRole.SelectedItem;
+                using (var context = new ApplicationDbContext())
                 {
                     var registration = new RegisterModel
                     {
@@ -37,13 +36,13 @@ namespace SpinsNew.Forms
                         Birthdate = Convert.ToDateTime(dt_birth.EditValue),
                         Username = txt_username.Text.ToLower(),
                         Password = txt_password.Text,
-                        UserRole = 3,
+                        UserRole = selectedRole.UserRoleId,
                         DateRegistered = DateTime.Now,
                         IsActive = false
                     };
                     context.tbl_registered_users.Add(registration);
                     await context.SaveChangesAsync();
-                   
+
                 }
                 this.Close();
                 XtraMessageBox.Show("Your account registered successfully, please wait for the admin to confirm", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -91,29 +90,50 @@ namespace SpinsNew.Forms
                 btn_register.Enabled = true;
                 btn_register.Text = "Register";
             }
-          
-        }
 
+        }
+        private async Task UserRole()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userRole = await Task.Run(() => context.LibraryRoles
+                    .AsNoTracking()
+                    .ToListAsync());
+                   
+
+                cmbUserRole.Properties.Items.Clear();
+                foreach (var userRoles in userRole)
+                {
+                    cmbUserRole.Properties.Items.Add(new LibraryRole
+                    {
+                        UserRoleId = userRoles.UserRoleId,
+                        Role = userRoles.Role
+                    });
+                }
+            }
+        }
 
         private async void btn_register_Click(object sender, EventArgs e)
         {
-            if(txt_lastname.Text == "" || txt_firstname.Text == "" || txt_middlename.Text == "" || dt_birth.Text == "" || txt_username.Text == "" || txt_password.Text == "" || txt_confirmpass.Text == "")
+            if (txt_lastname.Text == "" || txt_firstname.Text == "" || txt_middlename.Text == "" || dt_birth.Text == "" || txt_username.Text == "" || txt_password.Text == "" || txt_confirmpass.Text == "")
             {
                 XtraMessageBox.Show("Please fill all the fields.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if(txt_password.Text != txt_confirmpass.Text)
+            if (txt_password.Text != txt_confirmpass.Text)
             {
                 XtraMessageBox.Show("Password does not match, please enter again.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-        
 
             // validation with register method inside.
-           await ValidationEF();
+            await ValidationEF();
 
-    
+        }
 
+        private async void RegistrationForm_Load(object sender, EventArgs e)
+        {
+            await UserRole();
         }
     }
 }

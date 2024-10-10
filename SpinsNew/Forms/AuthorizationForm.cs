@@ -21,9 +21,10 @@ namespace SpinsNew.Forms
 
         private async Task DisplayUsers()
         {
-            var displayUsers = await _tableRegisterUser.DisplayRegisterModelAsync();
+            var displayUsers = await Task.Run(() => _tableRegisterUser.DisplayRegisterModelAsync());
             GridView gridView = gridControl1.MainView as GridView;
-            gridControl1.DataSource = displayUsers;
+            registerUsersViewModelBindingSource.DataSource = displayUsers;
+            gridControl1.DataSource = registerUsersViewModelBindingSource;
             gridView.BestFitColumns();
             gridView.OptionsView.ColumnAutoWidth = false;
             gridView.OptionsBehavior.Editable = false;
@@ -44,8 +45,8 @@ namespace SpinsNew.Forms
                 var activateUser = await context.tbl_registered_users
                     .FirstOrDefaultAsync(x => x.Id == id);
 
-                activateUser.IsActive = true;
 
+                activateUser.IsActive = true;
                 await context.SaveChangesAsync();
 
             }
@@ -69,11 +70,13 @@ namespace SpinsNew.Forms
 
             GridView gridView = gridControl1.MainView as GridView;
             RegisterModel row = (RegisterModel)gridView.GetRow(gridView.FocusedRowHandle);
+
             if(row.IsActive == true)
             {
                 XtraMessageBox.Show("This user already activated.");
                 return;
             }
+
             DialogResult result = XtraMessageBox.Show($"Are you sure you want to Activate user {row.Username}?", "Confirm Activation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {   

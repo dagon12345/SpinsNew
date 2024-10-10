@@ -41,6 +41,7 @@ namespace SpinsNew.Data
         public DbSet<LibraryMunicipality> lib_city_municipality { get; set; }
         public DbSet<LibraryYear> lib_year { get; set; }
         public DbSet<LibraryRelationship> lib_relationship { get; set; }
+        public DbSet<LibraryRole> LibraryRoles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -102,6 +103,11 @@ namespace SpinsNew.Data
                 .HasIndex(id => id.MasterListId);
 
             /*Fluent API mapping below*/
+            modelBuilder.Entity<RegisterModel>()
+                .HasOne(l => l.LibraryRole)
+                .WithMany(r => r.RegisterModels)
+                .HasForeignKey(r => r.UserRole)
+                .HasPrincipalKey(l => l.UserRoleId);
 
             modelBuilder.Entity<TableAuthRepresentative>()
                 .HasOne(m => m.GisModel)

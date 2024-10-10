@@ -23,10 +23,11 @@ namespace SpinsNew.Forms
         public string _firstName;
         public string _username;
         public string _userRole;
-
+        private ITableRegisterUser _tableRegisterUser;
         ConnectionString cs = new ConnectionString();
         MySqlConnection con = null;
-        public Dashboard(string lastName, string firstName, string username, string userRole)
+        public Dashboard(string lastName, string firstName, string username, string userRole,
+            ITableRegisterUser tableRegister)
         {
             InitializeComponent();
             con = new MySqlConnection(cs.dbcon);
@@ -34,6 +35,7 @@ namespace SpinsNew.Forms
             _firstName = firstName;
             _username = username;
             _userRole = userRole;
+            _tableRegisterUser = tableRegister;
 
 
             // Display the user data on the Dashboard form
@@ -83,7 +85,49 @@ namespace SpinsNew.Forms
         {
             base.OnLoad(e);
             //await DisplayAsyncEF();
+            await DisplayUsersWithBirthdaysThisMonth();
             await display();
+        
+        }
+
+        private void SetBirthdayLabel()
+        {
+            // Set the label text to show the current month's name
+            label2.Text = $"Birthday celebrants in the month of [{DateTime.Now.ToString("MMMM")}]";
+        }
+
+
+        private async Task DisplayUsersWithBirthdaysThisMonth()
+        {
+            // Retrieve the list of users
+            var displayUsers = await _tableRegisterUser.DisplayRegisterModelAsync();
+
+            // Get the current month
+            int currentMonth = DateTime.Now.Month;
+
+            // Filter the list to include only users with a birthdate in the current month
+            var usersWithBirthdaysThisMonth = displayUsers
+                .Where(u => u.Birthdate.Month == currentMonth)
+                .Select(u => new
+                {
+                    u.Id,
+                    FullName = $"{u.Lastname}, {u.Firstname} {u.Middlename} - [{u.Birthdate.ToString("dd-MMM-yyyy")}]",
+                })
+                .ToList();
+            //If there is no birhdate month that matches today's month then hide the greetings.
+            if(usersWithBirthdaysThisMonth.Count > 0)
+            {
+                
+                // Bind the filtered data to the ListBoxControl
+                listBoxControl1.DataSource = usersWithBirthdaysThisMonth;
+                listBoxControl1.DisplayMember = "FullName";  // Display the formatted birthdate
+                listBoxControl1.ValueMember = "Id";  // Use the ID as the value
+                panel2.Visible = true;
+                SetBirthdayLabel();
+            }
+   
+
+     
         }
 
         public async Task display()
@@ -448,29 +492,6 @@ namespace SpinsNew.Forms
             LoginForm login = new LoginForm();
             login.Show();
 
-
-            //if (e.CloseReason == CloseReason.UserClosing)
-            //{
-            //    if (MessageBox.Show("Are you sure you want to exit?",
-            //                        "Confirm",
-            //                        MessageBoxButtons.YesNo,
-            //                        MessageBoxIcon.Information) == DialogResult.Yes)
-            //    {
-            //        // Close the current form
-            //        this.Hide(); // or this.Close(); depending on your use case
-
-            //        // Check if there are any other open forms
-            //        if (Application.OpenForms.Count == 1) // Assuming the last form is the LoginForm
-            //        {
-            //            LoginForm login = new LoginForm();
-            //            login.Show();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        e.Cancel = true; // Prevent closing if the user changes their mind
-            //    }
-            //}
         }
 
         private void statisticsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -519,15 +540,23 @@ namespace SpinsNew.Forms
         private void authorizeUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tableRegister = Program.ServiceProvider.GetRequiredService<ITableRegisterUser>(); //We called the DI lifecycle inside our Program.cs
-                                                                                                  // Ensure the service is resolved correctly
-            if (tableRegister != null)
+
+            if (Application.OpenForms.OfType<AuthorizationForm>().Any())
             {
-                authorizationForm = new AuthorizationForm(tableRegister);
-                authorizationForm.Show(); // Or ShowDialog() for modal display
+                authorizationForm.Select();
+                authorizationForm.BringToFront();
             }
             else
-            {
-                MessageBox.Show("Failed to resolve ITablePayroll service.");
+            {// Ensure the service is resolved correctly
+                if (tableRegister != null)
+                {
+                    authorizationForm = new AuthorizationForm(tableRegister);
+                    authorizationForm.Show(); // Or ShowDialog() for modal display
+                }
+                else
+                {
+                    MessageBox.Show("Failed to resolve ITablePayroll service.");
+                }
             }
         }
     }

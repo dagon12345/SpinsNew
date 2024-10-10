@@ -32,32 +32,33 @@ namespace SpinsNew.Forms
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizationForm));
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
-            this.registerModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colLastname = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colFirstname = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colMiddlename = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colUserRole = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colUsername = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDateRegistered = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
             this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
             this.btnActivate = new DevExpress.XtraEditors.SimpleButton();
             this.btnDelete = new DevExpress.XtraEditors.SimpleButton();
+            this.registerUsersViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.colLastname = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colFirstname = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMiddlename = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colUsername = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colRole = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDateRegistered = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colBirthdate = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.registerModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.registerUsersViewModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // gridControl1
             // 
-            this.gridControl1.DataSource = this.registerModelBindingSource;
+            this.gridControl1.DataSource = this.registerUsersViewModelBindingSource;
             this.gridControl1.Location = new System.Drawing.Point(5, 26);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
@@ -66,72 +67,20 @@ namespace SpinsNew.Forms
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             // 
-            // registerModelBindingSource
-            // 
-            this.registerModelBindingSource.DataSource = typeof(SpinsNew.Models.RegisterModel);
-            // 
             // gridView1
             // 
             this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colLastname,
             this.colFirstname,
             this.colMiddlename,
-            this.colUserRole,
             this.colUsername,
+            this.colRole,
+            this.colIsActive,
             this.colDateRegistered,
-            this.colIsActive});
+            this.colBirthdate});
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsView.ShowGroupPanel = false;
-            // 
-            // colLastname
-            // 
-            this.colLastname.FieldName = "Lastname";
-            this.colLastname.Name = "colLastname";
-            this.colLastname.Visible = true;
-            this.colLastname.VisibleIndex = 0;
-            // 
-            // colFirstname
-            // 
-            this.colFirstname.FieldName = "Firstname";
-            this.colFirstname.Name = "colFirstname";
-            this.colFirstname.Visible = true;
-            this.colFirstname.VisibleIndex = 1;
-            // 
-            // colMiddlename
-            // 
-            this.colMiddlename.FieldName = "Middlename";
-            this.colMiddlename.Name = "colMiddlename";
-            this.colMiddlename.Visible = true;
-            this.colMiddlename.VisibleIndex = 2;
-            // 
-            // colUserRole
-            // 
-            this.colUserRole.FieldName = "UserRole";
-            this.colUserRole.Name = "colUserRole";
-            this.colUserRole.Visible = true;
-            this.colUserRole.VisibleIndex = 3;
-            // 
-            // colUsername
-            // 
-            this.colUsername.FieldName = "Username";
-            this.colUsername.Name = "colUsername";
-            this.colUsername.Visible = true;
-            this.colUsername.VisibleIndex = 4;
-            // 
-            // colDateRegistered
-            // 
-            this.colDateRegistered.FieldName = "DateRegistered";
-            this.colDateRegistered.Name = "colDateRegistered";
-            this.colDateRegistered.Visible = true;
-            this.colDateRegistered.VisibleIndex = 5;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 6;
             // 
             // groupControl1
             // 
@@ -187,6 +136,66 @@ namespace SpinsNew.Forms
             this.btnDelete.Text = "Delete";
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // registerUsersViewModelBindingSource
+            // 
+            this.registerUsersViewModelBindingSource.DataSource = typeof(SpinsNew.ViewModel.RegisterUsersViewModel);
+            // 
+            // colLastname
+            // 
+            this.colLastname.FieldName = "Lastname";
+            this.colLastname.Name = "colLastname";
+            this.colLastname.Visible = true;
+            this.colLastname.VisibleIndex = 0;
+            // 
+            // colFirstname
+            // 
+            this.colFirstname.FieldName = "Firstname";
+            this.colFirstname.Name = "colFirstname";
+            this.colFirstname.Visible = true;
+            this.colFirstname.VisibleIndex = 1;
+            // 
+            // colMiddlename
+            // 
+            this.colMiddlename.FieldName = "Middlename";
+            this.colMiddlename.Name = "colMiddlename";
+            this.colMiddlename.Visible = true;
+            this.colMiddlename.VisibleIndex = 2;
+            // 
+            // colUsername
+            // 
+            this.colUsername.FieldName = "Username";
+            this.colUsername.Name = "colUsername";
+            this.colUsername.Visible = true;
+            this.colUsername.VisibleIndex = 3;
+            // 
+            // colRole
+            // 
+            this.colRole.FieldName = "Role";
+            this.colRole.Name = "colRole";
+            this.colRole.Visible = true;
+            this.colRole.VisibleIndex = 4;
+            // 
+            // colIsActive
+            // 
+            this.colIsActive.FieldName = "IsActive";
+            this.colIsActive.Name = "colIsActive";
+            this.colIsActive.Visible = true;
+            this.colIsActive.VisibleIndex = 5;
+            // 
+            // colDateRegistered
+            // 
+            this.colDateRegistered.FieldName = "DateRegistered";
+            this.colDateRegistered.Name = "colDateRegistered";
+            this.colDateRegistered.Visible = true;
+            this.colDateRegistered.VisibleIndex = 6;
+            // 
+            // colBirthdate
+            // 
+            this.colBirthdate.FieldName = "Birthdate";
+            this.colBirthdate.Name = "colBirthdate";
+            this.colBirthdate.Visible = true;
+            this.colBirthdate.VisibleIndex = 7;
+            // 
             // AuthorizationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,12 +213,12 @@ namespace SpinsNew.Forms
             this.Text = "AuthorizationForm";
             this.Load += new System.EventHandler(this.AuthorizationForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.registerModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
             this.groupControl2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.registerUsersViewModelBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -218,18 +227,19 @@ namespace SpinsNew.Forms
 
         private DevExpress.XtraGrid.GridControl gridControl1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
-        private System.Windows.Forms.BindingSource registerModelBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colLastname;
-        private DevExpress.XtraGrid.Columns.GridColumn colFirstname;
-        private DevExpress.XtraGrid.Columns.GridColumn colMiddlename;
-        private DevExpress.XtraGrid.Columns.GridColumn colUsername;
-        private DevExpress.XtraGrid.Columns.GridColumn colDateRegistered;
-        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
-        private DevExpress.XtraGrid.Columns.GridColumn colUserRole;
         private DevExpress.XtraEditors.GroupControl groupControl1;
         private DevExpress.XtraEditors.GroupControl groupControl2;
         private DevExpress.XtraEditors.SimpleButton btnActivate;
         private DevExpress.XtraEditors.SimpleButton btnDelete;
         private DevExpress.XtraEditors.SimpleButton simpleButton1;
+        private System.Windows.Forms.BindingSource registerUsersViewModelBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colLastname;
+        private DevExpress.XtraGrid.Columns.GridColumn colFirstname;
+        private DevExpress.XtraGrid.Columns.GridColumn colMiddlename;
+        private DevExpress.XtraGrid.Columns.GridColumn colUsername;
+        private DevExpress.XtraGrid.Columns.GridColumn colRole;
+        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
+        private DevExpress.XtraGrid.Columns.GridColumn colDateRegistered;
+        private DevExpress.XtraGrid.Columns.GridColumn colBirthdate;
     }
 }

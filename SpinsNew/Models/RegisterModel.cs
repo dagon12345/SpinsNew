@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpinsNew.Libraries;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SpinsNew.Models
@@ -6,7 +7,7 @@ namespace SpinsNew.Models
     public class RegisterModel
     {
         public int Id { get; set; }
-        [Display (Name = "Last Name")]
+        [Display(Name = "Last Name")]
         public string Lastname { get; set; }
         [Display(Name = "First Name")]
         public string Firstname { get; set; }
@@ -22,5 +23,8 @@ namespace SpinsNew.Models
         public DateTime DateRegistered { get; set; }
         [Display(Name = "Activation")]
         public bool IsActive { get; set; }
+
+        public LibraryRole LibraryRole { get; set; }
+
     }
 }

@@ -47,6 +47,8 @@ namespace SpinsNew.Forms
             this.txt_password = new DevExpress.XtraEditors.TextEdit();
             this.txt_username = new DevExpress.XtraEditors.TextEdit();
             this.btn_register = new DevExpress.XtraEditors.SimpleButton();
+            this.cmbUserRole = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.labelControl8 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dt_birth.Properties.CalendarTimeProperties)).BeginInit();
@@ -59,6 +61,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.txt_confirmpass.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_password.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_username.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbUserRole.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl1
@@ -167,7 +170,7 @@ namespace SpinsNew.Forms
             // 
             this.labelControl2.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl2.Appearance.Options.UseFont = true;
-            this.labelControl2.Location = new System.Drawing.Point(16, 78);
+            this.labelControl2.Location = new System.Drawing.Point(16, 130);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(50, 15);
             this.labelControl2.TabIndex = 1;
@@ -177,7 +180,7 @@ namespace SpinsNew.Forms
             // 
             this.labelControl3.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl3.Appearance.Options.UseFont = true;
-            this.labelControl3.Location = new System.Drawing.Point(16, 130);
+            this.labelControl3.Location = new System.Drawing.Point(16, 182);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(94, 15);
             this.labelControl3.TabIndex = 2;
@@ -185,6 +188,8 @@ namespace SpinsNew.Forms
             // 
             // groupControl2
             // 
+            this.groupControl2.Controls.Add(this.labelControl8);
+            this.groupControl2.Controls.Add(this.cmbUserRole);
             this.groupControl2.Controls.Add(this.txt_confirmpass);
             this.groupControl2.Controls.Add(this.txt_password);
             this.groupControl2.Controls.Add(this.txt_username);
@@ -199,19 +204,19 @@ namespace SpinsNew.Forms
             // 
             // txt_confirmpass
             // 
-            this.txt_confirmpass.Location = new System.Drawing.Point(16, 151);
+            this.txt_confirmpass.Location = new System.Drawing.Point(16, 203);
             this.txt_confirmpass.Name = "txt_confirmpass";
             this.txt_confirmpass.Properties.UseSystemPasswordChar = true;
             this.txt_confirmpass.Size = new System.Drawing.Size(214, 20);
-            this.txt_confirmpass.TabIndex = 2;
+            this.txt_confirmpass.TabIndex = 3;
             // 
             // txt_password
             // 
-            this.txt_password.Location = new System.Drawing.Point(16, 99);
+            this.txt_password.Location = new System.Drawing.Point(16, 151);
             this.txt_password.Name = "txt_password";
             this.txt_password.Properties.UseSystemPasswordChar = true;
             this.txt_password.Size = new System.Drawing.Size(214, 20);
-            this.txt_password.TabIndex = 1;
+            this.txt_password.TabIndex = 2;
             // 
             // txt_username
             // 
@@ -231,6 +236,26 @@ namespace SpinsNew.Forms
             this.btn_register.Text = "Register";
             this.btn_register.Click += new System.EventHandler(this.btn_register_Click);
             // 
+            // cmbUserRole
+            // 
+            this.cmbUserRole.Location = new System.Drawing.Point(16, 99);
+            this.cmbUserRole.Name = "cmbUserRole";
+            this.cmbUserRole.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmbUserRole.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.cmbUserRole.Size = new System.Drawing.Size(214, 20);
+            this.cmbUserRole.TabIndex = 1;
+            // 
+            // labelControl8
+            // 
+            this.labelControl8.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl8.Appearance.Options.UseFont = true;
+            this.labelControl8.Location = new System.Drawing.Point(16, 78);
+            this.labelControl8.Name = "labelControl8";
+            this.labelControl8.Size = new System.Drawing.Size(49, 15);
+            this.labelControl8.TabIndex = 4;
+            this.labelControl8.Text = "User Role";
+            // 
             // RegistrationForm
             // 
             this.AcceptButton = this.btn_register;
@@ -247,7 +272,7 @@ namespace SpinsNew.Forms
             this.Name = "RegistrationForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RegistrationForm";
-            //this.Load += new System.EventHandler(this.RegistrationForm_Load);
+            this.Load += new System.EventHandler(this.RegistrationForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
@@ -262,6 +287,7 @@ namespace SpinsNew.Forms
             ((System.ComponentModel.ISupportInitialize)(this.txt_confirmpass.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_password.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txt_username.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbUserRole.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -285,5 +311,7 @@ namespace SpinsNew.Forms
         private DevExpress.XtraEditors.TextEdit txt_confirmpass;
         private DevExpress.XtraEditors.TextEdit txt_password;
         private DevExpress.XtraEditors.TextEdit txt_username;
+        private DevExpress.XtraEditors.LabelControl labelControl8;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbUserRole;
     }
 }

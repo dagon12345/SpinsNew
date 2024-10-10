@@ -1,8 +1,10 @@
 ﻿using DevExpress.XtraEditors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using SpinsNew.Connection;
 using SpinsNew.Data;
+using SpinsNew.Interfaces;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -32,7 +34,8 @@ namespace SpinsNew.Forms
             }
             else
             {
-                registrationForm = new RegistrationForm();
+                var tableRegister = Program.ServiceProvider.GetRequiredService<ITableRegisterUser>(); //We called the DI lifecycle inside our Program.cs
+                registrationForm = new RegistrationForm(tableRegister);
                 registrationForm.Show();
             }
         }
@@ -58,7 +61,9 @@ namespace SpinsNew.Forms
                     string userName = loginForm.Username;
                     string userRole = Convert.ToString(loginForm.UserRole);
 
-                    Dashboard dash = new Dashboard(lastName, firstName, userName, userRole);
+
+                    var tableRegister = Program.ServiceProvider.GetRequiredService<ITableRegisterUser>(); //We called the DI lifecycle inside our Program.cs
+                    Dashboard dash = new Dashboard(lastName, firstName, userName, userRole, tableRegister);
                     this.Hide();
                     dash.Show();
                 }

@@ -1,4 +1,4 @@
-﻿using SpinsNew.Models;
+﻿using SpinsNew.ViewModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,6 +6,6 @@ namespace SpinsNew.Interfaces
 {
     public interface ITableRegisterUser
     {
-        Task<List<RegisterModel>> DisplayRegisterModelAsync();
+        Task<List<RegisterUsersViewModel>> DisplayRegisterModelAsync();
     }
 }
