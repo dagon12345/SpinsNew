@@ -300,7 +300,6 @@ namespace SpinsNew
                 }
 
             });
-
             //progressBarControl1.Visible = false; // Hide the progress bar and finalize.
             DisableSpinner();
         }

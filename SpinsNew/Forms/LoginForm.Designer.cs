@@ -92,6 +92,8 @@ namespace SpinsNew.Forms
             // 
             // btn_login
             // 
+            this.btn_login.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_login.Appearance.Options.UseFont = true;
             this.btn_login.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_login.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_login.ImageOptions.Image")));
             this.btn_login.Location = new System.Drawing.Point(196, 159);
