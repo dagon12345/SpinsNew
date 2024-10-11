@@ -1039,7 +1039,7 @@ namespace SpinsWinforms.Forms
             this.btn_authrep.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_authrep.ImageOptions.Image")));
             this.btn_authrep.Location = new System.Drawing.Point(151, 0);
             this.btn_authrep.Name = "btn_authrep";
-            this.btn_authrep.Size = new System.Drawing.Size(126, 22);
+            this.btn_authrep.Size = new System.Drawing.Size(115, 22);
             this.btn_authrep.TabIndex = 87;
             this.btn_authrep.Tag = "";
             this.btn_authrep.Text = "Add Auth Rep.";

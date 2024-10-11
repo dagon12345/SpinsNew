@@ -466,7 +466,7 @@ namespace SpinsNew.Forms
 
         private async void btn_save_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txt_lastname.Text) || string.IsNullOrWhiteSpace(txt_firstname.Text) || string.IsNullOrWhiteSpace(txt_middlename.Text))
+            if (string.IsNullOrWhiteSpace(txt_lastname.Text) || string.IsNullOrWhiteSpace(txt_firstname.Text))
             {
                 XtraMessageBox.Show("Please fill the names before saving.", "Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

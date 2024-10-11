@@ -167,7 +167,7 @@ namespace SpinsNew.Forms
                     t.YEAR = @Year
                     AND t.ClaimTypeID IS NOT NULL
                     AND t.PeriodID = 9
-                    AND t.PayrollStatusID != 3
+                    AND t.PayrollStatusID = 1
                 GROUP BY 
                     p.ProvinceName
                 LIMIT 

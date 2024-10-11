@@ -370,7 +370,7 @@ namespace SpinsWinforms.Forms
                 dt_accomplished.EditValue = masterListData.GisModels.Select(d => d.ValidationDate)
                     .FirstOrDefault();
                 //Living condition combobox and label below retrieval
-                cmbLivingCondition.EditValue = masterListData.GisModels.Select(l => l.LibrarylivCondition.LivingConditions)
+                cmbLivingCondition.EditValue = masterListData.GisModels.Select(l => l.LibrarylivCondition?.LivingConditions?? "")
                     .FirstOrDefault();
                 lbl_livingCondition.Text = masterListData.GisModels.Select(l => l.LivingConditionID.ToString())
                     .FirstOrDefault();
