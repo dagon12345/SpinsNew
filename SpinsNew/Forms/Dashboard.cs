@@ -48,6 +48,7 @@ namespace SpinsNew.Forms
             if(userRole != "1")
             {
                 authorizeUserToolStripMenuItem.Visible = false;
+                statisticsToolStripMenuItem.Visible = false;
             }
 
 
@@ -556,6 +557,30 @@ namespace SpinsNew.Forms
                 else
                 {
                     MessageBox.Show("Failed to resolve ITablePayroll service.");
+                }
+            }
+        }
+
+        SpinsOfflineForm spinsofflineForm;
+        private void statisticsToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            var tableGIS = Program.ServiceProvider.GetRequiredService<ITableGIS>(); //We called the DI lifecycle inside our Program.cs
+
+            if (Application.OpenForms.OfType<SpinsOfflineForm>().Any())
+            {
+                spinsofflineForm.Select();
+                spinsofflineForm.BringToFront();
+            }
+            else
+            {// Ensure the service is resolved correctly
+                if (tableGIS != null)
+                {
+                    spinsofflineForm = new SpinsOfflineForm(tableGIS);
+                    spinsofflineForm.Show(); // Or ShowDialog() for modal display
+                }
+                else
+                {
+                    MessageBox.Show("Failed to resolve ITableGiS service.");
                 }
             }
         }

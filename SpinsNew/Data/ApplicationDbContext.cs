@@ -41,7 +41,10 @@ namespace SpinsNew.Data
         public DbSet<LibraryMunicipality> lib_city_municipality { get; set; }
         public DbSet<LibraryYear> lib_year { get; set; }
         public DbSet<LibraryRelationship> lib_relationship { get; set; }
+        public DbSet<LibrarylivCondition> librarylivconditions { get; set; }
         public DbSet<LibraryRole> LibraryRoles { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -102,6 +105,9 @@ namespace SpinsNew.Data
             modelBuilder.Entity<LogModel>()
                 .HasIndex(id => id.MasterListId);
 
+            modelBuilder.Entity<GisModel>()
+                .HasIndex(d => d.EntryDateTime);
+
             /*Fluent API mapping below*/
             modelBuilder.Entity<RegisterModel>()
                 .HasOne(l => l.LibraryRole)
@@ -120,6 +126,12 @@ namespace SpinsNew.Data
                 .WithOne(a => a.TableAuthRepresentative)
                 .HasForeignKey(r => r.Id)
                 .HasPrincipalKey(a => a.RelationshipId);
+
+            modelBuilder.Entity<GisModel>()
+                .HasOne(l => l.LibrarylivCondition)
+                .WithMany(g => g.gisModels)
+                .HasForeignKey(g => g.LivingConditionID)
+                .HasPrincipalKey(l => l.Id);
 
             modelBuilder.Entity<GisModel>()
                 .HasOne(m => m.MasterListModel)
@@ -331,6 +343,12 @@ namespace SpinsNew.Data
                  .WithOne(e => e.LibraryBarangay)
                  .HasForeignKey(e => e.PSGCBrgy)
                  .HasPrincipalKey(e => e.PSGCBrgy);
+
+            //modelBuilder.Entity<LibraryLivingCondition>()
+            //    .HasMany(g => g.GisModels)
+            //    .WithOne(l => l.LibraryLivingCondition)
+            //    .HasForeignKey(g => g.LivingConditionID)
+            //    .HasPrincipalKey(l => l.Id);
 
             base.OnModelCreating(modelBuilder);
         }

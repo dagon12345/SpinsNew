@@ -369,6 +369,11 @@ namespace SpinsWinforms.Forms
                     .FirstOrDefault();
                 dt_accomplished.EditValue = masterListData.GisModels.Select(d => d.ValidationDate)
                     .FirstOrDefault();
+                //Living condition combobox and label below retrieval
+                cmbLivingCondition.EditValue = masterListData.GisModels.Select(l => l.LibrarylivCondition.LivingConditions)
+                    .FirstOrDefault();
+                lbl_livingCondition.Text = masterListData.GisModels.Select(l => l.LivingConditionID.ToString())
+                    .FirstOrDefault();
             }
 
         }
@@ -397,6 +402,7 @@ namespace SpinsWinforms.Forms
             await Provinces();
             await Municipalities();
             await Barangays();
+            await DisplayLivingCondition();
         }
         public void DisplaySPBUF(int spbuf)
         {
@@ -430,6 +436,24 @@ namespace SpinsWinforms.Forms
             catch (Exception ex)
             {
                 XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private async Task DisplayLivingCondition()
+        {
+            using(var context = new ApplicationDbContext())
+            {
+                var libLivingConditions = await context.librarylivconditions
+                    .AsNoTracking()
+                    .ToListAsync();
+                cmbLivingCondition.Properties.Items.Clear();
+                foreach(var libLivingCondition in libLivingConditions)
+                {
+                    cmbLivingCondition.Properties.Items.Add(new LibrarylivCondition
+                    {
+                        Id = libLivingCondition.Id,
+                        LivingConditions = libLivingCondition.LivingConditions
+                    });
+                }
             }
         }
         private async Task DataSourceEF()
@@ -613,6 +637,7 @@ namespace SpinsWinforms.Forms
                 {
                     updateGIS.HouseholdSize = Convert.ToInt32(txt_householdsize.EditValue);
                     updateGIS.AssessmentID = Convert.ToInt32(lbl_assessment.Text);
+                    updateGIS.LivingConditionID = Convert.ToInt32(lbl_livingCondition.Text);
                     updateGIS.ValidatedByID = Convert.ToInt32(lbl_validator.Text);
                     updateGIS.ValidationDate = Convert.ToDateTime(dt_accomplished.EditValue);
                     await context.SaveChangesAsync();
@@ -642,6 +667,7 @@ namespace SpinsWinforms.Forms
                     AssessmentID = Convert.ToInt32(lbl_assessment.Text),
                     ValidatedByID = Convert.ToInt32(lbl_validator.Text),
                     ValidationDate = Convert.ToDateTime(dt_accomplished.EditValue),
+                    LivingConditionID = Convert.ToInt32(lbl_livingCondition.Text),
                     EntryBy = _username,
                     EntryDateTime = DateTime.Now
                 };
@@ -691,6 +717,11 @@ namespace SpinsWinforms.Forms
                 if (dt_accomplished.Text == "")
                 {
                     MessageBox.Show("Please select Date Accomplished before saving", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (cmbLivingCondition.Text == "")
+                {
+                    MessageBox.Show("Please select Living With before saving", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 await SaveGISEF();
@@ -1043,6 +1074,7 @@ namespace SpinsWinforms.Forms
                     cmb_validator.Text = "";
                     lbl_validator.Text = "0";
                     dt_accomplished.Text = "";
+                    cmbLivingCondition.Text = "";
                     btn_import.Enabled = true;
                     return;
 
@@ -1192,6 +1224,19 @@ namespace SpinsWinforms.Forms
             await AllMethods();
             DisplayAge();// to display age in a label
             DoneLoading();
+        }
+
+        private async void cmbLivingCondition_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            //Fill the label when particular living condition was selected.
+            string selectedLivingCondition = cmbLivingCondition.Text;
+            using (var context = new ApplicationDbContext())
+            {
+                var livingCondition = await context.librarylivconditions
+                    .FirstOrDefaultAsync(v => v.LivingConditions == selectedLivingCondition);
+                lbl_livingCondition.Text = livingCondition.Id.ToString();
+            }
         }
     }
 }

@@ -103,6 +103,9 @@ namespace SpinsWinforms.Forms
             this.pdfViewer1 = new DevExpress.XtraPdfViewer.PdfViewer();
             this.txt_referencecode = new DevExpress.XtraEditors.TextEdit();
             this.grp_gis = new DevExpress.XtraEditors.GroupControl();
+            this.lbl_livingCondition = new DevExpress.XtraEditors.LabelControl();
+            this.cmbLivingCondition = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.labelControl24 = new DevExpress.XtraEditors.LabelControl();
             this.btn_authrep = new DevExpress.XtraEditors.SimpleButton();
             this.lbl_reference = new DevExpress.XtraEditors.LabelControl();
             this.lbl_validator = new DevExpress.XtraEditors.LabelControl();
@@ -161,6 +164,7 @@ namespace SpinsWinforms.Forms
             ((System.ComponentModel.ISupportInitialize)(this.txt_referencecode.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grp_gis)).BeginInit();
             this.grp_gis.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbLivingCondition.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_accomplished.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_accomplished.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_validator.Properties)).BeginInit();
@@ -458,7 +462,7 @@ namespace SpinsWinforms.Forms
             this.btn_edit.Appearance.Options.UseFont = true;
             this.btn_edit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_edit.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btn_edit.ImageOptions.Image")));
-            this.btn_edit.Location = new System.Drawing.Point(241, 547);
+            this.btn_edit.Location = new System.Drawing.Point(27, 580);
             this.btn_edit.Name = "btn_edit";
             this.btn_edit.Size = new System.Drawing.Size(142, 22);
             this.btn_edit.TabIndex = 33;
@@ -522,7 +526,7 @@ namespace SpinsWinforms.Forms
             // 
             this.labelControl7.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
             this.labelControl7.Appearance.Options.UseFont = true;
-            this.labelControl7.Location = new System.Drawing.Point(59, 117);
+            this.labelControl7.Location = new System.Drawing.Point(59, 152);
             this.labelControl7.Name = "labelControl7";
             this.labelControl7.Size = new System.Drawing.Size(41, 16);
             this.labelControl7.TabIndex = 68;
@@ -531,7 +535,7 @@ namespace SpinsWinforms.Forms
             // txt_address
             // 
             this.txt_address.EditValue = "";
-            this.txt_address.Location = new System.Drawing.Point(121, 116);
+            this.txt_address.Location = new System.Drawing.Point(121, 151);
             this.txt_address.Name = "txt_address";
             this.txt_address.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.txt_address.Properties.Appearance.Options.UseFont = true;
@@ -543,7 +547,7 @@ namespace SpinsWinforms.Forms
             // 
             this.labelControl6.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
             this.labelControl6.Appearance.Options.UseFont = true;
-            this.labelControl6.Location = new System.Drawing.Point(47, 95);
+            this.labelControl6.Location = new System.Drawing.Point(47, 130);
             this.labelControl6.Name = "labelControl6";
             this.labelControl6.Size = new System.Drawing.Size(53, 16);
             this.labelControl6.TabIndex = 67;
@@ -553,7 +557,7 @@ namespace SpinsWinforms.Forms
             // 
             this.labelControl5.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
             this.labelControl5.Appearance.Options.UseFont = true;
-            this.labelControl5.Location = new System.Drawing.Point(8, 76);
+            this.labelControl5.Location = new System.Drawing.Point(8, 111);
             this.labelControl5.Name = "labelControl5";
             this.labelControl5.Size = new System.Drawing.Size(92, 16);
             this.labelControl5.TabIndex = 66;
@@ -564,9 +568,9 @@ namespace SpinsWinforms.Forms
             this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.groupControl2.Controls.Add(this.gv_logs);
-            this.groupControl2.Location = new System.Drawing.Point(3, 573);
+            this.groupControl2.Location = new System.Drawing.Point(3, 608);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(610, 193);
+            this.groupControl2.Size = new System.Drawing.Size(610, 158);
             this.groupControl2.TabIndex = 3;
             this.groupControl2.Text = "Activity Logs";
             // 
@@ -578,7 +582,7 @@ namespace SpinsWinforms.Forms
             this.gv_logs.Location = new System.Drawing.Point(5, 23);
             this.gv_logs.MainView = this.gridView1;
             this.gv_logs.Name = "gv_logs";
-            this.gv_logs.Size = new System.Drawing.Size(588, 162);
+            this.gv_logs.Size = new System.Drawing.Size(588, 127);
             this.gv_logs.TabIndex = 24;
             this.gv_logs.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -796,7 +800,7 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_region
             // 
-            this.cmb_region.Location = new System.Drawing.Point(121, 28);
+            this.cmb_region.Location = new System.Drawing.Point(121, 63);
             this.cmb_region.Name = "cmb_region";
             this.cmb_region.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -829,7 +833,7 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_province
             // 
-            this.cmb_province.Location = new System.Drawing.Point(121, 51);
+            this.cmb_province.Location = new System.Drawing.Point(121, 86);
             this.cmb_province.Name = "cmb_province";
             this.cmb_province.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -842,7 +846,7 @@ namespace SpinsWinforms.Forms
             // 
             this.labelControl23.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
             this.labelControl23.Appearance.Options.UseFont = true;
-            this.labelControl23.Location = new System.Drawing.Point(63, 30);
+            this.labelControl23.Location = new System.Drawing.Point(63, 65);
             this.labelControl23.Name = "labelControl23";
             this.labelControl23.Size = new System.Drawing.Size(37, 16);
             this.labelControl23.TabIndex = 85;
@@ -852,7 +856,7 @@ namespace SpinsWinforms.Forms
             // 
             this.labelControl21.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
             this.labelControl21.Appearance.Options.UseFont = true;
-            this.labelControl21.Location = new System.Drawing.Point(52, 51);
+            this.labelControl21.Location = new System.Drawing.Point(52, 86);
             this.labelControl21.Name = "labelControl21";
             this.labelControl21.Size = new System.Drawing.Size(48, 16);
             this.labelControl21.TabIndex = 84;
@@ -862,7 +866,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_barangay.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_barangay.Appearance.Options.UseFont = true;
-            this.lbl_barangay.Location = new System.Drawing.Point(289, 96);
+            this.lbl_barangay.Location = new System.Drawing.Point(289, 131);
             this.lbl_barangay.Name = "lbl_barangay";
             this.lbl_barangay.Size = new System.Drawing.Size(6, 15);
             this.lbl_barangay.TabIndex = 82;
@@ -873,7 +877,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_municipality.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_municipality.Appearance.Options.UseFont = true;
-            this.lbl_municipality.Location = new System.Drawing.Point(289, 76);
+            this.lbl_municipality.Location = new System.Drawing.Point(289, 111);
             this.lbl_municipality.Name = "lbl_municipality";
             this.lbl_municipality.Size = new System.Drawing.Size(6, 15);
             this.lbl_municipality.TabIndex = 81;
@@ -884,7 +888,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_province.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_province.Appearance.Options.UseFont = true;
-            this.lbl_province.Location = new System.Drawing.Point(289, 53);
+            this.lbl_province.Location = new System.Drawing.Point(289, 88);
             this.lbl_province.Name = "lbl_province";
             this.lbl_province.Size = new System.Drawing.Size(6, 15);
             this.lbl_province.TabIndex = 83;
@@ -893,7 +897,7 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_barangay
             // 
-            this.cmb_barangay.Location = new System.Drawing.Point(121, 95);
+            this.cmb_barangay.Location = new System.Drawing.Point(121, 130);
             this.cmb_barangay.Name = "cmb_barangay";
             this.cmb_barangay.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.cmb_barangay.Properties.Appearance.Options.UseFont = true;
@@ -908,7 +912,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_region.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_region.Appearance.Options.UseFont = true;
-            this.lbl_region.Location = new System.Drawing.Point(289, 30);
+            this.lbl_region.Location = new System.Drawing.Point(289, 65);
             this.lbl_region.Name = "lbl_region";
             this.lbl_region.Size = new System.Drawing.Size(6, 15);
             this.lbl_region.TabIndex = 82;
@@ -917,7 +921,7 @@ namespace SpinsWinforms.Forms
             // 
             // cmb_municipality
             // 
-            this.cmb_municipality.Location = new System.Drawing.Point(121, 74);
+            this.cmb_municipality.Location = new System.Drawing.Point(121, 109);
             this.cmb_municipality.Name = "cmb_municipality";
             this.cmb_municipality.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F);
             this.cmb_municipality.Properties.Appearance.Options.UseFont = true;
@@ -973,6 +977,9 @@ namespace SpinsWinforms.Forms
             // 
             // grp_gis
             // 
+            this.grp_gis.Controls.Add(this.lbl_livingCondition);
+            this.grp_gis.Controls.Add(this.cmbLivingCondition);
+            this.grp_gis.Controls.Add(this.labelControl24);
             this.grp_gis.Controls.Add(this.btn_authrep);
             this.grp_gis.Controls.Add(this.lbl_reference);
             this.grp_gis.Controls.Add(this.lbl_validator);
@@ -988,9 +995,41 @@ namespace SpinsWinforms.Forms
             this.grp_gis.Controls.Add(this.txt_referencecode);
             this.grp_gis.Location = new System.Drawing.Point(27, 397);
             this.grp_gis.Name = "grp_gis";
-            this.grp_gis.Size = new System.Drawing.Size(280, 127);
+            this.grp_gis.Size = new System.Drawing.Size(280, 155);
             this.grp_gis.TabIndex = 86;
             this.grp_gis.Text = "General Intake Sheet";
+            // 
+            // lbl_livingCondition
+            // 
+            this.lbl_livingCondition.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lbl_livingCondition.Appearance.Options.UseFont = true;
+            this.lbl_livingCondition.Location = new System.Drawing.Point(271, 74);
+            this.lbl_livingCondition.Name = "lbl_livingCondition";
+            this.lbl_livingCondition.Size = new System.Drawing.Size(6, 15);
+            this.lbl_livingCondition.TabIndex = 95;
+            this.lbl_livingCondition.Text = "0";
+            this.lbl_livingCondition.Visible = false;
+            // 
+            // cmbLivingCondition
+            // 
+            this.cmbLivingCondition.Location = new System.Drawing.Point(128, 72);
+            this.cmbLivingCondition.Name = "cmbLivingCondition";
+            this.cmbLivingCondition.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmbLivingCondition.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.cmbLivingCondition.Size = new System.Drawing.Size(138, 20);
+            this.cmbLivingCondition.TabIndex = 2;
+            this.cmbLivingCondition.SelectedIndexChanged += new System.EventHandler(this.cmbLivingCondition_SelectedIndexChanged);
+            // 
+            // labelControl24
+            // 
+            this.labelControl24.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
+            this.labelControl24.Appearance.Options.UseFont = true;
+            this.labelControl24.Location = new System.Drawing.Point(60, 76);
+            this.labelControl24.Name = "labelControl24";
+            this.labelControl24.Size = new System.Drawing.Size(57, 16);
+            this.labelControl24.TabIndex = 94;
+            this.labelControl24.Text = "Living with";
             // 
             // btn_authrep
             // 
@@ -1012,7 +1051,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_reference.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_reference.Appearance.Options.UseFont = true;
-            this.lbl_reference.Location = new System.Drawing.Point(128, 114);
+            this.lbl_reference.Location = new System.Drawing.Point(128, 138);
             this.lbl_reference.Name = "lbl_reference";
             this.lbl_reference.Size = new System.Drawing.Size(50, 15);
             this.lbl_reference.TabIndex = 92;
@@ -1023,7 +1062,7 @@ namespace SpinsWinforms.Forms
             // 
             this.lbl_validator.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold);
             this.lbl_validator.Appearance.Options.UseFont = true;
-            this.lbl_validator.Location = new System.Drawing.Point(272, 75);
+            this.lbl_validator.Location = new System.Drawing.Point(271, 96);
             this.lbl_validator.Name = "lbl_validator";
             this.lbl_validator.Size = new System.Drawing.Size(6, 15);
             this.lbl_validator.TabIndex = 81;
@@ -1044,24 +1083,24 @@ namespace SpinsWinforms.Forms
             // dt_accomplished
             // 
             this.dt_accomplished.EditValue = null;
-            this.dt_accomplished.Location = new System.Drawing.Point(128, 95);
+            this.dt_accomplished.Location = new System.Drawing.Point(128, 116);
             this.dt_accomplished.Name = "dt_accomplished";
             this.dt_accomplished.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dt_accomplished.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dt_accomplished.Size = new System.Drawing.Size(138, 20);
-            this.dt_accomplished.TabIndex = 32;
+            this.dt_accomplished.TabIndex = 4;
             // 
             // cmb_validator
             // 
-            this.cmb_validator.Location = new System.Drawing.Point(128, 73);
+            this.cmb_validator.Location = new System.Drawing.Point(128, 94);
             this.cmb_validator.Name = "cmb_validator";
             this.cmb_validator.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_validator.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.cmb_validator.Size = new System.Drawing.Size(138, 20);
-            this.cmb_validator.TabIndex = 31;
+            this.cmb_validator.TabIndex = 3;
             this.cmb_validator.SelectedIndexChanged += new System.EventHandler(this.cmb_validator_SelectedIndexChanged);
             // 
             // cmb_assessment
@@ -1072,14 +1111,14 @@ namespace SpinsWinforms.Forms
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmb_assessment.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.cmb_assessment.Size = new System.Drawing.Size(138, 20);
-            this.cmb_assessment.TabIndex = 30;
+            this.cmb_assessment.TabIndex = 1;
             this.cmb_assessment.SelectedIndexChanged += new System.EventHandler(this.cmb_assessment_SelectedIndexChanged);
             // 
             // labelControl30
             // 
             this.labelControl30.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
             this.labelControl30.Appearance.Options.UseFont = true;
-            this.labelControl30.Location = new System.Drawing.Point(12, 98);
+            this.labelControl30.Location = new System.Drawing.Point(12, 119);
             this.labelControl30.Name = "labelControl30";
             this.labelControl30.Size = new System.Drawing.Size(106, 16);
             this.labelControl30.TabIndex = 91;
@@ -1092,7 +1131,7 @@ namespace SpinsWinforms.Forms
             this.txt_householdsize.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.txt_householdsize.Properties.MaskSettings.Set("mask", "d");
             this.txt_householdsize.Size = new System.Drawing.Size(138, 20);
-            this.txt_householdsize.TabIndex = 24;
+            this.txt_householdsize.TabIndex = 0;
             // 
             // labelControl29
             // 
@@ -1108,7 +1147,7 @@ namespace SpinsWinforms.Forms
             // 
             this.labelControl28.Appearance.Font = new System.Drawing.Font("Century Gothic", 8.25F);
             this.labelControl28.Appearance.Options.UseFont = true;
-            this.labelControl28.Location = new System.Drawing.Point(32, 74);
+            this.labelControl28.Location = new System.Drawing.Point(32, 95);
             this.labelControl28.Name = "labelControl28";
             this.labelControl28.Size = new System.Drawing.Size(86, 16);
             this.labelControl28.TabIndex = 86;
@@ -1160,7 +1199,7 @@ namespace SpinsWinforms.Forms
             // 
             this.ck_new.AutoSize = true;
             this.ck_new.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.ck_new.Location = new System.Drawing.Point(274, 528);
+            this.ck_new.Location = new System.Drawing.Point(27, 558);
             this.ck_new.Name = "ck_new";
             this.ck_new.Size = new System.Drawing.Size(67, 17);
             this.ck_new.TabIndex = 72;
@@ -1246,6 +1285,7 @@ namespace SpinsWinforms.Forms
             ((System.ComponentModel.ISupportInitialize)(this.grp_gis)).EndInit();
             this.grp_gis.ResumeLayout(false);
             this.grp_gis.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbLivingCondition.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_accomplished.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dt_accomplished.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmb_validator.Properties)).EndInit();
@@ -1347,5 +1387,8 @@ namespace SpinsWinforms.Forms
         private DevExpress.XtraEditors.LabelControl lblMaritalStatus;
         private DevExpress.XtraEditors.LabelControl lblHealthStatus;
         private DevExpress.XtraEditors.LabelControl lblDatasource;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbLivingCondition;
+        private DevExpress.XtraEditors.LabelControl labelControl24;
+        private DevExpress.XtraEditors.LabelControl lbl_livingCondition;
     }
 }

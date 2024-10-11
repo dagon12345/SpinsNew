@@ -29,45 +29,46 @@ namespace SpinsNew.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DevExpress.XtraCharts.XYDiagram xyDiagram5 = new DevExpress.XtraCharts.XYDiagram();
-            DevExpress.XtraCharts.Series series9 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.Series series10 = new DevExpress.XtraCharts.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Dashboard));
+            DevExpress.XtraCharts.XYDiagram xyDiagram2 = new DevExpress.XtraCharts.XYDiagram();
+            DevExpress.XtraCharts.Series series3 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.Series series4 = new DevExpress.XtraCharts.Series();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MasterlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.authorizeUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblName = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSplitButton2 = new System.Windows.Forms.ToolStripSplitButton();
             this.lblUsername = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.lblUserrole = new System.Windows.Forms.ToolStripStatusLabel();
             this.chartControl1 = new DevExpress.XtraCharts.ChartControl();
             this.labelTarget = new System.Windows.Forms.Label();
             this.labelActual = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.listBoxControl1 = new DevExpress.XtraEditors.ListBoxControl();
-            this.label2 = new System.Windows.Forms.Label();
-            this.picConfetti = new DevExpress.XtraEditors.PictureEdit();
             this.textActual = new DevExpress.XtraEditors.TextEdit();
             this.btnRefreshNew = new DevExpress.XtraEditors.SimpleButton();
             this.textTarget = new DevExpress.XtraEditors.TextEdit();
             this.utilizationTextBox = new DevExpress.XtraEditors.TextEdit();
-            this.toolStripSplitButton2 = new System.Windows.Forms.ToolStripSplitButton();
-            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
-            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MasterlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.authorizeUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listBoxControl1 = new DevExpress.XtraEditors.ListBoxControl();
+            this.label2 = new System.Windows.Forms.Label();
+            this.picConfetti = new DevExpress.XtraEditors.PictureEdit();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(xyDiagram5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series9)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series10)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(xyDiagram2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series4)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.listBoxControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picConfetti.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textActual.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textTarget.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.utilizationTextBox.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listBoxControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picConfetti.Properties)).BeginInit();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,13 +77,39 @@ namespace SpinsNew.Forms
             this.menuStrip1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionToolStripMenuItem,
-            this.authorizeUserToolStripMenuItem});
+            this.authorizeUserToolStripMenuItem,
+            this.statisticsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(1389, 33);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // optionToolStripMenuItem
+            // 
+            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MasterlistToolStripMenuItem});
+            this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
+            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(90, 29);
+            this.optionToolStripMenuItem.Text = "Menu";
+            // 
+            // MasterlistToolStripMenuItem
+            // 
+            this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
+            this.MasterlistToolStripMenuItem.Name = "MasterlistToolStripMenuItem";
+            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(169, 30);
+            this.MasterlistToolStripMenuItem.Text = "Masterlist";
+            this.MasterlistToolStripMenuItem.Click += new System.EventHandler(this.MasterlistToolStripMenuItem_Click);
+            // 
+            // authorizeUserToolStripMenuItem
+            // 
+            this.authorizeUserToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
+            this.authorizeUserToolStripMenuItem.Name = "authorizeUserToolStripMenuItem";
+            this.authorizeUserToolStripMenuItem.Size = new System.Drawing.Size(167, 29);
+            this.authorizeUserToolStripMenuItem.Text = "Authorize User";
+            this.authorizeUserToolStripMenuItem.Click += new System.EventHandler(this.authorizeUserToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -104,11 +131,33 @@ namespace SpinsNew.Forms
             this.lblName.Size = new System.Drawing.Size(39, 17);
             this.lblName.Text = "Name";
             // 
+            // toolStripSplitButton2
+            // 
+            this.toolStripSplitButton2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.toolStripSplitButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
+            this.toolStripSplitButton2.DropDownButtonWidth = 0;
+            this.toolStripSplitButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton2.Image")));
+            this.toolStripSplitButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripSplitButton2.Name = "toolStripSplitButton2";
+            this.toolStripSplitButton2.Size = new System.Drawing.Size(5, 20);
+            this.toolStripSplitButton2.Text = "toolStripSplitButton1";
+            // 
             // lblUsername
             // 
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(60, 17);
             this.lblUsername.Text = "Username";
+            // 
+            // toolStripSplitButton1
+            // 
+            this.toolStripSplitButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
+            this.toolStripSplitButton1.DropDownButtonWidth = 0;
+            this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
+            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
+            this.toolStripSplitButton1.Size = new System.Drawing.Size(5, 20);
+            this.toolStripSplitButton1.Text = "toolStripSplitButton1";
             // 
             // lblUserrole
             // 
@@ -121,16 +170,16 @@ namespace SpinsNew.Forms
             this.chartControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            xyDiagram5.AxisX.VisibleInPanesSerializable = "-1";
-            xyDiagram5.AxisY.VisibleInPanesSerializable = "-1";
-            this.chartControl1.Diagram = xyDiagram5;
+            xyDiagram2.AxisX.VisibleInPanesSerializable = "-1";
+            xyDiagram2.AxisY.VisibleInPanesSerializable = "-1";
+            this.chartControl1.Diagram = xyDiagram2;
             this.chartControl1.Location = new System.Drawing.Point(7, 221);
             this.chartControl1.Name = "chartControl1";
-            series9.Name = "Target";
-            series10.Name = "Served";
+            series3.Name = "Target";
+            series4.Name = "Served";
             this.chartControl1.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series9,
-        series10};
+        series3,
+        series4};
             this.chartControl1.Size = new System.Drawing.Size(1370, 515);
             this.chartControl1.TabIndex = 13;
             // 
@@ -177,40 +226,6 @@ namespace SpinsNew.Forms
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(679, 179);
             this.panel1.TabIndex = 21;
-            // 
-            // listBoxControl1
-            // 
-            this.listBoxControl1.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBoxControl1.Appearance.ForeColor = System.Drawing.Color.SeaGreen;
-            this.listBoxControl1.Appearance.Options.UseFont = true;
-            this.listBoxControl1.Appearance.Options.UseForeColor = true;
-            this.listBoxControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.listBoxControl1.Location = new System.Drawing.Point(193, 39);
-            this.listBoxControl1.Name = "listBoxControl1";
-            this.listBoxControl1.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.listBoxControl1.Size = new System.Drawing.Size(489, 134);
-            this.listBoxControl1.TabIndex = 22;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(193, 3);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(325, 30);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "Birthday Celebrant\'s this month";
-            // 
-            // picConfetti
-            // 
-            this.picConfetti.EditValue = global::SpinsNew.Properties.Resources.confetti_glitter;
-            this.picConfetti.Location = new System.Drawing.Point(12, 3);
-            this.picConfetti.Name = "picConfetti";
-            this.picConfetti.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.picConfetti.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
-            this.picConfetti.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
-            this.picConfetti.Size = new System.Drawing.Size(175, 170);
-            this.picConfetti.TabIndex = 23;
             // 
             // textActual
             // 
@@ -271,52 +286,39 @@ namespace SpinsNew.Forms
             this.utilizationTextBox.Size = new System.Drawing.Size(271, 34);
             this.utilizationTextBox.TabIndex = 19;
             // 
-            // toolStripSplitButton2
+            // listBoxControl1
             // 
-            this.toolStripSplitButton2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.toolStripSplitButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
-            this.toolStripSplitButton2.DropDownButtonWidth = 0;
-            this.toolStripSplitButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton2.Image")));
-            this.toolStripSplitButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripSplitButton2.Name = "toolStripSplitButton2";
-            this.toolStripSplitButton2.Size = new System.Drawing.Size(5, 20);
-            this.toolStripSplitButton2.Text = "toolStripSplitButton1";
+            this.listBoxControl1.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxControl1.Appearance.ForeColor = System.Drawing.Color.SeaGreen;
+            this.listBoxControl1.Appearance.Options.UseFont = true;
+            this.listBoxControl1.Appearance.Options.UseForeColor = true;
+            this.listBoxControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.listBoxControl1.Location = new System.Drawing.Point(193, 39);
+            this.listBoxControl1.Name = "listBoxControl1";
+            this.listBoxControl1.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.listBoxControl1.Size = new System.Drawing.Size(489, 134);
+            this.listBoxControl1.TabIndex = 22;
             // 
-            // toolStripSplitButton1
+            // label2
             // 
-            this.toolStripSplitButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
-            this.toolStripSplitButton1.DropDownButtonWidth = 0;
-            this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
-            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
-            this.toolStripSplitButton1.Size = new System.Drawing.Size(5, 20);
-            this.toolStripSplitButton1.Text = "toolStripSplitButton1";
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(193, 3);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(325, 30);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "Birthday Celebrant\'s this month";
             // 
-            // optionToolStripMenuItem
+            // picConfetti
             // 
-            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MasterlistToolStripMenuItem});
-            this.optionToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
-            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(90, 29);
-            this.optionToolStripMenuItem.Text = "Menu";
-            // 
-            // MasterlistToolStripMenuItem
-            // 
-            this.MasterlistToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_menu_40;
-            this.MasterlistToolStripMenuItem.Name = "MasterlistToolStripMenuItem";
-            this.MasterlistToolStripMenuItem.Size = new System.Drawing.Size(169, 30);
-            this.MasterlistToolStripMenuItem.Text = "Masterlist";
-            this.MasterlistToolStripMenuItem.Click += new System.EventHandler(this.MasterlistToolStripMenuItem_Click);
-            // 
-            // authorizeUserToolStripMenuItem
-            // 
-            this.authorizeUserToolStripMenuItem.Image = global::SpinsNew.Properties.Resources.icons8_verify_48;
-            this.authorizeUserToolStripMenuItem.Name = "authorizeUserToolStripMenuItem";
-            this.authorizeUserToolStripMenuItem.Size = new System.Drawing.Size(167, 29);
-            this.authorizeUserToolStripMenuItem.Text = "Authorize User";
-            this.authorizeUserToolStripMenuItem.Click += new System.EventHandler(this.authorizeUserToolStripMenuItem_Click);
+            this.picConfetti.EditValue = global::SpinsNew.Properties.Resources.confetti_glitter;
+            this.picConfetti.Location = new System.Drawing.Point(12, 3);
+            this.picConfetti.Name = "picConfetti";
+            this.picConfetti.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.picConfetti.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.picConfetti.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+            this.picConfetti.Size = new System.Drawing.Size(175, 170);
+            this.picConfetti.TabIndex = 23;
             // 
             // panel2
             // 
@@ -329,6 +331,14 @@ namespace SpinsNew.Forms
             this.panel2.Size = new System.Drawing.Size(685, 176);
             this.panel2.TabIndex = 21;
             this.panel2.Visible = false;
+            // 
+            // statisticsToolStripMenuItem
+            // 
+            this.statisticsToolStripMenuItem.Image = global::SpinsNew.Properties.Resources._9004856_chart_graph_statistics_bar_icon;
+            this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+            this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(115, 29);
+            this.statisticsToolStripMenuItem.Text = "Statistics";
+            this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.statisticsToolStripMenuItem_Click_1);
             // 
             // Dashboard
             // 
@@ -352,17 +362,17 @@ namespace SpinsNew.Forms
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(xyDiagram5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series9)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series10)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(xyDiagram2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.listBoxControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picConfetti.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.textActual.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.textTarget.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.utilizationTextBox.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listBoxControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picConfetti.Properties)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
@@ -395,5 +405,6 @@ namespace SpinsNew.Forms
         private System.Windows.Forms.Label label2;
         private DevExpress.XtraEditors.PictureEdit picConfetti;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
     }
 }

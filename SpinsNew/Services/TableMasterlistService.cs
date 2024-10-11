@@ -21,6 +21,8 @@ namespace SpinsNew.Services
                         .ThenInclude(a => a.LibraryAssessment)
                     .Include(g => g.GisModels)
                         .ThenInclude(v => v.LibraryValidator)
+                    .Include(g => g.GisModels)
+                        .ThenInclude(l => l.LibrarylivCondition)
                     .Include(s => s.LibrarySex)
                     .Include(m => m.LibraryMaritalStatus)
                     .Include(s => s.LibraryHealthStatus)

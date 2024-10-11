@@ -20,14 +20,13 @@ namespace SpinsNew.Models
         public int? SpisBatch { get; set; }
         public int? HouseholdSize { get; set; }
         public int? ValidatedByID { get; set; }
+        public int? LivingConditionID { get; set; }//We will make a table for this lib_gis_living_condition
+        [Display(Name ="Date Accomplished")]
         public DateTime? ValidationDate { get; set; }
         public string EntryBy { get; set; }
-        public DateTime? EntryDateTime { get; set; }
+        public DateTime? EntryDateTime { get; set; }//Index here for generating GIS date from and to
 
-        //  public ICollection<PayrollModel> PayrollModels { get; } = new List<PayrollModel>();
-
-        // public ICollection<PayrollandGisManyToMany> PayrollandGisManyToManys { get; } = new List<PayrollandGisManyToMany>(); //Linking Entitiy many to many relationship
-        // public ICollection<MasterListModel> MasterListModels { get; } = new List<MasterListModel>();
+        public LibrarylivCondition LibrarylivCondition { get; set; }
         public LibraryAssessment LibraryAssessment { get; set; }
         public MasterListModel MasterListModel { get; set; } = null;
         public LibraryValidator LibraryValidator { get; set; }

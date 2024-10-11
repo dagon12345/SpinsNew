@@ -32,7 +32,7 @@
     <PublisherName>DSWD LANCE</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>46</ApplicationRevision>
+    <ApplicationRevision>48</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -432,6 +432,7 @@
     </Compile>
     <Compile Include="Interfaces\ILibraryMunicipality.cs" />
     <Compile Include="Interfaces\ILibraryStatus.cs" />
+    <Compile Include="Interfaces\ITableGIS.cs" />
     <Compile Include="Interfaces\ITableLog.cs" />
     <Compile Include="Interfaces\ITableMasterlist.cs" />
     <Compile Include="Interfaces\ITablePayroll.cs" />
@@ -442,6 +443,7 @@
     <Compile Include="Libraries\LibraryDataSource.cs" />
     <Compile Include="Libraries\LibraryHealthStatus.cs" />
     <Compile Include="Libraries\LibraryIDType.cs" />
+    <Compile Include="Libraries\LibrarylivCondition.cs" />
     <Compile Include="Libraries\LibraryMaritalStatus.cs" />
     <Compile Include="Libraries\LibraryMunicipality.cs" />
     <Compile Include="Libraries\LibraryPaymentMode.cs" />
@@ -512,6 +514,7 @@
     </Compile>
     <Compile Include="Services\LibraryMunicipalityService.cs" />
     <Compile Include="Services\LibraryStatusService.cs" />
+    <Compile Include="Services\TableGisService.cs" />
     <Compile Include="Services\TableLogService.cs" />
     <Compile Include="Services\TableMasterlistService.cs" />
     <Compile Include="Services\TablePayroll.cs" />
@@ -522,10 +525,21 @@
     <Compile Include="StatisticsForm\PaidStatisticsForm.Designer.cs">
       <DependentUpon>PaidStatisticsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="StatisticsForm\SpinsOfflineForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatisticsForm\SpinsOfflineForm.Designer.cs">
+      <DependentUpon>SpinsOfflineForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\AuthorizeRepViewModel.cs" />
+    <Compile Include="ViewModel\GisViewModel.cs" />
     <Compile Include="ViewModel\MasterListViewModel.cs" />
     <Compile Include="ViewModel\PayrollViewModel.cs" />
     <Compile Include="ViewModel\RegisterUsersViewModel.cs" />
+    <EmbeddedResource Include="StatisticsForm\SpinsOfflineForm.resx">
+      <DependentUpon>SpinsOfflineForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\DataSources\SpinsNew.ViewModel.GisViewModel.datasource" />
     <None Include="Properties\DataSources\SpinsNew.ViewModel.RegisterUsersViewModel.datasource" />
     <None Include="Resources\confetti-glitter.gif" />
     <None Include="Properties\DataSources\SpinsNew.Models.RegisterModel.datasource" />
